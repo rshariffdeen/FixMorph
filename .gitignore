@@ -2,3 +2,5 @@ build
 cmake-build-debug
 .idea
 tools
+src/CmakeFiles
+src/cmake_install.cmake
