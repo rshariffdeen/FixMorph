@@ -1,9 +1,9 @@
 #include <assert.h>
 #include <stdio.h>
 
-long int add (int x, int y)
+long add (int x, int y)
 {
-    long int r = x + y ;
+    long r = x + y ;
     return r;
 }
 

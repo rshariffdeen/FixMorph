@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-long int add (int x, int y)
+long add (int x, int y)
 {
     return x + y;
 }
