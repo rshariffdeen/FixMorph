@@ -1,0 +1,259 @@
+digraph "DependenceGraph" {
+	compound=true label="Graph 0x7fff1e1f3990 has 12 nodes\n
+	dd color: black
+	cd color: blue"
+
+	/* subgraph 0x7fff1e1f3990 nodes */
+	subgraph cluster_0x7fff1e1f3990 {
+		style="filled, rounded" fillcolor=gray95
+		label="Subgraph main [0x7fff1e1f3990]\nhas 12 nodes
+"
+		/* Basic Block label  [0x10b54d0] */
+		subgraph cluster_bb_0x10b54d0 {
+			style=filled fillcolor=white
+			label="label  [0x10b54d0]		\ndfs order: 1"
+			NODE0x10b56e0 [label="0x10bbde8"]
+			NODE0x10b5870 [label="0x10bbe48"]
+			NODE0x10b5a00 [label="0x10bbea8"]
+			NODE0x10bc490 [label="0x10bbf08"]
+			NODE0x10bc5e0 [label="0x10bbf80"]
+			NODE0x10bc730 [label="0x10bc000"]
+			NODE0x10bc880 [label="0x10bc098"]
+			NODE0x10bc9d0 [label="0x10bc108"]
+			NODE0x10bcb20 [label="0x10bc168"]
+			NODE0x10bccb0 [label="0x10bc1f8"]
+			NODE0x10bff00 [label="0x10bc298"]
+			NODE0x10c00e0 [label="0x10bc308"]
+		} /* cluster_bb_0x10b54d0 */
+
+	NODE0x10c00e0 -> NODE0x10c02d0 [penwidth=2 label="255"  ltail=cluster_bb_0x10b54d0  lhead=cluster_bb_0x10c0420]
+		NODE0x10b56e0 [label="  %1 = alloca i32, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bbde8
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10b56e0 -> NODE0x10bc5e0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10b5870 [label="  %i = alloca i32, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bbe48
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10b5870 -> NODE0x10bc880 [color="black" rank=max]
+		NODE0x10b5870 -> NODE0x10bc9d0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10b5a00 [label="  %j = alloca i32, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bbea8
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		NODE0x10bc490 [label="  %k = alloca i32, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bbf08
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bc490 -> NODE0x10bc730 [color="black" rank=max]
+		NODE0x10bc490 -> NODE0x10bcb20 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bc5e0 [label="  store i32 0, i32* %1" style=filled fillcolor=white]
+		/* -- node 0x10bbf80
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		NODE0x10bc730 [label="  store i32 7, i32* %k, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bc000
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bc730 -> NODE0x10bcb20 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bc880 [label="  %2 = call i32 (i8*, ...) @__isoc99_sca" style=filled fillcolor=white]
+		/* -- node 0x10bc098
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bc880 -> NODE0x10bc880 [color="black" rank=max]
+		NODE0x10bc880 -> NODE0x10bc9d0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bc9d0 [label="  %3 = load i32, i32* %i, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bc108
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bc9d0 -> NODE0x10bccb0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bcb20 [label="  %4 = load i32, i32* %k, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bc168
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bcb20 -> NODE0x10bccb0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bccb0 [label="  %5 = call i64 @sum(i32 %3, i32 %4)\nsubgraphs: 1" style=filled fillcolor=white]
+		NODE0x10bf5b0 [label="IN ARG   %3 = load i32, i32* %i, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bc108
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bf5b0 -> NODE0x10bd610 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bf700 [label="OUT ARG   %3 = load i32, i32* %i, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bc108
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		NODE0x10bfa10 [label="IN ARG   %4 = load i32, i32* %k, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bc168
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bfa10 -> NODE0x10bd8f0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bfb60 [label="OUT ARG   %4 = load i32, i32* %k, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bc168
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		/* -- node 0x10bc1f8
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bccb0 -> NODE0x10bff00 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bccb0 -> NODE0x10bcfd0 [color="blue"]
+		NODE0x10bccb0 -> NODE0x10bf5b0 [color="blue"]
+		NODE0x10bccb0 -> NODE0x10bf700 [color="blue"]
+		NODE0x10bccb0 -> NODE0x10bfa10 [color="blue"]
+		NODE0x10bccb0 -> NODE0x10bfb60 [color="blue"]
+		NODE0x10bff00 [label="  %6 = call i32 (i8*, ...) @printf(i8* g" style=filled fillcolor=white]
+		/* -- node 0x10bc298
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		NODE0x10c00e0 [label="  ret i32 0" style=filled fillcolor=white]
+		/* -- node 0x10bc308
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		NODE0x10c00e0 -> NODE0x10c02d0 [color="blue"]
+		NODE0x10b50f0 [label="GLOB @.str1 = private unnamed_addr constant [11 x i8] c\"fact: %ld\0A\00\", align 1" style=filled fillcolor=white]
+		/* -- node 0x10b40b8
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		NODE0x10b5380 [label="GLOB FUNC main" style=filled fillcolor=white]
+		/* -- node 0x10b6058
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		NODE0x10b5380 -> NODE0x10b56e0 [color="blue"]
+		NODE0x10bcfd0 [label="GLOB FUNC sum" style=filled fillcolor=white]
+		/* -- node 0x10b6628
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bcfd0 -> NODE0x10bccb0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bcfd0 -> NODE0x10bd610 [color="blue"]
+		NODE0x10bcfd0 -> NODE0x10bd760 [color="blue"]
+		NODE0x10bcfd0 -> NODE0x10bd8f0 [color="blue"]
+		NODE0x10bcfd0 -> NODE0x10bda40 [color="blue"]
+		NODE0x10bcfd0 -> NODE0x10bdde0 [color="blue"]
+		NODE0x10b4fa0 [label="GLOB @.str = private unnamed_addr constant [3 x i8] c\"%d\00\", align 1" style=filled fillcolor=white]
+		/* -- node 0x10b6e68
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+	}
+	/* subgraph 0x10bce80 nodes */
+	subgraph cluster_0x10bce80 {
+		style="filled, rounded" fillcolor=gray95
+		label="Subgraph sum [0x10bce80]\nhas 9 nodes
+"
+		NODE0x10bd610 [label="[f] IN ARG i32 %a" style=filled fillcolor=white]
+		/* -- node 0x10b9bf0
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bd610 -> NODE0x10be100 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bd760 [label="[f] OUT ARG i32 %a" style=filled fillcolor=white]
+		/* -- node 0x10b9bf0
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bd760 -> NODE0x10bf700 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bd8f0 [label="[f] IN ARG i32 %b" style=filled fillcolor=white]
+		/* -- node 0x10b9c18
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bd8f0 -> NODE0x10be290 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bda40 [label="[f] OUT ARG i32 %b" style=filled fillcolor=white]
+		/* -- node 0x10b9c18
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bda40 -> NODE0x10bfb60 [color="black" rank=max]
+		/* CD edges */
+		/* Basic Block label  [0x10bdbd0] */
+		subgraph cluster_bb_0x10bdbd0 {
+			style=filled fillcolor=white
+			label="label  [0x10bdbd0]		\ndfs order: 3"
+			NODE0x10bdde0 [label="0x10b61e8"]
+			NODE0x10bdf70 [label="0x10b6248"]
+			NODE0x10be100 [label="0x10bb4d0"]
+			NODE0x10be290 [label="0x10bb550"]
+			NODE0x10be420 [label="0x10bb5b8"]
+			NODE0x10be5b0 [label="0x10bb618"]
+			NODE0x10be740 [label="0x10bb690"]
+			NODE0x10be8d0 [label="0x10bb6e8"]
+			NODE0x10bea60 [label="0x10b6ff8"]
+		} /* cluster_bb_0x10bdbd0 */
+
+	NODE0x10bea60 -> NODE0x10bec30 [penwidth=2 label="255"  ltail=cluster_bb_0x10bdbd0  lhead=cluster_bb_0x10bed80]
+		NODE0x10bdde0 [label="  %1 = alloca i32, align 4" style=filled fillcolor=white]
+		/* -- node 0x10b61e8
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bdde0 -> NODE0x10be100 [color="black" rank=max]
+		NODE0x10bdde0 -> NODE0x10be420 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bdf70 [label="  %2 = alloca i32, align 4" style=filled fillcolor=white]
+		/* -- node 0x10b6248
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10bdf70 -> NODE0x10be290 [color="black" rank=max]
+		NODE0x10bdf70 -> NODE0x10be5b0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10bea60 [label="  ret i64 %6" style=filled fillcolor=white]
+		/* -- node 0x10b6ff8
+		 * ------------------------------------------- */
+		/* DD edges */
+		/* CD edges */
+		NODE0x10bea60 -> NODE0x10bec30 [color="blue"]
+		NODE0x10be100 [label="  store i32 %a, i32* %1, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bb4d0
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10be100 -> NODE0x10be420 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10be290 [label="  store i32 %b, i32* %2, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bb550
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10be290 -> NODE0x10be5b0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10be420 [label="  %3 = load i32, i32* %1, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bb5b8
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10be420 -> NODE0x10be740 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10be5b0 [label="  %4 = load i32, i32* %2, align 4" style=filled fillcolor=white]
+		/* -- node 0x10bb618
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10be5b0 -> NODE0x10be740 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10be740 [label="  %5 = add nsw i32 %3, %4" style=filled fillcolor=white]
+		/* -- node 0x10bb690
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10be740 -> NODE0x10be8d0 [color="black" rank=max]
+		/* CD edges */
+		NODE0x10be8d0 [label="  %6 = sext i32 %5 to i64" style=filled fillcolor=white]
+		/* -- node 0x10bb6e8
+		 * ------------------------------------------- */
+		/* DD edges */
+		NODE0x10be8d0 -> NODE0x10bea60 [color="black" rank=max]
+		/* CD edges */
+	}
+}

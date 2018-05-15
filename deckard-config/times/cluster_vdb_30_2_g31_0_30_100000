@@ -1,0 +1,96 @@
+Clustering 'vectors/vdb_30_2_g31_0_30_100000' 0 ...
+/home/ridwan/workspace/research-work/patch-transplant/crochet/tools/Deckard/src/lsh/bin/enumBuckets -R 0 -M 10000000 -b 2 -A -f vectors/vdb_30_2_g31_0_30_100000 -p vectors/vdb_30_2_g31_0_30_100000.param  >  clusters/cluster_vdb_30_2_g31_0_30_100000
+Warning: output all clones. Takes more time...
+Using the following R-NN DS parameters (from vectors/vdb_30_2_g31_0_30_100000.param):
+N radii = 1, nPoints = 1
+R
+0.000000000
+Success probability
+0.899999976
+Dimension
+227
+R^2
+0.000000000
+Use <u> functions
+1
+k
+2
+m [# independent tuples of LSH functions]
+4
+L
+6
+W
+4.000000000
+T
+1
+typeHT
+3
+
+real	0m0.001s
+user	0m0.000s
+sys	0m0.000s
+Done clustering 'vectors/vdb_30_2_g31_0_30_100000' 0. Log: times/cluster_vdb_30_2_g31_0_30_100000
+Clustering 'vectors/vdb_30_2_g31_0_30_100000' 0 ...
+/home/ridwan/workspace/research-work/patch-transplant/crochet/tools/Deckard/src/lsh/bin/enumBuckets -R 0 -M 10000000 -b 2 -A -f vectors/vdb_30_2_g31_0_30_100000 -p vectors/vdb_30_2_g31_0_30_100000.param  >  clusters/cluster_vdb_30_2_g31_0_30_100000
+Warning: output all clones. Takes more time...
+Using the following R-NN DS parameters (from vectors/vdb_30_2_g31_0_30_100000.param):
+N radii = 1, nPoints = 1
+R
+0.000000000
+Success probability
+0.899999976
+Dimension
+227
+R^2
+0.000000000
+Use <u> functions
+1
+k
+2
+m [# independent tuples of LSH functions]
+4
+L
+6
+W
+4.000000000
+T
+1
+typeHT
+3
+
+real	0m0.001s
+user	0m0.000s
+sys	0m0.000s
+Done clustering 'vectors/vdb_30_2_g31_0_30_100000' 0. Log: times/cluster_vdb_30_2_g31_0_30_100000
+Clustering 'vectors/vdb_30_2_g31_0_30_100000' 0 ...
+/home/ridwan/workspace/research-work/patch-transplant/crochet/tools/Deckard/src/lsh/bin/enumBuckets -R 0 -M 10000000 -b 2 -A -f vectors/vdb_30_2_g31_0_30_100000 -p vectors/vdb_30_2_g31_0_30_100000.param  >  clusters/cluster_vdb_30_2_g31_0_30_100000
+Warning: output all clones. Takes more time...
+Using the following R-NN DS parameters (from vectors/vdb_30_2_g31_0_30_100000.param):
+N radii = 1, nPoints = 1
+R
+0.000000000
+Success probability
+0.899999976
+Dimension
+227
+R^2
+0.000000000
+Use <u> functions
+1
+k
+2
+m [# independent tuples of LSH functions]
+4
+L
+6
+W
+4.000000000
+T
+1
+typeHT
+3
+
+real	0m0.001s
+user	0m0.000s
+sys	0m0.000s
+Done clustering 'vectors/vdb_30_2_g31_0_30_100000' 0. Log: times/cluster_vdb_30_2_g31_0_30_100000

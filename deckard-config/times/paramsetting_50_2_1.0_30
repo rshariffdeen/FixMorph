@@ -1,0 +1,37 @@
+paramsetting: 50 2 1.0 ...Looking for optimal parameters by Clustering 'vectors/vdb_50_2_g97_0_30_100000' 0 ...
+/home/ridwan/workspace/research-work/patch-transplant/crochet/tools/Deckard/src/lsh/bin/enumBuckets -R 0 -M 10000000 -b 2 -A -f vectors/vdb_50_2_g97_0_30_100000 -c -p vectors/vdb_50_2_g97_0_30_100000.param  >  clusters/cluster_vdb_50_2_g97_0_30_100000
+Done clustering 'vectors/vdb_50_2_g97_0_30_100000' 0. Log: times/cluster_vdb_50_2_g97_0_30_100000
+Setting Parameters for all other groups (may take hours on cygwin but only minutes on Linux...why?)...
+real	0m0.000s
+user	0m0.000s
+sys	0m0.000s
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g118_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g105_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g140_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g88_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g83_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g91_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g104_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g115_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g99_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g103_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g94_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g98_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g100_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g97_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g89_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g101_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g96_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g87_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g76_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g86_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g106_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g66_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g85_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g114_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g117_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g77_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g102_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g107_0_30_100000 
+../tools/Deckard/scripts/clonedetect/paramsetting_groupfile 50 2 1.0 vectors/vdb_50_2_g97_0_30_100000 vectors/vdb_50_2_g79_0_30_100000 
+Done paramsetting 50 2 1.0. Log: times/paramsetting_50_2_1.0_30

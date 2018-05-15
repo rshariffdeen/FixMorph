@@ -1,0 +1,32 @@
+
+real	0m0.000s
+user	0m0.000s
+sys	0m0.000s
+Parsing /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c
+Parsing /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c
+Parsing /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/slice-a.c
+Parsing /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c
+Merging parameters: 30, 0, 3
+typeCount before init() = 227
+typeCount after init() = 227
+Total counted terminals:142
+Merging parameters: 30, 0, 3
+Merging parameters: 30, 0, 3
+typeCount before init() = 227Merging parameters: 
+30, 0, 3
+typeCount after init() = 227
+Total counted terminals:125
+typeCount before init() = 227
+typeCount after init() = 227
+Total counted terminals:24
+Line range used: All [0, 0]
+# basic vectors:2
+Line range used: All [0, 0]
+# basic vectors:0
+typeCount before init() = 227
+typeCount after init() = 227
+Total counted terminals:138
+Line range used: All [0, 0]
+# basic vectors:4
+Line range used: All [0, 0]
+# basic vectors:4

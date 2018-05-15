@@ -1,0 +1,18 @@
+grouping: vectors/vdb_30_0 with distance=0...Total 10 vectors read in; 10 vectors dispatched into 99972 ranges (actual groups may be many fewer).
+
+real	0m0.024s
+user	0m0.020s
+sys	0m0.000s
+Done grouping 30 0 0. See groups in vectors/vdb_30_0_g[0-9]*_0_30*
+grouping: vectors/vdb_30_0 with distance=0...Total 10 vectors read in; 10 vectors dispatched into 99972 ranges (actual groups may be many fewer).
+
+real	0m0.024s
+user	0m0.020s
+sys	0m0.000s
+Done grouping 30 0 0. See groups in vectors/vdb_30_0_g[0-9]*_0_30*
+grouping: vectors/vdb_30_0 with distance=0...Total 10 vectors read in; 10 vectors dispatched into 99972 ranges (actual groups may be many fewer).
+
+real	0m0.025s
+user	0m0.020s
+sys	0m0.000s
+Done grouping 30 0 0. See groups in vectors/vdb_30_0_g[0-9]*_0_30*

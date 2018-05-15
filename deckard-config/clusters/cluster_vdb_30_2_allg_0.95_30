@@ -1,0 +1,92 @@
+
+000000000	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:11:8 NODE_KIND:0 nVARs:3 NUM_NODE:94 TBID:25 TEID:60
+000000001	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:11:8 NODE_KIND:0 nVARs:3 NUM_NODE:91 TBID:28 TEID:60
+
+000000005	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:21:7 NODE_KIND:0 nVARs:7 NUM_NODE:94 TBID:64 TEID:107
+000000003	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:24:7 NODE_KIND:0 nVARs:7 NUM_NODE:94 TBID:77 TEID:120
+
+000000006	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:16:8 NODE_KIND:0 nVARs:8 NUM_NODE:94 TBID:43 TEID:77
+000000007	dist:2.8	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:20:6 NODE_KIND:0 nVARs:8 NUM_NODE:90 TBID:52 TEID:86
+
+
+000000002	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:21:12 NODE_KIND:131 nVARs:9 NUM_NODE:136 TBID:61 TEID:124
+000000001	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:24:12 NODE_KIND:131 nVARs:9 NUM_NODE:136 TBID:74 TEID:137
+
+
+000000001	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:5:10 NODE_KIND:0 nVARs:9 NUM_NODE:60 TBID:6 TEID:40
+000000002	dist:2.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:7:10 NODE_KIND:0 nVARs:9 NUM_NODE:58 TBID:10 TEID:41
+
+
+000000006	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:18:9 NODE_KIND:0 nVARs:7 NUM_NODE:79 TBID:57 TEID:95
+000000001	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:21:9 NODE_KIND:0 nVARs:7 NUM_NODE:79 TBID:70 TEID:108
+
+000000002	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:9:9 NODE_KIND:0 nVARs:4 NUM_NODE:87 TBID:19 TEID:56
+000000003	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:9:9 NODE_KIND:0 nVARs:4 NUM_NODE:84 TBID:22 TEID:56
+
+000000003	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:9:9 NODE_KIND:0 nVARs:4 NUM_NODE:84 TBID:22 TEID:56
+000000004	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:10:8 NODE_KIND:0 nVARs:4 NUM_NODE:81 TBID:26 TEID:56
+
+
+
+000000001	dist:1.4	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:4:7 NODE_KIND:0 nVARs:7 NUM_NODE:47 TBID:0 TEID:30
+000000000	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:4:8 NODE_KIND:0 nVARs:7 NUM_NODE:47 TBID:0 TEID:29
+000000002	dist:1.4	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:5:7 NODE_KIND:0 nVARs:7 NUM_NODE:47 TBID:0 TEID:30
+
+
+000000001	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:21:12 NODE_KIND:131 nVARs:9 NUM_NODE:136 TBID:61 TEID:124
+000000000	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:24:12 NODE_KIND:131 nVARs:9 NUM_NODE:136 TBID:74 TEID:137
+
+
+000000001	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:4:10 NODE_KIND:0 nVARs:6 NUM_NODE:66 TBID:6 TEID:41
+000000002	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:6:8 NODE_KIND:0 nVARs:6 NUM_NODE:63 TBID:10 TEID:41
+
+000000003	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:5:10 NODE_KIND:0 nVARs:9 NUM_NODE:60 TBID:6 TEID:40
+000000004	dist:2.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:7:10 NODE_KIND:0 nVARs:9 NUM_NODE:58 TBID:10 TEID:41
+
+
+000000008	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:25:5 NODE_KIND:0 nVARs:7 NUM_NODE:101 TBID:76 TEID:120
+000000006	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:25:5 NODE_KIND:65 nVARs:7 NUM_NODE:101 TBID:76 TEID:120
+000000000	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:28:5 NODE_KIND:65 nVARs:7 NUM_NODE:101 TBID:89 TEID:133
+000000004	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:28:5 NODE_KIND:0 nVARs:7 NUM_NODE:101 TBID:89 TEID:133
+
+000000007	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:21:7 NODE_KIND:0 nVARs:7 NUM_NODE:94 TBID:64 TEID:107
+000000003	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:24:7 NODE_KIND:0 nVARs:7 NUM_NODE:94 TBID:77 TEID:120
+
+
+000000006	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:25:5 NODE_KIND:65 nVARs:6 NUM_NODE:70 TBID:88 TEID:120
+000000011	dist:1.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:26:3 NODE_KIND:0 nVARs:6 NUM_NODE:69 TBID:89 TEID:119
+000000000	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:28:5 NODE_KIND:65 nVARs:6 NUM_NODE:70 TBID:101 TEID:133
+000000005	dist:1.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:29:3 NODE_KIND:0 nVARs:6 NUM_NODE:69 TBID:102 TEID:132
+
+000000001	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:4:10 NODE_KIND:0 nVARs:7 NUM_NODE:68 TBID:3 TEID:40
+000000002	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:4:10 NODE_KIND:0 nVARs:7 NUM_NODE:65 TBID:6 TEID:40
+
+000000009	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:9:7 NODE_KIND:0 nVARs:4 NUM_NODE:70 TBID:16 TEID:47
+000000003	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:11:7 NODE_KIND:0 nVARs:4 NUM_NODE:69 TBID:22 TEID:52
+
+000000010	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:21:6 NODE_KIND:0 nVARs:6 NUM_NODE:71 TBID:61 TEID:95
+000000004	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:24:6 NODE_KIND:0 nVARs:6 NUM_NODE:71 TBID:74 TEID:108
+
+000000007	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:4:10 NODE_KIND:0 nVARs:6 NUM_NODE:69 TBID:3 TEID:41
+000000008	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:4:10 NODE_KIND:0 nVARs:6 NUM_NODE:66 TBID:6 TEID:41
+
+000000013	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:10:9 NODE_KIND:0 nVARs:6 NUM_NODE:66 TBID:19 TEID:51
+000000012	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:10:9 NODE_KIND:0 nVARs:7 NUM_NODE:69 TBID:16 TEID:51
+
+000000015	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:29:5 NODE_KIND:0 nVARs:6 NUM_NODE:67 TBID:94 TEID:125
+000000014	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:29:5 NODE_KIND:0 nVARs:7 NUM_NODE:70 TBID:91 TEID:125
+
+
+
+000000006	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:18:9 NODE_KIND:0 nVARs:7 NUM_NODE:79 TBID:57 TEID:95
+000000002	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:21:9 NODE_KIND:0 nVARs:7 NUM_NODE:79 TBID:70 TEID:108
+
+000000007	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:21:6 NODE_KIND:0 nVARs:6 NUM_NODE:71 TBID:61 TEID:95
+000000003	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c LINE:24:6 NODE_KIND:0 nVARs:6 NUM_NODE:71 TBID:74 TEID:108
+
+000000005	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c LINE:15:9 NODE_KIND:0 nVARs:8 NUM_NODE:75 TBID:42 TEID:75
+000000010	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:23:9 NODE_KIND:0 nVARs:5 NUM_NODE:75 TBID:72 TEID:105
+
+000000009	dist:1.7	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:11:10 NODE_KIND:0 nVARs:5 NUM_NODE:76 TBID:26 TEID:57
+000000008	dist:0.0	FILE /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c LINE:10:11 NODE_KIND:0 nVARs:6 NUM_NODE:79 TBID:22 TEID:57
+

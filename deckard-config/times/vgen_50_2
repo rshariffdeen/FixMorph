@@ -1,0 +1,44 @@
+
+real	0m0.000s
+user	0m0.000s
+sys	0m0.000s
+Parsing /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-c.c
+Parsing /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-a.c
+Parsing /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/slice-a.c
+Merging parameters: 50Merging parameters: , 2, 503, 
+Parsing /home/ridwan/workspace/research-work/patch-transplant/crochet/samples/programs/prog-b.c
+2, 3
+Merging parameters: 50, 2, 3
+typeCount before init() = 227
+typeCount after init() = 227
+typeCount before init() = 227
+Total counted terminals:24
+typeCount after init() = 227
+typeCount before init() = 227
+typeCount after init() = 227
+Total counted terminals:125
+Total counted terminals:142
+Line range used: All [0, 0]
+# basic vectors:0
+Total nodes > 69 (some children of atomic nodes are skipped), # nodes in the Sq tree:16
+Moved steps = 1, merged vectors = 0
+# vectors:0, including must-gen nodes:0
+Line range used: All [0, 0]
+# basic vectors:2
+Total nodes > 265 (some children of atomic nodes are skipped), # nodes in the Sq tree:63
+Line range used: All [0, 0]
+# basic vectors:1
+Merging parameters: 50Total nodes > 271 (some children of atomic nodes are skipped), # nodes in the Sq tree:62
+, 2, 3
+Moved steps = 27, merged vectors = 14
+# vectors:16, including must-gen nodes:2
+typeCount before init() = 227
+typeCount after init() = 227
+Moved steps = 26, merged vectors = 13
+Total counted terminals:138
+# vectors:14, including must-gen nodes:1
+Line range used: All [0, 0]
+# basic vectors:2
+Total nodes > 280 (some children of atomic nodes are skipped), # nodes in the Sq tree:65
+Moved steps = 28, merged vectors = 14
+# vectors:16, including must-gen nodes:2
