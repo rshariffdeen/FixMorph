@@ -1,6 +1,6 @@
 add_library(SkeletonPass MODULE
     # List your source files here.
-        clone-detector.cpp
+        function-extractor.cpp
 )
 
 # Use C++11 to compile our pass (i.e., supply -std=c++11).

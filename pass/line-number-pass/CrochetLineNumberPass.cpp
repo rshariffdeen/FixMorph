@@ -9,9 +9,9 @@
 using namespace llvm;
 
 namespace {
-  struct SkeletonPass : public FunctionPass {
+  struct CrochetLineNumberPass : public FunctionPass {
     static char ID;
-    SkeletonPass() : FunctionPass(ID) {}
+      CrochetLineNumberPass() : FunctionPass(ID) {}
 
     virtual bool runOnFunction(Function &F) {
       for (auto &B : F) {
@@ -46,14 +46,14 @@ namespace {
   };
 }
 
-char SkeletonPass::ID = 0;
+char CrochetLineNumberPass::ID = 0;
 
 // Automatically enable the pass.
 // http://adriansampson.net/blog/clangpass.html
-static void registerSkeletonPass(const PassManagerBuilder &,
+static void registerCrochetLineNumberPass(const PassManagerBuilder &,
                          legacy::PassManagerBase &PM) {
-  PM.add(new SkeletonPass());
+  PM.add(new CrochetLineNumberPass());
 }
 static RegisterStandardPasses
   RegisterMyPass(PassManagerBuilder::EP_EarlyAsPossible,
-                 registerSkeletonPass);
+                 registerCrochetLineNumberPass);
