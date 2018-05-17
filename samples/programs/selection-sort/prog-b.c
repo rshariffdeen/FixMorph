@@ -15,13 +15,13 @@ int selectionSort(struct Book list[],int n)
 	i = 0;
 	while (i < n)
 	{
-		min = list[i].rank;
+		min = list[i].book_id;
 		pos = i;
 		for (j = i + 1; j < n; j++) 
 		{
-			if (list[j].rank < min)
+			if (list[j].book_id < min)
 			{
-				min = list[j].rank;
+				min = list[j].book_id;
 				pos = j;
 			}
 		}
