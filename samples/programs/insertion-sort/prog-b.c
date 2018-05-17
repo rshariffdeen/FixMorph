@@ -6,20 +6,16 @@ int insertionSort(int array[],int n)
 {
 	int j, temp, i, k;
 	i = 1;
-	while (i < n)
+	for(j = 1; j < n; j++)
 	{
-		j = 0;
-		while (j < i && array[j] < array[i]) 
+		temp = array[j];
+		k = j - 1;
+		while (k >= 0 && array[k] > temp)
 		{
-			j++;
+			array[k + 1] = array[k];
+			k--;
 		}
-		temp = array[i];
-		for (k = i; k > j; k--) 
-		{
-			array[k] = array[k-1];
-		}
-		array[j] = temp;
-		i++;
+		array[k + 1] = temp;
 	}
 }
 
