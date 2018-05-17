@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <klee/klee.h>
 
 long add (int x, int y)
 {
@@ -25,11 +26,13 @@ int main(void)
 {
     int a, b, c = 7;
 
-    while (scanf("%d", &a) > 0) {
-        assert(a > 0);
-        printf("fact: %lu\n", add(a,c));
-        printf("sample: %d", function(a,c));
-    }
+    klee_make_symbolic(&a,sizeof(a),"a");
+    if(a>0)
+        b=a+10;
+    else
+        b=-a+10;
+    klee_print_expr("b=",b);
+
 
     return 0;
 }
