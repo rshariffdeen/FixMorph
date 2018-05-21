@@ -21,6 +21,7 @@ int insertionSort(int array[],int n)
 		array[j] = temp;
 		i++;
 	}
+	return 1;
 }
 
 int main(void)

@@ -31,6 +31,8 @@ int sort(struct Author author_list[], int length)
 		author_list[position] = selected;
 		a++;
 	}
+
+	return 1;
 }
 
 int main(void)

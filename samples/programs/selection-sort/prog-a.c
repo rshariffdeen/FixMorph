@@ -7,12 +7,20 @@ struct Book {
 	int	  rank;
 } book;
 
+int just(int n){
+	if ( n > 10 )
+		return 10;
+	else
+		return 0;
+}
 
 void selectionSort(struct Book list[],int n)
 {
 	int j, i, min, pos;
 	struct Book temp;
 	i = 0;
+	
+	just(i);
 	while (i < n)
 	{
 		min = list[i].rank;
@@ -24,12 +32,14 @@ void selectionSort(struct Book list[],int n)
 				min = list[j].rank;
 				pos = j;
 			}
+			
 		}
 
 		temp = list[i];
 		list[i] = list[pos];
 		list[pos] = temp;
 		i++;
+		
 	}
 
     return;
