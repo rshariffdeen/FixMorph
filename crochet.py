@@ -9,8 +9,6 @@ diff_info = dict()
 code_clones = dict()
 
 
-diff_info["sort.c"] = dict()
-diff_info["sort.c"]["insertionSort"] = "j,temp,i,k,n,array"
 
 
 def load_projects():
@@ -23,7 +21,7 @@ def load_projects():
         print source_path_a
         exit(-1)
     else:
-        project_A["dir_path"] = os.path.abspath(source_path_a)
+        project_A["dir_path"] = os.path.abspath(source_path_a) + "/"
         project_A["dir_name"] = os.path.abspath(source_path_a).split("/")[-1]
         project_A["output_dir"] = "output/" + project_A["dir_name"]
 
@@ -32,7 +30,7 @@ def load_projects():
         print source_path_b
         exit(-1)
     else:
-        project_B["dir_path"] = os.path.abspath(source_path_b)
+        project_B["dir_path"] = os.path.abspath(source_path_b) + "/"
         project_B["dir_name"] = os.path.abspath(source_path_b).split("/")[-1]
         project_B["output_dir"] = "output/" + project_B["dir_name"]
 
@@ -41,7 +39,7 @@ def load_projects():
         print source_path_c
         exit(-1)
     else:
-        project_C["dir_path"] = os.path.abspath(source_path_c)
+        project_C["dir_path"] = os.path.abspath(source_path_c) + "/"
         project_C["dir_name"] = os.path.abspath(source_path_c).split("/")[-1]
         project_C["output_dir"] = "output/" + project_C["dir_name"]
 
@@ -53,8 +51,20 @@ def cmd_exec(command):
 
 
 def generate_line_range_per_function(source_file_path):
-    command = "clang-7 -Wno-everything -g -Xclang -load -Xclang lib/libCrochetLineNumberPass.so " + source_file_path + " 2> line-function"
+    command = "clang-7 -Wno-everything -g -Xclang -load -Xclang lib/libCrochetLineNumberPass.so " + source_file_path + " 2> function-range"
     os.system(command)
+    function_range = dict()
+    with open('function-range') as range_file:
+        line = str(range_file.readline())
+        while line:
+            function_name = line.split(":")[0]
+            start = line.split(":")[1].split("-")[0]
+            end = line.split(":")[1].split("-")[1]
+            function_range[function_name] = dict()
+            function_range[function_name]['start'] = int(start)
+            function_range[function_name]['end'] = int(end.replace("\n", ''))
+            line = str(range_file.readline())
+    return function_range
 
 
 def generate_ast_dump(project):
@@ -89,17 +99,32 @@ def get_diff_info():
     with open('diff-files') as diff_file:
         diff_file_path = str(diff_file.readline())
         while diff_file_path:
-            file_name = diff_file_path.split(" and ")[1].split(" differ")[0].replace(project_B["dir_path"], '').replace("/", '')
-            diff_line_list_command = "diff " + project_A["dir_path"] + "/" + file_name + " " + project_B["dir_path"] + "/" + file_name + " | grep '^[1-9]' > diff-lines"
+            file_name = diff_file_path.split(" and ")[1].split(" differ")[0].replace(project_B["dir_path"], '')
+            function_range_in_file = generate_line_range_per_function(project_A["dir_path"] + file_name)
+            affected_function_list = list()
+            diff_line_list_command = "diff " + project_A["dir_path"] + file_name + " " + project_B["dir_path"]  + file_name + " | grep '^[1-9]' > diff-lines"
             os.system(diff_line_list_command)
             diff_file_path = str(diff_file.readline())
             with open('diff-lines') as diff_line:
-                line_range = str(diff_line.readline())
-                while line_range:
-                    start_line = line_range.split('c')[0]
-                    print start_line
-                    line_range = str(diff_line.readline())
-    exit()
+                line = str(diff_line.readline())
+                while line:
+                    if 'c' in line:
+                        start = line.split('c')[0]
+                        end = start
+                    if 'd' in line:
+                        start = line.split('d')[0]
+                        end = start
+
+                    if ',' in start:
+                        end = start.split(',')[1]
+                        start = start.split(',')[0]
+                    for i in range(int(start), int(end)):
+                        for function_name, line_range in function_range_in_file.items():
+                            if line_range['start'] <= i <= line_range['end']:
+                                if function_name not in affected_function_list:
+                                    affected_function_list.append(function_name)
+                    line = str(diff_line.readline())
+            diff_info[file_name] = affected_function_list
 
 
 def create_output_directories():
@@ -116,11 +141,17 @@ def run():
 
     load_projects()
     get_diff_info()
-    create_output_directories()
-    generate_patch_slices()
 
-    generate_deckard_vectors(project_A["dir_path"])
-    generate_deckard_vectors(project_C["dir_path"])
+    for file_name, function_list in diff_info.items():
+        print file_name + ":"
+        for function_name in function_list:
+            print "\t" + function_name
+
+    # create_output_directories()
+    # generate_patch_slices()
+    #
+    # generate_deckard_vectors(project_A["dir_path"])
+    # generate_deckard_vectors(project_C["dir_path"])
 
 
 
