@@ -79,7 +79,6 @@ def run():
         exit(-1)
 
     load_projects()
-   # get_diff_info()
-
+    #get_diff_info()
 
 run()

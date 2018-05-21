@@ -8,8 +8,10 @@ Created on Thu May 17 15:23:41 2018
 import sys
 import os
 
+
 def read(f):
     return f.readline()
+
 
 def framaC(f, file, var, path):
     slice_name = path + file.split("/")[-1].split(".c")[0]
@@ -21,6 +23,7 @@ def framaC(f, file, var, path):
     print(instr)
     print(" ")
     os.system(instr)
+
 
 def gen_slices(function_name, file, lp, lv, path):
     for p in lp:
