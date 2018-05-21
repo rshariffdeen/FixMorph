@@ -94,7 +94,7 @@ def generate_deckard_vectors(project):
 
 
 def get_diff_info():
-    diff_file_list_command = "diff -qr " + project_A["dir_path"] + " " + project_B["dir_path"] + " > diff-files"
+    diff_file_list_command = "diff -qr " + project_A["dir_path"] + " " + project_B["dir_path"] + " | grep .c > diff-files"
     os.system(diff_file_list_command)
     with open('diff-files') as diff_file:
         diff_file_path = str(diff_file.readline())
