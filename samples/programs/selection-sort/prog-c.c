@@ -8,7 +8,7 @@ struct Author {
 } author;
 
 
-void sort(struct Author author_list[], int length)
+int sort(struct Author author_list[], int length)
 {
 	int a, b, minimum, position;
 	struct Author selected;

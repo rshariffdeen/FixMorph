@@ -4,3 +4,4 @@ cmake-build-debug
 tools
 src/CmakeFiles
 src/cmake_install.cmake
+output

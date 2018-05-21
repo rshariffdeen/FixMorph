@@ -15,6 +15,7 @@ int selectionSort(struct Book list[],int n)
 	i = 0;
 	while (i < n)
 	{
+		/*@ impact pragma stmt; */
 		min = list[i].book_id;
 		pos = i;
 		for (j = i + 1; j < n; j++) 

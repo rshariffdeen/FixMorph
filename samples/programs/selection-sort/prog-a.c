@@ -8,7 +8,7 @@ struct Book {
 } book;
 
 
-int selectionSort(struct Book list[],int n)
+void selectionSort(struct Book list[],int n)
 {
 	int j, i, min, pos;
 	struct Book temp;
@@ -31,6 +31,8 @@ int selectionSort(struct Book list[],int n)
 		list[pos] = temp;
 		i++;
 	}
+
+    return;
 }
 
 int main(void)

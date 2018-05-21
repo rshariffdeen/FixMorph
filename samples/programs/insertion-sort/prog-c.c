@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 
-void sort(float array[], int length)
+int sort(float array[], int length)
 {
 	int a, b, c;
 	float temp;
@@ -10,16 +10,16 @@ void sort(float array[], int length)
 	while (a < length)
 	{
 		b = 0;
-		while (b < a && array[b] < array[a])
+		while (j < a && array[j] < array[a])
 		{
-			b++;
+			j++;
 		}
 		temp = array[a];
-		for (c = a; c > b; c--)
+		for (k = a; k > j; k--)
 		{
-			array[c] = array[c-1];
+			array[k] = array[k-1];
 		}
-		array[b] = temp;
+		array[j] = temp;
 		a++;
 	}
 }
