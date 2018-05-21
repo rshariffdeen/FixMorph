@@ -118,7 +118,7 @@ def get_diff_info():
                     if ',' in start:
                         end = start.split(',')[1]
                         start = start.split(',')[0]
-                    for i in range(int(start), int(end)):
+                    for i in range(int(start), int(end)+1):
                         for function_name, line_range in function_range_in_file.items():
                             if line_range['start'] <= i <= line_range['end']:
                                 if function_name not in affected_function_list:
