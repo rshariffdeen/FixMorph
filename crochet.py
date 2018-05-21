@@ -101,7 +101,7 @@ def get_diff_info():
         while diff_file_path:
             file_name = diff_file_path.split(" and ")[1].split(" differ")[0].replace(project_B["dir_path"], '')
             function_range_in_file = generate_line_range_per_function(project_A["dir_path"] + file_name)
-            affected_function_list = list()
+            affected_function_list = dict()
             diff_line_list_command = "diff " + project_A["dir_path"] + file_name + " " + project_B["dir_path"]  + file_name + " | grep '^[1-9]' > diff-lines"
             os.system(diff_line_list_command)
             diff_file_path = str(diff_file.readline())
@@ -122,7 +122,7 @@ def get_diff_info():
                         for function_name, line_range in function_range_in_file.items():
                             if line_range['start'] <= i <= line_range['end']:
                                 if function_name not in affected_function_list:
-                                    affected_function_list.append(function_name)
+                                    affected_function_list[function_name] = line_range
                     line = str(diff_line.readline())
             diff_info[file_name] = affected_function_list
 
@@ -144,8 +144,8 @@ def run():
 
     for file_name, function_list in diff_info.items():
         print file_name + ":"
-        for function_name in function_list:
-            print "\t" + function_name
+        for function_name, line_range in function_list.items():
+            print "\t" + function_name + " " + str(line_range['start']) + "-" + str(line_range['end'])
 
     # create_output_directories()
     # generate_patch_slices()
