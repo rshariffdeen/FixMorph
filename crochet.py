@@ -35,16 +35,11 @@ def generate_line_range_per_function(source_file_path):
     with open('function-range', 'r') as range_file:
         line = range_file.readline().strip().split(":")
         while line:
-<<<<<<< HEAD
-            function_name = line.split(":")[0]
-            start = line.split(":")[1].split("-")[0]
-            end = line.split(":")[1].split("-")[1]
-=======
             function_name = line[0]
             start = line[1].split("-")[0]
             end = line[1].split("-")[1]
             print(function_name, start, end)
->>>>>>> 8865d6fa86c547acef5cc42de27175a41a88a780
+
             function_range[function_name] = dict()
             function_range[function_name]['start'] = int(start)
             function_range[function_name]['end'] = int(end)
