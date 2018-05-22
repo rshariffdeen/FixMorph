@@ -23,7 +23,7 @@ class DistanceMatrix:
         with open(file2, 'r') as f:
             self.f2 = [i.strip() for i in f.readlines()]
     
-        #print(self.f1, self.f2)
+        print(self.f1, self.f2)
         
         # Gets a list of vector, one vector for each line (for each file)
         self.Pa = self.vectors_from_file(file1)
@@ -59,6 +59,12 @@ class DistanceMatrix:
                 copyi.remove(currmin)
             index = self.Pa[ind][0]
             self.bests[index] = tuple(bestlist)
+        # Somehow here, we should call some function to generate slices
+        '''
+        for i in self.bests[index].keys():
+            a
+        
+        '''
         
     
     def index(self, i,j):

@@ -133,21 +133,24 @@ def vecgen(path, file, function, start, end):
     
 def clean():
     os.system("rm -r vec_a vec_c P_C_files line-function function-range diff_funcs diff-files diff-lines a.out")
+    remove_vec_files()
 
 def run():
     if len(sys.argv) < 4:
         print("Insufficient arguments")
         exit(-1)
-
+    # Define directories
     load_projects()
+    # Obtain 
     get_diff_info()
-    remove_vec_files()
+   
     with open('diff_funcs', 'w') as file:
         for file_name, function_list in diff_info.items():
             for function_name, line_range in function_list.items():
                 file.write(file_name + ":"+ function_name + ":" + str(line_range['start']) + "-" + str(line_range['end']) + "\n")
     with open('diff_funcs', 'r') as a:
         line = a.readline().strip().split(":")
+        print(line)
         while (len(line)==3):
             file = line[0]
             f = line[1]
@@ -172,12 +175,13 @@ def run():
                     start, end = lines.split("-")
                     vecgen(project_C["dir_path"], line.split("/")[-1], f, start, end)
                     l = lf.readline().strip().split(":")
-            line = b.readline().strip().split()
+            line = b.readline().strip()
     get_files(project_A["dir_path"], ".vec", "vec_a")
     get_files(project_C["dir_path"], ".vec", "vec_c")
     
     distMatrix = computeDistance.DistanceMatrix("vec_a", "vec_c")
     print(distMatrix)
+    
     #print(distMatrix.get_distance_files('/home/pedrobw/Documents/crochet/samples/programs/selection-sort/P_a/prog-a.c.just.10-15.vec', '/home/pedrobw/Documents/crochet/samples/programs/selection-sort/P_c/prog-c.c.sort.11-35.vec'))
     
     # create_output_directories()
