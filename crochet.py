@@ -57,6 +57,7 @@ def generate_line_range_per_function(source_file_path):
     with open('function-range') as range_file:
         line = str(range_file.readline())
         while line:
+            print  "\n" + line + "\n"
             function_name = line.split(":")[0]
             start = line.split(":")[1].split("-")[0]
             end = line.split(":")[1].split("-")[1]
@@ -94,7 +95,8 @@ def generate_deckard_vectors(project):
 
 
 def get_diff_info():
-    diff_file_list_command = "diff -qr " + project_A["dir_path"] + " " + project_B["dir_path"] + " | grep .c > diff-files"
+    diff_file_list_command = "diff -qr " + project_A["dir_path"] + " " + project_B["dir_path"]
+    diff_file_list_command += " | grep '[a-zA-Z0-9].c ' > diff-files"
     os.system(diff_file_list_command)
     with open('diff-files') as diff_file:
         diff_file_path = str(diff_file.readline())
