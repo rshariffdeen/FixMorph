@@ -9,8 +9,6 @@ diff_info = dict()
 code_clones = dict()
 
 
-
-
 def load_projects():
     source_path_a = sys.argv[1]
     source_path_b = sys.argv[2]
@@ -57,7 +55,6 @@ def generate_line_range_per_function(source_file_path):
     with open('function-range') as range_file:
         line = str(range_file.readline())
         while line:
-            print  "\n" + line + "\n"
             function_name = line.split(":")[0]
             start = line.split(":")[1].split("-")[0]
             end = line.split(":")[1].split("-")[1]
@@ -113,8 +110,11 @@ def get_diff_info():
                     if 'c' in line:
                         start = line.split('c')[0]
                         end = start
-                    if 'd' in line:
+                    elif 'd' in line:
                         start = line.split('d')[0]
+                        end = start
+                    elif 'a' in line:
+                        start = line.split('a')[0]
                         end = start
 
                     if ',' in start:

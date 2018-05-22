@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+#Insertion Sort Changed
 int insertionSort(int array[],int n)
 {
 	int j, temp, i, k;
@@ -21,6 +21,7 @@ int insertionSort(int array[],int n)
 
 int main(void)
 {
+	#new sort method
 	int array[10];
 
 	for (int i=0; i< 10; i++){
