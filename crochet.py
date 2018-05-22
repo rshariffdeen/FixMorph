@@ -165,7 +165,6 @@ def run():
             with open('line-function', 'r') as lf:
                 l = lf.readline().strip().split(":")
                 while (len(l) == 2):
-                    print(line, l)
                     f, lines = l
                     start, end = lines.split("-")
                     vecgen(project_C["dir_path"], line.split("/")[-1], f, start, end)
@@ -174,8 +173,9 @@ def run():
     get_files(project_A["dir_path"], ".vec", "vec_a.txt")
     get_files(project_C["dir_path"], ".vec", "vec_c.txt")
     
-    distMatrix = computeDistance.matrix_distance_from_files("vec_a.txt", "vec_c.txt")
+    distMatrix = computeDistance.DistanceMatrix("vec_a.txt", "vec_c.txt")
     print(distMatrix)
+    #print(distMatrix.get_distance_files('/home/pedrobw/Documents/crochet/samples/programs/selection-sort/P_a/prog-a.c.just.10-15.vec', '/home/pedrobw/Documents/crochet/samples/programs/selection-sort/P_c/prog-c.c.sort.11-35.vec'))
     
     # create_output_directories()
     # generate_patch_slices()

@@ -16,6 +16,15 @@ class DistanceMatrix:
         # Dictionnary with distances between files
         self.dist_dict = dict()
         
+        # List of files
+        with open(file1, 'r') as f:
+            self.f1 = [i.strip() for i in f.readlines()]
+            
+        with open(file2, 'r') as f:
+            self.f2 = [i.strip() for i in f.readlines()]
+    
+        #print(self.f1, self.f2)
+        
         # Gets a list of vector, one vector for each line (for each file)
         self.Pa = self.vectors_from_file(file1)
         self.Pc = self.vectors_from_file(file2)
@@ -42,7 +51,6 @@ class DistanceMatrix:
                 last = currmin
                 el = copyPc[pos]
                 copyPc.remove(copyPc[pos])
-                #print(el[0])
                 el1 = el[0].split("/")[-1]
                 pos = copyi.index(currmin)
                 if (last > 2*first and last > 25):
@@ -62,8 +70,11 @@ class DistanceMatrix:
     def get_Pc(self, j):
         return self.Pc[j]
         
-    def get_distance(self, indexA, indexB):
+    def get_dist(self, indexA, indexB):
         return self.dist_dict[self.index(indexA, indexB)]
+        
+    def get_distance_files(self, fileA, fileB):
+        return self.get_dist(self.f1.index(fileA), self.f2.index(fileB))
     
     # Given a file with a path to a .vec file, it puts them in a list
     def vectors_from_file(self, file):
@@ -94,7 +105,7 @@ class DistanceMatrix:
             return sum((v1[i]-v2[i])**2 for i in range(len(v1)))
     
     # For two .vec files, computes the distance between the vectors (unused)
-    def dist_from_files(self, file1, file2):
+    def compute_dist_from_files(self, file1, file2):
         v1 = self.get_vector_from_file(file1)
         v2 = self.get_vector_from_file(file2)
         return self.compute_distance(v1,v2)
@@ -103,28 +114,39 @@ class DistanceMatrix:
         return self.dist_dict[self.index(i,j)]
 
     def __str__(self):
+        # For each file of Pa, we print the distance to each file of Pc
         output = "-"*120 + "\n"
         for i in range(len(self.Pa)):
             output += str(self.Pa[i][0]) + ":\n"
             for j in range(len(self.Pc)):
                 output+= "\t" + str(self.dist(i,j)) + "\t" + self.Pc[j][0] + "\n"
             output += "-"*120 + "\n"
+        # We also print the most probable clone functions
+        output += "#"*120 + "\n"
         output += "Closest function matches:\n"
+        output += "-"*120 + "\n"
         for key in self.bests.keys():
-           output += "****\t" + str(key) + "\n"
-           output += str(self.bests[key]) + "\n"
+            lfile = key.split(".")
+            function = lfile[2]
+            lines = lfile[3]
+            file = lfile[0].split("/")[-1] + ".c"
+            path = "/".join(key.split("/")[:-1])
+            output += "******\tFile: " + file + "\tFunction: " + function + "\tLines: " + lines + "\t Path: " + path + "\n"
+            for i in self.bests[key]:
+                dist = str(i[0])
+                ind = i[1]
+                i = i[2]
+                lfile = i.split(".")
+                file = lfile[0] + ".c"
+                function = lfile[2]
+                lines = lfile[3]
+                output += dist + "\tFile: " + file + "\tFunction: " + function + "\tLines: " + lines + "\t Path: " + i + "\tIndex: " + str(ind) + "\n"
+            output += "-"*120 + "\n"
         return output
 
-
-
-# Given two .txt files with paths to .vec files, computes the distance
-# between each pair and prints the distance matrix.    
-def matrix_distance_from_files(file1, file2):
-    distMatrix = DistanceMatrix(file1, file2)
-    return distMatrix
     
 # Main program
 # Asks for two .txt files with paths to .vec files and calls 
 if __name__=="__main__":
     print(sys.argv[1], sys.argv[2])
-    matrix_distance_from_files(sys.argv[1], sys.argv[2])
+    print(DistanceMatrix((sys.argv[1], sys.argv[2])))
