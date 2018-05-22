@@ -1,7 +1,9 @@
 import sys
 import os
 import subprocess as sub
+import computeDistance
 
+path_deckard = "/home/pedrobw/Deckard"
 project_A = dict()
 project_B = dict()
 project_C = dict()
@@ -35,10 +37,11 @@ def generate_line_range_per_function(source_file_path):
     with open('function-range', 'r') as range_file:
         line = range_file.readline().strip().split(":")
         while line:
+            if not line[0]:
+                break
             function_name = line[0]
             start = line[1].split("-")[0]
             end = line[1].split("-")[1]
-            print(function_name, start, end)
             function_range[function_name] = dict()
             function_range[function_name]['start'] = int(start)
             function_range[function_name]['end'] = int(end)
@@ -47,8 +50,8 @@ def generate_line_range_per_function(source_file_path):
     
 
 def generate_ast_dump(project):
-    command = "clang -Xclang -ast-dump -fsyntax-only -fno-color-diagnostics " + string(
-        source_file.filePath) + " | grep -P \"(Function|Var)Decl\" > " + output_path + "/" + "declarations.txt"
+    command = "clang -Xclang -ast-dump -fsyntax-only -fno-color-diagnostics "
+    command += str(source_file.filePath) + " | grep -P \"(Function|Var)Decl\" > " + output_path + "/" + "declarations.txt"
 
 
 def generate_variable_slices(project):
@@ -76,7 +79,7 @@ def get_diff_info():
     diff_file_list_command += " | grep -P '[A-Za-z0-9_].c ' > diff-files"
     os.system(diff_file_list_command)
     with open('diff-files') as diff_file:
-        diff_file_path = str(diff_file.readline())
+        diff_file_path = str(diff_file.readline().strip())
         while diff_file_path:
             file_name = diff_file_path.split(" and ")[1].split(" differ")[0].replace(project_B["dir_path"], '')
             function_range_in_file = generate_line_range_per_function(project_A["dir_path"] + file_name)
@@ -111,6 +114,12 @@ def create_output_directories():
     os.system("mkdir " + project_A["output_dir"])
     os.system("mkdir " + project_B["output_dir"])
     os.system("mkdir " + project_C["output_dir"])
+    
+def remove_vec_files():
+    os.system("find . -name '*.vec' -exec rm -f {} \;")
+    
+def get_files(dir_path, filetype, output):
+    os.system("find " + dir_path + " -name '*" + filetype + "' > " + output)
 
 
 def run():
@@ -120,12 +129,59 @@ def run():
 
     load_projects()
     get_diff_info()
-
-    for file_name, function_list in diff_info.items():
-        print(file_name + ":")
-        for function_name, line_range in function_list.items():
-            print("\t" + function_name + " " + str(line_range['start']) + "-" + str(line_range['end']))
-
+    remove_vec_files()
+    with open('diff_funcs', 'w') as file:
+        for file_name, function_list in diff_info.items():
+            for function_name, line_range in function_list.items():
+                file.write(file_name + ":"+ function_name + ":" + str(line_range['start']) + "-" + str(line_range['end']) + "\n")
+    with open('diff_funcs', 'r') as a:
+        line = a.readline().strip().split(":")
+        while (len(line)==3):
+            file = line[0]
+            f = line[1]
+            lines = line[2].split("-")
+            start = lines[0]
+            end = lines[1]
+            #print(project_A["dir_path"], file, lines, start, end)
+            instr = path_deckard + "/src/main/cvecgen "
+            instr += os.path.abspath(project_A["dir_path"]) + "/" + file
+            instr += " --start-line-number " + start 
+            instr += " --end-line-number " + end
+            instr += " -o " + os.path.abspath(project_A["dir_path"]) + "/" + file + "." + f + "."
+            instr += start + "-" + end + ".vec"
+            os.system(instr)
+            line = a.readline().strip().split(":")
+    get_files(project_C["dir_path"], ".c", "P_C_files.txt")
+    with open('P_C_files.txt', 'r') as b:
+        line = b.readline().strip()
+        while line and line[0]:
+            instr = "clang-7 "
+            instr += "-Wno-everything -g -Xclang -load -Xclang "
+            instr += "lib/libCrochetLineNumberPass.so " +  line
+            instr += " 2> line-function"
+            os.system(instr)
+            with open('line-function', 'r') as lf:
+                l = lf.readline().strip().split(":")
+                while (len(l) == 2):
+                    print(line, l)
+                    f, lines = l
+                    start, end = lines.split("-")
+                    instr = path_deckard + "/src/main/cvecgen "
+                    instr += line
+                    instr += " --start-line-number " + start 
+                    instr += " --end-line-number " + end
+                    instr += " -o " + line + "." + f + "."
+                    instr += start + "-" + end + ".vec"
+                    print(instr)
+                    os.system(instr)
+                    l = lf.readline().strip().split(":")
+            line = b.readline().strip().split()
+    get_files(project_A["dir_path"], ".vec", "vec_a.txt")
+    get_files(project_C["dir_path"], ".vec", "vec_c.txt")
+    
+    distMatrix = computeDistance.matrix_distance_from_files("vec_a.txt", "vec_c.txt")
+    
+    
     # create_output_directories()
     # generate_patch_slices()
     #
@@ -134,5 +190,9 @@ def run():
 
 
 
-
-run()
+if __name__=="__main__":
+    run()
+    
+    
+    
+        
