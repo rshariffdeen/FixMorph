@@ -130,6 +130,9 @@ def vecgen(path, file, function, start, end):
     instr += " -o " + path + "/"
     instr += file + "." + function + "." + start + "-" + end + ".vec"
     os.system(instr)
+    
+def clean():
+    os.system("rm -r vec_a vec_c P_C_files line-function function-range diff_funcs diff-files diff-lines a.out")
 
 def run():
     if len(sys.argv) < 4:
@@ -154,8 +157,8 @@ def run():
             #print(project_A["dir_path"], file, lines, start, end)
             vecgen(os.path.abspath(project_A["dir_path"]), file, f, start, end)
             line = a.readline().strip().split(":")
-    get_files(project_C["dir_path"], ".c", "P_C_files.txt")
-    with open('P_C_files.txt', 'r') as b:
+    get_files(project_C["dir_path"], ".c", "P_C_files")
+    with open('P_C_files', 'r') as b:
         line = b.readline().strip()
         while line and line[0]:
             instr = "clang-7 -Wno-everything -g -Xclang -load -Xclang "
@@ -170,10 +173,10 @@ def run():
                     vecgen(project_C["dir_path"], line.split("/")[-1], f, start, end)
                     l = lf.readline().strip().split(":")
             line = b.readline().strip().split()
-    get_files(project_A["dir_path"], ".vec", "vec_a.txt")
-    get_files(project_C["dir_path"], ".vec", "vec_c.txt")
+    get_files(project_A["dir_path"], ".vec", "vec_a")
+    get_files(project_C["dir_path"], ".vec", "vec_c")
     
-    distMatrix = computeDistance.DistanceMatrix("vec_a.txt", "vec_c.txt")
+    distMatrix = computeDistance.DistanceMatrix("vec_a", "vec_c")
     print(distMatrix)
     #print(distMatrix.get_distance_files('/home/pedrobw/Documents/crochet/samples/programs/selection-sort/P_a/prog-a.c.just.10-15.vec', '/home/pedrobw/Documents/crochet/samples/programs/selection-sort/P_c/prog-c.c.sort.11-35.vec'))
     
@@ -187,6 +190,7 @@ def run():
 
 if __name__=="__main__":
     run()
+    clean()
     
     
     
