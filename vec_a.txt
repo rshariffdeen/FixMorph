@@ -1,0 +1,2 @@
+/home/pedrobw/Documents/crochet/samples/programs/selection-sort/P_a/prog-a.c.selectionSort.17-45.vec
+/home/pedrobw/Documents/crochet/samples/programs/selection-sort/P_a/prog-a.c.just.10-15.vec

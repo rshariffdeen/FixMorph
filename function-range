@@ -1,4 +1,3 @@
-/home/ridwan/workspace/research-work/patch-transplant/data-set/BufferOverflow/openjpeg-version.1.5/applications/codec/convert.c:32:10: fatal error: 'opj_config.h' file not found
-#include "opj_config.h"
-         ^~~~~~~~~~~~~~
-1 error generated.
+just:10-15
+selectionSort:17-45
+main:50-84

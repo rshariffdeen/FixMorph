@@ -115,12 +115,21 @@ def create_output_directories():
     os.system("mkdir " + project_B["output_dir"])
     os.system("mkdir " + project_C["output_dir"])
     
+    
 def remove_vec_files():
     os.system("find . -name '*.vec' -exec rm -f {} \;")
+    
     
 def get_files(dir_path, filetype, output):
     os.system("find " + dir_path + " -name '*" + filetype + "' > " + output)
 
+
+def vecgen(path, file, function, start, end):
+    instr = path_deckard + "/src/main/cvecgen " + path + "/" + file
+    instr += " --start-line-number " + start + " --end-line-number " + end
+    instr += " -o " + path + "/"
+    instr += file + "." + function + "." + start + "-" + end + ".vec"
+    os.system(instr)
 
 def run():
     if len(sys.argv) < 4:
@@ -143,20 +152,13 @@ def run():
             start = lines[0]
             end = lines[1]
             #print(project_A["dir_path"], file, lines, start, end)
-            instr = path_deckard + "/src/main/cvecgen "
-            instr += os.path.abspath(project_A["dir_path"]) + "/" + file
-            instr += " --start-line-number " + start 
-            instr += " --end-line-number " + end
-            instr += " -o " + os.path.abspath(project_A["dir_path"]) + "/" + file + "." + f + "."
-            instr += start + "-" + end + ".vec"
-            os.system(instr)
+            vecgen(os.path.abspath(project_A["dir_path"]), file, f, start, end)
             line = a.readline().strip().split(":")
     get_files(project_C["dir_path"], ".c", "P_C_files.txt")
     with open('P_C_files.txt', 'r') as b:
         line = b.readline().strip()
         while line and line[0]:
-            instr = "clang-7 "
-            instr += "-Wno-everything -g -Xclang -load -Xclang "
+            instr = "clang-7 -Wno-everything -g -Xclang -load -Xclang "
             instr += "lib/libCrochetLineNumberPass.so " +  line
             instr += " 2> line-function"
             os.system(instr)
@@ -166,21 +168,14 @@ def run():
                     print(line, l)
                     f, lines = l
                     start, end = lines.split("-")
-                    instr = path_deckard + "/src/main/cvecgen "
-                    instr += line
-                    instr += " --start-line-number " + start 
-                    instr += " --end-line-number " + end
-                    instr += " -o " + line + "." + f + "."
-                    instr += start + "-" + end + ".vec"
-                    print(instr)
-                    os.system(instr)
+                    vecgen(project_C["dir_path"], line.split("/")[-1], f, start, end)
                     l = lf.readline().strip().split(":")
             line = b.readline().strip().split()
     get_files(project_A["dir_path"], ".vec", "vec_a.txt")
     get_files(project_C["dir_path"], ".vec", "vec_c.txt")
     
     distMatrix = computeDistance.matrix_distance_from_files("vec_a.txt", "vec_c.txt")
-    
+    print(distMatrix)
     
     # create_output_directories()
     # generate_patch_slices()
