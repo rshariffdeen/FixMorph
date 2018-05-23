@@ -10,16 +10,16 @@ int sort(float array[], int length)
 	while (a < length)
 	{
 		b = 0;
-		while (j < a && array[j] < array[a])
+		while (b < a && array[b] < array[a])
 		{
-			j++;
+			b++;
 		}
 		temp = array[a];
-		for (k = a; k > j; k--)
+		for (c = a; c > b; c--)
 		{
-			array[k] = array[k-1];
+			array[c] = array[c-1];
 		}
-		array[j] = temp;
+		array[b] = temp;
 		a++;
 	}
 }
