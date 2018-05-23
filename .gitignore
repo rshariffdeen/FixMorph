@@ -18,3 +18,4 @@ P_C_files
 line-function
 diff_funcs
 *.out
+*.prj
