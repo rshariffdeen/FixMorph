@@ -23,7 +23,7 @@ def load_projects():
             proj[i]["dir_name"] = os.path.abspath(source_path).split("/")[-1]
             proj[i]["output_dir"] = "output/" + proj[i]["dir_name"]
             
-
+# TODO: Is it used in anything? Otherwise erase (and also the import line)
 def cmd_exec(command):
     p = sub.Popen([command], stdout=sub.PIPE, stderr=sub.PIPE)
     output, errors = p.communicate()
@@ -48,15 +48,15 @@ def generate_line_range_per_function(source_file_path):
             line = range_file.readline().strip().split(":")
     return function_range
     
-
-def generate_ast_dump(project):
+# TODO: Have a look at this
+'''def generate_ast_dump(project):
     command = "clang -Xclang -ast-dump -fsyntax-only -fno-color-diagnostics "
     command += str(source_file.filePath) + " | grep -P \"(Function|Var)Decl\" > " + output_path + "/" + "declarations.txt"
 
 
 def generate_variable_slices(project):
     return
-
+'''
 
 def generate_patch_slices():
     for patched_file, patched_file_info in diff_info.items():
@@ -134,46 +134,59 @@ def vecgen(path, file, function, start, end):
 def clean():
     os.system("rm -r vec_a vec_c P_C_files line-function function-range diff_funcs diff-files diff-lines a.out")
     remove_vec_files()
+    
+def gen_vectors(file, path):
+    with open(file, 'r') as p:
+        line = p.readline().strip().split(":")
+        while(len(line) == 3):
+            file, f, lines = line
+            start, end = lines.split("-")
+            vecgen(path, file, f, start, end)
+            line = p.readline().strip().split(":")
 
 def run():
+    # Check that we have Pa, Pb and Pc
     if len(sys.argv) < 4:
         print("Insufficient arguments")
         exit(-1)
+        
     # Define directories
     load_projects()
-    # Obtain 
+    
+    # Obtain diff in file diff_funcs with format file:function:start-end
     get_diff_info()
-   
     with open('diff_funcs', 'w') as file:
         for file_name, function_list in diff_info.items():
-            for function_name, line_range in function_list.items():
-                file.write(file_name + ":"+ function_name + ":" + str(line_range['start']) + "-" + str(line_range['end']) + "\n")
-    with open('diff_funcs', 'r') as a:
-        line = a.readline().strip().split(":")
-        print(line)
-        while (len(line)==3):
-            file = line[0]
-            f = line[1]
-            lines = line[2].split("-")
-            start = lines[0]
-            end = lines[1]
-            #print(project_A["dir_path"], file, lines, start, end)
-            vecgen(os.path.abspath(project_A["dir_path"]), file, f, start, end)
-            line = a.readline().strip().split(":")
+            for f_name, lrange in function_list.items():
+                file.write(file_name + ":"+ f_name + ":" + 
+                        str(lrange['start']) + "-" + str(lrange['end']) + "\n")
+                
+    # For each file:function:start-end in diff_funcs, we generate a vector
+    gen_vectors('diff_funcs', os.path.abspath(project_A["dir_path"]))
+    
+    
+    # Put all .c files of project C in P_C_files
     get_files(project_C["dir_path"], ".c", "P_C_files")
+    
+    # For each .c file, we generate a vector for each function in it
     with open('P_C_files', 'r') as b:
         line = b.readline().strip()
+        
         while line and line[0]:
+            # TODO: Check wtf is happening with line that it doesn't capture some
+            path = "/".join(line.split("/")[:-1])
+            # Creates line-function with lines with format function:start-end
             instr = "clang-7 -Wno-everything -g -Xclang -load -Xclang "
             instr += "lib/libCrochetLineNumberPass.so " +  line
             instr += " 2> line-function"
             os.system(instr)
+            # We now explore each function and generate a vector for it
             with open('line-function', 'r') as lf:
                 l = lf.readline().strip().split(":")
                 while (len(l) == 2):
                     f, lines = l
                     start, end = lines.split("-")
-                    vecgen(project_C["dir_path"], line.split("/")[-1], f, start, end)
+                    vecgen(path, line.split("/")[-1], f, start, end)
                     l = lf.readline().strip().split(":")
             line = b.readline().strip()
     get_files(project_A["dir_path"], ".vec", "vec_a")
@@ -194,7 +207,7 @@ def run():
 
 if __name__=="__main__":
     run()
-    clean()
+    #clean()
     
     
     

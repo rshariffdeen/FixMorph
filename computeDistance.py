@@ -23,7 +23,7 @@ class DistanceMatrix:
         with open(file2, 'r') as f:
             self.f2 = [i.strip() for i in f.readlines()]
     
-        print(self.f1, self.f2)
+        #print(self.f1, self.f2)
         
         # Gets a list of vector, one vector for each line (for each file)
         self.Pa = self.vectors_from_file(file1)
@@ -51,7 +51,7 @@ class DistanceMatrix:
                 last = currmin
                 el = copyPc[pos]
                 copyPc.remove(copyPc[pos])
-                el1 = el[0].split("/")[-1]
+                el1 = el[0]#.split("/")[:-1]
                 pos = copyi.index(currmin)
                 if (last > 2*first and last > 25):
                     break
@@ -61,8 +61,15 @@ class DistanceMatrix:
             self.bests[index] = tuple(bestlist)
         # Somehow here, we should call some function to generate slices
         '''
-        for i in self.bests[index].keys():
-            a
+        for Pa_file in self.bests[index].keys():
+            # TODO: Compute all slices for each variable in that function > slices_Pa_file
+            for Pc_file in self.bests[Pa_file]:
+                # TODO: Compute all slices for each variable in that function > slices_Pc_file
+                with open(slices_Pa_file, 'r') as file_Pa_slices:
+                    path_Pa_slice = file_Pa_slices.readline()
+                    while(path_Pa_slice):
+                        v1 = get_vector_from_
+                    
         
         '''
         
@@ -82,7 +89,7 @@ class DistanceMatrix:
     def get_distance_files(self, fileA, fileB):
         return self.get_dist(self.f1.index(fileA), self.f2.index(fileB))
     
-    # Given a file with a path to a .vec file, it puts them in a list
+    # Given a file with paths to .vec files, it puts them as vectors in a list
     def vectors_from_file(self, file):
         l = list()
         with open(file, 'r') as f:
@@ -98,7 +105,7 @@ class DistanceMatrix:
     def get_vector_from_file(self, file1):
         with open(file1, 'r') as f1:
             a = f1.readline()
-            #This condition is here because sometimes an empty file is generated
+            # This condition is here because sometimes an empty file is generated
             if a:
                 l = f1.readline().strip().split(" ")
                 v1 = [int(x) for x in l]
@@ -137,16 +144,20 @@ class DistanceMatrix:
             lines = lfile[3]
             file = lfile[0].split("/")[-1] + ".c"
             path = "/".join(key.split("/")[:-1])
-            output += "******\tFile: " + file + "\tFunction: " + function + "\tLines: " + lines + "\t Path: " + path + "\n"
+            output += "******\tFile: " + file + "\tFunction: " + function
+            output += "\tLines: " + lines + "\t Path: " + path + "\n"
             for i in self.bests[key]:
                 dist = str(i[0])
                 ind = i[1]
                 i = i[2]
                 lfile = i.split(".")
-                file = lfile[0] + ".c"
+                file = lfile[0].split("/")[-1] + ".c"
                 function = lfile[2]
                 lines = lfile[3]
-                output += dist + "\tFile: " + file + "\tFunction: " + function + "\tLines: " + lines + "\t Path: " + i + "\tIndex: " + str(ind) + "\n"
+                path = "/".join(i.split("/")[:-1])
+                output += dist + "\tFile: " + file + "\tFunction: " + function
+                output += "\tLines: " + lines + "\t Path: " + path + "\tIndex: "
+                output += str(ind) + "\n"
             output += "-"*120 + "\n"
         return output
 
