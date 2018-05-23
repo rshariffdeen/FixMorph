@@ -41,22 +41,22 @@ class DistanceMatrix:
         for ind in range(len(self.Pa)):
             copyPc = [i for i in self.Pc]
             i = [self.dist(ind, j) for j in range(len(self.Pc))]
-            copyi = [self.dist(ind, j) for j in range(len(self.Pc))]
             first = min(i)
             last = first
             bestlist = []
             while(i):
-                currmin = min(copyi)
-                pos = copyi.index(currmin)
+                # currmin stores the best unexplored available match
+                currmin = min(i)
+                pos = i.index(currmin)
                 last = currmin
-                el = copyPc[pos]
+                el = copyPc[pos][0]
                 copyPc.remove(copyPc[pos])
-                el1 = el[0]#.split("/")[:-1]
-                pos = copyi.index(currmin)
+                pos = i.index(currmin)
+                # If the last scores doubles the best, we just stop searching
                 if (last > 2*first and last > 25):
                     break
-                bestlist.append((currmin, ind, el1))
-                copyi.remove(currmin)
+                bestlist.append((currmin, ind, el))
+                i.remove(currmin)
             index = self.Pa[ind][0]
             self.bests[index] = tuple(bestlist)
         
@@ -92,7 +92,7 @@ class DistanceMatrix:
     def get_vector_from_file(self, file1):
         with open(file1, 'r') as f1:
             a = f1.readline()
-            # This condition is here because sometimes an empty file is generated
+            # This condition is here since sometimes an empty file is generated
             if a:
                 l = f1.readline().strip().split(" ")
                 v1 = [int(x) for x in l]
@@ -105,7 +105,7 @@ class DistanceMatrix:
             return sum((v1[i]-v2[i])**2 for i in range(len(v1)))
     
     # For two .vec files, computes the distance between the vectors (unused)
-    def compute_dist_from_files(self, file1, file2):
+    def compute_distance_files(self, file1, file2):
         v1 = self.get_vector_from_file(file1)
         v2 = self.get_vector_from_file(file2)
         return self.compute_distance(v1,v2)
@@ -113,44 +113,59 @@ class DistanceMatrix:
     def dist(self, i, j):
         return self.dist_dict[self.index(i,j)]
 
+    def vars_vec_file_f_path(self, vec):
+        lfile = vec.split(".")
+        file = lfile[-5].split("/")[-1] + ".c"
+        function = lfile[-3]
+        lines = lfile[-2]
+        path = "/".join(vec.split("/")[:-1]) + "/"
+        return file, function, lines, path
+        
+    def vars_vec_file_f_var_path(self, vec):
+        lfile = vec.split(".")
+        file = lfile[-6].split("/")[-1] + ".c"
+        function = lfile[-4]
+        var = lfile[-3]
+        lines = lfile[-2]
+        path = "/".join(vec.split("/")[:-1]) + "/"
+        return file, function, lines, var, path
+        
+    def out_format(self, dist, file, f, lines, path, ind):
+        out = dist + "\tFile: " + file + "\tLines: " + lines + "\tFunction: "
+        out +=  f + "\tPath: " + path + "\tIndex: " + ind + "\n"
+        return out
+        
+        
     def __str__(self):
         # For each file of Pa, we print the distance to each file of Pc
-        output = "-"*120 + "\n"
+        out = "-"*150 + "\n"
         for i in range(len(self.Pa)):
-            output += str(self.Pa[i][0]) + ":\n"
+            out += str(self.Pa[i][0]) + ":\n"
             for j in range(len(self.Pc)):
-                output+= "\t" + str(self.dist(i,j)) + "\t" + self.Pc[j][0] + "\n"
-            output += "-"*120 + "\n"
+                out+= "\t" + str(self.dist(i,j)) + "\t" + self.Pc[j][0] + "\n"
+            out += "-"*150 + "\n"
         # We also print the most probable clone functions
-        output += "#"*120 + "\n"
-        output += "Closest function matches:\n"
-        output += "-"*120 + "\n"
+        out += "#"*150 + "\n"
+        out += "Closest function matches:\n"
+        out += "-"*150 + "\n"
         for key in self.bests.keys():
-            lfile = key.split(".")
-            function = lfile[2]
-            lines = lfile[3]
-            file = lfile[0].split("/")[-1] + ".c"
-            path = "/".join(key.split("/")[:-1])
-            output += "******\tFile: " + file + "\tFunction: " + function
-            output += "\tLines: " + lines + "\t Path: " + path + "\n"
+            ind = "i=" + str(self.f1.index(key))
+            file, function, lines, path = self.vars_vec_file_f_path(key)
+            out += self.out_format("******", file, function, lines, path, ind)
             for i in self.bests[key]:
                 dist = str(i[0])
-                ind = i[1]
+                ind = "j=" + str(i[1])
                 i = i[2]
-                lfile = i.split(".")
-                file = lfile[0].split("/")[-1] + ".c"
-                function = lfile[2]
-                lines = lfile[3]
-                path = "/".join(i.split("/")[:-1])
-                output += dist + "\tFile: " + file + "\tFunction: " + function
-                output += "\tLines: " + lines + "\t Path: " + path + "\tIndex: "
-                output += str(ind) + "\n"
-            output += "-"*120 + "\n"
-        return output
+                file, function, lines, path = self.vars_vec_file_f_path(i)
+                out += self.out_format(dist, file, function, lines, path, ind)
+            out += "-"*150 + "\n"
+        return out
 
     
-# Main program
-# Asks for two .txt files with paths to .vec files and calls 
+# Main program: asks for two .txt files with paths to .vec files and calls 
 if __name__=="__main__":
+    if len(sys.argv) < 3:
+        print("Insufficient arguments")
+        exit(-1)
     print(sys.argv[1], sys.argv[2])
     print(DistanceMatrix((sys.argv[1], sys.argv[2])))

@@ -39,8 +39,7 @@ def gen_lrange_per_function(source_file_path):
             if not line[0]:
                 break
             function_name = line[0]
-            start = line[1].split("-")[0]
-            end = line[1].split("-")[1]
+            start, end = line[1].split("-")
             function_range[function_name] = dict()
             function_range[function_name]['start'] = int(start)
             function_range[function_name]['end'] = int(end)
@@ -75,7 +74,6 @@ def generate_patch_slices():
             slice_command += " > " + slice_file_path
             os.system(slice_command)
 
-
 def get_diff_info():
     diff_file_list_command = "diff -qr " + project_A["dir_path"]
     diff_file_list_command += " " + project_B["dir_path"]
@@ -88,14 +86,14 @@ def get_diff_info():
             file = file.replace(project_B["dir_path"], '')
             f_range = gen_lrange_per_function(project_A["dir_path"] + file)
             affected_function_list = dict()
-            diff_line_list_command = "diff " + project_A["dir_path"]
-            diff_line_list_command += file + " " + project_B["dir_path"]
-            diff_line_list_command += file + " | grep '^[1-9]'"
-            diff_line_list_command += "> diff-lines"
+            diff_line_list_command = "diff " + project_A["dir_path"] + file
+            diff_line_list_command += " " + project_B["dir_path"] + file
+            diff_line_list_command += " | grep '^[1-9]' > diff-lines"
             os.system(diff_line_list_command)
             path = diff_file.readline().strip()
             with open('diff-lines') as diff_line:
-                line = str(diff_line.readline())
+                start = ""
+                line = diff_line.readline().strip()
                 while line:
                     if 'c' in line:
                         start = line.split('c')[0]
@@ -103,25 +101,21 @@ def get_diff_info():
                     if 'd' in line:
                         start = line.split('d')[0]
                         end = start
-
                     if ',' in start:
-                        end = start.split(',')[1]
-                        start = start.split(',')[0]
+                        start, end = start.split(',')
                     for i in range(int(start), int(end)+1):
                         for f_name, lrange in f_range.items():
                             if lrange['start'] <= i <= lrange['end']:
                                 if f_name not in affected_function_list:
                                     affected_function_list[f_name] = lrange
-                    line = str(diff_line.readline())
+                    line = diff_line.readline().strip()
             diff_info[file] = affected_function_list
 
 
 def create_output_directories():
     os.system("mkdir output")
-    os.system("mkdir " + project_A["output_dir"])
-    os.system("mkdir " + project_B["output_dir"])
-    os.system("mkdir " + project_C["output_dir"])
-    
+    for i in range(3):
+        os.system("mkdir " + proj[i]["output_dir"])    
     
 def remove_vec_files():
     os.system("find . -name '*.vec' -exec rm -f {} \;")
