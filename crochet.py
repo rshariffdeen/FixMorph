@@ -64,17 +64,20 @@ def generate_deckard_vectors(project):
     return
 '''
 
+def frama_slice(path, file, f, f_vars):
+    command = "frama-c -main " + f + " -slice-value='" + f_vars + "' "
+    command += path + file + " -then-on 'Slicing export' -print "
+    command += "| sed -e '1,/*Generated /d' "
+    output_path = "_".join([path + "output/slice", file[:-2],
+                            f, f_vars.replace(" ", "-")]) + ".c"
+    command += "> " +  output_path
+    os.system(command)
+
 def generate_patch_slices():
     for patched_file, patched_file_info in diff_info.items():
         for function_name, var_list in patched_file_info.items():
             file_path = project_A["dir_path"] + patched_file
-            slice_file_path = project_A["output_dir"] + patched_file
-            slice_command = "frama-c -main " + function_name
-            slice_command += " -slice-value='" + var_list + "' " + file_path
-            slice_command += " -then-on 'Slicing export' -print"
-            slice_command +=  "| sed -e '1,/* Generated /d'"
-            slice_command += " > " + slice_file_path
-            os.system(slice_command)
+            frama_slice(file_path, function_name, var_list)
 
 def get_diff_info():
     diff_file_list_command = "diff -qr " + project_A["dir_path"]
@@ -211,6 +214,7 @@ def run():
     '''
     for Pa_file in distMatrix.bests[index].keys():
         # TODO: slices for each variable in that function > slices_Pa_file
+        
         for Pc_file in distMatrix.bests[Pa_file]:
             # TODO: slices for each variable in that function > slices_Pc_file
             remove_vec_files()
