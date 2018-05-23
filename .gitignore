@@ -10,3 +10,9 @@ diff-files
 function-range
 samples/*
 !samples/*/*/*.c
+vec_a
+vec_c
+P_C_files
+line-function
+diff_funcs
+*.out
