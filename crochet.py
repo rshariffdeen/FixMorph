@@ -64,13 +64,14 @@ def generate_deckard_vectors(project):
     return
 '''
 
-def frama_slice(path, file, f, f_vars):
+def frama_slice(path, file, f, f_vars, output_path):
     command = "frama-c -main " + f + " -slice-value='" + f_vars + "' "
     command += path + file + " -then-on 'Slicing export' -print "
-    command += "| sed -e '1,/*Generated /d' "
-    output_path = "_".join([path + "output/slice", file[:-2],
+    command += "| sed -e '1,/* Generated /d' "
+    output = "_".join([output_path + "/slice", file[:-2],
                             f, f_vars.replace(" ", "-")]) + ".c"
-    command += "> " +  output_path
+    command += "> " +  output
+    print(command)
     os.system(command)
 
 def generate_patch_slices():
@@ -119,6 +120,12 @@ def get_diff_info():
                     line = diff_line.readline().strip()
             diff_info[file] = affected_function_list
 
+def test_1():
+    path = "samples/programs/insertion-sort/prog-c/"
+    file = "insertion-sort.c"
+    f = "sort"
+    f_vars = "a"
+    frama_slice(path, file, f, f_vars, "tests/test_1_output")
 
 def create_output_directories():
     os.system("mkdir output")
@@ -239,3 +246,4 @@ def run():
 if __name__=="__main__":
     run()
     clean()
+    test_1()
