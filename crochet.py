@@ -42,11 +42,7 @@ def generate_line_range_per_function(source_file_path):
             function_name = line[0]
             start = line[1].split("-")[0]
             end = line[1].split("-")[1]
-<<<<<<< HEAD
-            print(function_name, start, end)
 
-=======
->>>>>>> 392799cfd84786cb2c1b5a9ed53b02a639967c8c
             function_range[function_name] = dict()
             function_range[function_name]['start'] = int(start)
             function_range[function_name]['end'] = int(end)
@@ -216,7 +212,3 @@ def run():
 if __name__=="__main__":
     run()
     #clean()
-    
-    
-    
-        
