@@ -59,19 +59,6 @@ class DistanceMatrix:
                 copyi.remove(currmin)
             index = self.Pa[ind][0]
             self.bests[index] = tuple(bestlist)
-        # Somehow here, we should call some function to generate slices
-        '''
-        for Pa_file in self.bests[index].keys():
-            # TODO: Compute all slices for each variable in that function > slices_Pa_file
-            for Pc_file in self.bests[Pa_file]:
-                # TODO: Compute all slices for each variable in that function > slices_Pc_file
-                with open(slices_Pa_file, 'r') as file_Pa_slices:
-                    path_Pa_slice = file_Pa_slices.readline()
-                    while(path_Pa_slice):
-                        v1 = get_vector_from_
-                    
-        
-        '''
         
     
     def index(self, i,j):
