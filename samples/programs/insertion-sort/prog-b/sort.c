@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 int insertionSort(int array[],int n)
 {
 	int j, temp, i, k;
