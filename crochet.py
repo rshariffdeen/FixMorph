@@ -39,13 +39,9 @@ def gen_lrange_per_function(source_file_path):
             if not line[0]:
                 break
             function_name = line[0]
-<<<<<<< HEAD
             start, end = line[1].split("-")
-=======
             start = line[1].split("-")[0]
             end = line[1].split("-")[1]
-
->>>>>>> 913d72aae52f252cb5a3f7d689d86e1b81319f2c
             function_range[function_name] = dict()
             function_range[function_name]['start'] = int(start)
             function_range[function_name]['end'] = int(end)
@@ -107,13 +103,9 @@ def get_diff_info():
                     elif 'd' in line:
                         start = line.split('d')[0]
                         end = start
-<<<<<<< HEAD
-=======
                     elif 'a' in line:
                         start = line.split('a')[0]
                         end = start
-
->>>>>>> 913d72aae52f252cb5a3f7d689d86e1b81319f2c
                     if ',' in start:
                         start, end = start.split(',')
                     for i in range(int(start), int(end)+1):
@@ -242,12 +234,4 @@ def run():
 
 if __name__=="__main__":
     run()
-<<<<<<< HEAD
     clean()
-    
-    
-    
-        
-=======
-    #clean()
->>>>>>> 913d72aae52f252cb5a3f7d689d86e1b81319f2c
