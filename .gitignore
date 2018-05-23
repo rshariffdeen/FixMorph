@@ -5,3 +5,8 @@ tools
 src/CmakeFiles
 src/cmake_install.cmake
 output
+diff-lines
+diff-files
+function-range
+samples/*
+!samples/*/*/*.c
