@@ -18,7 +18,8 @@ def initialize_project():
 
 
 def create_output_directories():
-    os.system("mkdir " + output_dir)
+    if not os.path.isdir(output_dir):
+        os.system("mkdir " + output_dir)
 
 
 def get_function_lines():
@@ -64,7 +65,7 @@ def run():
     create_output_directories()
     get_function_lines()
     print_function_lines()
-    kill_csruf_shell()
+    #kill_csruf_shell()
     return
 
 

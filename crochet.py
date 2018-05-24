@@ -3,6 +3,8 @@ import computeDistance
 import time
 import json
 import subprocess as sub
+import threading
+
 
 path_deckard = "tools/Deckard"
 project_A = dict()
@@ -74,54 +76,18 @@ def read_config():
             project_line = conf.readline()
 
 
-def generate_line_range_per_function_clang(source_file_path):
-    command = "clang-7 -Wno-everything -g -Xclang -load -Xclang lib/libCrochetLineNumberPass.so " + source_file_path + " 2> function-range"
-
-def load_projects():
-    for i in range(3):
-        source_path = sys.argv[i+1]
-        if not os.path.isdir(source_path):
-            print("source directory not found:\n"+ source_path)
-            exit(-1)
-        else:
-            proj[i]["dir_path"] = os.path.abspath(source_path) + "/"
-            proj[i]["dir_name"] = os.path.abspath(source_path).split("/")[-1]
-            proj[i]["output_dir"] = "output/" + proj[i]["dir_name"] + "/"
-            
-            
-def get_frange(source_file_path, output_file_path):
-    command = "clang-7 -Wno-everything -g -Xclang -load -Xclang "
-    command += "lib/libCrochetLineNumberPass.so " + source_file_path
-    command += " 2> " + output_file_path
-    os.system(command)
-
-def gen_lrange_per_function(source_file_path):
-    get_frange(source_file_path, 'function-range')
-    function_range = dict()
-    with open('function-range', 'r') as range_file:
-        line = range_file.readline().strip().split(":")
-        while line:
-            if not line[0]:
-                break
-            function_name = line[0]
-            start, end = line[1].split("-")
-            start = line[1].split("-")[0]
-            end = line[1].split("-")[1]
-            function_range[function_name] = dict()
-            function_range[function_name]['start'] = int(start)
-            function_range[function_name]['end'] = int(end)
-            line = range_file.readline().strip().split(":")
-    return function_range
-
-
 def generate_line_range_per_function_csurf():
     print "\nGenerating line range for functions\n-------------\n"
     for project in proj:
         project_dir = project["dir_path"]
         project_name = project['dir_name']
         print (project_name)
-        csurf_command = "csurf -no-scripting -nogui -python $PWD/CSParser.py " + project_dir + " -end-python " + project_dir + project_name
-        exec_command(csurf_command)
+        csurf_command = "csurf -nogui -python $PWD/CSParser.py " + project_dir + " -end-python " + project_dir + project_name
+        t = threading.Thread(target=exec_command(csurf_command),name='csurf', args=csurf_command)
+        t.daemon = True
+        t.start()
+
+        #exec_command(csurf_command)
 
 
 def load_line_range_info():
@@ -134,7 +100,17 @@ def load_line_range_info():
         with open(json_file_path) as file:
             line = file.readline()
             function_info = json.loads(line)
-            project['function-lines'] = function_info
+            str_file_info = dict()
+            for file_name in function_info:
+                str_function_info = dict()
+                for function_name, line_range in function_info[file_name].items():
+                    str_line_info = dict()
+                    str_line_info['start'] = int(line_range['start'])
+                    str_line_info['end'] = int(line_range['end'])
+                    str_function_info[str(function_name)] = str_line_info
+                str_file_info[str(file_name)] = str_function_info
+
+            project['function-lines'] = str_file_info
 
 
 # TODO: Have a look at this
@@ -183,42 +159,30 @@ def generate_patch_slices():
             file_path = project_A["dir_path"] + patched_file
             frama_slice(file_path, function_name, var_list)
 
+
 def get_diff_info():
     diff_file_list_command = "diff -qr " + project_A["dir_path"] + " " + project_B["dir_path"]
     diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > diff-files"
     os.system(diff_file_list_command)
+
     with open('diff-files') as diff_file:
         diff_file_path = str(diff_file.readline().strip())
         while diff_file_path:
             file_name = diff_file_path.split(" and ")[1].split(" differ")[0].replace(project_B["dir_path"], project_A["dir_path"])
 
-            if hasattr(project_A['function-lines'], file_name):
+            if file_name in project_A['function-lines']:
                 function_range_in_file = project_A["function-lines"][file_name]
             else:
                 diff_file_path = str(diff_file.readline())
                 continue
 
             file_name = file_name.replace(project_A["dir_path"], '')
+
             affected_function_list = dict()
             diff_line_list_command = "diff " + project_A["dir_path"] + file_name + " " + project_B[
                 "dir_path"] + file_name + " | grep '^[1-9]' > diff-lines"
 
-    diff_file_list_command = "diff -qr " + project_A["dir_path"]
-    diff_file_list_command += " " + project_B["dir_path"]
-    diff_file_list_command += " | grep -P '[A-Za-z0-9_].c ' > diff-files"
-    os.system(diff_file_list_command)
-    with open('diff-files', 'r') as diff_file:
-        path = diff_file.readline().strip()
-        while path:
-            file = path.split(" and ")[1].split(" differ")[0]
-            file = file.replace(project_B["dir_path"], '')
-            f_range = gen_lrange_per_function(project_A["dir_path"] + file)
-            affected_function_list = dict()
-            diff_line_list_command = "diff " + project_A["dir_path"] + file
-            diff_line_list_command += " " + project_B["dir_path"] + file
-            diff_line_list_command += " | grep '^[1-9]' > diff-lines"
             os.system(diff_line_list_command)
-            path = diff_file.readline().strip()
             with open('diff-lines') as diff_line:
                 start = ""
                 line = diff_line.readline().strip()
@@ -235,6 +199,7 @@ def get_diff_info():
                     if ',' in start:
                         end = start.split(',')[1]
                         start = start.split(',')[0]
+
                     for i in range(int(start), int(end) + 1):
                         for function_name, line_range in function_range_in_file.items():
                             if line_range['start'] <= i <= line_range['end']:
@@ -242,7 +207,7 @@ def get_diff_info():
                                     affected_function_list[function_name] = line_range
                     line = str(diff_line.readline())
             diff_info[file_name] = affected_function_list
-
+            diff_file_path = str(diff_file.readline().strip())
 
 def create_output_directories():
     os.system("mkdir output")
@@ -260,9 +225,10 @@ def get_files(dir_path, filetype, output):
 
 def vecgen(path, file, function, start, end):
     instr = path_deckard + "/src/main/cvecgen " + path + "/" + file
-    instr += " --start-line-number " + start + " --end-line-number " + end
+    instr += " --start-line-number " + str(start) + " --end-line-number " + str(end)
     instr += " -o " + path + "/"
-    instr += file + "." + function + "." + start + "-" + end + ".vec"
+    instr += file + "." + function + "." + str(start) + "-" + str(end) + ".vec"
+    print instr
     os.system(instr)
 
 
@@ -296,45 +262,31 @@ def run():
     read_config()
     generate_line_range_per_function_csurf()
     load_line_range_info()
-    # Obtain diff in file diff_funcs with format file:function:start-end
-    get_diff_info()
-    with open('diff_funcs', 'w') as file:
-        for file_name, function_list in diff_info.items():
-            for f_name, lrange in function_list.items():
-                file.write(file_name + ":" + f_name + ":" +
-                           str(lrange['start']) + "-" + str(lrange['end']) + "\n")
-
-    # For each file:function:start-end in diff_funcs, we generate a vector
-    gen_vectors('diff_funcs', project_A["dir_path"])
-    
-    
-
-    # Put all .c files of project C in P_C_files
-    get_files(project_C["dir_path"], ".c", "P_C_files")
-
-    # For each .c file, we generate a vector for each function in it
-    with open('P_C_files', 'r') as b:
-        line = b.readline().strip()
-        while line:
-            if not line[0]:
-                break
-            path = "/".join(line.split("/")[:-1])
-            # Creates line-function with lines with format function:start-end
-            get_frange(line, 'line-function')
-            # We now explore each function and generate a vector for it
-            with open('line-function', 'r') as lf:
-                l = lf.readline().strip().split(":")
-                while (len(l) == 2):
-                    f, lines = l
-                    start, end = lines.split("-")
-                    vecgen(path, line.split("/")[-1], f, start, end)
-                    l = lf.readline().strip().split(":")
-            line = b.readline().strip()
-    get_files(project_A["dir_path"], ".vec", "vec_a")
-    get_files(project_C["dir_path"], ".vec", "vec_c")
-
-    distMatrix = computeDistance.DistanceMatrix("vec_a", "vec_c")
-    print(distMatrix)
+    for f in project_C['function-lines']:
+        print f
+    # # Obtain diff in file diff_funcs with format file:function:start-end
+    # get_diff_info()
+    #
+    # with open('diff_funcs', 'w') as file:
+    #     for file_name, function_list in diff_info.items():
+    #
+    #         for f_name, lrange in function_list.items():
+    #             file.write(file_name + ":" + f_name + ":" +
+    #                        str(lrange['start']) + "-" + str(lrange['end']) + "\n")
+    #
+    # # For each file:function:start-end in diff_funcs, we generate a vector
+    # gen_vectors('diff_funcs', project_A["dir_path"])
+    #
+    # for file in project_C['function-lines'].keys():
+    #     for function, line_range in project_C['function-lines'][file].items():
+    #         print file, function, line_range
+    #         vecgen("/".join(file.split("/")[:-1]), file.split("/")[-1], function, line_range['start'], line_range['end'])
+    #
+    # get_files(project_A["dir_path"], ".vec", "vec_a")
+    # get_files(project_C["dir_path"], ".vec", "vec_c")
+    #
+    # distMatrix = computeDistance.DistanceMatrix("vec_a", "vec_c")
+    # print(distMatrix)
 
     # Somehow here, we should call some function to generate slices
     '''
@@ -372,6 +324,6 @@ def test_1():
 
 if __name__ == "__main__":
     run()
-    clean()
-    test_1()
+    #clean()
+    #test_1()
 
