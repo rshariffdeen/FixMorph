@@ -90,27 +90,64 @@ def generate_function_information():
         #exec_command(csurf_command)
 
 
+def json_load_byteified(file_handle):
+    return _byteify(
+        json.load(file_handle, object_hook=_byteify),
+        ignore_dicts=True
+    )
+
+def json_loads_byteified(json_text):
+    return _byteify(
+        json.loads(json_text, object_hook=_byteify),
+        ignore_dicts=True
+    )
+
+
+def _byteify(data, ignore_dicts = False):
+    # if this is a unicode string, return its string representation
+    if isinstance(data, unicode):
+        return data.encode('utf-8')
+    # if this is a list of values, return list of byteified values
+    if isinstance(data, list):
+        return [ _byteify(item, ignore_dicts=True) for item in data ]
+    # if this is a dictionary, return dictionary of byteified keys and values
+    # but only if we haven't already byteified it
+    if isinstance(data, dict) and not ignore_dicts:
+        return {
+            _byteify(key, ignore_dicts=True): _byteify(value, ignore_dicts=True)
+            for key, value in data.iteritems()
+        }
+    # if it's anything else, return it in its original form
+    return data
+
+
 def load_function_info():
     print "\nLoading line range for functions\n-------------\n"
     for project in proj:
         project_dir = project["dir_path"]
         project_name = project['dir_name']
         print (project_name)
-        json_file_path = project_dir + "crochet-output/function-lines"
+        json_file_path = project_dir + "crochet-output/function-info"
         with open(json_file_path) as file:
             line = file.readline()
-            function_info = json.loads(line)
-            str_file_info = dict()
-            for file_name in function_info:
-                str_function_info = dict()
-                for function_name in function_info[file_name].keys():
-                    str_line_info = dict()
-                    str_line_info['start'] = int(line_range['start'])
-                    str_line_info['end'] = int(line_range['end'])
-                    str_function_info[str(function_name)] = str_line_info
-                str_file_info[str(file_name)] = str_function_info
+            function_info = json_loads_byteified(line)
+            # str_file_info = dict()
+            # for file_name in function_info:
+            #     print file_name
+            #     str_function_info = dict()
+            #     for function_name in function_info[file_name].keys():
+            #         print function_name
+            #         line_range = function_info[file_name][function_name]['line-range']
+            #         print line_range
+            #         str_line_info = dict()
+            #         str_line_info['start'] = int(line_range['start'])
+            #         str_line_info['end'] = int(line_range['end'])
+            #         str_function_info[str(function_name)]['line-range'] = str_line_info
+            #
+            #
+            #     str_file_info[str(file_name)] = str_function_info
 
-            project['function-list'] = str_file_info
+            project['function-info'] = function_info
 
 
 # TODO: Have a look at this
@@ -138,10 +175,6 @@ def generate_patch_slices():
             os.system(slice_command)
 
 
-def generate_deckard_vectors(project):
-    return
-
-
 def get_diff_info():
     diff_file_list_command = "diff -qr " + project_A["dir_path"] + " " + project_B["dir_path"]
     diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > diff-files"
@@ -152,8 +185,8 @@ def get_diff_info():
         while diff_file_path:
             file_name = diff_file_path.split(" and ")[1].split(" differ")[0].replace(project_B["dir_path"], project_A["dir_path"])
 
-            if file_name in project_A['function-lines']:
-                function_range_in_file = project_A["function-lines"][file_name]
+            if file_name in project_A['function-info']:
+                function_range_in_file = project_A["function-info"][file_name]
             else:
                 diff_file_path = str(diff_file.readline())
                 continue
@@ -183,7 +216,8 @@ def get_diff_info():
                         start = start.split(',')[0]
 
                     for i in range(int(start), int(end) + 1):
-                        for function_name, line_range in function_range_in_file.items():
+                        for function_name, details in function_range_in_file.items():
+                            line_range = details['line-range']
                             if line_range['start'] <= i <= line_range['end']:
                                 if function_name not in affected_function_list:
                                     affected_function_list[function_name] = line_range
@@ -259,8 +293,9 @@ def run():
     # For each file:function:start-end in diff_funcs, we generate a vector
     gen_vectors('diff_funcs', project_A["dir_path"])
 
-    for file in project_C['function-lines'].keys():
-        for function, line_range in project_C['function-lines'][file].items():
+    for file in project_C['function-info'].keys():
+        for function, details in project_C['function-info'][file].items():
+            line_range = details['line-range']
             print file, function, line_range
             vecgen("/".join(file.split("/")[:-1]), file.split("/")[-1], function, line_range['start'], line_range['end'])
 

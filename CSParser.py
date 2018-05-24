@@ -53,8 +53,8 @@ def get_function_lines(procedure):
     return line_range
 
 
-def print_function_lines():
-    output_path = output_dir + "/" + "function-lines"
+def print_function_info():
+    output_path = output_dir + "/" + "function-info"
     with open(output_path, 'w') as outfile:
         json.dump(function_info, outfile)
 
@@ -111,7 +111,7 @@ def run():
     initialize_project()
     create_output_directories()
     get_function_details()
-    print_function_lines()
+    print_function_info()
     # kill_csruf_shell()
     return
 
