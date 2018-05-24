@@ -3,7 +3,6 @@ import computeDistance
 import time
 import json
 import subprocess as sub
-import threading
 
 
 path_deckard = "tools/Deckard"
@@ -83,11 +82,7 @@ def generate_function_information():
         project_name = project['dir_name']
         print (project_name)
         csurf_command = "csurf -nogui -python $PWD/CSParser.py " + project_dir + " -end-python " + project_dir + project_name
-        # t = threading.Thread(target=exec_command(csurf_command),name='csurf', args=csurf_command)
-        # t.daemon = True
-        # t.start()
-        print csurf_command
-        #exec_command(csurf_command)
+        exec_command(csurf_command)
 
 
 def json_load_byteified(file_handle):
@@ -95,6 +90,7 @@ def json_load_byteified(file_handle):
         json.load(file_handle, object_hook=_byteify),
         ignore_dicts=True
     )
+
 
 def json_loads_byteified(json_text):
     return _byteify(
@@ -131,22 +127,6 @@ def load_function_info():
         with open(json_file_path) as file:
             line = file.readline()
             function_info = json_loads_byteified(line)
-            # str_file_info = dict()
-            # for file_name in function_info:
-            #     print file_name
-            #     str_function_info = dict()
-            #     for function_name in function_info[file_name].keys():
-            #         print function_name
-            #         line_range = function_info[file_name][function_name]['line-range']
-            #         print line_range
-            #         str_line_info = dict()
-            #         str_line_info['start'] = int(line_range['start'])
-            #         str_line_info['end'] = int(line_range['end'])
-            #         str_function_info[str(function_name)]['line-range'] = str_line_info
-            #
-            #
-            #     str_file_info[str(file_name)] = str_function_info
-
             project['function-info'] = function_info
 
 
@@ -331,16 +311,8 @@ def run():
     # generate_deckard_vectors(project_C["dir_path"])
 
 
-def test_1():
-    path = "samples/programs/insertion-sort/prog-c/"
-    file = "insertion-sort.c"
-    f = "sort"
-    f_vars = "a"
-    frama_slice(path, file, f, f_vars, "tests/test_1_output")
-
-
 if __name__ == "__main__":
     run()
     #clean()
-    #test_1()
+
 

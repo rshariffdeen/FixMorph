@@ -113,7 +113,7 @@ def run():
     get_function_details()
     print_function_info()
     # kill_csruf_shell()
-    return
+    exit(0)
 
 
 run()
