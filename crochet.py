@@ -254,10 +254,24 @@ def gen_vectors(file, path):
             line = p.readline().strip().split(":")
 
 
+def generate_variable_slices(procedure):
+    return
+
+
+def transplant_patch_to_function(similarity_matrix):
+    for pa_file in similarity_matrix.keys():
+        source_a = pa_file.replace(project_A['dir_path'], '').replace(".vec", '')
+        print source_a + ":"
+        pc_match_list = similarity_matrix[pa_file]
+        for pc_file in pc_match_list:
+            source_c = pa_file.replace(project_C['dir_path'], '').replace(".vec", '')
+            print "\t", source_c
+
+
 def run():
     # Define directories
     read_config()
-    generate_function_information()
+    #generate_function_information()
     load_function_info()
 
     # Obtain diff in file diff_funcs with format file:function:start-end
@@ -281,9 +295,11 @@ def run():
 
     get_files(project_A["dir_path"], ".vec", "vec_a")
     get_files(project_C["dir_path"], ".vec", "vec_c")
-
     distMatrix = computeDistance.DistanceMatrix("vec_a", "vec_c")
-    print(distMatrix)
+    print distMatrix
+
+    transplant_patch_to_function(distMatrix)
+
 
     # Somehow here, we should call some function to generate slices
     '''

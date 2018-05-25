@@ -9,8 +9,7 @@ import sys
 
 
 class DistanceMatrix:
-    
-    
+
     def __init__(self, file1, file2):
         
         # Dictionnary with distances between files
@@ -159,6 +158,7 @@ class DistanceMatrix:
                 file, function, lines, path = self.vars_vec_file_f_path(i)
                 out += self.out_format(dist, file, function, lines, path, ind)
             out += "-"*150 + "\n"
+        print (out)
         return out
 
     
@@ -169,3 +169,4 @@ if __name__=="__main__":
         exit(-1)
     print(sys.argv[1], sys.argv[2])
     print(DistanceMatrix((sys.argv[1], sys.argv[2])))
+    #print(DistanceMatrix.bests)

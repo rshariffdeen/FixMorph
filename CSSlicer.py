@@ -18,11 +18,6 @@ def initialize_project():
     return
 
 
-def create_output_directories():
-    if not os.path.isdir(output_dir):
-        os.system("mkdir " + output_dir)
-
-
 def get_function_details():
     for func in project.procedures():
         function_name = func.name()
@@ -34,9 +29,6 @@ def get_function_details():
             if source_file_path not in function_info:
                 function_info[source_file_path] = dict()
 
-            if '/opt' in str(source_file_path):
-                continue
-
             function_info[source_file_path][function_name] = dict()
             function_info[source_file_path][function_name]['variable-list'] = get_variable_list(func)
             function_info[source_file_path][function_name]['line-range'] = get_function_lines(func)
@@ -47,43 +39,11 @@ def get_function_details():
             continue
 
 
-def get_function_lines(procedure):
-    start_line = procedure.entry_point().file_line()[1]
-    end_line = procedure.exit_point().file_line()[1]
-    line_range = dict()
-    line_range['start'] = str(start_line)
-    line_range['end'] = str(end_line)
-    return line_range
-
-
-def print_function_info():
-    output_path = output_dir + "/" + "function-info"
-    with open(output_path, 'w') as outfile:
-        json.dump(function_info, outfile)
-
-
-def kill_csruf_shell():
-    pstring = "csurf"
-    for line in os.popen("ps ax | grep " + pstring + " | grep -v grep"):
-        fields = line.split()
-        pid = fields[0]
-    os.kill(int(pid), signal.SIGKILL)
-
-
-def get_variable_line_number_list(line_list, source_file_name):
-    line_number_list = list()
-    for line in line_list:
-        try:
-            file_name = line.file_line()[0].name()
-            if file_name == source_file_name:
-                line_number = line.file_line()[1]
-                if line_number not in line_number_list:
-                    line_number_list.append(line_number)
-
-        except Exception as e:
-            # print "cannot determine line for variable "
-            continue
-    return line_number_list
+def output_slice_file(file_name, function_name, variable_name, line_list):
+    output_path = output_dir + "/" + file_name + "-" + function_name + "-" + variable_name
+    with open(output_path, 'w') as slice_file:
+        for line in line_list:
+            slice_file.write("%s\n", line)
 
 
 def get_variable_slice(point_list, variable):
