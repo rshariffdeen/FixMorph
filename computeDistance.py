@@ -153,17 +153,17 @@ class DistanceMatrix:
         out += "#"*150 + "\n"
         out += "Closest function matches:\n"
         out += "-"*150 + "\n"
-        for key in self.bests.keys():
-            ind = "i=" + str(self.f1.index(key))
-            file, function, lines, path = self.vars_vec_file_f_path(key)
-            out += self.out_format("******", file, function, lines, path, ind)
-            for i in self.bests[key]:
-                dist = str(i[0])
-                ind = "j=" + str(i[1])
-                i = i[2]
-                file, function, lines, path = self.vars_vec_file_f_path(i)
-                out += self.out_format(dist, file, function, lines, path, ind)
-            out += "-"*150 + "\n"
+        # for key in self.bests.keys():
+        #     ind = "i=" + str(self.f1.index(key))
+        #     file, function, lines, path = self.vars_vec_file_f_path(key)
+        #     out += self.out_format("******", file, function, lines, path, ind)
+        #     for i in self.bests[key]:
+        #         dist = str(i[0])
+        #         ind = "j=" + str(i[1])
+        #         i = i[2]
+        #         file, function, lines, path = self.vars_vec_file_f_path(i)
+        #         out += self.out_format(dist, file, function, lines, path, ind)
+        #     out += "-"*150 + "\n"
 
         print(self.bests)
         return out

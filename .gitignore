@@ -19,3 +19,4 @@ line-function
 diff_funcs
 *.out
 *.prj
+computeDistance.pyc

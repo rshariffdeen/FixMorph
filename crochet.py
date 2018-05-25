@@ -156,7 +156,7 @@ def generate_patch_slices():
 
 
 def get_diff_info():
-    diff_file_list_command = "diff -qr " + project_A["dir_path"] + " " + project_B["dir_path"]
+    diff_file_list_command = "diff -qr --ignore-all-space " + project_A["dir_path"] + " " + project_B["dir_path"]
     diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > diff-files"
     os.system(diff_file_list_command)
 
@@ -174,7 +174,7 @@ def get_diff_info():
             file_name = file_name.replace(project_A["dir_path"], '')
 
             affected_function_list = dict()
-            diff_line_list_command = "diff " + project_A["dir_path"] + file_name + " " + project_B[
+            diff_line_list_command = "diff --ignore-all-space " + project_A["dir_path"] + file_name + " " + project_B[
                 "dir_path"] + file_name + " | grep '^[1-9]' > diff-lines"
 
             os.system(diff_line_list_command)
@@ -259,13 +259,15 @@ def generate_variable_slices(procedure):
 
 
 def transplant_patch_to_function(similarity_matrix):
-    for pa_file in similarity_matrix.keys():
+    for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file.replace(project_A['dir_path'], '').replace(".vec", '')
+        function_a = source_a.split(".")[-2]
         print source_a + ":"
-        pc_match_list = similarity_matrix[pa_file]
+        pc_match_list = similarity_matrix.bests[pa_file]
         for pc_file in pc_match_list:
-            source_c = pa_file.replace(project_C['dir_path'], '').replace(".vec", '')
-            print "\t", source_c
+            source_c = pc_file['path'].replace(project_C['dir_path'], '') + pc_file['file']
+            function_c = pc_file['function']
+            print "\t", pc_file['dist'], source_c
 
 
 def run():
