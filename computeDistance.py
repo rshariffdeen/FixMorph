@@ -61,7 +61,7 @@ class DistanceMatrix:
                 data['file'] = splitel[-1].split('.')[0] + ".c"
                 data['dist'] = currmin
                 data['function'] = splitel[-1].split('.')[-3]
-                bestlist.append((currmin, el))
+                bestlist.append(data)
                 i.remove(currmin)
             index = self.Pa[ind][0]
             self.bests[index] = tuple(bestlist)
