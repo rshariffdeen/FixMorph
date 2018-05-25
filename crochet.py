@@ -259,15 +259,19 @@ def generate_variable_slices(procedure):
 
 
 def transplant_patch_to_function(similarity_matrix):
+    print "Matched Functions\n------------------------------\n"
     for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file.replace(project_A['dir_path'], '').replace(".vec", '')
         function_a = source_a.split(".")[-2]
-        print source_a + ":"
+        print function_a
+        source_a = source_a.split(".")[0] + ".c"
+        print source_a
+        print source_a + ": \t" + function_a
         pc_match_list = similarity_matrix.bests[pa_file]
         for pc_file in pc_match_list:
             source_c = pc_file['path'].replace(project_C['dir_path'], '') + pc_file['file']
             function_c = pc_file['function']
-            print "\t", pc_file['dist'], source_c
+            print "\t", pc_file['dist'], source_c, function_c
 
 
 def run():
