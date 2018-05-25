@@ -275,9 +275,9 @@ def transplant_patch_to_function(similarity_matrix):
 
 
 def run():
-    # Define directories
+
     read_config()
-    #generate_function_information()
+    generate_function_information()
     load_function_info()
 
     # Obtain diff in file diff_funcs with format file:function:start-end

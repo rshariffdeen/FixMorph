@@ -20,3 +20,4 @@ diff_funcs
 *.out
 *.prj
 computeDistance.pyc
+__pycache__
