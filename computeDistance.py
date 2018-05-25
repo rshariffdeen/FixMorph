@@ -55,7 +55,13 @@ class DistanceMatrix:
                 # If the last scores doubles the best, we just stop searching
                 if (last > 2*first and last > 25):
                     break
-                bestlist.append((currmin, ind, el))
+                data = dict()
+                splitel = el.split('/')
+                data['path'] = "/".join(splitel[:-1])
+                data['file'] = splitel[-1].split('.')[0] + ".c"
+                data['dist'] = currmin
+                data['function'] = splitel[-1].split('.')[-3]
+                bestlist.append((currmin, el))
                 i.remove(currmin)
             index = self.Pa[ind][0]
             self.bests[index] = tuple(bestlist)
@@ -159,6 +165,7 @@ class DistanceMatrix:
                 file, function, lines, path = self.vars_vec_file_f_path(i)
                 out += self.out_format(dist, file, function, lines, path, ind)
             out += "-"*150 + "\n"
+        print(self.bests)
         return out
 
     
