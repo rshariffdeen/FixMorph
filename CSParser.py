@@ -1,8 +1,8 @@
 import cs
-import os, signal
+import os
 import sys
 import json
-import operator
+
 
 project = ''
 proj_dir = ''
@@ -62,14 +62,6 @@ def print_function_info():
         json.dump(function_info, outfile)
 
 
-def kill_csruf_shell():
-    pstring = "csurf"
-    for line in os.popen("ps ax | grep " + pstring + " | grep -v grep"):
-        fields = line.split()
-        pid = fields[0]
-    os.kill(int(pid), signal.SIGKILL)
-
-
 def get_variable_line_number_list(line_list, source_file_name):
     line_number_list = list()
     for line in line_list:
@@ -84,40 +76,6 @@ def get_variable_line_number_list(line_list, source_file_name):
             # print "cannot determine line for variable "
             continue
     return line_number_list
-
-
-def get_variable_slice(point_list, variable):
-    #print "slicing"
-    sorted_sliced_lines = list()
-    #print variable.name()
-    if '$return' in variable.name():
-        return list()
-
-    filter_point_types = ["global-actual-in", "global-actual-out",
-                          "global-formal-in", "global-formal-out",
-                          "in", "out", "auxiliary"]
-
-
-    declarations = variable.declarations()
-    # print "got declarations"
-    sliced_lines = dict()
-    chopped_points = declarations.chop(point_list)
-    chopped_points = chopped_points.intersect(point_list)
-    # print chopped_points
-    if chopped_points:
-        #print "got chopped"
-        for point in chopped_points:
-            if hasattr(point, 'get_kind'):
-                #print point
-                if str(point.get_kind()) not in filter_point_types:
-                    statement = point.__str__()
-                    if '$result' not in statement and '$return' not in statement:
-                        line_number = point.compunit_line()[1]
-                        sliced_lines[line_number] = statement
-    #print "sorting"
-    sorted_sliced_lines = sorted(sliced_lines.items(), key=operator.itemgetter(0))
-    #print "sorted"
-    return list(sorted_sliced_lines)
 
 
 def get_variable_list(procedure):
@@ -136,15 +94,11 @@ def get_variable_list(procedure):
         used_lines = get_variable_line_number_list(list(var.used_points()), source_file_name)
         var_info['use-line-numbers'] = used_lines
 
-        successive_lines = get_variable_line_number_list(list(var.used_points()), source_file_name)
         killed_lines = get_variable_line_number_list(list(var.killed_points()) + list(var.may_killed_points()),
                                                      source_file_name)
         var_info['killed-line-numbers'] = killed_lines
-
-        # slice_lines = get_variable_slice(procedure.points(), var)
-        # var_info['sliced-lines'] = slice_lines
-
         var_list[var_name] = var_info
+
     return var_list
 
 
@@ -153,7 +107,6 @@ def run():
     create_output_directories()
     get_function_details()
     print_function_info()
-    # kill_csruf_shell()
     exit(0)
 
 

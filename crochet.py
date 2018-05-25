@@ -6,6 +6,10 @@ import subprocess as sub
 
 
 path_deckard = "tools/Deckard"
+output_dir = "output/"
+output_diff_files = output_dir + "diff-files"
+output_diff_lines = output_dir + "diff-lines"
+
 project_A = dict()
 project_B = dict()
 project_C = dict()
@@ -40,7 +44,7 @@ def exec_command(command):
 
 
 def read_config():
-    print "Loading configuration\n-------------\n"
+    print "Loading configuration\n-------------"
     config_file = "crochet.conf"
     with open(config_file, 'r') as conf:
         project_line = conf.readline()
@@ -157,10 +161,10 @@ def generate_patch_slices():
 
 def get_diff_info():
     diff_file_list_command = "diff -qr --ignore-all-space " + project_A["dir_path"] + " " + project_B["dir_path"]
-    diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > diff-files"
+    diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > " + output_diff_files
     os.system(diff_file_list_command)
 
-    with open('diff-files') as diff_file:
+    with open(output_diff_files) as diff_file:
         diff_file_path = str(diff_file.readline().strip())
         while diff_file_path:
             file_name = diff_file_path.split(" and ")[1].split(" differ")[0].replace(project_B["dir_path"], project_A["dir_path"])
@@ -175,10 +179,10 @@ def get_diff_info():
 
             affected_function_list = dict()
             diff_line_list_command = "diff --ignore-all-space " + project_A["dir_path"] + file_name + " " + project_B[
-                "dir_path"] + file_name + " | grep '^[1-9]' > diff-lines"
+                "dir_path"] + file_name + " | grep '^[1-9]' > " + output_diff_lines
 
             os.system(diff_line_list_command)
-            with open('diff-lines') as diff_line:
+            with open(output_diff_lines) as diff_line:
                 start = ""
                 line = diff_line.readline().strip()
                 while line:
@@ -207,51 +211,54 @@ def get_diff_info():
 
 
 def create_output_directories():
-    os.system("mkdir output")
+    if not os.path.isdir(output_dir):
+        os.system("mkdir " + output_dir)
     for i in range(3):
-        os.system("mkdir " + proj[i]["output_dir"])    
+        if not os.path.isdir(proj[i]["output_dir"]):
+            os.system("mkdir " + proj[i]["output_dir"])
     
 
 def remove_vec_files():
     os.system("find . -name '*.vec' -exec rm -f {} \;")
 
 
-def get_files(dir_path, filetype, output):
-    os.system("find " + dir_path + " -name '*" + filetype + "' > " + output)
-
-
-def vecgen(path, file, function, start, end):
-    instr = path_deckard + "/src/main/cvecgen " + path + "/" + file
-    instr += " --start-line-number " + str(start) + " --end-line-number " + str(end)
-    instr += " -o " + path + "/"
-    instr += file + "." + function + "." + str(start) + "-" + str(end) + ".vec"
-    print instr
-    os.system(instr)
-
-
-def vecgen_entire(file):
-    with open(file, 'r') as f:
-        l = str(len(f.readlines()))
-    instr = path_deckard + "/src/main/cvecgen " + file
-    instr += " --start-line-number 1 --end-line-number " + l
-    instr += "-o " + file + ".vec"
-    os.system(instr)
+def generate_file_list(dir_path, file_type, output_path):
+    os.system("find " + dir_path + " -name '*" + file_type + "' > " + output_path)
 
 
 def clean():
     os.system("rm -f vec_a vec_c P_C_files line-function function-range")
-    os.system("rm -f diff_funcs diff-files diff-lines a.out")
+    os.system("rm -f diff_funcs diff-lines a.out")
     remove_vec_files()
 
 
-def gen_vectors(file, path):
-    with open(file, 'r') as p:
-        line = p.readline().strip().split(":")
-        while (len(line) == 3):
-            file, f, lines = line
-            start, end = lines.split("-")
-            vecgen(path, file, f, start, end)
-            line = p.readline().strip().split(":")
+def generate_function_vector(source_file_path, file_name, function_name, start_line, end_line):
+    instr = path_deckard + "/src/main/cvecgen " + source_file_path + "/" + file_name
+    instr += " --start-line-number " + str(start_line) + " --end-line-number " + str(end_line)
+    instr += " -o " + source_file_path + "/"
+    instr += file_name + "." + function_name + "." + ".vec"
+    print instr
+    os.system(instr)
+
+
+def generate_vectors_for_functions():
+    # generate vectors for functions in Pa where there is a diff
+    pa_path = project_A['dir_path']
+    for file_name, function_list in diff_info.items():
+        for f_name, l_range in function_list.items():
+            s_line = str(l_range['start'])
+            f_line = str(l_range['end'])
+            generate_function_vector(pa_path, file_name, f_name, s_line, f_line)
+
+    # generate vectors for all functions in Pc
+    pc_path = project_C['dir_path']
+    for file_path in project_C['function-info'].keys():
+        file_name = file_path.split("/")[-1]
+        for function_name, details in project_C['function-info'][file_path].items():
+            line_range = details['line-range']
+            s_line = line_range['start']
+            f_line = line_range['end']
+            generate_function_vector(pc_path, file_name, function_name, s_line, f_line)
 
 
 def generate_variable_slices(procedure):
@@ -259,7 +266,7 @@ def generate_variable_slices(procedure):
 
 
 def transplant_patch_to_function(similarity_matrix):
-    print "Matched Functions\n------------------------------\n"
+    print "\nMatched Functions\n------------------------------\n"
     for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file.replace(project_A['dir_path'], '').replace(".vec", '')
         function_a = source_a.split(".")[-2]
@@ -277,34 +284,16 @@ def transplant_patch_to_function(similarity_matrix):
 def run():
 
     read_config()
+    create_output_directories()
     generate_function_information()
     load_function_info()
-
-    # Obtain diff in file diff_funcs with format file:function:start-end
     get_diff_info()
+    generate_vectors_for_functions()
 
-    with open('diff_funcs', 'w') as file:
-        for file_name, function_list in diff_info.items():
-
-            for f_name, lrange in function_list.items():
-                file.write(file_name + ":" + f_name + ":" +
-                           str(lrange['start']) + "-" + str(lrange['end']) + "\n")
-
-    # For each file:function:start-end in diff_funcs, we generate a vector
-    gen_vectors('diff_funcs', project_A["dir_path"])
-
-    for file in project_C['function-info'].keys():
-        for function, details in project_C['function-info'][file].items():
-            line_range = details['line-range']
-            print file, function, line_range
-            vecgen("/".join(file.split("/")[:-1]), file.split("/")[-1], function, line_range['start'], line_range['end'])
-
-    get_files(project_A["dir_path"], ".vec", "vec_a")
-    get_files(project_C["dir_path"], ".vec", "vec_c")
-    distMatrix = computeDistance.DistanceMatrix("vec_a", "vec_c")
-    print distMatrix
-
-    transplant_patch_to_function(distMatrix)
+    generate_file_list(project_A["dir_path"], ".vec", output_dir + "vec_a")
+    generate_file_list(project_C["dir_path"], ".vec", output_dir + "vec_c")
+    similarity_matrix = computeDistance.DistanceMatrix(output_dir + "vec_a", output_dir + "vec_c")
+    transplant_patch_to_function(similarity_matrix)
 
 
     # Somehow here, we should call some function to generate slices
@@ -326,7 +315,7 @@ def run():
     '''
 
 
-    # create_output_directories()
+
     # generate_patch_slices()
     #
     # generate_deckard_vectors(project_A["dir_path"])
