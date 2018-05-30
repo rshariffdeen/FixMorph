@@ -55,14 +55,16 @@ class DistanceMatrix:
                 copyPc.remove(copyPc[pos])
                 pos = i.index(currmin)
                 # If the last scores doubles the best, we just stop searching
-                if (last > 2*first):# and last > 25):
+                if (last > 2*first):
                     break
                 data = dict()
+                print(el)
                 splitel = el.split('/')
                 data['path'] = "/".join(splitel[:-1])
-                data['file'] = splitel[-1].split('.')[0] + ".c"
+                data['file'] = splitel[-1].split('.')[-1] + ".c"
                 data['dist'] = currmin
-                data['function'] = splitel[-1].split('.')[-3]
+                print(splitel)
+                data['function'] = splitel[-1].split('.')[-2]
                 bestlist.append(data)
                 i.remove(currmin)
             index = self.Pa[ind][0]
@@ -93,7 +95,6 @@ class DistanceMatrix:
                 v1 = self.get_vector_from_file(a)
                 if v1:
                     v1 = self.normalized(v1)
-                    print(v1)
                     l.append((a, v1))
                 a = f.readline().strip()
         return l
@@ -186,5 +187,4 @@ if __name__=="__main__":
         print("Insufficient arguments")
         exit(-1)
     print(sys.argv[1], sys.argv[2])
-    print(DistanceMatrix((sys.argv[1], sys.argv[2])))
-    #print(DistanceMatrix.bests)
+    print(DistanceMatrix(sys.argv[1], sys.argv[2]))

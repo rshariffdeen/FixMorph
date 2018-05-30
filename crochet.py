@@ -1,11 +1,13 @@
 #! /usr/bin/env python3
 
 from __future__ import print_function, division
+from six import iteritems
 import os
 import computeDistance
 import time
 import json
 import subprocess as sub
+
 
 path_deckard = "tools/Deckard"
 output_dir = "output/"
@@ -49,6 +51,11 @@ def exec_command(command):
 def print_title(title):
     print("\n" + title + "\n" + "-"*150 + "\n")
 
+def csurf_make(proj_dir, proj_name):
+    print_title("Making project with csurf")
+    make_command = "cd " + proj_dir + "; make clean; "
+    make_command += "csurf hook-build " + proj_name + " make"
+    exec_command(make_command)
 
 def read_config():
     print_title("Loading configuration")
@@ -67,7 +74,7 @@ def read_config():
                 proj[i]["output_dir"] = "output/" + proj_name
 
                 print(proj_name)
-                if os.path.isfile(proj_dir + proj_name + ".csconf"):
+                '''if os.path.isfile(proj_dir + proj_name + ".csconf"):
                     print("Codesurfer project detected ..")
                 else:
                     print("Configuring project ...")
@@ -78,12 +85,9 @@ def read_config():
                     if os.path.isfile(proj_dir + "configure"):
                         config_command = "cd " + proj_dir + "; make clean ; "
                         config_command += "./configure"
-                        exec_command(config_command)
-
-                    print("Making project with csurf ...")
-                    make_command = "cd " + proj_dir + "; make clean; "
-                    make_command += "csurf hook-build " + proj_name + " make"
-                    exec_command(make_command)
+                        exec_command(config_command)'''
+                    
+                    #csurf_make(proj_dir, proj_name)
 
             project_line = conf.readline().strip()
 
@@ -125,7 +129,7 @@ def _byteify(data, ignore_dicts=False):
     elif isinstance(data, dict) and not ignore_dicts:
         return {
             _byteify(key, True): _byteify(value, True)
-            for key, value in data.iteritems()
+            for key, value in iteritems(data)
         }
     # if it's anything else, return it in its original form
     return data
@@ -214,6 +218,7 @@ def get_diff_info():
 
 
 def create_output_directories():
+    print_title("Creating output directories")
     if not os.path.isdir(output_dir):
         os.system("mkdir " + output_dir)
     for i in range(3):
@@ -236,6 +241,10 @@ def clean():
 
 
 def gen_function_vector(source_path, file_name, f_name, start, end):
+    print("Generating vectors")
+    file_name = file_name.replace("/home/ridwan/workspace/research-work/patch-transplant/crochet/samples/real-world/jasper/jasper-1.900.1/", "")
+    file_name = file_name.replace("/home/ridwan/workspace/research-work/patch-transplant/crochet/samples/real-world/jasper/jasper-1.900.25/", "")
+    file_name = file_name.replace("/home/ridwan/workspace/research-work/patch-transplant/crochet/samples/real-world/jasper/jasper-1.900.26/", "")
     instr = path_deckard + "/src/main/cvecgen " + source_path + "/" + file_name
     instr += " --start-line-number " + str(start) + " --end-line-number "
     instr += str(end) + " -o " + source_path
@@ -257,7 +266,7 @@ def generate_vectors_for_functions():
     # generate vectors for all functions in Pc
     pc_path = project_C['dir_path']
     for file_path in project_C['function-info'].keys():
-        file_name = file_path.replace(pc_path, "")
+        file_name = file_path.replace(pc_path, '')
         for f_name, details in project_C['function-info'][file_path].items():
             line_range = details['line-range']
             s_line = line_range['start']
@@ -269,11 +278,13 @@ def detect_matching_function():
 
     generate_file_list(project_A["dir_path"], ".vec", output_dir + "vec_a")
     generate_file_list(project_C["dir_path"], ".vec", output_dir + "vec_c")
-    similarity_matrix = computeDistance.DistanceMatrix(output_dir + "vec_a", output_dir + "vec_c")
-
-    print ("\nMatched Functions\n------------------------------\n")
+    similarity_matrix = computeDistance.DistanceMatrix(output_dir + "vec_a",
+                                                       output_dir + "vec_c")
+    # TODO: Correct this parsing!!!
+    print_title("Matched Functions")
     for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file.replace(".vec", '')
+        source_a = source_a.split("/")[-1]
         function_a = source_a.split(".")[-2]
         source_a = source_a.rsplit(".", 2)[0]
         print (source_a + " : \t" + function_a)
@@ -310,6 +321,7 @@ def transplant_patch_to_function(similarity_matrix):
     print_title("Matched Functions")
     for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file.replace(project_A['dir_path'], '')
+        source_a = source_a.split("/")[-1]
         source_a = source_a.replace(".vec", '')
         function_a = source_a.split(".")[-2]
         print(function_a)
@@ -327,7 +339,6 @@ def transplant_patch_to_function(similarity_matrix):
 
 def run():
     start_time = time.time()
-    
     read_config()
     create_output_directories()
     #generate_function_information()
@@ -342,26 +353,6 @@ def run():
     # similarity_matrix = computeDistance.DistanceMatrix(output_dir + "vec_a",
     #                                                    output_dir + "vec_c")
     # transplant_patch_to_function(similarity_matrix)
-
-
-
-    # Somehow here, we should call some function to generate slices
-    '''
-    for Pa_file in distMatrix.bests[index].keys():
-        # TODO: slices for each variable in that function > slices_Pa_file
-        
-        for Pc_file in distMatrix.bests[Pa_file]:
-            # TODO: slices for each variable in that function > slices_Pc_file
-            remove_vec_files()
-            vectorgen_entire('slices_Pa_file')
-            vectorgen_entire('slices_Pc_file')
-            get_files(project_A["dir_path"], ".vec", vec_a)
-            get_files(project_C["dir_path"], ".vec", vec_c)
-            Pa_Pc_dist = computeDistance.DistanceMatrix("vec_a", "vec_c")
-            # We should have a structure we can use to get best matching slices
-            print(Pa_Pc_dist)
-            # More stuff... e.g. put the object in a structure for future use
-    '''
     
     end_time = time.time()
     print("Crochet finished after " + str(end_time - start_time) + "seconds.")
