@@ -9,6 +9,8 @@ Created on Tue May 15 16:37:26 2018
 from __future__ import print_function
 import sys
 
+normalize_bool = True
+
 class DistanceMatrix:
 
     def __init__(self, file1, file2):
@@ -103,11 +105,20 @@ class DistanceMatrix:
                 l = f1.readline().strip().split(" ")
                 v1 = [int(x) for x in l]
                 return v1
+                
+    def norm(self, v):
+        return (sum(i**2 for i in v))**(1/2)
+    
+    def normalized(self, v):
+        return [i / self.norm(v) for i in v]
 
     def compute_dist(self, v1, v2):
         """Square of Euclidean dist between 2 vectors given as int lists"""
         if v1 and v2:
             assert(len(v1)==len(v2))
+            if normalize_bool:
+                v1 = self.normalized(v1)
+                v2 = self.normalized(v2)
             return sum((v1[i]-v2[i])**2 for i in range(len(v1)))
     
     def compute_distance_files(self, file1, file2):
