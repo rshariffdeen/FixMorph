@@ -46,8 +46,12 @@ def exec_command(command):
     return output
 
 
+def print_title(title):
+    print("\n" + title + "\n" + "-"*150 + "\n")
+
+
 def read_config():
-    print("Loading configuration\n" + "-"*120 + "\n")
+    print_title("Loading configuration")
     config_file = "crochet.conf"
     with open(config_file, 'r') as conf:
         project_line = conf.readline().strip()
@@ -85,7 +89,7 @@ def read_config():
 
 
 def generate_function_information():
-    print("\nGenerating line range for functions\n" + "-"*120 + "\n")
+    print_title("Generating line range for functions")
     for project in proj:
         project_dir = project["dir_path"]
         project_name = project['dir_name']
@@ -102,19 +106,19 @@ def json_loads_byteified(json_text):
 
 def isstr(s):
     try:
+        # bytestring is for unicode and str in Python2
         return isinstance(s, basestring)
     except NameError:
+        # In Python 3, only str exists
         return isinstance(s, str)
+
         
 def _byteify(data, ignore_dicts=False):
     # if this is a unicode string, return its string representation
-    try:
-        if isstr(data):
+    if isstr(data):
             return data.encode('utf-8')
-    except:
-        pass
     # if this is a list of values, return list of byte-ified values
-    if isinstance(data, list):
+    elif isinstance(data, list):
         return [_byteify(item, True) for item in data]
     # if this is a dictionary, return dictionary of byte-ified keys and values
     # but only if we haven't already byte-ified it
@@ -128,7 +132,7 @@ def _byteify(data, ignore_dicts=False):
 
 
 def load_function_info():
-    print("\nLoading line range for functions\n" + "-"*120 + "\n")
+    print_title("Loading line range for functions")
     for project in proj:
         project_dir = project["dir_path"]
         project_name = project['dir_name']
@@ -138,20 +142,6 @@ def load_function_info():
             line = file.readline().strip()
             function_info = json_loads_byteified(line)
             project['function-info'] = function_info
-
-
-# TODO: Have a look at this
-'''def generate_ast_dump(project):
-    command = "clang -Xclang -ast-dump -fsyntax-only -fno-color-diagnostics "
-    command += str(source_file.filePath)
-    command += " | grep -P '(Function|Var)Decl' "
-    command += "> " + output_path + "/" + "declarations.txt"
-
-
-def generate_variable_slices(project):
-    return
-
-'''
 
 
 def generate_patch_slices():
@@ -218,7 +208,7 @@ def get_diff_info():
                             if line_range['start'] <= i <= line_range['end']:
                                 if f_name not in affected_function_list:
                                     affected_function_list[f_name] = line_range
-                    line = str(diff_line.readline())
+                    line = str(diff_line.readline().strip())
             diff_info[file_name] = affected_function_list
             diff_file_path = str(diff_file.readline().strip())
 
@@ -279,7 +269,7 @@ def generate_variable_slices(procedure):
 
 
 def transplant_patch_to_function(similarity_matrix):
-    print("\nMatched Functions\n" + "-"*120 + "\n")
+    print_title("Matched Functions")
     for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file.replace(project_A['dir_path'], '')
         source_a = source_a.replace(".vec", '')
