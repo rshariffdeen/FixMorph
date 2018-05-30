@@ -1,20 +1,18 @@
 import cs
 import os
-import sys
 import json
 
 
 project = ''
-proj_dir = ''
+
 
 function_info = dict()
 output_dir = 'crochet-output/'
 
 
 def initialize_project():
-    global project, proj_dir
+    global project
     project = cs.project.current()
-    proj_dir = sys.argv[1]
     return
 
 

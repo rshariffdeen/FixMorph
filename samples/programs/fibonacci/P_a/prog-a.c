@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <klee/klee.h>
 
 int fib(int n)
 {
+    klee_make_symbolic (&n,sizeof(n), "n");
+
 	if (n == 0 || n == 1)
 	{
 		return n;
@@ -18,3 +21,4 @@ int main(void)
 	printf("fib number is %d", fib_number);
 	return 0;
 }
+

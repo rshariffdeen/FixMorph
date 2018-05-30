@@ -44,7 +44,7 @@ def exec_command(command):
 
 
 def read_config():
-    print "Loading configuration\n-------------"
+    print "\n\nLoading configuration\n-------------"
     config_file = "crochet.conf"
     with open(config_file, 'r') as conf:
         project_line = conf.readline()
@@ -85,7 +85,7 @@ def generate_function_information():
         project_dir = project["dir_path"]
         project_name = project['dir_name']
         print (project_name)
-        csurf_command = "csurf -nogui -python $PWD/CSParser.py " + project_dir + " -end-python " + project_dir + project_name
+        csurf_command = "csurf -nogui -python $PWD/CSParser.py -end-python " + project_dir + project_name
         exec_command(csurf_command)
 
 
@@ -244,6 +244,7 @@ def generate_function_vector(source_file_path, file_name, function_name, start_l
 def generate_vectors_for_functions():
     # generate vectors for functions in Pa where there is a diff
     pa_path = project_A['dir_path']
+    pb_path = project_B['dir_path']
     for file_name, function_list in diff_info.items():
         for f_name, l_range in function_list.items():
             s_line = str(l_range['start'])
@@ -261,24 +262,46 @@ def generate_vectors_for_functions():
             generate_function_vector(pc_path, file_name, function_name, s_line, f_line)
 
 
-def generate_variable_slices(procedure):
-    return
+def detect_matching_function():
 
+    generate_file_list(project_A["dir_path"], ".vec", output_dir + "vec_a")
+    generate_file_list(project_C["dir_path"], ".vec", output_dir + "vec_c")
+    similarity_matrix = computeDistance.DistanceMatrix(output_dir + "vec_a", output_dir + "vec_c")
 
-def transplant_patch_to_function(similarity_matrix):
     print "\nMatched Functions\n------------------------------\n"
     for pa_file in similarity_matrix.bests.keys():
-        source_a = pa_file.replace(project_A['dir_path'], '').replace(".vec", '')
+        source_a = pa_file.replace(".vec", '')
         function_a = source_a.split(".")[-2]
-        print function_a
-        source_a = source_a.split(".")[0] + ".c"
-        print source_a
-        print source_a + ": \t" + function_a
+        source_a = source_a.rsplit(".", 2)[0]
+        print source_a + " : \t" + function_a
         pc_match_list = similarity_matrix.bests[pa_file]
         for pc_file in pc_match_list:
-            source_c = pc_file['path'].replace(project_C['dir_path'], '') + pc_file['file']
+            source_c = pc_file['path'] + "/" + pc_file['file']
             function_c = pc_file['function']
-            print "\t", pc_file['dist'], source_c, function_c
+            print "\t", pc_file['dist'], function_c + "\t" + source_c
+            #detect_matching_variables(function_a, source_a, function_c, source_c)
+        print "\n"
+
+
+def generate_variable_slices(function_name, source_file_path, project_source_path):
+    print "slicing function", function_name
+    project_name = os.path.abspath(project_source_path).split("/")[-1]
+    csurf_command = "csurf -nogui -python $PWD/CSSlicer.py " + function_name + " " + source_file_path + " " + \
+                    " -end-python " + project_source_path + project_name
+    print csurf_command
+    exec_command(csurf_command)
+
+
+def detect_matching_variables(function_a_name, function_a_source_path, function_c_name, function_c_source_path):
+    variable_mapping = dict()
+    function_b_source_path = function_a_source_path.replace(project_A['dir_path'], project_B['dir_path'])
+    function_b = project_B["function-info"][function_b_source_path][function_a_name]
+    function_c = project_C["function-info"][function_c_source_path][function_c_name]
+    variable_list_b = function_b['variable-list']
+    variable_list_c = function_c['variable-list']
+    generate_variable_slices(function_a_name, function_b_source_path, project_B['dir_path'])
+
+    return variable_mapping
 
 
 def run():
@@ -289,11 +312,8 @@ def run():
     load_function_info()
     get_diff_info()
     generate_vectors_for_functions()
+    detect_matching_function()
 
-    generate_file_list(project_A["dir_path"], ".vec", output_dir + "vec_a")
-    generate_file_list(project_C["dir_path"], ".vec", output_dir + "vec_c")
-    similarity_matrix = computeDistance.DistanceMatrix(output_dir + "vec_a", output_dir + "vec_c")
-    transplant_patch_to_function(similarity_matrix)
 
 
     # Somehow here, we should call some function to generate slices
