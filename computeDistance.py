@@ -5,13 +5,16 @@ Created on Tue May 15 16:37:26 2018
 
 @author: pedrobw
 """
+
+from __future__ import print_function
 import sys
 
+normalize_bool = True
 
 class DistanceMatrix:
 
     def __init__(self, file1, file2):
-        
+        """Initializes the structure, computing all distances between files"""
         # Dictionnary with distances between files
         self.dist_dict = dict()
         
@@ -33,8 +36,8 @@ class DistanceMatrix:
             v1 = self.Pa[i]
             for j in range(len(self.Pc)):
                 v2 = self.Pc[j]
-                self.dist_dict[self.index(i,j)] = self.compute_dist(v1[1], v2[1])
-                
+                self.dist_dict[self.index(i,j)] = self.compute_dist(v1[1],
+                                                                    v2[1])
         # Finds most probable copies
         self.bests = dict()
         for ind in range(len(self.Pa)):
@@ -81,8 +84,8 @@ class DistanceMatrix:
     def get_distance_files(self, fileA, fileB):
         return self.get_dist(self.f1.index(fileA), self.f2.index(fileB))
     
-    # Given a file with paths to .vec files, it puts them as vectors in a list
     def vectors_from_file(self, file):
+        """Given file w/ paths to .vec files, outputs list with the vectors"""
         l = list()
         with open(file, 'r') as f:
             a = f.readline().strip()
@@ -93,8 +96,8 @@ class DistanceMatrix:
                 a = f.readline().strip()
         return l
             
-    # For a .vec file, generates the corresponding vector as int list
     def get_vector_from_file(self, file1):
+        """For .vec file, generates the corresponding vector as int list"""
         with open(file1, 'r') as f1:
             a = f1.readline()
             # This condition is here since sometimes an empty file is generated
@@ -102,15 +105,24 @@ class DistanceMatrix:
                 l = f1.readline().strip().split(" ")
                 v1 = [int(x) for x in l]
                 return v1
+                
+    def norm(self, v):
+        return (sum(i**2 for i in v))**(1/2)
+    
+    def normalized(self, v):
+        return [i / self.norm(v) for i in v]
 
-    # Euclidean distance between two vectors given as int lists
     def compute_dist(self, v1, v2):
+        """Square of Euclidean dist between 2 vectors given as int lists"""
         if v1 and v2:
             assert(len(v1)==len(v2))
+            if normalize_bool:
+                v1 = self.normalized(v1)
+                v2 = self.normalized(v2)
             return sum((v1[i]-v2[i])**2 for i in range(len(v1)))
     
-    # For two .vec files, computes the distance between the vectors (unused)
     def compute_distance_files(self, file1, file2):
+        """For two .vec files, computes the distance between the vectors"""
         v1 = self.get_vector_from_file(file1)
         v2 = self.get_vector_from_file(file2)
         return self.compute_distance(v1,v2)
@@ -165,7 +177,7 @@ class DistanceMatrix:
         #         out += self.out_format(dist, file, function, lines, path, ind)
         #     out += "-"*150 + "\n"
 
-        print(self.bests)
+        out += str(self.bests)
         return out
 
     
