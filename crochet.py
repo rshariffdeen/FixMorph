@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
 
+from __future__ import print_function, division
 import os
 import computeDistance
 import time
 import json
 import subprocess as sub
-
 
 path_deckard = "tools/Deckard"
 output_dir = "output/"
@@ -100,16 +100,25 @@ def json_loads_byteified(json_text):
                     ignore_dicts=True)
 
 
+def isstr(s):
+    try:
+        return isinstance(s, basestring)
+    except NameError:
+        return isinstance(s, str)
+        
 def _byteify(data, ignore_dicts=False):
     # if this is a unicode string, return its string representation
-    if isinstance(data, unicode):
-        return data.encode('utf-8')
+    try:
+        if isstr(data):
+            return data.encode('utf-8')
+    except:
+        pass
     # if this is a list of values, return list of byte-ified values
     if isinstance(data, list):
-        return [ _byteify(item, True) for item in data ]
+        return [_byteify(item, True) for item in data]
     # if this is a dictionary, return dictionary of byte-ified keys and values
     # but only if we haven't already byte-ified it
-    if isinstance(data, dict) and not ignore_dicts:
+    elif isinstance(data, dict) and not ignore_dicts:
         return {
             _byteify(key, True): _byteify(value, True)
             for key, value in data.iteritems()
@@ -126,7 +135,7 @@ def load_function_info():
         print(project_name)
         json_file_path = project_dir + "crochet-output/function-info"
         with open(json_file_path) as file:
-            line = file.readline()
+            line = file.readline().strip()
             function_info = json_loads_byteified(line)
             project['function-info'] = function_info
 
@@ -289,6 +298,7 @@ def transplant_patch_to_function(similarity_matrix):
 
 def run():
     start_time = time.time()
+    
     read_config()
     create_output_directories()
     generate_function_information()
@@ -320,6 +330,7 @@ def run():
             print(Pa_Pc_dist)
             # More stuff... e.g. put the object in a structure for future use
     '''
+    
     end_time = time.time()
     print("Crochet finished after " + str(start_time - end_time) + "seconds.")
 
