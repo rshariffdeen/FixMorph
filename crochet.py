@@ -364,7 +364,7 @@ def run():
     '''
     
     end_time = time.time()
-    print("Crochet finished after " + str(start_time - end_time) + "seconds.")
+    print("Crochet finished after " + str(end_time - start_time) + "seconds.")
 
 
     # generate_patch_slices()

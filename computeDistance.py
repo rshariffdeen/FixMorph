@@ -55,7 +55,7 @@ class DistanceMatrix:
                 copyPc.remove(copyPc[pos])
                 pos = i.index(currmin)
                 # If the last scores doubles the best, we just stop searching
-                if (last > 2*first and last > 25):
+                if (last > 2*first):# and last > 25):
                     break
                 data = dict()
                 splitel = el.split('/')
@@ -109,7 +109,7 @@ class DistanceMatrix:
                 return v1
                 
     def norm(self, v):
-        return (sum(i**2 for i in v))**(1/2)
+        return (sum(i**2. for i in v))**(1./2.)
     
     def normalized(self, v):
         return [i / self.norm(v) for i in v]
