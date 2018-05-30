@@ -92,6 +92,8 @@ class DistanceMatrix:
             while(a):
                 v1 = self.get_vector_from_file(a)
                 if v1:
+                    v1 = self.normalized(v1)
+                    print(v1)
                     l.append((a, v1))
                 a = f.readline().strip()
         return l
@@ -116,9 +118,6 @@ class DistanceMatrix:
         """Square of Euclidean dist between 2 vectors given as int lists"""
         if v1 and v2:
             assert(len(v1)==len(v2))
-            if normalize_bool:
-                v1 = self.normalized(v1)
-                v2 = self.normalized(v2)
             return sum((v1[i]-v2[i])**2 for i in range(len(v1)))
     
     def compute_distance_files(self, file1, file2):

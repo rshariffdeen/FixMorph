@@ -161,10 +161,10 @@ def get_diff_info():
     diff_file_list_command = "diff -qr --ignore-all-space "
     diff_file_list_command += project_A["dir_path"] + " "
     diff_file_list_command += project_B["dir_path"]
-    diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > " + "diff_files"
+    diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > " + output_diff_files
     os.system(diff_file_list_command)
 
-    with open("diff_files") as diff_file:
+    with open(output_diff_files) as diff_file:
         diff_file_path = str(diff_file.readline().strip())
         while diff_file_path:
             file_name = diff_file_path.split(" and ")[1].split(" differ")[0]
@@ -238,8 +238,8 @@ def clean():
 def gen_function_vector(source_path, file_name, f_name, start, end):
     instr = path_deckard + "/src/main/cvecgen " + source_path + "/" + file_name
     instr += " --start-line-number " + str(start) + " --end-line-number "
-    instr += str(end) + " -o " + source_path + "/"
-    instr += file_name + "." + f_name + "." + ".vec"
+    instr += str(end) + " -o " + source_path
+    instr += file_name + "." + f_name + ".vec"
     print(instr)
     os.system(instr)
 
@@ -257,7 +257,7 @@ def generate_vectors_for_functions():
     # generate vectors for all functions in Pc
     pc_path = project_C['dir_path']
     for file_path in project_C['function-info'].keys():
-        file_name = file_path.split("/")[-1]
+        file_name = file_path.replace(pc_path, "")
         for f_name, details in project_C['function-info'][file_path].items():
             line_range = details['line-range']
             s_line = line_range['start']
@@ -330,7 +330,7 @@ def run():
     
     read_config()
     create_output_directories()
-    generate_function_information()
+    #generate_function_information()
     load_function_info()
     get_diff_info()
     generate_vectors_for_functions()
