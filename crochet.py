@@ -39,10 +39,12 @@ def wait_timeout(proc, seconds):
 
 
 def exec_command(command):
-    print(command)
+    #print(command)
     p = sub.Popen([command], stdout=sub.PIPE, stderr=sub.PIPE, shell=True)
     output, errors = p.communicate()
-    if errors:
+
+    if p.returncode != 0:
+        print ("ERROR")
         print(errors)
         exit(-1)
     return output
@@ -50,6 +52,7 @@ def exec_command(command):
 
 def print_title(title):
     print("\n" + title + "\n" + "-"*150 + "\n")
+
 
 def csurf_make(proj_dir, proj_name):
     print("Making project with csurf...")
@@ -247,10 +250,12 @@ def gen_function_vector(source_path, file_name, f_name, start, end):
     exec_command(instr)
 
 
+
 def generate_vectors_for_functions():
     print_title("Generating Vectors for functions")
     # generate vectors for functions in Pa where there is a diff
     pa_path = project_A['dir_path']
+    
     for file_name, function_list in diff_info.items():
         for f_name, l_range in function_list.items():
             s_line = str(l_range['start'])
@@ -294,7 +299,7 @@ def generate_variable_slices(function_name, source_file_path, project_source_pat
     project_name = os.path.abspath(project_source_path).split("/")[-1]
     csurf_command = "csurf -nogui -python $PWD/CSSlicer.py " + function_name + " " + source_file_path + " " + \
                     " -end-python " + project_source_path + project_name
-    print (csurf_command)
+    #print (csurf_command)
     exec_command(csurf_command)
 
 
