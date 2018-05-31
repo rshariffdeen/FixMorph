@@ -60,7 +60,7 @@ class DistanceMatrix:
                 data = dict()
                 splitel = el.split('/')
                 data['path'] = "/".join(splitel[:-1])
-                data['file'] = splitel[-1].split('.')[-1] + ".c"
+                data['file'] = splitel[-1].split('.')[0] + ".c"
                 data['dist'] = currmin
                 data['function'] = splitel[-1].split('.')[-2]
                 bestlist.append(data)

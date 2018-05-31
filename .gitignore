@@ -21,3 +21,4 @@ diff_funcs
 *.prj
 computeDistance.pyc
 __pycache__
+crochet.conf

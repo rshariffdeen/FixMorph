@@ -288,6 +288,7 @@ def detect_matching_function():
         pc_match_list = similarity_matrix.bests[pa_file]
         for pc_file in pc_match_list:
             source_c = pc_file['path'] + "/" + pc_file['file']
+            print(pc_file['file'])
             function_c = pc_file['function']
             print ("\t", pc_file['dist'], function_c + "\t" + source_c)
             #detect_matching_variables(function_a, source_a, function_c, source_c)
@@ -299,7 +300,6 @@ def generate_variable_slices(function_name, source_file_path, project_source_pat
     project_name = os.path.abspath(project_source_path).split("/")[-1]
     csurf_command = "csurf -nogui -python $PWD/CSSlicer.py " + function_name + " " + source_file_path + " " + \
                     " -end-python " + project_source_path + project_name
-    #print (csurf_command)
     exec_command(csurf_command)
 
 
