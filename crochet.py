@@ -51,7 +51,7 @@ def exec_command(command):
 
 
 def print_title(title):
-    print("\n" + title + "\n" + "-"*150 + "\n")
+    print("\n" + title + "\n" + "-"*50 + "\n")
 
 
 def csurf_make(proj_dir, proj_name):
@@ -59,7 +59,8 @@ def csurf_make(proj_dir, proj_name):
     make_command = "cd " + proj_dir + "; make clean; "
     make_command += "csurf hook-build " + proj_name + " make"
     exec_command(make_command)
-    
+
+
 def configure_project(project):
     print(project["dir_name"])
     if os.path.isfile(project["dir_path"] + project["dir_name"] + ".csconf"):
@@ -223,7 +224,8 @@ def create_output_directories():
     for project in proj:
         if not os.path.isdir(project["output_dir"]):
             exec_command("mkdir " + project["output_dir"])
-    
+
+
 # TODO: Modify this function accordingly
 def remove_vec_files():
     exec_command("find . -name '*.vec' -exec rm -f {} \;")
@@ -231,6 +233,7 @@ def remove_vec_files():
 
 def generate_file_list(dir_path, file_type, out_path):
     exec_command("find " + dir_path + " -name '*" + file_type + "' > " + out_path)
+
 
 # TODO: Modify this function accordingly
 def clean():
@@ -250,23 +253,27 @@ def gen_function_vector(source_path, file_name, f_name, start, end):
     exec_command(instr)
 
 
-
 def generate_vectors_for_functions():
-    print_title("Generating Vectors for functions")
+    print_title("Generating Vectors")
     # generate vectors for functions in Pa where there is a diff
     pa_path = project_A['dir_path']
-    
+    print("generating for patched functions in " + project_A['dir_name'] + " ...")
     for file_name, function_list in diff_info.items():
+        #print ("\t" + file_name)
         for f_name, l_range in function_list.items():
             s_line = str(l_range['start'])
             f_line = str(l_range['end'])
+            #print("\t\t\t" + f_name)
             gen_function_vector(pa_path, file_name, f_name, s_line, f_line)
 
     # generate vectors for all functions in Pc
+    print("generating for all functions in " + project_C['dir_name'] + " ...\n")
     pc_path = project_C['dir_path']
     for file_path in project_C['function-info'].keys():
+        #print("\t" + file_name)
         file_name = file_path.replace(pc_path, '')
         for f_name, details in project_C['function-info'][file_path].items():
+            #print("\t\t" + f_name)
             line_range = details['line-range']
             s_line = line_range['start']
             f_line = line_range['end']
@@ -274,24 +281,24 @@ def generate_vectors_for_functions():
 
 
 def detect_matching_function():
-
+    print_title("Matched Functions")
+    print("calculating similarity matrix for functions...\n")
     generate_file_list(project_A["dir_path"], ".vec", output_dir + "vec_a")
     generate_file_list(project_C["dir_path"], ".vec", output_dir + "vec_c")
     similarity_matrix = computeDistance.DistanceMatrix(output_dir + "vec_a",
                                                        output_dir + "vec_c")
-    print_title("Matched Functions")
+
     for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file[:-4] # Remove .vec
         function_a = source_a.replace(project_A["dir_path"], '').split(".")[-1]
-        source_a = source_a.rsplit(".", 2)[0] + ".c"
-        print (source_a + " : \t" + function_a)
+        source_a = source_a.replace(project_A['dir_path'], "").rsplit(".", 2)[0] + ".c"
+        print (function_a + " : " + project_A['dir_name'] + "/" + source_a)
         pc_match_list = similarity_matrix.bests[pa_file]
         for pc_file in pc_match_list:
-            source_c = pc_file['path'] + "/" + pc_file['file']
-            print(pc_file['file'])
+            source_c = pc_file['path'].replace(project_C['dir_path'], "") + "/" + pc_file['file']
             function_c = pc_file['function']
-            print ("\t", pc_file['dist'], function_c + "\t" + source_c)
-            #detect_matching_variables(function_a, source_a, function_c, source_c)
+            print ("\t{0:.8f}".format(pc_file['dist']), function_c + " : " + project_C['dir_name'] + "/" + source_c)
+            detect_matching_variables(function_a, source_a, function_c, source_c)
         print ("\n")
 
 
@@ -308,11 +315,23 @@ def detect_matching_variables(function_a_name, function_a_source_path, function_
     function_b_source_path = function_a_source_path.replace(project_A['dir_path'], project_B['dir_path'])
     function_b = project_B["function-info"][function_b_source_path][function_a_name]
     function_c = project_C["function-info"][function_c_source_path][function_c_name]
-    variable_list_b = function_b['variable-list']
-    variable_list_c = function_c['variable-list']
-    generate_variable_slices(function_a_name, function_b_source_path, project_B['dir_path'])
+    variable_list_b = dict(function_b['variable-list'])
+    variable_list_c = dict(function_c['variable-list'])
+
+    print ("\t\tvariable mapping:")
+    for var_b in variable_list_b:
+        for var_c in variable_list_c:
+            if str(var_b) == str(var_c):
+                if str(var_b['type']) == str(var_c['type']):
+                    print("\t\t\t" + var_b + "\t" + var_c)
+                    function_b['variable-list'][var_b]['mapping'] = var_c
+                    variable_list_c.__delitem__(var_c)
+
+
+    #generate_variable_slices(function_a_name, function_b_source_path, project_B['dir_path'])
 
     return variable_mapping
+
 
 # TODO: If you intend to use this function, the parsing is wrong and should be corrected!
 def transplant_patch_to_function(similarity_matrix):
@@ -330,7 +349,6 @@ def transplant_patch_to_function(similarity_matrix):
             source_c += pc_file['file']
             function_c = pc_file['function']
             print("\t", pc_file['dist'], source_c, function_c)
-
 
 
 def run():

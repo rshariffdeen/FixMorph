@@ -5,9 +5,7 @@ int insertionSort(int array[],int n)
 {
 
 	int j, temp, i, k;
-
 	i = 1;
-
 	while (i < n)
 	{
 		j = 0;
@@ -31,11 +29,11 @@ int insertionSort(int array[],int n)
 
 int main(void)
 {
-	int array[10] = {99,88,77,66,55,44,33,22,11,0};
+	int array[10];
 
-//	for (int i=0; i< 10; i++){
-//		array[i] = rand()%100;
-//	}
+	for (int i=0; i< 10; i++){
+		array[i] = rand()%100;
+	}
 
 	insertionSort(array,10);
 
