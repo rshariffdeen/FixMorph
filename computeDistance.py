@@ -58,12 +58,10 @@ class DistanceMatrix:
                 if (last > 2*first):
                     break
                 data = dict()
-                print(el)
                 splitel = el.split('/')
                 data['path'] = "/".join(splitel[:-1])
                 data['file'] = splitel[-1].split('.')[-1] + ".c"
                 data['dist'] = currmin
-                print(splitel)
                 data['function'] = splitel[-1].split('.')[-2]
                 bestlist.append(data)
                 i.remove(currmin)

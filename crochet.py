@@ -11,8 +11,8 @@ import subprocess as sub
 
 path_deckard = "tools/Deckard"
 output_dir = "output/"
-output_diff_files = output_dir + "diff-files"
-output_diff_lines = output_dir + "diff-lines"
+out_diff_files = output_dir + "diff-files"
+out_diff_lines = output_dir + "diff-lines"
 
 project_A = dict()
 project_B = dict()
@@ -26,7 +26,6 @@ def wait_timeout(proc, seconds):
     """Wait for a process to finish, or raise exception after timeout"""
     start = time.time()
     end = start + seconds
-    # TODO: Sure it's seconds/1000 and not seconds*1000 (for milliseconds)?
     interval = min(seconds/1000.0, 0.25)
 
     while True:
@@ -40,6 +39,7 @@ def wait_timeout(proc, seconds):
 
 
 def exec_command(command):
+    print(command)
     p = sub.Popen([command], stdout=sub.PIPE, stderr=sub.PIPE, shell=True)
     output, errors = p.communicate()
     if errors:
@@ -52,7 +52,7 @@ def print_title(title):
     print("\n" + title + "\n" + "-"*150 + "\n")
 
 def csurf_make(proj_dir, proj_name):
-    print_title("Making project with csurf")
+    print("Making project with csurf...")
     make_command = "cd " + proj_dir + "; make clean; "
     make_command += "csurf hook-build " + proj_name + " make"
     exec_command(make_command)
@@ -158,17 +158,17 @@ def generate_patch_slices():
             slice_command += "  -then-on 'Slicing export' -print "
             slice_command += "| sed -e '1,/* Generated /d'"
             slice_command += " > " + slice_file_path
-            os.system(slice_command)
+            exec_command(slice_command)
 
 
 def get_diff_info():
     diff_file_list_command = "diff -qr --ignore-all-space "
     diff_file_list_command += project_A["dir_path"] + " "
     diff_file_list_command += project_B["dir_path"]
-    diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > " + output_diff_files
-    os.system(diff_file_list_command)
+    diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > " + out_diff_files
+    exec_command(diff_file_list_command)
 
-    with open(output_diff_files, 'r') as diff_file:
+    with open(out_diff_files, 'r') as diff_file:
         diff_file_path = str(diff_file.readline().strip())
         while diff_file_path:
             file_name = diff_file_path.split(" and ")[0].split("Files ")[1]
@@ -184,10 +184,9 @@ def get_diff_info():
             diff_line_list_command = "diff --ignore-all-space " 
             diff_line_list_command += project_A["dir_path"] + file_name + " "
             diff_line_list_command += project_B["dir_path"] + file_name + " "
-            diff_line_list_command += "| grep '^[1-9]' > " + output_diff_lines
-            print(diff_line_list_command)
-            os.system(diff_line_list_command)
-            with open(output_diff_lines) as diff_line:
+            diff_line_list_command += "| grep '^[1-9]' > " + out_diff_lines
+            exec_command(diff_line_list_command)
+            with open(out_diff_lines) as diff_line:
                 start = ""
                 line = diff_line.readline().strip()
                 while line:
@@ -206,8 +205,6 @@ def get_diff_info():
                     for i in range(int(start), int(end) + 1):
                         for f_name, details in function_range_in_file.items():
                             line_range = details['line-range']
-                            print(f_name, line_range)
-                            print(i)
                             if int(line_range['start']) <= i <= int(line_range['end']):
                                 if f_name not in affected_function_list:
                                     affected_function_list[f_name] = line_range
@@ -219,23 +216,23 @@ def get_diff_info():
 def create_output_directories():
     print_title("Creating output directories")
     if not os.path.isdir(output_dir):
-        os.system("mkdir " + output_dir)
+        exec_command("mkdir " + output_dir)
     for project in proj:
         if not os.path.isdir(project["output_dir"]):
-            os.system("mkdir " + project["output_dir"])
+            exec_command("mkdir " + project["output_dir"])
     
-
+# TODO: Modify this function accordingly
 def remove_vec_files():
-    os.system("find . -name '*.vec' -exec rm -f {} \;")
+    exec_command("find . -name '*.vec' -exec rm -f {} \;")
 
 
 def generate_file_list(dir_path, file_type, out_path):
-    os.system("find " + dir_path + " -name '*" + file_type + "' > " + out_path)
+    exec_command("find " + dir_path + " -name '*" + file_type + "' > " + out_path)
 
-
+# TODO: Modify this function accordingly
 def clean():
-    os.system("rm -f vec_a vec_c P_C_files line-function function-range")
-    os.system("rm -f diff_funcs diff-lines a.out")
+    exec_command("rm -f vec_a vec_c P_C_files line-function function-range")
+    exec_command("rm -f diff_funcs diff-lines a.out")
     remove_vec_files()
 
 
@@ -247,8 +244,7 @@ def gen_function_vector(source_path, file_name, f_name, start, end):
     instr += " --start-line-number " + str(start) + " --end-line-number "
     instr += str(end) + " -o " + source_path
     instr += file_name + "." + f_name + ".vec"
-    print(instr)
-    os.system(instr)
+    exec_command(instr)
 
 
 def generate_vectors_for_functions():
