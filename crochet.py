@@ -366,10 +366,10 @@ def run():
     start_time = time.time()
     read_config()
     create_output_directories()
-    #generate_function_information()
+    generate_function_information()
     load_function_info()
     get_diff_info()
-    #generate_vectors_for_functions()
+    generate_vectors_for_functions()
     detect_matching_function()
 
 
