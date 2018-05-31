@@ -62,16 +62,16 @@ def read_config():
     config_file = "crochet.conf"
     with open(config_file, 'r') as conf:
         project_line = conf.readline().strip()
-        for i in range(3):
+        for project in proj:
             source_path = project_line.split("=")[1]
             if not os.path.isdir(source_path):
                 print("Source directory not found:\n" + source_path)
             else:
                 proj_name = os.path.abspath(source_path).split("/")[-1]
                 proj_dir = os.path.abspath(source_path) + "/"
-                proj[i]["dir_path"] = proj_dir
-                proj[i]["dir_name"] = proj_name
-                proj[i]["output_dir"] = "output/" + proj_name
+                project["dir_path"] = proj_dir
+                project["dir_name"] = proj_name
+                project["output_dir"] = "output/" + proj_name
 
                 print(proj_name)
                 '''if os.path.isfile(proj_dir + proj_name + ".csconf"):
@@ -168,14 +168,11 @@ def get_diff_info():
     diff_file_list_command += " | grep  '[A-Za-z0-9_]\.c ' > " + output_diff_files
     os.system(diff_file_list_command)
 
-    with open(output_diff_files) as diff_file:
+    with open(output_diff_files, 'r') as diff_file:
         diff_file_path = str(diff_file.readline().strip())
         while diff_file_path:
-            file_name = diff_file_path.split(" and ")[1].split(" differ")[0]
-            file_name = file_name.replace(project_B["dir_path"],
-                                          project_A["dir_path"])
-
-            if file_name in project_A['function-info']:
+            file_name = diff_file_path.split(" and ")[0].split("Files ")[1]
+            if file_name  in project_A['function-info']:
                 function_range_in_file = project_A["function-info"][file_name]
             else:
                 diff_file_path = str(diff_file.readline())
@@ -188,7 +185,7 @@ def get_diff_info():
             diff_line_list_command += project_A["dir_path"] + file_name + " "
             diff_line_list_command += project_B["dir_path"] + file_name + " "
             diff_line_list_command += "| grep '^[1-9]' > " + output_diff_lines
-
+            print(diff_line_list_command)
             os.system(diff_line_list_command)
             with open(output_diff_lines) as diff_line:
                 start = ""
@@ -205,11 +202,13 @@ def get_diff_info():
                         end = start
                     if ',' in start:
                         start, end = start.split(',')
-                        
+                    # TODO: Check loop, seems inefficient
                     for i in range(int(start), int(end) + 1):
                         for f_name, details in function_range_in_file.items():
                             line_range = details['line-range']
-                            if line_range['start'] <= i <= line_range['end']:
+                            print(f_name, line_range)
+                            print(i)
+                            if int(line_range['start']) <= i <= int(line_range['end']):
                                 if f_name not in affected_function_list:
                                     affected_function_list[f_name] = line_range
                     line = str(diff_line.readline().strip())
@@ -221,9 +220,9 @@ def create_output_directories():
     print_title("Creating output directories")
     if not os.path.isdir(output_dir):
         os.system("mkdir " + output_dir)
-    for i in range(3):
-        if not os.path.isdir(proj[i]["output_dir"]):
-            os.system("mkdir " + proj[i]["output_dir"])
+    for project in proj:
+        if not os.path.isdir(project["output_dir"]):
+            os.system("mkdir " + project["output_dir"])
     
 
 def remove_vec_files():
@@ -241,10 +240,9 @@ def clean():
 
 
 def gen_function_vector(source_path, file_name, f_name, start, end):
-    print("Generating vectors")
-    file_name = file_name.replace("/home/ridwan/workspace/research-work/patch-transplant/crochet/samples/real-world/jasper/jasper-1.900.1/", "")
-    file_name = file_name.replace("/home/ridwan/workspace/research-work/patch-transplant/crochet/samples/real-world/jasper/jasper-1.900.25/", "")
-    file_name = file_name.replace("/home/ridwan/workspace/research-work/patch-transplant/crochet/samples/real-world/jasper/jasper-1.900.26/", "")
+    file_name = file_name
+    file_name = file_name
+    file_name = file_name
     instr = path_deckard + "/src/main/cvecgen " + source_path + "/" + file_name
     instr += " --start-line-number " + str(start) + " --end-line-number "
     instr += str(end) + " -o " + source_path
@@ -254,9 +252,9 @@ def gen_function_vector(source_path, file_name, f_name, start, end):
 
 
 def generate_vectors_for_functions():
+    print_title("Generating Vectors for functions")
     # generate vectors for functions in Pa where there is a diff
     pa_path = project_A['dir_path']
-    pb_path = project_B['dir_path']
     for file_name, function_list in diff_info.items():
         for f_name, l_range in function_list.items():
             s_line = str(l_range['start'])
@@ -283,8 +281,10 @@ def detect_matching_function():
     # TODO: Correct this parsing!!!
     print_title("Matched Functions")
     for pa_file in similarity_matrix.bests.keys():
-        source_a = pa_file.replace(".vec", '')
-        source_a = source_a.split("/")[-1]
+        source_a = pa_file[:-4] # Remove .vec
+        print(source_a)
+        source_a = source_a.replace(project_A["dir_path"], '')
+        print(source_a)
         function_a = source_a.split(".")[-2]
         source_a = source_a.rsplit(".", 2)[0]
         print (source_a + " : \t" + function_a)
