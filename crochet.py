@@ -26,7 +26,7 @@ def wait_timeout(proc, seconds):
     """Wait for a process to finish, or raise exception after timeout"""
     start = time.time()
     end = start + seconds
-    # TODO: Sure it's seconds/1000 and not seconds*1000?
+    # TODO: Sure it's seconds/1000 and not seconds*1000 (for milliseconds)?
     interval = min(seconds/1000.0, 0.25)
 
     while True:
@@ -56,6 +56,22 @@ def csurf_make(proj_dir, proj_name):
     make_command = "cd " + proj_dir + "; make clean; "
     make_command += "csurf hook-build " + proj_name + " make"
     exec_command(make_command)
+    
+def configure_project(project):
+    print(project["dir_name"])
+    if os.path.isfile(project["dir_path"] + project["dir_name"] + ".csconf"):
+        print("Codesurfer project detected ..")
+    else:
+        print("Configuring project ...")
+        if os.path.isfile(project["dir_path"] + "CMakeLists.txt"):
+            config_command = "cd " + project["dir_path"] + "; cmake ."
+            exec_command(config_command)
+
+        if os.path.isfile(project["dir_path"] + "configure"):
+            config_command = "cd " + project["dir_path"] + "; make clean ; "
+            config_command += "./configure"
+            exec_command(config_command)
+        csurf_make(project["dir_path"], project["dir_name"])
 
 def read_config():
     print_title("Loading configuration")
@@ -72,23 +88,7 @@ def read_config():
                 project["dir_path"] = proj_dir
                 project["dir_name"] = proj_name
                 project["output_dir"] = "output/" + proj_name
-
-                print(proj_name)
-                '''if os.path.isfile(proj_dir + proj_name + ".csconf"):
-                    print("Codesurfer project detected ..")
-                else:
-                    print("Configuring project ...")
-                    if os.path.isfile(proj_dir + "CMakeLists.txt"):
-                        config_command = "cd " + proj_dir + "; cmake ."
-                        exec_command(config_command)
-
-                    if os.path.isfile(proj_dir + "configure"):
-                        config_command = "cd " + proj_dir + "; make clean ; "
-                        config_command += "./configure"
-                        exec_command(config_command)'''
-                    
-                    #csurf_make(proj_dir, proj_name)
-
+                configure_project(project)
             project_line = conf.readline().strip()
 
 
@@ -278,15 +278,11 @@ def detect_matching_function():
     generate_file_list(project_C["dir_path"], ".vec", output_dir + "vec_c")
     similarity_matrix = computeDistance.DistanceMatrix(output_dir + "vec_a",
                                                        output_dir + "vec_c")
-    # TODO: Correct this parsing!!!
     print_title("Matched Functions")
     for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file[:-4] # Remove .vec
-        print(source_a)
-        source_a = source_a.replace(project_A["dir_path"], '')
-        print(source_a)
-        function_a = source_a.split(".")[-2]
-        source_a = source_a.rsplit(".", 2)[0]
+        function_a = source_a.replace(project_A["dir_path"], '').split(".")[-1]
+        source_a = source_a.rsplit(".", 2)[0] + ".c"
         print (source_a + " : \t" + function_a)
         pc_match_list = similarity_matrix.bests[pa_file]
         for pc_file in pc_match_list:
@@ -317,6 +313,7 @@ def detect_matching_variables(function_a_name, function_a_source_path, function_
 
     return variable_mapping
 
+# TODO: If you intend to use this function, the parsing is wrong and should be corrected!
 def transplant_patch_to_function(similarity_matrix):
     print_title("Matched Functions")
     for pa_file in similarity_matrix.bests.keys():
@@ -324,9 +321,7 @@ def transplant_patch_to_function(similarity_matrix):
         source_a = source_a.split("/")[-1]
         source_a = source_a.replace(".vec", '')
         function_a = source_a.split(".")[-2]
-        print(function_a)
         source_a = source_a.split(".")[0] + ".c"
-        print(source_a)
         print(source_a + ": \t" + function_a)
         pc_match_list = similarity_matrix.bests[pa_file]
         for pc_file in pc_match_list:
@@ -341,7 +336,7 @@ def run():
     start_time = time.time()
     read_config()
     create_output_directories()
-    #generate_function_information()
+    generate_function_information()
     load_function_info()
     get_diff_info()
     generate_vectors_for_functions()
