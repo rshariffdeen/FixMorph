@@ -24,6 +24,7 @@ def create_output_directories():
 def get_function_details():
     for func in project.procedures():
         function_name = func.name()
+        #print function_name
         if '#' in function_name:
             continue
         try:
@@ -32,7 +33,7 @@ def get_function_details():
             if source_file_path not in function_info:
                 function_info[source_file_path] = dict()
 
-            if '/opt' in str(source_file_path):
+            if "/opt" in str(source_file_path):
                 continue
 
             function_info[source_file_path][function_name] = dict()
@@ -82,6 +83,7 @@ def get_variable_list(procedure):
     source_file_name = procedure.file_line()[0].name()
 
     for var in symbol_list:
+        #print var
         var_info = dict()
         var_name = var.name().split("-")[0]
 

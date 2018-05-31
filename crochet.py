@@ -63,15 +63,24 @@ def csurf_make(proj_dir, proj_name):
 
 def configure_project(project):
     print(project["dir_name"])
-    if os.path.isfile(project["dir_path"] + project["dir_name"] + ".csconf"):
+    cs_conf_file_path = project["dir_path"] + project["dir_name"] + ".csconf"
+    if os.path.isfile(cs_conf_file_path):
         print("Codesurfer project detected ..")
     else:
         print("Configuring project ...")
+        with open(cs_conf_file_path, 'w') as conf_file:
+            conf_file.write("PRESET_BUILD_OPTIONS = high")
+
         if os.path.isfile(project["dir_path"] + "CMakeLists.txt"):
             config_command = "cd " + project["dir_path"] + "; cmake ."
             exec_command(config_command)
 
-        if os.path.isfile(project["dir_path"] + "configure"):
+        elif os.path.isfile(project["dir_path"] + "configure.ac"):
+            config_command = "cd " + project["dir_path"] + "; autoreconf -i ; "
+            config_command += "./configure"
+            exec_command(config_command)
+
+        elif os.path.isfile(project["dir_path"] + "configure"):
             config_command = "cd " + project["dir_path"] + "; make clean ; "
             config_command += "./configure"
             exec_command(config_command)
@@ -104,6 +113,7 @@ def generate_function_information():
         print(project_name)
         csurf_command = "csurf -nogui -python $PWD/CSParser.py " + project_dir
         csurf_command += " -end-python " + project_dir + project_name
+        #print(csurf_command)
         exec_command(csurf_command)
 
 
@@ -291,13 +301,13 @@ def detect_matching_function():
     for pa_file in similarity_matrix.bests.keys():
         source_a = pa_file[:-4] # Remove .vec
         function_a = source_a.replace(project_A["dir_path"], '').split(".")[-1]
-        source_a = source_a.replace(project_A['dir_path'], "").rsplit(".", 2)[0] + ".c"
-        print (function_a + " : " + project_A['dir_name'] + "/" + source_a)
+        source_a = source_a.rsplit(".", 2)[0] + ".c"
+        print (function_a + " : " + project_A['dir_name'] + "/" + source_a.replace(project_A['dir_path'], ""))
         pc_match_list = similarity_matrix.bests[pa_file]
         for pc_file in pc_match_list:
-            source_c = pc_file['path'].replace(project_C['dir_path'], "") + "/" + pc_file['file']
+            source_c = pc_file['path'] + "/" + pc_file['file']
             function_c = pc_file['function']
-            print ("\t{0:.8f}".format(pc_file['dist']), function_c + " : " + project_C['dir_name'] + "/" + source_c)
+            print ("\t{0:.8f}".format(pc_file['dist']), function_c + " : " + project_C['dir_name'] + "/" + source_c.replace(project_C['dir_path'], ""))
             detect_matching_variables(function_a, source_a, function_c, source_c)
         print ("\n")
 
@@ -313,20 +323,21 @@ def generate_variable_slices(function_name, source_file_path, project_source_pat
 def detect_matching_variables(function_a_name, function_a_source_path, function_c_name, function_c_source_path):
     variable_mapping = dict()
     function_b_source_path = function_a_source_path.replace(project_A['dir_path'], project_B['dir_path'])
+
     function_b = project_B["function-info"][function_b_source_path][function_a_name]
     function_c = project_C["function-info"][function_c_source_path][function_c_name]
-    variable_list_b = dict(function_b['variable-list'])
-    variable_list_c = dict(function_c['variable-list'])
+
+    variable_list_b = list(function_b['variable-list'])
+    variable_list_c = list(function_c['variable-list'])
 
     print ("\t\tvariable mapping:")
-    for var_b in variable_list_b:
+    while len(variable_list_b):
+        var_b = variable_list_b.pop()
         for var_c in variable_list_c:
             if str(var_b) == str(var_c):
-                if str(var_b['type']) == str(var_c['type']):
-                    print("\t\t\t" + var_b + "\t" + var_c)
+                if str(function_b['variable-list'][var_b]['type']) == str(function_c['variable-list'][var_c]['type']):
+                    print("\t\t\t" + var_b + " - " + var_c)
                     function_b['variable-list'][var_b]['mapping'] = var_c
-                    variable_list_c.__delitem__(var_c)
-
 
     #generate_variable_slices(function_a_name, function_b_source_path, project_B['dir_path'])
 
@@ -355,10 +366,10 @@ def run():
     start_time = time.time()
     read_config()
     create_output_directories()
-    generate_function_information()
+    #generate_function_information()
     load_function_info()
     get_diff_info()
-    generate_vectors_for_functions()
+    #generate_vectors_for_functions()
     detect_matching_function()
 
 
