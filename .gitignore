@@ -22,3 +22,5 @@ diff_funcs
 computeDistance.pyc
 __pycache__
 crochet.conf
+ASTParser.pyc
+ASTParser.py_*
