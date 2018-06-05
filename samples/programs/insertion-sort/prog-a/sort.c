@@ -22,19 +22,19 @@ int insertionSort(int array[],int n)
 		i++;
 	}
 
-
-
 	return 1;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
 	int array[10];
-
-	for (int i=0; i< 10; i++){
-		array[i] = rand()%100;
+	int i;
+	
+	for (i=0; i< 10; i++){
+	  //		array[i] = rand()%100;
+		array[i] = argv[i+1][0];
 	}
-
+	
 	insertionSort(array,10);
 
 	for (int i=0; i< 10; i++){

@@ -2,6 +2,7 @@
 
 from __future__ import print_function, division
 from six import iteritems
+from ASTParser import transplant
 import os
 import computeDistance
 import time
@@ -85,6 +86,44 @@ def configure_project(project):
             config_command += "./configure"
             exec_command(config_command)
         csurf_make(project["dir_path"], project["dir_name"])
+
+
+def longestSubstringFinder(string1, string2):
+    answer = ""
+    len1, len2 = len(string1), len(string2)
+    for i in range(len1):
+        match = ""
+        for j in range(len2):
+            if (i + j < len1 and string1[i + j] == string2[j]):
+                match += string2[j]
+            else:
+                if (len(match) > len(answer)): answer = match
+                match = ""
+    return answer
+
+
+def generate_ast_edit_script(source_a, source_b):
+    common_path = longestSubstringFinder(source_a, source_b).split("/")[:-1]
+    common_path = "/".join(common_path)
+    ast_diff_command = "docker run -v " + common_path + ":/diff "
+    ast_diff_command += " gumtree diff "
+    ast_diff_command += source_a.replace(common_path, "/diff") + " "
+    ast_diff_command += source_b.replace(common_path, "/diff")
+    ast_diff_command += " | grep -v Match > " + output_dir + "ast-script"
+    exec_command(ast_diff_command)
+
+
+def generate_ast_map(source_a, source_b):
+    common_path = longestSubstringFinder(source_a, source_b).split("/")[:-1]
+    common_path = "/".join(common_path)
+    ast_diff_command = "docker run -v " + common_path + ":/diff "
+    ast_diff_command += " gumtree diff "
+    ast_diff_command += source_a.replace(common_path, "/diff") + " "
+    ast_diff_command += source_b.replace(common_path, "/diff")
+    ast_diff_command += " | grep Match | sed -e 's/GenericString//g' "
+    ast_diff_command += "| sed -e 's/Match//g' | sed -e 's/://g' > " + output_dir + "ast-map"
+    exec_command(ast_diff_command)
+
 
 def read_config():
     print_title("Loading configuration")
@@ -308,7 +347,8 @@ def detect_matching_function():
             source_c = pc_file['path'] + "/" + pc_file['file']
             function_c = pc_file['function']
             print ("\t{0:.8f}".format(pc_file['dist']), function_c + " : " + project_C['dir_name'] + "/" + source_c.replace(project_C['dir_path'], ""))
-            detect_matching_variables(function_a, source_a, function_c, source_c)
+            var_map = detect_matching_variables(function_a, source_a, function_c, source_c)
+            transplant_patch_to_function(function_a, source_a, function_c, source_c)
         print ("\n")
 
 
@@ -323,6 +363,7 @@ def generate_variable_slices(function_name, source_file_path, project_source_pat
 def detect_matching_variables(function_a_name, function_a_source_path, function_c_name, function_c_source_path):
     variable_mapping = dict()
     function_b_source_path = function_a_source_path.replace(project_A['dir_path'], project_B['dir_path'])
+    generate_ast_map(function_a_source_path, function_c_source_path)
 
     function_b = project_B["function-info"][function_b_source_path][function_a_name]
     function_c = project_C["function-info"][function_c_source_path][function_c_name]
@@ -330,36 +371,31 @@ def detect_matching_variables(function_a_name, function_a_source_path, function_
     variable_list_b = list(function_b['variable-list'])
     variable_list_c = list(function_c['variable-list'])
 
-    print ("\t\tvariable mapping:")
+    print ("\n\t\tvariable mapping..")
+    ast_map = dict()
+    #with open(output_dir + "/ast-map", "r") as ast_map_file:
+        #map_line = ast_map_file.readline()
+        #while map_line:
+            #var_a =
+
+            #map_line = ast_map_file.readline()
     while len(variable_list_b):
         var_b = variable_list_b.pop()
         for var_c in variable_list_c:
             if str(var_b) == str(var_c):
                 if str(function_b['variable-list'][var_b]['type']) == str(function_c['variable-list'][var_c]['type']):
-                    print("\t\t\t" + var_b + " - " + var_c)
-                    function_b['variable-list'][var_b]['mapping'] = var_c
+                    #print("\t\t\t" + var_b + " - " + var_c)
+                    variable_mapping[str(var_b)] = str(var_c)
 
     #generate_variable_slices(function_a_name, function_b_source_path, project_B['dir_path'])
 
     return variable_mapping
 
 
-# TODO: If you intend to use this function, the parsing is wrong and should be corrected!
-def transplant_patch_to_function(similarity_matrix):
-    print_title("Matched Functions")
-    for pa_file in similarity_matrix.bests.keys():
-        source_a = pa_file.replace(project_A['dir_path'], '')
-        source_a = source_a.split("/")[-1]
-        source_a = source_a.replace(".vec", '')
-        function_a = source_a.split(".")[-2]
-        source_a = source_a.split(".")[0] + ".c"
-        print(source_a + ": \t" + function_a)
-        pc_match_list = similarity_matrix.bests[pa_file]
-        for pc_file in pc_match_list:
-            source_c = pc_file['path'].replace(project_C['dir_path'], '')
-            source_c += pc_file['file']
-            function_c = pc_file['function']
-            print("\t", pc_file['dist'], source_c, function_c)
+def transplant_patch_to_function(function_a, source_a, function_c, source_c):
+    print("\t\ttransplanting function diff..")
+    source_b = source_a.replace(project_A['dir_path'], project_B['dir_path'])
+    transplant(source_a, function_a, source_b, function_a, source_c, function_c)
 
 
 def run():
