@@ -1,5 +1,6 @@
 D			[0-9]
 L			[a-zA-Z_]
+M 			[A-Z_0-9]
 H			[a-fA-F0-9]
 E			[Ee][+-]?{D}+
 FS			(f|F|l|L)
@@ -61,11 +62,11 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["ELSE"],yytext,line);
 		return(ELSE); }
-"enum"|"const enum"			{
+"enum"|"const enum"|"enum "{L}({L}|{D})*			{
 		count();
 		yylvalp->t = new Terminal(name2id["ENUM"],yytext,line);
 		return(ENUM); }
-"extern"|"register"|"auto"|"typedef"|"__thread"|"inline"|"__inline__"|"__inline"	{
+"extern"|"register"|"register "({L}({L}|{D})*" ")*|"auto"|"typedef"|"__thread"|"inline"|"__inline__"|"__inline"	{
 		count();
 		yylvalp->t = new Terminal(name2id["SCSPEC"],yytext,line);
 		return(SCSPEC); }
@@ -89,7 +90,7 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["SIZEOF"],yytext,line);
 		return(SIZEOF); }
-"static"		{
+"static"|"static"(" "{L}({L}|{D})*)*		{
 		count();
 		yylvalp->t = new Terminal(name2id["STATIC"],yytext,line);
 		return(STATIC); }
@@ -105,12 +106,12 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["UNION"],yytext,line);
 		return(UNION); }
-"unsigned"|"long"|"short"|"signed"|"int"|"char"|"float"|"double"|"void"|"bool"|("const "){L}({L}|{D})* {
+({L}({L}|{D})*" ")*("unsigned"|"long"|"short"|"signed"|"int"|"char"|"float"|"double"|"void"|"bool")|("const "|"void "){L}({L}|{D})* {
 		count();
 		yylvalp->t = new Terminal(name2id["TYPESPEC"],yytext,line);
 		return(TYPESPEC);
 		}
-"const"|"__const__"|"__const"|"volatile"|"__volatile__"|"__volatile"|"restrict"|"__restrict__"|"__restrict" {
+"const"|"private"|"__const__"|"__const"|"volatile"|"__volatile__"|"__volatile"|"restrict"|"__restrict__"|"__restrict" {
 		count();
 		yylvalp->t = new Terminal(name2id["TYPE_QUAL"],yytext,line);
 		return(TYPE_QUAL); }
@@ -196,7 +197,7 @@ L?'(\\.|[^\\'])+'	{
 		yylvalp->t = new Terminal(name2id["CONSTANT"],yytext,line);
 		return(CONSTANT); }
 
-L?\"(\\.|[^\\"])*\"	{
+L?\"(\\|[^\\"])*\"	{
 		count();
 		yylvalp->t = new Terminal(name2id["STRING"],yytext,line);
 		return(STRING); }
@@ -364,7 +365,7 @@ void comment()
 			}
 		}
 
-                if ( c == '*' ) {
+        if ( c == '*' ) {
 			while ( (c = yyinput()) == '*' )
 				column++;
 			column++;
