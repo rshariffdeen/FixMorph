@@ -2,7 +2,7 @@
 
 from __future__ import print_function, division
 from six import iteritems
-from ASTParser import transplant
+from ASTParser import transplant, longestSubstringFinder
 import os
 import computeDistance
 import time
@@ -86,31 +86,6 @@ def configure_project(project):
             config_command += "./configure"
             exec_command(config_command)
         csurf_make(project["dir_path"], project["dir_name"])
-
-
-def longestSubstringFinder(string1, string2):
-    answer = ""
-    len1, len2 = len(string1), len(string2)
-    for i in range(len1):
-        match = ""
-        for j in range(len2):
-            if (i + j < len1 and string1[i + j] == string2[j]):
-                match += string2[j]
-            else:
-                if (len(match) > len(answer)): answer = match
-                match = ""
-    return answer
-
-
-def generate_ast_edit_script(source_a, source_b):
-    common_path = longestSubstringFinder(source_a, source_b).split("/")[:-1]
-    common_path = "/".join(common_path)
-    ast_diff_command = "docker run -v " + common_path + ":/diff "
-    ast_diff_command += " gumtree diff "
-    ast_diff_command += source_a.replace(common_path, "/diff") + " "
-    ast_diff_command += source_b.replace(common_path, "/diff")
-    ast_diff_command += " | grep -v Match > " + output_dir + "ast-script"
-    exec_command(ast_diff_command)
 
 
 def generate_ast_map(source_a, source_b):
@@ -348,7 +323,7 @@ def detect_matching_function():
             function_c = pc_file['function']
             print ("\t{0:.8f}".format(pc_file['dist']), function_c + " : " + project_C['dir_name'] + "/" + source_c.replace(project_C['dir_path'], ""))
             var_map = detect_matching_variables(function_a, source_a, function_c, source_c)
-            transplant_patch_to_function(function_a, source_a, function_c, source_c)
+            transplant_patch_to_function(function_a, source_a, function_c, source_c, var_map)
         print ("\n")
 
 
@@ -371,14 +346,36 @@ def detect_matching_variables(function_a_name, function_a_source_path, function_
     variable_list_b = list(function_b['variable-list'])
     variable_list_c = list(function_c['variable-list'])
 
+    for var in variable_list_b:
+        if "$return" in var or "$result" in var:
+            variable_list_b.remove(var)
+
     print ("\n\t\tvariable mapping..")
     ast_map = dict()
-    #with open(output_dir + "/ast-map", "r") as ast_map_file:
-        #map_line = ast_map_file.readline()
-        #while map_line:
-            #var_a =
+    with open(output_dir + "/ast-map", "r") as ast_map_file:
+        map_line = ast_map_file.readline()
+        while map_line:
+            var_b = map_line.split(" to ")[0].split("(")[0].replace(" ", "")
+            var_c = map_line.split(" to ")[1].split("(")[0].replace(" ", "")
+            if var_b in variable_list_b:
+                if var_b not in ast_map:
+                    ast_map[var_b] = dict()
 
-            #map_line = ast_map_file.readline()
+                if var_c in ast_map[var_b]:
+                    ast_map[var_b][var_c] += 1
+                else:
+                    ast_map[var_b][var_c] = 1
+            map_line = ast_map_file.readline()
+
+    # sort match with occurrence count
+    for var in ast_map:
+        ast_map[var] = sorted(ast_map[var].iteritems(), key=lambda (k,v):(v,k))
+
+    for var in variable_list_b:
+        if var in ast_map:
+            variable_mapping[str(var)] = str(ast_map[var][0][0])
+            variable_list_b.remove(var)
+
     while len(variable_list_b):
         var_b = variable_list_b.pop()
         for var_c in variable_list_c:
@@ -388,26 +385,33 @@ def detect_matching_variables(function_a_name, function_a_source_path, function_
                     variable_mapping[str(var_b)] = str(var_c)
 
     #generate_variable_slices(function_a_name, function_b_source_path, project_B['dir_path'])
+    with open(output_dir + "var-map", "w") as var_map_file:
+        for var_b, var_c in variable_mapping.iteritems():
+            var_map_file.write(var_b + ":" + var_c + "\n")
 
     return variable_mapping
 
 
-def transplant_patch_to_function(function_a, source_a, function_c, source_c):
+def transplant_patch_to_function(function_a, source_a, function_c, source_c, var_map):
     print("\t\ttransplanting function diff..")
     source_b = source_a.replace(project_A['dir_path'], project_B['dir_path'])
-    transplant(source_a, function_a, source_b, function_a, source_c, function_c)
+    transplant(source_a, function_a, source_b, function_a, source_c, function_c, var_map)
+
+
+def verify_patch():
+    print("\t\tverifying patch..")
 
 
 def run():
     start_time = time.time()
     read_config()
     create_output_directories()
-    generate_function_information()
+    #generate_function_information()
     load_function_info()
     get_diff_info()
-    generate_vectors_for_functions()
+    #generate_vectors_for_functions()
     detect_matching_function()
-
+    verify_patch()
 
     # generate_file_list(project_A["dir_path"], ".vec", output_dir + "vec_a")
     # generate_file_list(project_C["dir_path"], ".vec", output_dir + "vec_c")
