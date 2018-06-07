@@ -106,7 +106,7 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["UNION"],yytext,line);
 		return(UNION); }
-({L}({L}|{D})*" ")*("unsigned"|"long"|"short"|"signed"|"int"|"char"|"float"|"double"|"void"|"bool")|("const "|"void "){L}({L}|{D})* {
+"unsigned"|"long"|"short"|"signed"|"int"|"char"|"float"|"double"|"void"|"bool"|("volatile "|"const "|"void "|{L}({L}|{D})*"* ")" "*{L}({L}|{D})* {
 		count();
 		yylvalp->t = new Terminal(name2id["TYPESPEC"],yytext,line);
 		return(TYPESPEC);
@@ -179,7 +179,7 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["CONSTANT"],yytext,line);
 		return(CONSTANT); }
-L?'(\\.|[^\\'])+'	{
+L?^\\\'[^\'']*^\\\'	{
 		count();
 		yylvalp->t = new Terminal(name2id["CONSTANT"],yytext,line);
 		return(CONSTANT); }
@@ -197,7 +197,7 @@ L?'(\\.|[^\\'])+'	{
 		yylvalp->t = new Terminal(name2id["CONSTANT"],yytext,line);
 		return(CONSTANT); }
 
-L?\"(\\|[^\\"])*\"	{
+L?^\\\"[^\"]*^\\\"	{
 		count();
 		yylvalp->t = new Terminal(name2id["STRING"],yytext,line);
 		return(STRING); }
