@@ -34,7 +34,7 @@ int line = 1;
 
 %%
 
-"/*"			{ count(); comment();}
+"/*"			{ comment();}
 "//"			{ count(); cpp_comment(); }
 ^"#"			{count(); macro();}
 
@@ -62,11 +62,11 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["ELSE"],yytext,line);
 		return(ELSE); }
-"enum"|"const enum"|"enum "{L}({L}|{D})*			{
+"enum"			{
 		count();
 		yylvalp->t = new Terminal(name2id["ENUM"],yytext,line);
 		return(ENUM); }
-"extern"|"register"|"register "({L}({L}|{D})*" ")*|"auto"|"typedef"|"__thread"|"inline"|"__inline__"|"__inline"	{
+"extern"|"register"|"auto"|"typedef"|"__thread"|"inline"|"__inline__"|"__inline"	{
 		count();
 		yylvalp->t = new Terminal(name2id["SCSPEC"],yytext,line);
 		return(SCSPEC); }
@@ -78,7 +78,7 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["GOTO"],yytext,line);
 		return(GOTO); }
-"if"			{
+"if"	{
 		count();
 		yylvalp->t = new Terminal(name2id["IF"],yytext,line);
 		return(IF); }
@@ -90,11 +90,11 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["SIZEOF"],yytext,line);
 		return(SIZEOF); }
-"static"|"static"(" "{L}({L}|{D})*)*		{
+"static"		{
 		count();
 		yylvalp->t = new Terminal(name2id["STATIC"],yytext,line);
 		return(STATIC); }
-"struct"|"const struct"		{
+"struct"		{
 		count();
 		yylvalp->t = new Terminal(name2id["STRUCT"],yytext,line);
 		return(STRUCT); }
@@ -106,15 +106,15 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["UNION"],yytext,line);
 		return(UNION); }
-"unsigned"|"long"|"short"|"signed"|"int"|"char"|"float"|"double"|"void"|"bool"|("volatile "|"const "|"void "|{L}({L}|{D})*"* ")" "*{L}({L}|{D})* {
+"const"|{L}({L}|{D})*"_t"|"private"|"__const__"|"__const"|"volatile"|"__volatile__"|"__volatile"|"restrict"|"__restrict__"|"__restrict" {
+		count();
+		yylvalp->t = new Terminal(name2id["TYPE_QUAL"],yytext,line);
+		return(TYPE_QUAL); }
+"unsigned"|"signed"|"long"|"short"|"int"|"char"|"float"|"double"|"void"|"bool"|("volatile "|"const "|"void "|{L}({L}|{D})*"* ")" "*{L}({L}|{D})* {
 		count();
 		yylvalp->t = new Terminal(name2id["TYPESPEC"],yytext,line);
 		return(TYPESPEC);
 		}
-"const"|"private"|"__const__"|"__const"|"volatile"|"__volatile__"|"__volatile"|"restrict"|"__restrict__"|"__restrict" {
-		count();
-		yylvalp->t = new Terminal(name2id["TYPE_QUAL"],yytext,line);
-		return(TYPE_QUAL); }
 "while"			{
 		count();
 		yylvalp->t = new Terminal(name2id["WHILE"],yytext,line);
@@ -142,10 +142,6 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["EXTENSION"],yytext,line);
 		return(EXTENSION); }
-{L}({L}|{D})*"_t"		{
-		count();
-		yylvalp->t = new Terminal(name2id["TYPENAME"],yytext,line);
-		return(TYPENAME); }
 "__init"|"__iomem"|"__user"|"__exit"|"__devexit"|"__devinit"|"__devinitdata"|"__cpuinit"|"__cpuexit"|"__INLINE__"|"__kprobes"|"__inline__"|"__lockfunc"|"__force"|"__sched"|"__deprecated"|"__memzero"|"__pminit"|"__weak"|"__xipram"|"__attribute_used__"|"__apicdebuginit"|"__unused"|"__maybe_unused"|"__initdata" {count();}
 
 "__"{L}+({D})+	{
@@ -163,7 +159,7 @@ default		{
 		yylvalp->t = new Terminal(name2id["TYPENAME"],yytext,line);
 		return(TYPENAME); }
 
-{L}({L}|{D})*		{
+{L}({L}|{D})*(" "*{L}({L}|{D})*)*		{
 		count();
 		yylvalp->t = new Terminal(name2id["IDENTIFIER"],yytext,line);
 		return(IDENTIFIER); }
@@ -179,7 +175,7 @@ default		{
 		count();
 		yylvalp->t = new Terminal(name2id["CONSTANT"],yytext,line);
 		return(CONSTANT); }
-L?^\\\'[^\'']*^\\\'	{
+L?'(\\.|[^\\'\n])+'	{
 		count();
 		yylvalp->t = new Terminal(name2id["CONSTANT"],yytext,line);
 		return(CONSTANT); }
@@ -197,7 +193,7 @@ L?^\\\'[^\'']*^\\\'	{
 		yylvalp->t = new Terminal(name2id["CONSTANT"],yytext,line);
 		return(CONSTANT); }
 
-L?^\\\"[^\"]*^\\\"	{
+L?\"(\\.|[^\\"])*\"	{
 		count();
 		yylvalp->t = new Terminal(name2id["STRING"],yytext,line);
 		return(STRING); }
@@ -338,7 +334,7 @@ L?^\\\"[^\"]*^\\\"	{
 		yylvalp->t = new Terminal(name2id["'?'"],yytext,line);
 		return('?'); }
 
-[ \t\v\n\r]		{
+[ \t\v\n\f]		{
 		count();
 		 }
 .			{count();}
@@ -349,7 +345,6 @@ int yywrap()
 {
 	return(1);
 }
-
 
 
 void comment()
@@ -365,7 +360,7 @@ void comment()
 			}
 		}
 
-        if ( c == '*' ) {
+                if ( c == '*' ) {
 			while ( (c = yyinput()) == '*' )
 				column++;
 			column++;
@@ -416,7 +411,7 @@ void count()
 			column = 0;
 			line++;
 		} else if (yytext[i] == '\t')
-			column += 4;
+			column += 8 - (column % 8);
 		else
 			column++;
 
