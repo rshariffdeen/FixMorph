@@ -383,7 +383,7 @@ def detect_matching_variables(function_a_name, function_a_source_path, function_
                 if str(function_b['variable-list'][var_b]['type']) == str(function_c['variable-list'][var_c]['type']):
                     #print("\t\t\t" + var_b + " - " + var_c)
                     variable_mapping[str(var_b)] = str(var_c)
-
+    print(variable_mapping)
     #generate_variable_slices(function_a_name, function_b_source_path, project_B['dir_path'])
     with open(output_dir + "var-map", "w") as var_map_file:
         for var_b, var_c in variable_mapping.iteritems():
@@ -406,10 +406,10 @@ def run():
     start_time = time.time()
     read_config()
     create_output_directories()
-    #generate_function_information()
+    generate_function_information()
     load_function_info()
     get_diff_info()
-    #generate_vectors_for_functions()
+    generate_vectors_for_functions()
     detect_matching_function()
     verify_patch()
 
