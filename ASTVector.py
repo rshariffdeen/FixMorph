@@ -30,7 +30,7 @@ class ASTVector:
     def gen_Deckard_vec(self):
         current = "\t" + self.function + " " + str(self.start) + "-" + \
                     str(self.end)
-        Print.grey(current, True)
+        Print.grey(current, False)
         start = self.start
         end = self.end
         with open(self.file, 'r', errors='replace') as file:

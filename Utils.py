@@ -52,6 +52,7 @@ def exec_com(c, verbose=True):
 ''' Error management '''
 
 def err_exit(*args):
+    print("\n")
     for i in args:
         Print.red(i)
     exit(-1)
