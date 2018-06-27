@@ -19,12 +19,19 @@ WHITE = '\t\x1b[1;37m'
 ''' Functions to print (colors, title, presentation of the program...)'''
 
 def color(message, color, jumpline=True):
-    sys.stdout.write("\033[K" + color + str(message) + '\x1b[0m')
-    if jumpline:
-        sys.stdout.write("\n")
-    else:
-        sys.stdout.write("\033[K\r")
-    sys.stdout.flush()
+    with open("output/crochet_log", 'a') as out_file:
+        r = "\033[K" + color + str(message) + '\x1b[0m'
+        sys.stdout.write(r)
+        out_file.write(r)
+        if jumpline:
+            r = "\n"
+            sys.stdout.write("\n")
+            out_file.write(r)
+        else:
+            r = "\033[K\r"
+            sys.stdout.write(r)
+            out_file.write(r)
+        sys.stdout.flush()
 
 
 def grey(message, jumpline=True):

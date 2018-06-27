@@ -9,8 +9,7 @@ Created on Tue Jun 12 10:25:58 2018
 import os
 import time
 from Utils import exec_com, err_exit, find_files, remove_Hexa, clean, \
-                  get_extensions, levenshtein
-#from ASTParser import transplant, longestSubstringFinder
+                  get_extensions
 import Project
 import ASTVector
 import Print
@@ -34,7 +33,7 @@ def gen_AST(file, src_dir):
         "-ferror-limit=0 -w -I /usr/include/ -I /usr/local/include/ "
     
     # We try to include any .h file stated in the .c file
-    d = "cat " + file + " | grep '#include' | grep '\.h' > output/hs"
+    d = "cat " + file + " | grep '#include ' | grep '\.h' > output/hs"
     exec_com(d, False)
     includes = set()
     with open('output/hs', 'r', errors='replace') as h_files:
@@ -49,11 +48,13 @@ def gen_AST(file, src_dir):
             # We only keep the file name or find doesn't work
             line = line.split("/")[-1]
             c1 = "find " + src_dir + " -name '" + line + "'"
-            l = exec_com(c1, False)[0].split("/")
-            if len(l) > 2:
-                # Here we get the directory and the parent directory
-                includes.add("/".join(l[:-1]))
-                includes.add("/".join(l[:-2]))
+            l = exec_com(c1, False)[0].split("\n")
+            for i in l:
+                i = i.split("/")
+                if len(i) > 2:
+                    # Here we get the directory and the parent directory
+                    includes.add("/".join(i[:-1]))
+                    includes.add("/".join(i[:-2]))
             line = h_files.readline().strip()
     for include in includes:
         c += "-I " + include + " "
@@ -99,20 +100,31 @@ def parseAST(filepath, proj, Deckard=True):
     start = 0
     end = 0
     
+    file = filepath.split("/")[-1]
+    
     if Deckard:
         Print.grey("Generating vectors for " + filepath.split("/")[-1])
-        
+    
+    
     with open(AST, 'r', errors='replace') as f:
         # A line is a node of the AST
         line = f.readline().strip()
         # Skip irrelevant things
         while line:
-            if filepath in line:
+            if filepath in line and ".c" not in line.replace(file, ""):
                 break
             line = f.readline().strip()
         # We find Function declarations and retrieve parameters and variables
         while line:
-            if "-FunctionDecl " in line and "col:" not in line:
+            if ".h" in line or ".c" in line.replace(file, ""):
+                in_function = False
+                in_struct = False
+                while line:
+                    if filepath in line and ".c" not in line.replace(file, ""):
+                        break
+                    line = f.readline().strip()
+            elif (("-FunctionDecl " in line) and ("col:" not in line) and 
+                "invalid sloc" not in line):
                 in_struct = False
                 line = line.split(" ")
                 if line[-1] != "extern":
@@ -121,10 +133,13 @@ def parseAST(filepath, proj, Deckard=True):
                     lines_aux = line.split("> ")
                     lines = lines_aux[0].split(" <")[1]
                     if "invalid" not in lines:
-                        start = lines_aux[1].split(":")[1]
-                        end = lines.split(", ")[1]
-                        end = end.split(":")[1]
-                        func = line.split(" '")[-2].split(" ")[-1]
+                        try:
+                            start = lines_aux[1].split(":")[1]
+                            end = lines.split(", ")[1]
+                            end = end.split(":")[1]
+                            func = line.split(" '")[-2].split(" ")[-1]
+                        except Exception as e:
+                            err_exit(e, ":(")
                         in_function = True
                         try:
                             start = int(start)
@@ -140,7 +155,7 @@ def parseAST(filepath, proj, Deckard=True):
                     in_function = False
             # TODO: Distinguish locally defined structures
             # (otherwise, line superposition!)
-            elif in_function and ("VarDecl " in line):
+            elif in_function and ("VarDecl " in line) and "invalid sloc" not in line:
                 in_struct = False
                 line = "-".join(line.split("-")[1:]).split(" ")
                 line = remove_Hexa(line).split(" '")
@@ -153,7 +168,7 @@ def parseAST(filepath, proj, Deckard=True):
                 if func not in dict_file.keys():
                     dict_file[func] = ""
                 dict_file[func] = dict_file[func] + line
-            elif ("-RecordDecl " in line) and ("struct" in line):
+            '''elif ("-RecordDecl " in line) and ("struct" in line):
                 in_function = False
                 in_struct = True
                 line = line.split(" ")
@@ -174,10 +189,10 @@ def parseAST(filepath, proj, Deckard=True):
                         struct = line.split(" '")[-2].split(" ")[-1]
                         structure_lines.append((struct, int(start), int(end)))
                         gen_vec(proj.structs, filepath, struct, start, end,
-                                False)    
+                                False)
                 except Exception as e:
                     err_exit(e)
-                in_struct = False
+                in_struct = False'''
             line = f.readline().strip()
     
     with open('output/function-lines', 'w') as func_l:
@@ -230,7 +245,8 @@ def find_diff_files():
         for pattern in extensions:
             exclusions.write(pattern + "\n")
     c = "diff -ENBbwqr " + Pa.path + " " + Pb.path + \
-        " -X output/exclude_pats | grep '\.c ' > output/diff"
+        " -X output/exclude_pats | grep -P '\.c and ' " + \
+        "> output/diff"
     exec_com(c, False)
 
 
@@ -239,19 +255,24 @@ def find_affected_funcs(proj, file, pertinent_lines):
         function_lines, dict_file = parseAST(file, proj, False)
     except Exception as e:
         err_exit(e, "Error in parseAST.")
-    for function, start, end in function_lines:
-        for start2, end2 in pertinent_lines:
+    #print(function_lines,"\n", dict_file, "\n", pertinent_lines, "\n", file)
+    for start2, end2 in pertinent_lines:
+        for function, start, end in function_lines:
+            #print(start, end, start2, end2)
+            #print(intersect(start, end, start2, end2))
             if intersect(start, end, start2, end2):
-                Print.rose("\t\tFound affected function: ")
-                Print.grey("\t\t\tGenerating vector for " + \
-                            function +" in "+ file.split("/")[-1])
                 if file not in proj.funcs.keys():
                     proj.funcs[file] = dict()
                 if function not in proj.funcs[file]:
-                    proj.funcs[file][function] = dict()
-                proj.funcs[file][function] = ASTVector.ASTVector(file, 
-                                                                 function,
-                                                                 start, end, True)
+                    proj.funcs[file][function] = ASTVector.ASTVector(file, 
+                                                                     function,
+                                                                     start,
+                                                                     end, True)
+                    Print.rose("\t\tFunction successfully found in " + \
+                               file.split("/")[-1])
+                    Print.grey("\t\t\t" + function + " " + str(start) + \
+                               "-" + str(end))
+                break
     get_vars(proj, file, dict_file)
     return function_lines, dict_file
     
@@ -298,10 +319,10 @@ def gen_diff():
                         pertinent_lines_b.append((start_b, end_b))
                     file_line = file_diff.readline().strip()
             try:
-                Print.blue("\t Project Pa...")
+                Print.blue("\tProject Pa...")
                 find_affected_funcs(Pa, file_a, pertinent_lines)
                 Print.blue("")
-                Print.blue("\t Project Pb...")
+                Print.blue("\tProject Pb...")
                 find_affected_funcs(Pb, file_b, pertinent_lines)
             except Exception as e:
                 err_exit(e, "HERE")
@@ -366,7 +387,10 @@ def compare():
         Print.blue("\tBest match for function " + f_a +" in $Pa/" + file_a + ":")
         Print.blue("\t\tDistance: " + str(best_d) + "\t" + f_c + " in $Pc/" + file_c)
         Print.blue("\tVariable mapping from " + f_a + " to " + f_c + ":")
-        var_map = detect_matching_variables(f_a, file_a, f_c, file_c)
+        try:
+            var_map = detect_matching_variables(f_a, file_a, f_c, file_c)
+        except Exception as e:
+            err_exit(e, "Unexpected error while matching variables.")
         with open('output/var-map', 'r', errors='replace') as mapped:
             mapping = mapped.readline().strip()
             while mapping:
@@ -450,11 +474,10 @@ def run_crochet():
     
     
 def test_parsing():
-    project = "/media/pedrobw/6A384D7F384D4AF1/Users/Administrator/" + \
-              "Examples/Backporting/Buffer_Overflow-Espruino/Pc/"
-    file = project + "targetlibs/stm32f2/lib/stm32f2xx_hash_sha1.c"
-    gen_AST(file, project)    
-    #parseAST(file)
+    path = "/media/pedrobw/6A384D7F384D4AF1/Users/Administrator/Examples/Backporting/Buffer_Overflow-Espruino/Pc/"
+    project = Project.Project(path, "P")
+    file = path + "targets/esp8266/esp8266_board_utils.c"
+    parseAST(file, project)
     
 def longestSubstringFinder(string1, string2):
     answer = ""
@@ -479,10 +502,12 @@ def generate_ast_map(source_a, source_b):
     
 
 def detect_matching_variables(f_a, file_a, f_c, file_c):
-    variable_mapping = dict()
-    generate_ast_map(Pa.path + "/" + file_a, Pb.path + "/" + file_a)
     
-    function_b = Pb.funcs[Pb.path + file_a][f_a]
+    try:
+        generate_ast_map(Pa.path + "/" + file_a, Pb.path + "/" + file_a)
+    except Exception as e:
+        err_exit(e, "Unexpected error in generate_ast_map.")
+    function_b = Pa.funcs[Pa.path + file_a][f_a]
     variable_list_b = function_b.variables + function_b.params
     #Print.white(variable_list_b)
     while '' in variable_list_b:
@@ -495,98 +520,257 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     #Print.white(variable_list_c)
     while '' in variable_list_c:
         variable_list_c.remove('')
-
+    
     ast_map = dict()
-    with open("output/ast-map", "r", errors='replace') as ast_map_file:
-        map_line = ast_map_file.readline().strip()
-        while map_line:
-            aux = map_line.split(" to ")
-            var_b = aux[0].split("(")[0].split(" ")[-1]
-            var_c = aux[1].split("(")[0].split(" ")[-1]
-            if var_b in b_names:
-                if var_b not in ast_map:
-                    ast_map[var_b] = dict()
-                if var_c in ast_map[var_b]:
-                    ast_map[var_b][var_c] += 1
-                else:
-                    ast_map[var_b][var_c] = 1
+    try:
+        with open("output/ast-map", "r", errors='replace') as ast_map_file:
             map_line = ast_map_file.readline().strip()
+            while map_line:
+                aux = map_line.split(" to ")
+                var_b = aux[0].split("(")[0].split(" ")[-1]
+                var_c = aux[1].split("(")[0].split(" ")[-1]
+                if var_b in b_names:
+                    if var_b not in ast_map:
+                        ast_map[var_b] = dict()
+                    if var_c in ast_map[var_b]:
+                        ast_map[var_b][var_c] += 1
+                    else:
+                        ast_map[var_b][var_c] = 1
+                map_line = ast_map_file.readline().strip()
+    except Exception as e:
+        err_exit(e, "Unexpected error while parsing ast-map")
 
-
-    while len(variable_list_b):
-        var_b = variable_list_b.pop()        
-        if var_b not in variable_mapping.keys():
-            b_name = var_b.split(" ")[-1]
-            if b_name in ast_map.keys():
-                max_match = -1
-                best_match = None
-                for var_c in ast_map[b_name].keys():
-                    if max_match == -1:
-                        max_match = ast_map[b_name][var_c]
-                        best_match = var_c
-                    elif ast_map[var_b][var_c] > max_match:
-                        max_match = ast_map[var_b][var_c]
-                        best_match = var_c
-                if best_match:
-                    for var_c in variable_list_c:
-                        c_name = var_c.split(" ")[-1]
-                        if c_name == best_match:
-                            variable_mapping[var_b] = var_c
+    variable_mapping = dict()
+    try:
+        while variable_list_b:
+            var_b = variable_list_b.pop()
             if var_b not in variable_mapping.keys():
-                variable_mapping[var_b] = "UNKNOWN"
+                b_name = var_b.split(" ")[-1]
+                if b_name in ast_map.keys():
+                    max_match = -1
+                    best_match = None
+                    for var_c in ast_map[b_name].keys():
+                        if max_match == -1:
+                            max_match = ast_map[b_name][var_c]
+                            best_match = var_c
+                        elif ast_map[b_name][var_c] > max_match:
+                            max_match = ast_map[b_name][var_c]
+                            best_match = var_c
+                    if best_match:
+                        for var_c in variable_list_c:
+                            c_name = var_c.split(" ")[-1]
+                            if c_name == best_match:
+                                variable_mapping[var_b] = var_c
+                if var_b not in variable_mapping.keys():
+                    variable_mapping[var_b] = "UNKNOWN"
+    except Exception as e:
+        err_exit(e, "Unexpected error while matching vars.")
 
-    #generate_variable_slices(function_a_name, function_b_source_path, project_B['dir_path'])
-    with open("output/var-map", "w", errors='replace') as var_map_file:
-        for var_b in variable_mapping.keys():
-            var_map_file.write(var_b + " -> " + variable_mapping[var_b] + "\n")
+    try:
+        with open("output/var-map", "w", errors='replace') as var_map_file:
+            for var_b in variable_mapping.keys():
+                var_map_file.write(var_b + " -> " + variable_mapping[var_b] + "\n")
+    except Exception as e:
+        err_exit(e, "ASdasdas")
     
     return variable_mapping
     
+
+def gen_func_file(ast_vec_func, output_file):
+    start = ast_vec_func.start
+    end = ast_vec_func.end
+    Print.blue("\t\tStart line: " + str(start))
+    Print.blue("\t\tEnd line: " + str(end))
+    
+    with open(output_file, 'w') as temp:
+        with open(ast_vec_func.file, 'r', errors='replace') as file:
+            ls = file.readlines()
+            while start > 0:
+                j = start-1
+                if "}" in ls[j] or "#include" in ls [j] or ";" in ls[j] or "*/" in ls[j]:
+                    break
+                start = j
+            temp.write("".join(ls[start:end]))
+    
 def transplantation(to_patch):
-    Print.blue("Generating edit script from Pa to Pb")
+    
     for (ast_vec_f_a, ast_vec_f_c,var_map) in to_patch:
         
-        start = ast_vec_f_a.start
-        end = ast_vec_f_a.end
-        Print.blue("Start line: " + str(start))
-        Print.blue("End line: " + str(end))
+        ast_vec_f_b = Pb.funcs[ast_vec_f_a.file.replace(Pa.path, Pb.path)][ast_vec_f_a.function]
         
-        with open("output/temp_a.c", 'w') as temp_a:
-            with open(ast_vec_f_a.file, 'r', errors='replace') as file_a:
-                lines = file_a.readlines()
-                while (start > 0):
-                    j = start-1
-                    if ("}" in lines[j]) or ("#include" in lines[j]):
-                        break
-                    start = j
-                Print.blue("Lines in file in Pa: " + str(len(lines)))
-                temp_a.write("".join(lines[start:end]))
-            temp_a.write("\n")
-            
-        start = ast_vec_f_c.start
-        end = ast_vec_f_c.end
-        Print.blue("Start line: " + str(start))
-        Print.blue("End line: " + str(end))
-        with open("output/temp_c.c", 'w') as temp_c:
-            with open(ast_vec_f_c.file, 'r', errors='replace') as file_c:
-                lines = file_c.readlines()
-                while (start > 0):
-                    j = start-1
-                    if ("}" in lines[j]) or ("#include" in lines[j]):
-                        break
-                    start = j
-                Print.blue("Lines in file in Pa: " + str(len(lines)))
-                temp_c.write("".join(lines[start:end]))
-            temp_c.write("\n")
+        Print.blue("Generating temp files for each pertinent function...")
+        Print.blue("\tFunction " + ast_vec_f_a.function + " in Pa...")
+        gen_func_file(ast_vec_f_a, "output/temp_a.c")
+        Print.blue("\tFunction " + ast_vec_f_b.function + " in Pb...")
+        gen_func_file(ast_vec_f_b, "output/temp_b.c")
+        Print.blue("\tFunction " + ast_vec_f_c.function + " in Pc...")
+        gen_func_file(ast_vec_f_c, "output/temp_c.c")
         
+        
+        Print.blue("Generating edit script from Pa to Pb...")
         exec_com("docker run -v $PWD/output:/diff gumtree " + \
-                 "diff temp_a.c temp_c.c > output/diff_script_AC")
-        #print(ast_vec_f_a.function, ast_vec_f_a.file, ast_vec_f_c.function, ast_vec_f_c.file)\
+                 "diff temp_a.c temp_b.c > output/diff_script_AB", False)
+                 
+        Print.blue("Finding common structures in Pa with respect to Pc...")
+        exec_com("docker run -v $PWD/output:/diff gumtree " + \
+                 "diff temp_a.c temp_c.c | grep 'Match ' > " + \
+                 "output/diff_script_AC", False)
         
+        UPDATE = "Update"
+        MOVE = "Move"
+        INSERT = "Insert"
+        DELETE = "Delete"
+        MATCH = "Match"
+        MATCHED = "Matched"
+        TO = " to "
+        AT = " at "
+        INTO = " into "
         
-    
-def transplant_patch_to_function(f_a, file_a, f_c, file_c, var_map):
-    print("TRANSPLANT")
+        diffs = dict()
+        diffs[UPDATE] = dict()
+        diffs[MOVE] = dict()
+        diffs[INSERT] = dict()
+        diffs[DELETE] = list()
+        diffs[MATCH] = dict()
+        diffs[MATCHED] = dict()
+        
+        with open('output/diff_script_AB', 'r') as script_AB:
+            line = script_AB.readline().strip()
+            while line:
+                line = line.split(" ")
+                instruction = line[0]
+                line = " ".join(line[1:])
+                if instruction == UPDATE:
+                    # Update node1 to node2
+                    line = line.split(TO)
+                    diffs[UPDATE][line[0]] = line[1]
+                elif instruction == MOVE:
+                    # Move node1 into node2 at pos
+                    line.split(INTO)
+                    diffs[MOVE][line[0]] = line[1].split(AT)
+                elif instruction == INSERT:
+                    # Insert node1 into node2 at pos
+                    line.split(INTO)
+                    diffs[MOVE][line[0]] = line[1].split(AT)
+                elif instruction == DELETE:
+                    # Delete node
+                    diffs[DELETE].append(line)
+                elif instruction == MATCH:
+                    # Match node1 to node2
+                    line = line.split(TO)
+                    diffs[MATCH][line[0]] = line[1]
+                    # We keep track of what is node1 for node2
+                    diffs[MATCHED][line[1]] = line[0]
+                line = script_AB.readline().strip()
+                
+        common = dict()
+        common[UPDATE] = dict()
+        common[MOVE] = dict()
+        common[INSERT] = dict()
+        common[DELETE] = list()
+        common[MATCH] = dict()
+        
+        with open('output/diff_script_AC', 'r') as script_AC:
+            line = script_AC.readline().strip()
+            while line:
+                line = line[6:].split(TO)
+                common[MATCH][line[0]] = line[1]
+                line = script_AC.readline().strip()
+        
+        for nodeA in common[MATCH].keys():
+            nodeC = common[MATCH][nodeA]
+            try:
+                # Case DELETE: nodeA is deleted and nodeC matches nodeA
+                if nodeA in diffs[DELETE]:
+                    common[DELETE].append(nodeC)
+            except Exception as e:
+                err_exit(e, "Something went wrong in DELETE matching.")
+            
+            try:                    
+                # Case MOVE: nodeA is moved to nodeB, nodeC matches nodeA
+                if nodeA in diffs[MOVE].keys():
+                    nodeB, pos = diffs[MOVE][nodeA]
+                    # TODO: Do something with pos!!!
+                    if nodeB in diffs[MATCHED].keys():
+                        nodeA2 = diffs[MATCHED][nodeB]
+                        # 1st: nodeB matches some nodeA' that matches some nodeC'
+                        if nodeA2 in common[MATCH].keys():
+                            nodeD = common[MATCH][nodeA2]
+                            common[MOVE][nodeC] = [nodeD, pos]
+                        # 2nd: nodeB matches some nodeA', but we have no match
+                        else:
+                            common[MOVE][nodeC] = [nodeB, pos]
+                            # TODO: Should we do more?
+                            # E.g. include anything connected to that node
+                            
+                    # 3rd: nodeB doesn't have anything alike
+                    else:
+                        common[MOVE][nodeC] = [nodeB, pos]
+            except Exception as e:
+                err_exit(e, "Something went wrong in MOVE matching.")
+            try:       
+                # Case INSERT: nodeA is inserted into nodeB, nodeC matches nodeA
+                if nodeA in diffs[INSERT].keys():
+                    nodeB, pos = diffs[INSERT][nodeA]
+                    #TODO: Something with pos!
+                    if nodeB in diffs[MATCHED].keys():
+                        nodeA2 = diffs[MATCHED][nodeB]
+                        # 1st: nodeB matches some nodeA2 that matches some nodeD
+                        if nodeA2 in common[MATCH].keys():
+                            nodeD = common[MATCH][nodeA2]
+                            common[INSERT][nodeC] = [nodeD, pos]
+                        # 2nd: nodeB matches some nodeA2, but no match for nodeA2
+                        else:
+                            common[INSERT][nodeC] = [nodeB, pos]
+                            # TODO: Should we do more?
+                            # E.g. include anything connected to that node
+                            
+                    # 3rd: nodeB doesn't have anything alike
+                    else:
+                        common[INSERT][nodeC] = [nodeB, pos]
+            except Exception as e:
+                err_exit(e, "Something went wrong in INSERT matching.")
+            try:    
+                # Case UPDATE: nodeA is updated to nodeB, nodeC matches nodeA
+                if nodeA in diffs[UPDATE].keys():
+                    nodeB = diffs[UPDATE][nodeA]
+                    if nodeB in diffs[MATCHED].keys():
+                        nodeA2 = diffs[MATCHED][nodeB]
+                        # 1st: nodeB matches some nodeA2 that matches some nodeD
+                        if nodeA2 in common[MATCH].keys():
+                            nodeD = common[MATCH][nodeA2]
+                            common[UPDATE][nodeC] = nodeD
+                        # 2nd: nodeB matches some nodeA2, but no match for nodeA2
+                        else:
+                            common[UPDATE][nodeC] = nodeB
+                            # TODO: Should we do more?
+                            # E.g. include anything connected to that node
+                            
+                    # 3rd: nodeB doesn't have anything alike in Pc
+                    else:
+                        common[INSERT][nodeC] = nodeB
+            except Exception as e:
+                err_exit(e, "Something went wrong in UPDATE matching.")
+        for key in common.keys():
+            if key == UPDATE:
+                Print.white(key)
+                for i in common[key].keys():
+                    Print.white("\t" + i + " to " + common[key][i])
+            elif key == DELETE:
+                Print.white(key)
+                for i in common[key]:
+                    Print.white("\t" + i)
+            elif key != MATCH:
+                Print.white(key)
+                for i in common[key].keys():
+                    Print.white("\t" + i + " into " + common[key][i])
+                
+                
+            
+            
+                
+                
+                    
     
 if __name__=="__main__":
     #test_parsing()
