@@ -106,14 +106,14 @@ def parseAST(filepath, proj, Deckard=True):
         Print.grey("Generating vectors for " + filepath.split("/")[-1])
     
     
-    with open(AST, 'r', errors='replace') as f:
+    with open(AST, 'r', errors='replace') as ast:
         # A line is a node of the AST
-        line = f.readline().strip()
+        line = ast.readline().strip()
         # Skip irrelevant things from other files
         while line:
             if filepath in line and ".c" not in line.replace(file, ""):
                 break
-            line = f.readline().strip()
+            line = ast.readline().strip()
         # We find Function declarations and retrieve parameters and variables
         while line:
             # Skip irrelevant things from other files
@@ -123,7 +123,7 @@ def parseAST(filepath, proj, Deckard=True):
                 while line:
                     if filepath in line and ".c" not in line.replace(file, ""):
                         break
-                    line = f.readline().strip()
+                    line = ast.readline().strip()
             # Function declaration: Capture start, end and use Deckard on it
             elif (("-FunctionDecl " in line) and ("col:" not in line) and 
                 "invalid sloc" not in line):
@@ -199,7 +199,7 @@ def parseAST(filepath, proj, Deckard=True):
                     err_exit(e)
                 in_struct = False
             '''
-            line = f.readline().strip()
+            line = ast.readline().strip()
     
     with open('output/function-lines', 'w') as func_l:
         for l in function_lines:
@@ -437,7 +437,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
         err_exit(e, "Unexpected error in generate_ast_map.")
     function_a = Pa.funcs[Pa.path + file_a][f_a]
     variable_list_a = function_a.variables + function_a.params
-    Print.white(variable_list_a)
+    #Print.white(variable_list_a)
     while '' in variable_list_a:
         variable_list_a.remove('')
         
@@ -497,8 +497,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     try:
         with open("output/var-map", "w", errors='replace') as var_map_file:
             for var_a in variable_mapping.keys():
-                var_map_file.write(var_a + " -> " + variable_mapping[var_a] + \
-                                   "\n")
+                var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
     except Exception as e:
         err_exit(e, "ASdasdas")
     
@@ -520,8 +519,7 @@ def gen_func_file(ast_vec_func, output_file):
                     break
                 start = j
             temp.write("".join(ls[start:end]))
-
-
+    
 def transplantation(to_patch):
     
     for (ast_vec_f_a, ast_vec_f_c,var_map) in to_patch:
@@ -536,13 +534,15 @@ def transplantation(to_patch):
         Print.blue("\tFunction " + ast_vec_f_c.function + " in Pc...")
         gen_func_file(ast_vec_f_c, "output/temp_c.c")
         
+        
         Print.blue("Generating edit script from Pa to Pb...")
-        exec_com("gumtree diff output/temp_a.c output/temp_b.c " + \
-                 "> output/diff_script_AB", False)
+        exec_com("docker run -v $PWD/output:/diff gumtree " + \
+                 "diff temp_a.c temp_b.c > output/diff_script_AB", False)
                  
         Print.blue("Finding common structures in Pa with respect to Pc...")
-        exec_com("gumtree diff output/temp_a.c output/temp_c.c | " + \
-                 "grep 'Match ' > output/diff_script_AC", False)
+        exec_com("docker run -v $PWD/output:/diff gumtree " + \
+                 "diff temp_a.c temp_c.c | grep 'Match ' > " + \
+                 "output/diff_script_AC", False)
         
         UPDATE = "Update"
         MOVE = "Move"
