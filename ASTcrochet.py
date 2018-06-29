@@ -667,16 +667,16 @@ def transplantation(to_patch):
                         # 1st: nodeB matches some nodeA2 matching some nodeD
                         if nodeA2 in common[MATCH].keys():
                             nodeD = common[MATCH][nodeA2]
-                            common[UPDATE][nodeC] = nodeD
+                            common[UPDATE][nodeC] = nodeD + "A"
                         # 2nd: nodeB matches some nodeA2, but match for nodeA2
                         else:
-                            common[UPDATE][nodeC] = nodeB
+                            common[UPDATE][nodeC] = nodeB + "B"
                             # TODO: Should we do more?
                             # E.g. include anything connected to that node
                             
                     # 3rd: nodeB doesn't have anything alike in Pc
                     else:
-                        common[INSERT][nodeC] = nodeB
+                        common[INSERT][nodeC] = nodeB + "B"
             except Exception as e:
                 err_exit(e, "Something went wrong in UPDATE matching.")
         for key in common.keys():

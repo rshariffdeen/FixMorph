@@ -4,6 +4,7 @@ Created on Wed Jun 27 13:25:52 2018
 
 @author: pedrobw
 """
+
 printer = False
 
 node = -1
@@ -33,8 +34,9 @@ class AST:
         AST.nodes.append(self)
         
     def __str__(self):
-        l = [self.typeLabel, self.node, self.label, self.type, self.pos, self.length]
-        name = ["TypeLabel(", "Node(", "Label(", "Type(", "Pos(", "Length("]
+        l = [self.typeLabel, self.node, self.label, self.type, self.pos,
+             self.length]
+        name = ["\tTypeLabel(", "Node(", "Label(", "Type(", "Pos(", "Length("]
         name2 = [") ", ") ", ") ", ") ", ") ", ") "]
         s = ""
         for i in range(len(l)):

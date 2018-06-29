@@ -13,7 +13,7 @@ class Project:
     
     def __init__(self, path, name):
         if not (os.path.isdir(path)):
-            err_exit(name + " is not an appropriate directory path.")
+            err_exit(name + " is not an appropriate directory path.", path)
         self.path = path
         self.name = name
         self.funcs = dict()
