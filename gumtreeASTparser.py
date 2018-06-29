@@ -32,6 +32,8 @@ class AST:
         if printer:
             print(self)
         AST.nodes.append(self)
+        self.attributes = [self.typeLabel, self.node, self.label, self.type,
+                           self.pos, self.length]
         
     def __str__(self):
         l = [self.typeLabel, self.node, self.label, self.type, self.pos,
@@ -62,7 +64,7 @@ def see_lasts():
     #print(t, la, tl, p, le)
     return t, la , tl, p, le
     
-def rec_trans(ast, index, char, line):
+def rec_trans(ast, index=0, char="", line=""):
     global ttype, label, typeLabel, pos, length
     if index == 0:
         if printer:
@@ -79,7 +81,7 @@ def rec_trans(ast, index, char, line):
             char += "  "
             ttype.append(None)
             label.append(None)
-            typeLabel.append("Root")
+            typeLabel.append(None)
             pos.append(None)
             length.append(None)
             if printer:
@@ -150,7 +152,7 @@ def rec_trans(ast, index, char, line):
             if printer:
                 print(char + "}")
             t, la , tl, p, le = get_lasts()
-            AST(t, la, tl, p, le, char) 
+            AST(t, la, tl, p, le, char)
         elif "]" in line:
             char = char[:-2]
             if printer:
@@ -167,7 +169,7 @@ def AST_from_file(file, debug=False):
     with open(file, 'r', errors='replace') as ast_file:
         ast = [i.strip() for i in ast_file.readlines()]
 
-    rec_trans(ast, 0, "", "")
+    rec_trans(ast)
     out = [i for i in AST.nodes]
     AST.nodes = []
     return out

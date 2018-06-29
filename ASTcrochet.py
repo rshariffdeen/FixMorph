@@ -13,11 +13,24 @@ from Utils import exec_com, err_exit, find_files, remove_Hexa, clean, \
 import Project
 import ASTVector
 import Print
+import gumtreeASTparser
 
 Pa = None
 Pb = None
 Pc = None
+start = -1
 
+def initialize():
+    global Pa, Pb, Pc
+    with open('crochet.conf', 'r', errors='replace') as file:
+        args = [i.strip() for i in file.readlines()]
+    if (len(args) < 3):
+        err_exit("Insufficient arguments: Pa, Pb, Pc source paths required.",
+                 "Try running:", "\tpython3 ASTcrochet.py $Pa $Pb $Pc")
+    Pa = Project.Project(args[0], "Pa")
+    Pb = Project.Project(args[1], "Pb")
+    Pc = Project.Project(args[2], "Pc")
+    clean()
 
 ''' Main vector generation functions '''
 
@@ -253,8 +266,7 @@ def find_diff_files():
         for pattern in extensions:
             exclusions.write(pattern + "\n")
     c = "diff -ENBbwqr " + Pa.path + " " + Pb.path + \
-        " -X output/exclude_pats | grep -P '\.c and ' " + \
-        "> output/diff"
+        " -X output/exclude_pats | grep -P '\.c and ' > output/diff"
     exec_com(c, False)
 
 
@@ -386,7 +398,7 @@ def compare():
         fc = best[0].replace(Pc.path, "")[:-4].split(".")
         f_c = fc[-1]
         file_c = ".".join(fc[:-1])
-        # TODO: Get all pertinent matches (at dist d' < k*best_d)
+        # TODO: Get all pertinent matches (at dist d' < k*best_d) (with k=2?)
         Print.blue("\tBest match for " + f_a +" in $Pa/" + file_a + ":")
         Print.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
         Print.blue("\t\tDistance: " + str(best_d) + "\n")
@@ -519,30 +531,37 @@ def gen_func_file(ast_vec_func, output_file):
                     break
                 start = j
             temp.write("".join(ls[start:end]))
+            
+
+def gen_temp_files(vec_f, proj, ASTlists):
+    Print.blue("\tFunction " + vec_f.function + "in " + proj.name + "...")
+    temp_file = "output/temp_" + proj.name + ".c"
+    gen_func_file(vec_f, temp_file)
+    Print.blue("Gumtree parse " + vec_f.function + " in " + proj.name + "...")
+    gum_file = "output/gumtree_" + proj.name
+    c = "gumtree parse " + temp_file + " > " + gum_file
+    exec_com(c, False)
+    ASTlists[proj.name] = gumtreeASTparser.AST_from_file(gum_file)
     
 def transplantation(to_patch):
-    
-    for (ast_vec_f_a, ast_vec_f_c,var_map) in to_patch:
-        
-        ast_vec_f_b = Pb.funcs[ast_vec_f_a.file.replace(Pa.path, Pb.path)][ast_vec_f_a.function]
+    for (vec_f_a, vec_f_c, var_map) in to_patch:
+        vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
+        vec_f_b = Pb.funcs[vec_f_b_file][vec_f_a.function]
+        ASTlists = dict()
         
         Print.blue("Generating temp files for each pertinent function...")
-        Print.blue("\tFunction " + ast_vec_f_a.function + " in Pa...")
-        gen_func_file(ast_vec_f_a, "output/temp_a.c")
-        Print.blue("\tFunction " + ast_vec_f_b.function + " in Pb...")
-        gen_func_file(ast_vec_f_b, "output/temp_b.c")
-        Print.blue("\tFunction " + ast_vec_f_c.function + " in Pc...")
-        gen_func_file(ast_vec_f_c, "output/temp_c.c")
+        gen_temp_files(vec_f_a, Pa, ASTlists)
+        gen_temp_files(vec_f_b, Pb, ASTlists)
+        gen_temp_files(vec_f_c, Pc, ASTlists)
         
         
         Print.blue("Generating edit script from Pa to Pb...")
-        exec_com("docker run -v $PWD/output:/diff gumtree " + \
-                 "diff temp_a.c temp_b.c > output/diff_script_AB", False)
+        exec_com("gumtree diff output/temp_Pa.c output/temp_Pb.c > " + \
+                 "output/diff_script_AB", False)
                  
         Print.blue("Finding common structures in Pa with respect to Pc...")
-        exec_com("docker run -v $PWD/output:/diff gumtree " + \
-                 "diff temp_a.c temp_c.c | grep 'Match ' > " + \
-                 "output/diff_script_AC", False)
+        exec_com("gumtree diff output/temp_Pa.c output/temp_Pc.c | " + \
+                 "grep 'Match ' >  output/diff_script_AC", False)
         
         UPDATE = "Update"
         MOVE = "Move"
@@ -562,33 +581,27 @@ def transplantation(to_patch):
         diffs[MATCH] = dict()
         diffs[MATCHED] = dict()
         
+        # TODO: It seems that the order is important!!!
         with open('output/diff_script_AB', 'r') as script_AB:
             line = script_AB.readline().strip()
             while line:
                 line = line.split(" ")
                 instruction = line[0]
                 line = " ".join(line[1:])
-                if instruction == UPDATE:
-                    # Update node1 to node2
-                    line = line.split(TO)
-                    diffs[UPDATE][line[0]] = line[1]
-                elif instruction == MOVE:
-                    # Move node1 into node2 at pos
-                    line.split(INTO)
-                    diffs[MOVE][line[0]] = line[1].split(AT)
-                elif instruction == INSERT:
-                    # Insert node1 into node2 at pos
-                    line.split(INTO)
-                    diffs[MOVE][line[0]] = line[1].split(AT)
-                elif instruction == DELETE:
+                if instruction == DELETE:
                     # Delete node
-                    diffs[DELETE].append(line)
-                elif instruction == MATCH:
-                    # Match node1 to node2
+                    diffs[instruction].append(line)
+                elif instruction == MOVE or instruction == INSERT:
+                    # Move/Insert node1 into node2 at pos
+                    line.split(INTO)
+                    diffs[instruction][line[0]] = line[1].split(AT)
+                else:
+                    # Match/Update node1 to node2
                     line = line.split(TO)
-                    diffs[MATCH][line[0]] = line[1]
-                    # We keep track of what is node1 for node2
-                    diffs[MATCHED][line[1]] = line[0]
+                    diffs[instruction][line[0]] = line[1]
+                    if instruction == MATCH:
+                        # We keep track of what is node1 for node2 in MATCH
+                        diffs[MATCHED][line[1]] = line[0]
                 line = script_AB.readline().strip()
                 
         common = dict()
@@ -604,60 +617,44 @@ def transplantation(to_patch):
                 line = line[6:].split(TO)
                 common[MATCH][line[0]] = line[1]
                 line = script_AC.readline().strip()
+                
         
+        # FIXME: This seems to be wrong! After all I changed it :(
+        # TODO: Go backwards, start from modifications and find replacements.              
+        Print.blue("Generating edit script from Pc to Pd...")
         for nodeA in common[MATCH].keys():
             nodeC = common[MATCH][nodeA]
             try:
-                # Case DELETE: nodeA is deleted and nodeC matches nodeA
+                # DELETE: nodeA deleted, nodeC matches nodeA
                 if nodeA in diffs[DELETE]:
-                    common[DELETE].append(nodeC)
+                    common[DELETE].append(nodeC + Pc.name)
             except Exception as e:
                 err_exit(e, "Something went wrong in DELETE matching.")
             
-            try:                    
-                # Case MOVE: nodeA is moved to nodeB, nodeC matches nodeA
-                if nodeA in diffs[MOVE].keys():
-                    nodeB, pos = diffs[MOVE][nodeA]
-                    # TODO: Do something with pos!!!
-                    if nodeB in diffs[MATCHED].keys():
-                        nodeA2 = diffs[MATCHED][nodeB]
-                        # 1st: nodeB matches some nodeA' matching some nodeC'
-                        if nodeA2 in common[MATCH].keys():
-                            nodeD = common[MATCH][nodeA2]
-                            common[MOVE][nodeC] = [nodeD, pos]
-                        # 2nd: nodeB matches some nodeA', but we have no match
+            # MOVE/INSERT: nodeA matching node C is moved/inserted to nodeB
+            for mi in (MOVE, INSERT):
+                try:
+                    if nodeA in diffs[mi].keys():
+                        nodeB, pos = diffs[mi][nodeA]
+                        # TODO: Do something with pos!!!
+                        if nodeB in diffs[MATCHED].keys():
+                            nodeA2 = diffs[MATCHED][nodeB]
+                            # 1st: nodeB matches nodeA' matching some nodeC'
+                            if nodeA2 in common[MATCH].keys():
+                                nodeD = common[MATCH][nodeA2]
+                                common[mi][nodeC + Pc.name] = [nodeD + Pb.name, pos]
+                            # 2nd: nodeB matches nodeA', but we have no match
+                            else:
+                                common[mi][nodeC + Pc.name] = [nodeB + Pb.name, pos]
+                                # TODO: Should we do more?
+                                # E.g. include anything connected to that node
+                                
+                        # 3rd: nodeB doesn't have anything alike
                         else:
-                            common[MOVE][nodeC] = [nodeB, pos]
-                            # TODO: Should we do more?
-                            # E.g. include anything connected to that node
-                            
-                    # 3rd: nodeB doesn't have anything alike
-                    else:
-                        common[MOVE][nodeC] = [nodeB, pos]
-            except Exception as e:
-                err_exit(e, "Something went wrong in MOVE matching.")
-            try:       
-                # Case INSERT: nodeA inserted into nodeB, nodeC matches nodeA
-                if nodeA in diffs[INSERT].keys():
-                    nodeB, pos = diffs[INSERT][nodeA]
-                    #TODO: Something with pos!
-                    if nodeB in diffs[MATCHED].keys():
-                        nodeA2 = diffs[MATCHED][nodeB]
-                        # 1st: nodeB matches some nodeA2 matching some nodeD
-                        if nodeA2 in common[MATCH].keys():
-                            nodeD = common[MATCH][nodeA2]
-                            common[INSERT][nodeC] = [nodeD, pos]
-                        # 2nd: nodeB matches some nodeA2, no match for nodeA2
-                        else:
-                            common[INSERT][nodeC] = [nodeB, pos]
-                            # TODO: Should we do more?
-                            # E.g. include anything connected to that node
-                            
-                    # 3rd: nodeB doesn't have anything alike
-                    else:
-                        common[INSERT][nodeC] = [nodeB, pos]
-            except Exception as e:
-                err_exit(e, "Something went wrong in INSERT matching.")
+                            common[MOVE][nodeC + Pc.name] = [nodeB + Pb.name, pos]
+                except Exception as e:
+                    err_exit(e, "Something went wrong in " + mi + " matching.")
+            
             try:    
                 # Case UPDATE: nodeA is updated to nodeB, nodeC matches nodeA
                 if nodeA in diffs[UPDATE].keys():
@@ -667,34 +664,74 @@ def transplantation(to_patch):
                         # 1st: nodeB matches some nodeA2 matching some nodeD
                         if nodeA2 in common[MATCH].keys():
                             nodeD = common[MATCH][nodeA2]
-                            common[UPDATE][nodeC] = nodeD + "A"
+                            common[UPDATE][nodeC + Pc.name] = nodeD + Pc.name
                         # 2nd: nodeB matches some nodeA2, but match for nodeA2
                         else:
-                            common[UPDATE][nodeC] = nodeB + "B"
+                            common[UPDATE][nodeC + Pc.name] = nodeB + Pb.name
                             # TODO: Should we do more?
                             # E.g. include anything connected to that node
                             
                     # 3rd: nodeB doesn't have anything alike in Pc
                     else:
-                        common[INSERT][nodeC] = nodeB + "B"
+                        common[INSERT][nodeC + Pc.name] = nodeB + Pb.name
             except Exception as e:
                 err_exit(e, "Something went wrong in UPDATE matching.")
+        
         for key in common.keys():
-            if key == UPDATE:
-                Print.white(key)
-                for i in common[key].keys():
-                    Print.white("\t" + i + " to " + common[key][i])
-            elif key == DELETE:
-                Print.white(key)
+            Print.white(key)
+            if key == DELETE:
                 for i in common[key]:
-                    Print.white("\t" + i)
+                    node = i[:-2] # ( some_label(n) | some_label)
+                    proj = i[-2:]
+                    if node[-1] == ")":
+                        node = node.split("(")[-1][:-1]
+                        node = ASTlists[proj][int(node)]
+                    Print.white("\t" + str(node) + " of " + proj)
             elif key != MATCH:
-                Print.white(key)
                 for i in common[key].keys():
-                    Print.white("\t" + i + " into " + common[key][i])
+                    node1 = i[:-2]
+                    proj1 = i[-2:]
+                    if node1[-1] == ")":
+                        node1 = node1.split("(")[-1][:-1]
+                        node1 = ASTlists[proj1][int(node1)]
+                    node2 = common[key][i][:-2]
+                    proj2 = common[key][i][-2:]
+                    if node2[-1] == ")":
+                        node2 = node2.split("(")[-1][:-1]
+                        node2 = ASTlists[proj2][int(node2)]
+                    if key == UPDATE:
+                        Print.white("\t" + str(node1) + " of " + proj1 + \
+                                    TO + str(node2) + " of " + proj2)
+                    else:
+                        Print.white("\t" + str(node1) + " of " + proj1 + \
+                                    INTO + str(node2) + " of " + proj2)
+                           
+        '''for i in ASTlists["a"]:
+            print(i.node)
+            
+        for i in ASTlists["b"]:
+            print(i.node)
+        
+        for i in ASTlists["c"]:
+            print(i.node)'''
+            
+            
+def safe_exec(function, title, *args):
+    Print.title("Starting " + title + "...")
+    descr = title[0].lower() + title[1:]
+    try:
+        if not args:
+            a = function()
+        else:
+            a = function(*args)
+        runtime = str(time.time() - start)
+        Print.rose("Successful " + descr + ", after " + runtime + "seconds.")
+    except Exception as e:
+        err_exit(e, "Unexpected error during " + descr + ".")
+    return a
                     
 def run_crochet():
-    global Pa, Pb, Pc
+    global Pa, Pb, Pc, start
     # Little crochet introduction
     Print.start()
     
@@ -702,61 +739,26 @@ def run_crochet():
     start = time.time()
     
     # Prepare projects directories by getting paths and cleaning residual files
-    Print.title("Preparing projects...")
-    with open('crochet.conf', 'r', errors='replace') as file:
-        args = [i.strip() for i in file.readlines()]
-    if (len(args) < 3):
-        err_exit("Insufficient arguments: Pa, Pb, Pc source paths required.",
-                 "Try running:", "\tpython3 ASTcrochet.py $Pa $Pb $Pc")
-    Pa = Project.Project(args[0], "Pa")
-    Pb = Project.Project(args[1], "Pb")
-    Pc = Project.Project(args[2], "Pc")
-    clean()
-    Print.rose("Successful cleaning, after " + str(time.time() - start) + \
-               " seconds.")
-    # Generates vectors for pertinent functions (modified from Pa to Pb)
-    Print.title("Getting modified functions in Pa and generating vectors...")   
-    try:
-        gen_diff()
-        Print.rose("Functions successfully found, after " + \
-                    str(time.time() - start) + " seconds.")
-    except Exception as e:
-        err_exit(e, "Unexpected error while finding relevant functions.")
+    safe_exec(initialize, "projects initialization and cleaning")
     
+    # Generates vectors for pertinent functions (modified from Pa to Pb)
+    safe_exec(gen_diff, "search for affected functions and vector generation")
+              
     # Generates vectors for all functions in Pc
-    Print.title("Generating vectors for functions in Pc...")
-    try:
-        gen_ASTs()
-        Print.rose("Vectors for Pc successfully generated, after " + \
-                    str(time.time() - start) + " seconds.")
-    except Exception as e:
-        err_exit(e, "Unexpected error while generating vectors.")
+    safe_exec(gen_ASTs, "vector generation for functions in Pc")
 
     # Pairwise vector comparison for matching
-    Print.title("Starting pairwise vector comparison for matching...")
-    try:
-        to_patch = compare()
-        Print.rose("Successful comparison, after " + \
-                    str(time.time() - start) + " seconds.")
-    except Exception as e:
-        err_exit(e, "Unexpected error while doing pairwise comparison.")
+    to_patch = safe_exec(compare, "pairwise vector comparison for matching")
     
     # Using all previous structures to transplant patch
-    Print.title("Starting patch transplantation...")
-    try:
-        transplantation(to_patch)
-        Print.rose("Successful patch proposal, after " + \
-                    str(time.time() - start) + " seconds.")
-    except Exception as e:
-        err_exit(e, "Unexpected error in transplantation algorithm.")
-    # TODO: Transplant patch
+    safe_exec(transplantation, "patch transplantation", to_patch)
     
     # Final clean
     Print.title("Cleaning residual files generated by Crochet...")
     
     # Final running time and exit message
-    end = time.time()
-    Print.exit_msg(start, end)
+    runtime = str(time.time() - start)
+    Print.exit_msg(runtime)
     
     
 if __name__=="__main__":

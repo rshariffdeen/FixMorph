@@ -82,6 +82,8 @@ def start():
         
     \tDr. Abhik Roychoudhury (abhik@comp.nus.edu.sg)
     
+    \tAndrew Santosa (dcsandr@nus.edu.sg)
+    
     Acknowledgements:
     
     \tThis software uses Deckard (at tools/Deckard).
@@ -89,8 +91,8 @@ def start():
     '''
     +"\n" + "_"*150 + "\n")
     
-def exit_msg(st, end):
-    rose("Crochet finished successfully after " +str(end-st) + "seconds.\n")
+def exit_msg(runtime):
+    rose("Crochet finished successfully after " + runtime + "seconds.\n")
 
       
 def title(title):
