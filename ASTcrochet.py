@@ -6,6 +6,7 @@ Created on Tue Jun 12 10:25:58 2018
 @author: pedrobw
 """
 
+import sys
 import os
 import time
 from Utils import exec_com, err_exit, find_files, remove_Hexa, clean, \
@@ -541,7 +542,42 @@ def gen_temp_files(vec_f, proj, ASTlists):
     gum_file = "output/gumtree_" + proj.name
     c = "gumtree parse " + temp_file + " > " + gum_file
     exec_com(c, False)
+    # FIXME: This thing is recursive: depth problem...
+    sys.setrecursionlimit(100000)
     ASTlists[proj.name] = gumtreeASTparser.AST_from_file(gum_file)
+    sys.setrecursionlimit(10000)
+    
+def clean_parse(content, separator):
+    if content.count(separator) == 1:
+        return content.split(separator)
+    i = 0
+    while i < len(content):
+        if content[i] == "\"":
+            i += 1
+            while i < len(content)-1:
+                if content[i] == "\\":
+                    i += 2
+                elif content[i] == "\"":
+                    i += 1
+                    break
+                else:
+                    i += 1
+            prefix = content[:i]
+            rest = content[i:].split(separator)
+            node1 = prefix + rest[0]
+            node2 = separator.join(rest[1:])
+            return [node1, node2]
+        i += 1
+    # If all the above fails (it shouldn't), hope for some luck:
+    nodes = content.split(separator)
+    half = len(nodes)//2
+    node1 = separator.join(nodes[:half])
+    node2 = separator.join(nodes[half:])
+    return [node1, node2]
+    
+        
+                
+        
     
 def transplantation(to_patch):
     for (vec_f_a, vec_f_c, var_map) in to_patch:
@@ -568,116 +604,13 @@ def transplantation(to_patch):
         INSERT = "Insert"
         DELETE = "Delete"
         MATCH = "Match"
-        MATCHED = "Matched"
         TO = " to "
         AT = " at "
         INTO = " into "
-        
-        diffs = dict()
-        diffs[UPDATE] = dict()
-        diffs[MOVE] = dict()
-        diffs[INSERT] = dict()
-        diffs[DELETE] = list()
-        diffs[MATCH] = dict()
-        diffs[MATCHED] = dict()
-        
-        # TODO: It seems that the order is important!!!
-        with open('output/diff_script_AB', 'r') as script_AB:
-            line = script_AB.readline().strip()
-            while line:
-                line = line.split(" ")
-                instruction = line[0]
-                line = " ".join(line[1:])
-                if instruction == DELETE:
-                    # Delete node
-                    diffs[instruction].append(line)
-                elif instruction == MOVE or instruction == INSERT:
-                    # Move/Insert node1 into node2 at pos
-                    line.split(INTO)
-                    diffs[instruction][line[0]] = line[1].split(AT)
-                else:
-                    # Match/Update node1 to node2
-                    line = line.split(TO)
-                    diffs[instruction][line[0]] = line[1]
-                    if instruction == MATCH:
-                        # We keep track of what is node1 for node2 in MATCH
-                        diffs[MATCHED][line[1]] = line[0]
-                line = script_AB.readline().strip()
-                
-        common = dict()
-        common[UPDATE] = dict()
-        common[MOVE] = dict()
-        common[INSERT] = dict()
-        common[DELETE] = list()
-        common[MATCH] = dict()
-        
-        with open('output/diff_script_AC', 'r') as script_AC:
-            line = script_AC.readline().strip()
-            while line:
-                line = line[6:].split(TO)
-                common[MATCH][line[0]] = line[1]
-                line = script_AC.readline().strip()
-                
-        
-        # FIXME: This seems to be wrong! After all I changed it :(
-        # TODO: Go backwards, start from modifications and find replacements.              
+                      
         Print.blue("Generating edit script from Pc to Pd...")
-        for nodeA in common[MATCH].keys():
-            nodeC = common[MATCH][nodeA]
-            try:
-                # DELETE: nodeA deleted, nodeC matches nodeA
-                if nodeA in diffs[DELETE]:
-                    common[DELETE].append(nodeC + Pc.name)
-            except Exception as e:
-                err_exit(e, "Something went wrong in DELETE matching.")
-            
-            # MOVE/INSERT: nodeA matching node C is moved/inserted to nodeB
-            for mi in (MOVE, INSERT):
-                try:
-                    if nodeA in diffs[mi].keys():
-                        nodeB, pos = diffs[mi][nodeA]
-                        # TODO: Do something with pos!!!
-                        if nodeB in diffs[MATCHED].keys():
-                            nodeA2 = diffs[MATCHED][nodeB]
-                            # 1st: nodeB matches nodeA' matching some nodeC'
-                            if nodeA2 in common[MATCH].keys():
-                                nodeD = common[MATCH][nodeA2]
-                                common[mi][nodeC + Pc.name] = [nodeD + Pb.name, pos]
-                            # 2nd: nodeB matches nodeA', but we have no match
-                            else:
-                                common[mi][nodeC + Pc.name] = [nodeB + Pb.name, pos]
-                                # TODO: Should we do more?
-                                # E.g. include anything connected to that node
-                                
-                        # 3rd: nodeB doesn't have anything alike
-                        else:
-                            common[MOVE][nodeC + Pc.name] = [nodeB + Pb.name, pos]
-                except Exception as e:
-                    err_exit(e, "Something went wrong in " + mi + " matching.")
-            
-            try:    
-                # Case UPDATE: nodeA is updated to nodeB, nodeC matches nodeA
-                if nodeA in diffs[UPDATE].keys():
-                    nodeB = diffs[UPDATE][nodeA]
-                    if nodeB in diffs[MATCHED].keys():
-                        nodeA2 = diffs[MATCHED][nodeB]
-                        # 1st: nodeB matches some nodeA2 matching some nodeD
-                        if nodeA2 in common[MATCH].keys():
-                            nodeD = common[MATCH][nodeA2]
-                            common[UPDATE][nodeC + Pc.name] = nodeD + Pc.name
-                        # 2nd: nodeB matches some nodeA2, but match for nodeA2
-                        else:
-                            common[UPDATE][nodeC + Pc.name] = nodeB + Pb.name
-                            # TODO: Should we do more?
-                            # E.g. include anything connected to that node
-                            
-                    # 3rd: nodeB doesn't have anything alike in Pc
-                    else:
-                        common[INSERT][nodeC + Pc.name] = nodeB + Pb.name
-            except Exception as e:
-                err_exit(e, "Something went wrong in UPDATE matching.")
         
-        for key in common.keys():
+        '''for key in common.keys():
             Print.white(key)
             if key == DELETE:
                 for i in common[key]:
@@ -704,17 +637,163 @@ def transplantation(to_patch):
                                     TO + str(node2) + " of " + proj2)
                     else:
                         Print.white("\t" + str(node1) + " of " + proj1 + \
-                                    INTO + str(node2) + " of " + proj2)
+                                    INTO + str(node2) + " of " + proj2)'''
                            
-        '''for i in ASTlists["a"]:
-            print(i.node)
-            
-        for i in ASTlists["b"]:
-            print(i.node)
+        # Alternative way: In the right order
         
-        for i in ASTlists["c"]:
-            print(i.node)'''
-            
+        instruction_AB = list()
+        match_AB = dict()
+        match_BA = dict()
+        with open('output/diff_script_AB', 'r', errors='replace') as script_AB:
+            line = script_AB.readline().strip()
+            while line:
+                line = line.split(" ")
+                instruction = line[0]
+                content = " ".join(line[1:])
+                # Match node_A to node_B
+                if instruction == MATCH:
+                    try:
+                        nodeA, nodeB = clean_parse(content, TO)
+                        match_AB[nodeA] = nodeB
+                        match_BA[nodeB] = nodeA
+                    except Exception as e:
+                        err_exit(e, "Something went wrong in MATCH (AB).",
+                                 line, instruction, content)
+                # Update node_A to label
+                elif instruction == UPDATE:
+                    try:
+                        nodeA, label = clean_parse(content, TO)
+                        instruction_AB.append((instruction, nodeA, label))
+                    except Exception as e:
+                        err_exit(e, "Something went wrong in UPDATE.")
+                elif instruction == DELETE:
+                    try:
+                        nodeA = content
+                        instruction_AB.append((instruction, nodeA))
+                    except Exception as e:
+                        err_exit(e, "Something went wrong in DELETE.")
+                elif instruction == MOVE:
+                    try:
+                        nodeA, nodeB = clean_parse(content, INTO)
+                        nodeB_at = nodeB.split(AT)
+                        nodeB = AT.join(nodeB_at[:-1])
+                        pos = nodeB_at[-1]
+                        instruction_AB.append((instruction, nodeA, nodeB, pos))
+                    except Exception as e:
+                        err_exit(e, "Something went wrong in DELETE.")
+                elif instruction == INSERT:
+                    try:
+                        nodeB1, nodeB2 = clean_parse(content, INTO)
+                        nodeB2_at = nodeB2.split(AT)
+                        nodeB2 = AT.join(nodeB2_at[:-1])
+                        pos = nodeB2_at[-1]
+                        instruction_AB.append((instruction, nodeB1, nodeB2,
+                                              pos))
+                    except Exception as e:
+                        err_exit(e, "Something went wrong in INSERT.")
+                line = script_AB.readline().strip()
+                
+        match_AC = dict()
+        match_CA = dict()
+        with open('output/diff_script_AC', 'r', errors='replace') as script_AC:
+            line = script_AC.readline().strip()
+            while line:
+                line = line.split(" ")
+                instruction = line[0]
+                content = " ".join(line[1:])
+                if instruction == MATCH:
+                    try:
+                        nodeA, nodeC = clean_parse(content, TO)
+                        match_AC[nodeA] = nodeC
+                        match_CA[nodeC] = nodeA
+                    except Exception as e:
+                        err_exit(e, "Something went wrong in MATCH (AC).",
+                                 line, instruction, content)
+                line = script_AC.readline().strip()
+        
+        instruction_CD = list()
+        for i in instruction_AB:
+            instruction = i[0]
+            # Update nodeA to label -> Update nodeC to label
+            if instruction == UPDATE:
+                nodeA = i[1]
+                label = i[2]
+                nodeC = "?"
+                if nodeA in match_AC.keys():
+                    nodeC = match_AC[nodeA]
+                    nodeC = nodeC.split("(")[-1][:-1]
+                    nodeC = ASTlists["Pc"][int(nodeC)]
+                # TODO: else?
+                instruction_CD.append((UPDATE, nodeC, label))
+                #print(UPDATE + " " + str(nodeC) + TO + label)
+            # Delete nodeA -> Delete nodeC
+            elif instruction == DELETE:
+                nodeA = i[1]
+                nodeC = "?"
+                if nodeA in match_AC.keys():
+                    nodeC = match_AC[nodeA]
+                    nodeC = nodeC.split("(")[-1][:-1]
+                    nodeC = ASTlists["Pc"][int(nodeC)]
+                # TODO: else?
+                instruction_CD.append((DELETE, nodeC))
+                #print(DELETE + " " + str(nodeC))
+            # TODO: pos could be different! Context! Need to get children :(
+            # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
+            elif instruction == MOVE:
+                nodeA = i[1]
+                nodeB = i[2]
+                pos = i[3]
+                nodeC = "?"
+                nodeD = nodeB
+                if "(" in nodeD:
+                    nodeD = nodeD.split("(")[-1][:-1]
+                    nodeD = ASTlists["Pb"][int(nodeD)]
+                if nodeA in match_AC.keys():
+                    nodeC = match_AC[nodeA]
+                    if "(" in nodeC:
+                        nodeC = nodeC.split("(")[-1][:-1]
+                        nodeC = ASTlists["Pc"][int(nodeC)]
+                    if nodeB in match_BA.keys():
+                        nodeA2 = match_BA[nodeB]
+                        if nodeA2 in match_AC.keys():
+                            nodeD = match_AC[nodeA2]
+                            if "(" in nodeD:
+                                nodeD = nodeD.split("(")[-1][:-1]
+                                nodeD = ASTlists["Pc"][int(nodeD)]
+                # TODO: else?
+                instruction_CD.append((MOVE, nodeC, nodeD, pos))
+                #print(MOVE + " " + str(nodeC) + INTO + str(nodeD) + AT + pos)
+            # TODO: pos could be different! Context! Need to get children :(
+            # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
+            elif instruction == INSERT:
+                nodeB1 = i[1]
+                nodeB2 = i[2]
+                pos = i[3]
+                nodeD1 = nodeB1
+                if "(" in nodeD1:
+                    nodeD1 = nodeD1.split("(")[-1][:-1]
+                    nodeD1 = ASTlists["Pb"][int(nodeD1)]
+                nodeD2 = nodeB2
+                if "(" in nodeD2:
+                    nodeD2 = nodeD2.split("(")[-1][:-1]
+                    nodeD2 = ASTlists["Pb"][int(nodeD2)]
+                if nodeB1 in match_BA.keys():
+                    nodeA1 = match_BA[nodeB1]
+                    if nodeA1 in match_AC.keys():
+                        nodeD1 = match_AC[nodeA1]
+                        if "(" in nodeD1:
+                            nodeD1 = nodeD1.split("(")[-1][:-1]
+                            nodeD1 = ASTlists["Pc"][int(nodeD1)]
+                if nodeB2 in match_BA.keys():
+                    nodeA2 = match_BA[nodeB2]
+                    if nodeA2 in match_AC.keys():
+                        nodeD2 = match_AC[nodeA2]
+                        if "(" in nodeD2:
+                            nodeD2 = nodeD2.split("(")[-1][:-1]
+                            nodeD2 = ASTlists["Pc"][int(nodeD2)]
+                instruction_CD.append(INSERT, nodeD1, nodeD2, pos)
+                #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
+                #      pos)
             
 def safe_exec(function, title, *args):
     Print.title("Starting " + title + "...")
@@ -725,7 +804,7 @@ def safe_exec(function, title, *args):
         else:
             a = function(*args)
         runtime = str(time.time() - start)
-        Print.rose("Successful " + descr + ", after " + runtime + "seconds.")
+        Print.rose("Successful " + descr + ", after " + runtime + " seconds.")
     except Exception as e:
         err_exit(e, "Unexpected error during " + descr + ".")
     return a
