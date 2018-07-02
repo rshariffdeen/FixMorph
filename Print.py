@@ -16,6 +16,8 @@ ROSE = '\n\t\x1b[1;35m'
 CYAN = '\x1b[1;36m'
 WHITE = '\t\x1b[1;37m'
 
+debug = False
+
 ''' Functions to print (colors, title, presentation of the program...)'''
 
 def color(message, color, jumpline=True):
@@ -97,3 +99,10 @@ def exit_msg(runtime):
       
 def title(title):
     green("_"*150 + "\n\n\t" + title + "\n" + "_"*150+"\n")
+    
+def conditional(message, *args):
+    if debug:
+        for i in args:
+            if not i:
+                return None
+        print(message)

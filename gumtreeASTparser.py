@@ -5,45 +5,49 @@ Created on Wed Jun 27 13:25:52 2018
 @author: pedrobw
 """
 
-printer = False
+import Print
+from Utils import err_exit
 
 node = -1
 
-ttype = []
-label = []
-typeLabel = []
-pos = []
-length = []
+ttype = [None]
+label = [None]
+typeLabel = ["Root"]
+pos = [None]
+length = [None]
+children = [[]]
+char = ""
+line = ""
+ast = []
+index = 0
 
 
 class AST:
     
     nodes = []
     temp_nodes = []
+    name = ["TypeLabel", "Node", "Label", "Type", "Pos", "Length"]
     
-    def __init__(self, ttype, label, typeLabel, pos, length, char):
+    def __init__(self, ttype, label, typeLabel, pos, length, children, char):
         self.type = ttype
         self.label = label
         self.typeLabel = typeLabel
         self.pos = pos
         self.length = length
+        self.children = children
         self.char = char
         self.node = len(AST.nodes)
-        if printer:
-            print(self)
+        Print.conditional(self)
         AST.nodes.append(self)
         self.attributes = [self.typeLabel, self.node, self.label, self.type,
                            self.pos, self.length]
         
-    def __str__(self):
-        l = [self.typeLabel, self.node, self.label, self.type, self.pos,
-             self.length]
-        name = ["\tTypeLabel(", "Node(", "Label(", "Type(", "Pos(", "Length("]
-        name2 = [") ", ") ", ") ", ") ", ") ", ") "]
-        s = ""
-        for i in range(len(l)):
-            if l[i] != None:
-                s += name[i] + str(l[i]) + name2[i]
+    def __str__(self):        
+        s = "\t"
+        for i in range(len(self.attributes)):
+            if self.attributes[i] != None:
+                s += AST.name[i] + "(" + str(self.attributes[i]) + ") "
+        s += "Children(" + str(len(self.children)) + ")"
         return s
         
 def get_lasts():
@@ -52,8 +56,9 @@ def get_lasts():
     tl = typeLabel.pop()
     p = pos.pop()
     le = length.pop()
+    c = children.pop()
     #print(t, la, tl, p, le)
-    return t, la , tl, p, le
+    return t, la , tl, p, le, c
     
 def see_lasts():
     t = ttype[-1]
@@ -61,116 +66,103 @@ def see_lasts():
     tl = typeLabel[-1]
     p = pos[-1]
     le = length[-1]
+    c = children[-1]
     #print(t, la, tl, p, le)
-    return t, la , tl, p, le
+    return t, la , tl, p, le, c
     
-def rec_trans(ast, index=0, char="", line=""):
+def attributes_append(tl):
+    global ttype, label, typeLabel, pos, length, children
+    ttype.append(None)
+    label.append(None)
+    typeLabel.append(None)
+    pos.append(None)
+    length.append(None)
+    children.append([])
+    
+def rec_trans(index=0):
+    
     global ttype, label, typeLabel, pos, length
-    if index == 0:
-        if printer:
-            print("{")
-        ttype.append(None)
-        label.append(None)
-        typeLabel.append("Root")
-        pos.append(None)
-        length.append(None)
+    global char, line, ast
     index += 1
     while index < len(ast):
+        
         line = ast[index]
+        
         if line == "\"root\": {":
             char += "  "
-            ttype.append(None)
-            label.append(None)
-            typeLabel.append(None)
-            pos.append(None)
-            length.append(None)
-            if printer:
-                print(char + "root: {")
-            a = rec_trans(ast, index, char + "  ", line)
-            index, char, line = a
-        elif "{" in line:
-            if printer:
-                print(char + "{")
-            ttype.append(None)
-            label.append(None)
-            typeLabel.append(None)
-            pos.append(None)
-            length.append(None)
+            attributes_append(None)
+            Print.conditional(char + "root: {")
             char += "  "
+            try:
+                index = rec_trans(index)
+            except Exception as e:
+                err_exit(e, "rec_trans fail in root")
+            
+        elif "{" in line:
+            Print.conditional(char + "{")
+            attributes_append(None)
+            char += "  "
+            
         elif "\"" in line:
             line = line.split("\": ")
             attribute = line[0].split("\"")[1]
             content = "\": ".join(line[1:])
             if len(content) > 2:
                 content = content[1:-2]
+            Print.conditional(char + attribute + ": " + content)
             if attribute=="type":
                 ttype[-1] = content
-                if printer:
-                    print(char + "type:", content)
             elif attribute=="label":
                 label[-1] = content
-                if printer:
-                    print(char + "label:", content)
             elif attribute=="typeLabel":
                 typeLabel[-1] = content
-                if printer:
-                    print(char + "typeLabel:", content)
             elif attribute=="pos":
                 pos[-1] = content
-                if printer:
-                    print(char + "pos:", content)
             elif attribute=="length":
                 length[-1] = content
-                if printer:
-                    print(char + "length:", content)
             elif attribute=="children":
-                if content == "[]":
-                    if printer:
-                        print(char + "children []")
-                else:
-                    if printer:
-                        print(char + "children [")
+                if content != "[]":
                     while "]" not in content:
                         if index < len(ast):
-                            a = rec_trans(ast, index, char+"  ", line)
-                            
-                            index, char, line = a
+                            char += "  "
+                            try:
+                                index = rec_trans(index)
+                            except Exception as e:
+                                err_exit(e, "rec_trans fail in ]")
                         else:
                             break
                 
-                
-                
         elif "}," in line:
             char = char[:-2]
-            if printer:
-                print(char + "},")
-            t, la , tl, p, le = get_lasts()
+            Print.conditional(char + "},")
+            t, la , tl, p, le, c = get_lasts()
+            this_ast = AST(t, la, tl, p, le, c, char)
+            children[-1].append(this_ast)
             
-            AST(t, la, tl, p, le, char) 
         elif "}" in line:
             char = char[:-2]
-            if printer:
-                print(char + "}")
-            t, la , tl, p, le = get_lasts()
-            AST(t, la, tl, p, le, char)
+            Print.conditional(char + "}")
+            t, la , tl, p, le, c = get_lasts()
+            this_ast = AST(t, la, tl, p, le, c, char)
+            children[-1].append(this_ast)
         elif "]" in line:
             char = char[:-2]
-            if printer:
-                print(char + "]")
+            Print.conditional(char + "]")
         
         index += 1
         
-    
-    return index, char, line
+    return index
     
     
 def AST_from_file(file, debug=False):
-    global printer
+    global ast
     with open(file, 'r', errors='replace') as ast_file:
-        ast = [i.strip() for i in ast_file.readlines()]
-
-    rec_trans(ast)
+        ast = [i.strip() for i in ast_file.readlines()[:-1]]
+        
+    Print.conditional("{")
+    rec_trans()
     out = [i for i in AST.nodes]
+    Print.conditional("}")
     AST.nodes = []
     return out
     

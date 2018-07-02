@@ -103,13 +103,13 @@ def parseAST(filepath, proj, Deckard=True):
     # Keep functions here
     function_lines = []
     # Keep structures here
-    structure_lines = []
+    #structure_lines = []
     # Keep variables for each function d[function] = "typevar namevar; ...;"
     dict_file = dict()
     # If we're inside the tree parsing a function
     in_function = False
     # If we're inside the tree parsing a struct
-    in_struct = False
+    #in_struct = False
     # Start and ending line of the function/struct
     start = 0
     end = 0
@@ -133,7 +133,7 @@ def parseAST(filepath, proj, Deckard=True):
             # Skip irrelevant things from other files
             if ".h" in line or ".c" in line.replace(file, ""):
                 in_function = False
-                in_struct = False
+                #in_struct = False
                 while line:
                     if filepath in line and ".c" not in line.replace(file, ""):
                         break
@@ -141,7 +141,7 @@ def parseAST(filepath, proj, Deckard=True):
             # Function declaration: Capture start, end and use Deckard on it
             elif (("-FunctionDecl " in line) and ("col:" not in line) and 
                 "invalid sloc" not in line):
-                in_struct = False
+                #in_struct = False
                 line = line.split(" ")
                 if line[-1] != "extern":
                     line = remove_Hexa(line)
@@ -172,7 +172,7 @@ def parseAST(filepath, proj, Deckard=True):
             # Capture variable in function
             elif in_function and ("VarDecl " in line) and \
                  ("invalid sloc" not in line):
-                in_struct = False
+                #in_struct = False
                 line = "-".join(line.split("-")[1:]).split(" ")
                 line = remove_Hexa(line).split(" '")
                 # TODO: Get variable types
@@ -542,10 +542,10 @@ def gen_temp_files(vec_f, proj, ASTlists):
     gum_file = "output/gumtree_" + proj.name
     c = "gumtree parse " + temp_file + " > " + gum_file
     exec_com(c, False)
-    # FIXME: This thing is recursive: depth problem...
+    # This thing is recursive: depth problem...
     sys.setrecursionlimit(100000)
     ASTlists[proj.name] = gumtreeASTparser.AST_from_file(gum_file)
-    sys.setrecursionlimit(10000)
+    sys.setrecursionlimit(1000)
     
 def clean_parse(content, separator):
     if content.count(separator) == 1:
@@ -575,21 +575,29 @@ def clean_parse(content, separator):
     node2 = separator.join(nodes[half:])
     return [node1, node2]
     
-        
-                
-        
     
 def transplantation(to_patch):
+    
+    UPDATE = "Update"
+    MOVE = "Move"
+    INSERT = "Insert"
+    DELETE = "Delete"
+    MATCH = "Match"
+    TO = " to "
+    AT = " at "
+    INTO = " into "
+    
     for (vec_f_a, vec_f_c, var_map) in to_patch:
+        
         vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
         vec_f_b = Pb.funcs[vec_f_b_file][vec_f_a.function]
         ASTlists = dict()
         
         Print.blue("Generating temp files for each pertinent function...")
+        
         gen_temp_files(vec_f_a, Pa, ASTlists)
         gen_temp_files(vec_f_b, Pb, ASTlists)
         gen_temp_files(vec_f_c, Pc, ASTlists)
-        
         
         Print.blue("Generating edit script from Pa to Pb...")
         exec_com("gumtree diff output/temp_Pa.c output/temp_Pb.c > " + \
@@ -597,23 +605,11 @@ def transplantation(to_patch):
                  
         Print.blue("Finding common structures in Pa with respect to Pc...")
         exec_com("gumtree diff output/temp_Pa.c output/temp_Pc.c | " + \
-                 "grep 'Match ' >  output/diff_script_AC", False)
-        
-        UPDATE = "Update"
-        MOVE = "Move"
-        INSERT = "Insert"
-        DELETE = "Delete"
-        MATCH = "Match"
-        TO = " to "
-        AT = " at "
-        INTO = " into "
+                 "grep 'Match ' >  output/diff_script_AC", False)        
                       
         Print.blue("Generating edit script from Pc to Pd...")
-                           
-        # Alternative way: In the right order
-        
+
         instruction_AB = list()
-        match_AB = dict()
         match_BA = dict()
         with open('output/diff_script_AB', 'r', errors='replace') as script_AB:
             line = script_AB.readline().strip()
@@ -625,7 +621,6 @@ def transplantation(to_patch):
                 if instruction == MATCH:
                     try:
                         nodeA, nodeB = clean_parse(content, TO)
-                        match_AB[nodeA] = nodeB
                         match_BA[nodeB] = nodeA
                     except Exception as e:
                         err_exit(e, "Something went wrong in MATCH (AB).",
@@ -665,7 +660,6 @@ def transplantation(to_patch):
                 line = script_AB.readline().strip()
                 
         match_AC = dict()
-        match_CA = dict()
         with open('output/diff_script_AC', 'r', errors='replace') as script_AC:
             line = script_AC.readline().strip()
             while line:
@@ -676,7 +670,6 @@ def transplantation(to_patch):
                     try:
                         nodeA, nodeC = clean_parse(content, TO)
                         match_AC[nodeA] = nodeC
-                        match_CA[nodeC] = nodeA
                     except Exception as e:
                         err_exit(e, "Something went wrong in MATCH (AC).",
                                  line, instruction, content)
@@ -762,9 +755,11 @@ def transplantation(to_patch):
                         if "(" in nodeD2:
                             nodeD2 = nodeD2.split("(")[-1][:-1]
                             nodeD2 = ASTlists["Pc"][int(nodeD2)]
-                instruction_CD.append(INSERT, nodeD1, nodeD2, pos)
+                instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
                 #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
                 #      pos)
+        for i in instruction_CD:
+            print(" ".join([str(j) for j in i]))
             
 def safe_exec(function, title, *args):
     Print.title("Starting " + title + "...")
