@@ -6,7 +6,6 @@ Created on Wed Jun 27 13:25:52 2018
 """
 
 import Print
-from Utils import err_exit
 
 node = -1
 
@@ -37,7 +36,6 @@ class AST:
         self.children = children
         self.char = char
         self.node = len(AST.nodes)
-        Print.conditional(self)
         AST.nodes.append(self)
         self.attributes = [self.typeLabel, self.node, self.label, self.type,
                            self.pos, self.length]
@@ -83,20 +81,17 @@ def rec_trans(index=0):
     
     global ttype, label, typeLabel, pos, length
     global char, line, ast
+    
     index += 1
+    char += "  "
     while index < len(ast):
         
         line = ast[index]
         
         if line == "\"root\": {":
-            char += "  "
             attributes_append(None)
             Print.conditional(char + "root: {")
-            char += "  "
-            try:
-                index = rec_trans(index)
-            except Exception as e:
-                err_exit(e, "rec_trans fail in root")
+            index = rec_trans(index)
             
         elif "{" in line:
             Print.conditional(char + "{")
@@ -124,11 +119,7 @@ def rec_trans(index=0):
                 if content != "[]":
                     while "]" not in content:
                         if index < len(ast):
-                            char += "  "
-                            try:
-                                index = rec_trans(index)
-                            except Exception as e:
-                                err_exit(e, "rec_trans fail in ]")
+                            index = rec_trans(index)
                         else:
                             break
                 
@@ -154,8 +145,10 @@ def rec_trans(index=0):
     return index
     
     
-def AST_from_file(file, debug=False):
+def AST_from_file(file):
+    
     global ast
+    
     with open(file, 'r', errors='replace') as ast_file:
         ast = [i.strip() for i in ast_file.readlines()[:-1]]
         
@@ -164,12 +157,33 @@ def AST_from_file(file, debug=False):
     out = [i for i in AST.nodes]
     Print.conditional("}")
     AST.nodes = []
+    
     return out
+    
+def recursive_print(tree):
+    for i in range(len(tree.attributes)):
+        if tree.attributes[i] != None:
+            print(tree.char + AST.name[i] + "(" + str(tree.attributes[i]) + ")")
+    if len(tree.children) == 0:
+        print(tree.char + "Children[]")
+    else:
+        print(tree.char + "Children[")
+        L = len(tree.children)
+        last = L-1
+        for i in range(L):
+            print(tree.char + "  {")
+            recursive_print(tree.children[i])
+            if i == last:
+                print(tree.char + "  }")
+            else:
+                print(tree.char + "  },")
+        print(tree.char + "]")
     
     
         
                 
 if __name__=="__main__":    
-    for i in AST_from_file("gumtree_parse_test"):
-        print(i)
+    l = AST_from_file("gumtree_parse_test")
+    root = l[-1]
+    recursive_print(root)
             

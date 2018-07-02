@@ -105,4 +105,4 @@ def conditional(message, *args):
         for i in args:
             if not i:
                 return None
-        print(message)
+        white(message)
