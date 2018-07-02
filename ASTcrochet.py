@@ -609,35 +609,6 @@ def transplantation(to_patch):
         INTO = " into "
                       
         Print.blue("Generating edit script from Pc to Pd...")
-        
-        '''for key in common.keys():
-            Print.white(key)
-            if key == DELETE:
-                for i in common[key]:
-                    node = i[:-2] # ( some_label(n) | some_label)
-                    proj = i[-2:]
-                    if node[-1] == ")":
-                        node = node.split("(")[-1][:-1]
-                        node = ASTlists[proj][int(node)]
-                    Print.white("\t" + str(node) + " of " + proj)
-            elif key != MATCH:
-                for i in common[key].keys():
-                    node1 = i[:-2]
-                    proj1 = i[-2:]
-                    if node1[-1] == ")":
-                        node1 = node1.split("(")[-1][:-1]
-                        node1 = ASTlists[proj1][int(node1)]
-                    node2 = common[key][i][:-2]
-                    proj2 = common[key][i][-2:]
-                    if node2[-1] == ")":
-                        node2 = node2.split("(")[-1][:-1]
-                        node2 = ASTlists[proj2][int(node2)]
-                    if key == UPDATE:
-                        Print.white("\t" + str(node1) + " of " + proj1 + \
-                                    TO + str(node2) + " of " + proj2)
-                    else:
-                        Print.white("\t" + str(node1) + " of " + proj1 + \
-                                    INTO + str(node2) + " of " + proj2)'''
                            
         # Alternative way: In the right order
         
