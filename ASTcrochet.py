@@ -370,7 +370,7 @@ def transplantation(to_patch):
                 line = line.split(" ")
                 instruction = line[0]
                 content = " ".join(line[1:])
-                # Match node_A to node_B
+                # Match nodeA to nodeB
                 if instruction == MATCH:
                     try:
                         nodeA, nodeB = clean_parse(content, TO)
@@ -378,19 +378,21 @@ def transplantation(to_patch):
                     except Exception as e:
                         err_exit(e, "Something went wrong in MATCH (AB).",
                                  line, instruction, content)
-                # Update node_A to label
+                # Update nodeA to label
                 elif instruction == UPDATE:
                     try:
                         nodeA, label = clean_parse(content, TO)
                         instruction_AB.append((instruction, nodeA, label))
                     except Exception as e:
                         err_exit(e, "Something went wrong in UPDATE.")
+                # Delete nodeA
                 elif instruction == DELETE:
                     try:
                         nodeA = content
                         instruction_AB.append((instruction, nodeA))
                     except Exception as e:
                         err_exit(e, "Something went wrong in DELETE.")
+                # Move nodeA into nodeB at pos
                 elif instruction == MOVE:
                     try:
                         nodeA, nodeB = clean_parse(content, INTO)
@@ -400,6 +402,7 @@ def transplantation(to_patch):
                         instruction_AB.append((instruction, nodeA, nodeB, pos))
                     except Exception as e:
                         err_exit(e, "Something went wrong in DELETE.")
+                # Insert nodeB1 into nodeB2 at pos
                 elif instruction == INSERT:
                     try:
                         nodeB1, nodeB2 = clean_parse(content, INTO)
@@ -454,12 +457,11 @@ def transplantation(to_patch):
                 # TODO: else?
                 instruction_CD.append((DELETE, nodeC))
                 #print(DELETE + " " + str(nodeC))
-            # TODO: pos could be different! Context! Need to get children :(
             # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
             elif instruction == MOVE:
                 nodeA = i[1]
                 nodeB = i[2]
-                pos = i[3]
+                pos = int(i[3])
                 nodeC = "?"
                 nodeD = nodeB
                 if "(" in nodeD:
@@ -477,37 +479,88 @@ def transplantation(to_patch):
                             if "(" in nodeD:
                                 nodeD = nodeD.split("(")[-1][:-1]
                                 nodeD = ASTlists["Pc"][int(nodeD)]
+                            try:    
+                                m = 0
+                                M = len(nodeB.children)
+                                if pos != 0 and pos < M-1:
+                                    nodeB_l = nodeB.children[pos-1]
+                                    nodeB_r = nodeB.children[pos+1]
+                                    if nodeB_l in match_BA.keys():
+                                        nodeA_l = match_BA[nodeB_l]
+                                        if nodeA_l in match_AC.keys():
+                                            nodeC_l = match_AC[nodeA_l]
+                                            if nodeC_l in nodeD.children:
+                                                m = nodeD.children.index(nodeC_l)
+                                                pos = m+1
+                                    elif nodeB_r in match_BA.keys():
+                                        nodeA_r = match_BA[nodeB_r]
+                                        if nodeA_r in match_AC.keys():
+                                            nodeC_r = match_AC[nodeA_r]
+                                            if nodeC_r in nodeD.children:
+                                                M = nodeD.children.index(nodeC_r)
+                                                pos = M-1
+                                elif pos >= M - 1:
+                                    pos += len(nodeD.children) - M - 1
+                            except Exception as e:
+                                err_exit(e, "HERE1")
+                                        
                 # TODO: else?
                 instruction_CD.append((MOVE, nodeC, nodeD, pos))
                 #print(MOVE + " " + str(nodeC) + INTO + str(nodeD) + AT + pos)
-            # TODO: pos could be different! Context! Need to get children :(
             # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
             elif instruction == INSERT:
                 nodeB1 = i[1]
                 nodeB2 = i[2]
-                pos = i[3]
+                pos = int(i[3])
                 nodeD1 = nodeB1
                 if "(" in nodeD1:
                     nodeD1 = nodeD1.split("(")[-1][:-1]
-                    nodeD1 = ASTlists["Pb"][int(nodeD1)]
+                    nodeD1 = ASTlists[Pb.name][int(nodeD1)]
                 nodeD2 = nodeB2
                 if "(" in nodeD2:
                     nodeD2 = nodeD2.split("(")[-1][:-1]
-                    nodeD2 = ASTlists["Pb"][int(nodeD2)]
+                    nodeD2 = ASTlists[Pb.name][int(nodeD2)]
                 if nodeB1 in match_BA.keys():
                     nodeA1 = match_BA[nodeB1]
                     if nodeA1 in match_AC.keys():
                         nodeD1 = match_AC[nodeA1]
                         if "(" in nodeD1:
                             nodeD1 = nodeD1.split("(")[-1][:-1]
-                            nodeD1 = ASTlists["Pc"][int(nodeD1)]
+                            nodeD1 = ASTlists[Pc.name][int(nodeD1)]
                 if nodeB2 in match_BA.keys():
                     nodeA2 = match_BA[nodeB2]
                     if nodeA2 in match_AC.keys():
                         nodeD2 = match_AC[nodeA2]
                         if "(" in nodeD2:
                             nodeD2 = nodeD2.split("(")[-1][:-1]
-                            nodeD2 = ASTlists["Pc"][int(nodeD2)]
+                            nodeD2 = ASTlists[Pc.name][int(nodeD2)]
+                        try:
+                            m = 0
+                            if "(" in nodeB2:
+                                true_B2 = nodeB2.split("(")[-1][:-1]
+                                true_B2 = ASTlists[Pb.name][int(true_B2)]
+                            M = len(true_B2.children)
+                            if pos != 0 and pos < M-1:
+                                nodeB2_l = true_B2.children[pos-1]
+                                nodeB2_r = true_B2.children[pos+1]
+                                if nodeB2_l in match_BA.keys():
+                                    nodeA2_l = match_BA[nodeB2_l]
+                                    if nodeA2_l in match_AC.keys():
+                                        nodeD2_l = match_AC[nodeA2_l]
+                                        if nodeD2_l in nodeD2.children:
+                                            m = nodeD2.children.index(nodeD2_l)
+                                            pos = m+1
+                                elif nodeB2_r in match_BA.keys():
+                                    nodeA2_r = match_BA[nodeB2_r]
+                                    if nodeA2_r in match_AC.keys():
+                                        nodeD2_r = match_AC[nodeA2_r]
+                                        if nodeD2_r in nodeD2.children:
+                                            M = nodeD2.children.index(nodeD2_r)
+                                            pos = max(0, M-1)
+                            elif pos >= M - 1:
+                                pos += len(nodeD2.children) - M - 1
+                        except Exception as e:
+                            err_exit(e, "Here2")
                 instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
                 #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
                 #      pos)
@@ -525,6 +578,8 @@ def safe_exec(function, title, *args):
         runtime = str(time.time() - start)
         Print.rose("Successful " + descr + ", after " + runtime + " seconds.")
     except Exception as e:
+        runtime = str(time.time() - start)
+        Print.red("Crash during " + descr + ", after " + runtime + " seconds.")
         err_exit(e, "Unexpected error during " + descr + ".")
     return a
                     
