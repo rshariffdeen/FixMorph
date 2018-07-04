@@ -29,11 +29,20 @@ def test_gumtreeParsing2():
     l = gumtreeASTparser.AST_from_file("gumtree_parse_test")
     root = l[-1]
     gumtreeASTparser.recursive_print(root)
-        
-
+    
+def test_gen_AST():
+    src = "/media/pedrobw/6A384D7F384D4AF1/Users/Administrator/Examples/" + \
+          "Test/GraphicsMagick/Pc/"
+    file = src + "hp2xx/old/to_pcx.c" #"ralcgm/src/cgmotpz.c"
+    ASTgen.gen_AST(file, src)
+    
+    file = src + "ralcgm/src/cgmotpz.c"
+    ASTgen.gen_AST(file, src)
+    
 def run():
     Print.title("Running crochet tests...")
-    tests = [test_ASTparsing, test_gumtreeParsing1, test_gumtreeParsing2]
+    tests = [test_ASTparsing, test_gumtreeParsing1, test_gumtreeParsing2,
+             test_gen_AST]
     for i in tests:
         Print.green("-"*120)
         Print.rose("Starting test " + str(i.__name__) + "...")

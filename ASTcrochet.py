@@ -279,6 +279,7 @@ def gen_func_file(ast_vec_func, output_file):
     with open(output_file, 'w') as temp:
         with open(ast_vec_func.file, 'r', errors='replace') as file:
             ls = file.readlines()
+            # FIXME: This thing isn't copying the function properly sometimes
             while start > 0:
                 j = start-1
                 if "}" in ls[j] or "#include" in ls [j] or ";" in ls[j] or "*/" in ls[j]:
@@ -352,11 +353,13 @@ def transplantation(to_patch):
         gen_temp_files(vec_f_b, Pb, ASTlists)
         gen_temp_files(vec_f_c, Pc, ASTlists)
         
-        Print.blue("Generating edit script from Pa to Pb...")
+        Print.blue("Generating edit script from " + Pa.name + " to " + \
+                   Pb.name + "...")
         exec_com("gumtree diff output/temp_Pa.c output/temp_Pb.c > " + \
                  "output/diff_script_AB", False)
                  
-        Print.blue("Finding common structures in Pa with respect to Pc...")
+        Print.blue("Finding common structures in " + Pa.name + \
+                   " with respect to " + Pb.name + "...")
         exec_com("gumtree diff output/temp_Pa.c output/temp_Pc.c | " + \
                  "grep 'Match ' >  output/diff_script_AC", False)        
                       
@@ -442,7 +445,7 @@ def transplantation(to_patch):
                 if nodeA in match_AC.keys():
                     nodeC = match_AC[nodeA]
                     nodeC = nodeC.split("(")[-1][:-1]
-                    nodeC = ASTlists["Pc"][int(nodeC)]
+                    nodeC = ASTlists[Pc.name][int(nodeC)]
                 # TODO: else?
                 instruction_CD.append((UPDATE, nodeC, label))
                 #print(UPDATE + " " + str(nodeC) + TO + label)
@@ -453,7 +456,7 @@ def transplantation(to_patch):
                 if nodeA in match_AC.keys():
                     nodeC = match_AC[nodeA]
                     nodeC = nodeC.split("(")[-1][:-1]
-                    nodeC = ASTlists["Pc"][int(nodeC)]
+                    nodeC = ASTlists[Pc.name][int(nodeC)]
                 # TODO: else?
                 instruction_CD.append((DELETE, nodeC))
                 #print(DELETE + " " + str(nodeC))
@@ -466,19 +469,19 @@ def transplantation(to_patch):
                 nodeD = nodeB
                 if "(" in nodeD:
                     nodeD = nodeD.split("(")[-1][:-1]
-                    nodeD = ASTlists["Pb"][int(nodeD)]
+                    nodeD = ASTlists[Pb.name][int(nodeD)]
                 if nodeA in match_AC.keys():
                     nodeC = match_AC[nodeA]
                     if "(" in nodeC:
                         nodeC = nodeC.split("(")[-1][:-1]
-                        nodeC = ASTlists["Pc"][int(nodeC)]
+                        nodeC = ASTlists[Pc.name][int(nodeC)]
                     if nodeB in match_BA.keys():
                         nodeA2 = match_BA[nodeB]
                         if nodeA2 in match_AC.keys():
                             nodeD = match_AC[nodeA2]
                             if "(" in nodeD:
                                 nodeD = nodeD.split("(")[-1][:-1]
-                                nodeD = ASTlists["Pc"][int(nodeD)]
+                                nodeD = ASTlists[Pc.name][int(nodeD)]
                             try:    
                                 m = 0
                                 M = len(nodeB.children)
