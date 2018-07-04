@@ -8,6 +8,7 @@ Created on Wed Jun 27 13:30:48 2018
 import time
 import Project
 import ASTgen
+import ASTVector
 import gumtreeASTparser
 import Print
 
@@ -39,10 +40,21 @@ def test_gen_AST():
     file = src + "ralcgm/src/cgmotpz.c"
     ASTgen.gen_AST(file, src)
     
+def test_dist():
+    file1 = "/media/pedrobw/6A384D7F384D4AF1/Users/Administrator/Examples/Backporting/Buffer_Overflow-Jasper-2/Pa/src/libjasper/jpc/jpc_dec.c.jpc_dec_process_siz.vec"
+    file2 = "/media/pedrobw/6A384D7F384D4AF1/Users/Administrator/Examples/Backporting/Buffer_Overflow-Jasper-2/Pc/src/libjasper/jpc/jpc_dec.c.jpc_dec_process_siz.vec"
+    file3 = "/media/pedrobw/6A384D7F384D4AF1/Users/Administrator/Examples/Backporting/Buffer_Overflow-Jasper-2/Pc/src/libjasper/jpc/jpc_dec.c.jpc_dec_process_cod.vec"
+    d12 = ASTVector.ASTVector.file_dist(file1, file2)
+    d13 = ASTVector.ASTVector.file_dist(file1, file3)
+    print(d12, d13, d12 < d13)
+    
 def run():
     Print.title("Running crochet tests...")
-    tests = [test_ASTparsing, test_gumtreeParsing1, test_gumtreeParsing2,
-             test_gen_AST]
+    tests = [test_ASTparsing,
+             test_gumtreeParsing1,
+             test_gumtreeParsing2,
+             #test_gen_AST,
+             test_dist]
     for i in tests:
         Print.green("-"*120)
         Print.rose("Starting test " + str(i.__name__) + "...")

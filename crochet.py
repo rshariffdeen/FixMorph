@@ -137,35 +137,97 @@ def compare():
     
     Print.blue("Variable mapping...\n")
     to_patch = []
+    
+    UNKNOWN = "#UNKNOWN#"
     for i in vecs_A:
         best = vecs_C[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
+        
+        # Get best match candidate
         for j in vecs_C:
             d = ASTVector.ASTVector.dist(i[1],j[1])
             if d < best_d:
                 best = j
                 best_d = d
+        
+        # Get all pertinent matches (at dist d' < k*best_d) (with k=2?)
+        candidates = []
+        candidates_d = []
+        for j in vecs_C:
+            # TODO: Inefficient, computing twice. Should store somewhere?
+            d = ASTVector.ASTVector.dist(i[1],j[1])
+            if d <= 2*best_d:
+                candidates.append(j)
+                candidates_d.append(d)
+                
+        count_unknown = [0 for i in candidates]
+        count_vars = [0 for i in candidates]
+        var_maps = []
+        
         # We go up to -4 to remove the ".vec" part
         fa = i[0].replace(Pa.path, "")[:-4].split(".")
         f_a = fa[-1]
         file_a = ".".join(fa[:-1])
+        
+        for k in range(len(candidates)):
+            candidate = candidates[k]
+            fc = candidate[0].replace(Pc.path, "")[:-4].split(".")
+            f_c = fc[-1]
+            file_c = ".".join(fc[:-1])
+            d_c = str(candidates_d[k])
+            Print.blue("\tPossible match for " + f_a + " in $Pa/" + file_a + \
+                       ":")
+            Print.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
+            Print.blue("\t\tDistance: " + d_c + "\n")
+            Print.blue("\tVariable mapping from " + f_a + " to " + f_c + ":")
+            try:
+                var_map = detect_matching_variables(f_a, file_a, f_c, file_c)
+                var_maps.append(var_map)
+            except Exception as e:
+                err_exit(e, "Unexpected error while matching variables.")
+            with open('output/var-map', 'r', errors='replace') as mapped:
+                mapping = mapped.readline().strip()
+                while mapping:
+                    Print.grey("\t\t" + mapping)
+                    if UNKNOWN in mapping:
+                        count_unknown[k] += 1
+                    count_vars[k] += 1
+                    mapping = mapped.readline().strip()
+        
+        best_count = count_unknown[0]
+        best = candidates[0]
+        best_d = candidates_d[0]
+        best_prop = 1
+        var_map = var_maps[0]
+        for k in range(1, len(count_unknown)):
+            if count_vars[k] > 0:
+                if count_unknown[k] < best_count:
+                    best_count = count_unknown[k]
+                    best = candidates[k]
+                    best_d = candidates_d[k]
+                    best_prop = count_unknown[k]/count_vars[k]
+                    var_map = var_maps[k]
+                elif count_unknown[k] == best_count:
+                    prop = count_unknown[k]/count_vars[k]
+                    if prop < best_prop:
+                        best = candidates[k]
+                        best_d = candidates_d[k]
+                        best_prop = prop
+                        var_map = var_maps[k]
+                    elif prop == best_prop:
+                        if candidates_d[k] <= best_d:
+                            best = candidates[k]
+                            best_d = candidates_d[k]
+                            var_map = var_maps[k]
+        
         fc = best[0].replace(Pc.path, "")[:-4].split(".")
         f_c = fc[-1]
         file_c = ".".join(fc[:-1])
-        # TODO: Get all pertinent matches (at dist d' < k*best_d) (with k=2?)
-        Print.blue("\tBest match for " + f_a +" in $Pa/" + file_a + ":")
+        d_c = str(best_d)
+        Print.green("\t\tBest match for " + f_a + " in $Pa/" + file_a + ":")
         Print.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
-        Print.blue("\t\tDistance: " + str(best_d) + "\n")
-        Print.blue("\tVariable mapping from " + f_a + " to " + f_c + ":")
-        try:
-            var_map = detect_matching_variables(f_a, file_a, f_c, file_c)
-        except Exception as e:
-            err_exit(e, "Unexpected error while matching variables.")
-        with open('output/var-map', 'r', errors='replace') as mapped:
-            mapping = mapped.readline().strip()
-            while mapping:
-                Print.grey("\t\t" + mapping)
-                mapping = mapped.readline().strip()
+        Print.blue("\t\tDistance: " + d_c + "\n")
+                
         to_patch.append((Pa.funcs[Pa.path + file_a][f_a],
                          Pc.funcs[Pc.path + file_c][f_c], var_map))
     return to_patch
@@ -234,6 +296,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     except Exception as e:
         err_exit(e, "Unexpected error while parsing ast-map")
 
+    UNKNOWN = "#UNKNOWN#"
     variable_mapping = dict()
     try:
         while variable_list_a:
@@ -256,14 +319,15 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
                             if c_name == best_match:
                                 variable_mapping[var_a] = var_c
                 if var_a not in variable_mapping.keys():
-                    variable_mapping[var_a] = "UNKNOWN"
+                    variable_mapping[var_a] = UNKNOWN
     except Exception as e:
         err_exit(e, "Unexpected error while matching vars.")
 
     try:
         with open("output/var-map", "w", errors='replace') as var_map_file:
             for var_a in variable_mapping.keys():
-                var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
+                var_map_file.write(var_a + " -> " + variable_mapping[var_a] + \
+                                   "\n")
     except Exception as e:
         err_exit(e, "ASdasdas")
     
@@ -282,14 +346,18 @@ def gen_func_file(ast_vec_func, output_file):
             # FIXME: This thing isn't copying the function properly sometimes
             while start > 0:
                 j = start-1
-                if "}" in ls[j] or "#include" in ls [j] or ";" in ls[j] or "*/" in ls[j]:
+                if len(ls[j].strip()) == 0:
+                    break
+                elif "}" in ls[j] or "#" in ls [j] or ";" in ls[j] or \
+                     "/" in ls[j]:
+                    start += 1
                     break
                 start = j
             temp.write("".join(ls[start:end]))
             
 
 def gen_temp_files(vec_f, proj, ASTlists):
-    Print.blue("\tFunction " + vec_f.function + "in " + proj.name + "...")
+    Print.blue("\tFunction " + vec_f.function + " in " + proj.name + "...")
     temp_file = "output/temp_" + proj.name + ".c"
     gen_func_file(vec_f, temp_file)
     Print.blue("Gumtree parse " + vec_f.function + " in " + proj.name + "...")
