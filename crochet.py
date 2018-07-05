@@ -113,8 +113,10 @@ def gen_ASTs():
             file = files.readline().strip()
 
     
-def get_vector_list(src_path, filepath):
-    find_files(src_path, "*.vec", filepath)
+def get_vector_list(proj):
+    Print.blue("Getting vectors for " + proj.name + "...")
+    filepath = "output/vectors_" + proj.name
+    find_files(proj.path, "*.vec",  filepath)
     with open(filepath, "r", errors='replace') as file:
         files = [vec.strip() for vec in file.readlines()]
     vecs = []
@@ -130,15 +132,15 @@ def get_vector_list(src_path, filepath):
     
 def compare():
     global Pa, Pc
-    Print.blue("Getting vectors for Pa...")
-    vecs_A = get_vector_list(Pa.path, "output/output_A")
-    Print.blue("Getting vectors for Pc...")
-    vecs_C = get_vector_list(Pc.path, "output/output_C")
+    vecs_A = get_vector_list(Pa)
+    vecs_C = get_vector_list(Pc)
     
     Print.blue("Variable mapping...\n")
     to_patch = []
     
     UNKNOWN = "#UNKNOWN#"
+    factor = 2
+    
     for i in vecs_A:
         best = vecs_C[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
@@ -151,12 +153,12 @@ def compare():
                 best_d = d
         
         # Get all pertinent matches (at dist d' < k*best_d) (with k=2?)
-        candidates = []
-        candidates_d = []
+        candidates = [best]
+        candidates_d = [best_d]
         for j in vecs_C:
             # TODO: Inefficient, computing twice. Should store somewhere?
             d = ASTVector.ASTVector.dist(i[1],j[1])
-            if d <= 2*best_d:
+            if d <= factor*best_d:
                 candidates.append(j)
                 candidates_d.append(d)
                 
@@ -360,7 +362,7 @@ def gen_temp_files(vec_f, proj, ASTlists):
     Print.blue("\tFunction " + vec_f.function + " in " + proj.name + "...")
     temp_file = "output/temp_" + proj.name + ".c"
     gen_func_file(vec_f, temp_file)
-    Print.blue("Gumtree parse " + vec_f.function + " in " + proj.name + "...")
+    Print.blue("\t\tGumtree parse " + vec_f.function + " in " + proj.name + "...")
     gum_file = "output/gumtree_" + proj.name
     c = "gumtree parse " + temp_file + " > " + gum_file
     exec_com(c, False)

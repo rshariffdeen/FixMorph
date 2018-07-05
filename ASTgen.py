@@ -30,24 +30,23 @@ def gen_AST(file, src_dir):
     with open('output/hs', 'r', errors='replace') as h_files:
         line = h_files.readline().strip()
         while line:
-            if line[:8] != "#include":
-                break
-            # For cases of the form '#include "****.h"'
-            if '"' in line:
-                line = line.split('"')[1]
-            # For cases of the form '#include <****.h>'
-            else:
-                line = line.split('<')[1].split('>')[0]
-            # We only keep the file name or find doesn't work
-            line = line.split("/")[-1]
-            c1 = "find " + src_dir + " -name '" + line + "'"
-            l = exec_com(c1, False)[0].split("\n")
-            for i in l:
-                i = i.split("/")
-                if len(i) > 2:
-                    # Here we get the directory and the parent directory
-                    includes.add("/".join(i[:-1]))
-                    includes.add("/".join(i[:-2]))
+            if line[:9] == "#include ":
+                # For cases of the form '#include "****.h"'
+                if '"' in line:
+                    line = line.split('"')[1]
+                # For cases of the form '#include <****.h>'
+                else:
+                    line = line.split('<')[1].split('>')[0]
+                # We only keep the file name or find doesn't work
+                line = line.split("/")[-1]
+                c1 = "find " + src_dir + " -name '" + line + "'"
+                l = exec_com(c1, False)[0].split("\n")
+                for i in l:
+                    i = i.split("/")
+                    if len(i) > 2:
+                        # Here we get the directory and the parent directory
+                        includes.add("/".join(i[:-1]))
+                        includes.add("/".join(i[:-2]))
             line = h_files.readline().strip()
     for include in includes:
         c += "-I " + include + " "
@@ -60,15 +59,15 @@ def gen_AST(file, src_dir):
                  "or look at file 'errors'.")
 
 
-def gen_vec(proj, project_attribute, file, func_or_struct, start, end, Deckard=True):
-    v = ASTVector.ASTVector(proj, file, func_or_struct, start, end, Deckard)
+def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
+    v = ASTVector.ASTVector(proj, file, f_or_struct, start, end, Deckard)
     if not v.vector:
         return None
-    if file in project_attribute.keys():
-        project_attribute[file][func_or_struct] = v
+    if file in proj_attribute.keys():
+        proj_attribute[file][f_or_struct] = v
     else:
-        project_attribute[file] = dict()
-        project_attribute[file][func_or_struct] = v
+        proj_attribute[file] = dict()
+        proj_attribute[file][f_or_struct] = v
     return v
 
 
@@ -82,8 +81,6 @@ def parseAST(filepath, proj, Deckard=True):
                  proj.path)
     # Keep functions here
     function_lines = []
-    # Keep structures here
-    #structure_lines = []
     # Keep variables for each function d[function] = "typevar namevar; ...;"
     dict_file = dict()
     # If we're inside the tree parsing a function
@@ -110,50 +107,51 @@ def parseAST(filepath, proj, Deckard=True):
             line = ast.readline().strip()
         # We find Function declarations and retrieve parameters and variables
         while line:
+            if len(line) > 2:
+                if line[2].isalpha():
+                    in_function = False
             # Skip irrelevant things from other files
             if ".h" in line or ".c" in line.replace(file, ""):
-                in_function = False
-                #in_struct = False
                 while line:
                     if filepath in line and ".c" not in line.replace(file, ""):
                         break
                     line = ast.readline().strip()
             # Function declaration: Capture start, end and use Deckard on it
-            elif (("-FunctionDecl " in line) and ("col:" not in line) and 
-                "invalid sloc" not in line):
-                #in_struct = False
+            elif "-FunctionDecl " in line:
                 line = line.split(" ")
                 if line[-1] != "extern":
                     line = remove_Hexa(line)
-                    # col: appears for .h files and other references
-                    lines_aux = line.split("> ")
-                    lines = lines_aux[0].split(" <")[1]
-                    if "invalid" not in lines:
-                        try:
-                            start = lines_aux[1].split(":")[1]
-                            end = lines.split(", ")[1]
-                            end = end.split(":")[1]
-                            f = line.split(" '")[-2].split(" ")[-1]
-                        except Exception as e:
-                            err_exit(e, ":(")
-                        in_function = True
-                        try:
-                            start = int(start)
-                            end = int(end)
-                        except Exception as e:
-                            err_exit("Parsing error, not ints.", start, end, 
-                                     line, lines_aux, lines, e)
-                        function_lines.append((f, start, end))
-                        gen_vec(proj, proj.funcs, filepath, f, start, end,
-                                Deckard)
-                    else:
+                    lines = line.split("> ")
+                    if (len(lines) != 2) or (filepath in lines[1]) \
+                       or ("col:" in lines[1]):
                         in_function = False
+                    else:
+                        lines = lines[0].split(" <")[-1].split(",")
+                        if len(lines) == 2:
+                            if ((lines[0].count("line") == 1 or
+                                 lines[0].count(filepath) == 1) and \
+                                (lines[1].count("line") == 1)):
+                                try:
+                                    start = lines[0].split(":")[1]
+                                    end = lines[1].split(":")[1]
+                                    f = line.split(" '")[-2].split(" ")[-1]
+                                except Exception as e:
+                                    err_exit(e, "Fail parsing FunctionDecl.")
+                                in_function = True
+                                try:
+                                    start = int(start)
+                                    end = int(end)
+                                except Exception as e:
+                                    err_exit("Parsing error, not ints.", start,
+                                             end, line, lines, e)
+                                function_lines.append((f, start, end))
+                                gen_vec(proj, proj.funcs, filepath, f, start,
+                                        end, Deckard)
                 else:
                     in_function = False
             # Capture variable in function
             elif in_function and ("VarDecl " in line) and \
                  ("invalid sloc" not in line):
-                #in_struct = False
                 line = "-".join(line.split("-")[1:]).split(" ")
                 line = remove_Hexa(line).split(" '")
                 # TODO: Get variable types
@@ -166,34 +164,6 @@ def parseAST(filepath, proj, Deckard=True):
                     dict_file[f] = ""
                 dict_file[f] = dict_file[f] + line
                 
-            # FIXME: This also accounts for struct declarations inside function
-            '''
-            elif ("-RecordDecl " in line) and ("struct" in line):
-                in_function = False
-                line = line.split(" ")
-                line = remove_Hexa(line)
-                if "invalid sloc" not in line and "scratch space" not in line:
-                    in_struct = True
-                    try:
-                        lines = line.split("> ")[0].split(" <")[1].split(",")
-                        start = lines[0].split(":")[1]
-                        end = lines[1].split(":")[1]
-                    except:
-                        err_exit(line, lines, "RecordDecl error")
-            elif in_struct and ("-FieldDecl" in line):
-                if False:
-                    Print.green("\t" + line)
-            elif in_struct and ("-TypedefDecl" in line):
-                try:
-                    if len(line) > 2 and start and end:
-                        struct = line.split(" '")[-2].split(" ")[-1]
-                        structure_lines.append((struct, int(start), int(end)))
-                        gen_vec(proj, proj.structs, filepath, struct, start,
-                                end, False)
-                except Exception as e:
-                    err_exit(e)
-                in_struct = False
-            '''
             line = ast.readline().strip()
     
     with open('output/function-lines', 'w') as func_l:

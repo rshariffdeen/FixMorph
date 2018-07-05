@@ -49,7 +49,10 @@ class ASTVector:
                 return None
             while start > 0:
                 j = start-1
-                if ";" in ls[j] or "}" in ls[j] or "#include" in ls[j]:
+                if j < len(ls):
+                    if ";" in ls[j] or "}" in ls[j] or "#include" in ls[j]:
+                        break
+                else:
                     break
                 start = j
         self.start = start
@@ -102,17 +105,19 @@ class ASTVector:
         assert(len(u)==len(v))
         return sum(((u[i] - v[i])**2) for i in range(len(u)))
         
-    def file_dist(file1, file2):
+    def file_dist(file1, file2, normed=True):
         with open(file1, 'r', errors='replace') as f1:
             v = f1.readline()
             if v:
                 v = [int(i) for i in f1.readline().strip().split(" ")]
-                #v = ASTVector.normed(v)
+                if normed:
+                    v = ASTVector.normed(v)
                 
         with open(file2, 'r', errors='replace') as f2:
             u = f2.readline()
             if v:
                 u = [int(i) for i in f2.readline().strip().split(" ")]
-                #u = ASTVector.normed(u)
+                if normed:
+                    u = ASTVector.normed(u)
         
         return ASTVector.dist(u, v)
