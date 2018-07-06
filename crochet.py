@@ -91,7 +91,7 @@ def gen_diff():
                 ASTgen.find_affected_funcs(Pa, file_a, pertinent_lines)
                 Print.blue("")
                 Print.blue("\tProject Pb...")
-                ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines)
+                ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
             except Exception as e:
                 err_exit(e, "HERE")
                         
@@ -346,6 +346,9 @@ def gen_func_file(ast_vec_func, output_file):
         with open(ast_vec_func.file, 'r', errors='replace') as file:
             ls = file.readlines()
             # FIXME: This thing isn't copying the function properly sometimes
+            if "}" in ls[start] or "#" in ls [start] or ";" in ls[start] or \
+                     "/" in ls[start]:
+                start += 1
             while start > 0:
                 j = start-1
                 if len(ls[j].strip()) == 0:
@@ -412,26 +415,38 @@ def transplantation(to_patch):
     INTO = " into "
     
     for (vec_f_a, vec_f_c, var_map) in to_patch:
-        
-        vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
-        vec_f_b = Pb.funcs[vec_f_b_file][vec_f_a.function]
-        ASTlists = dict()
+        try:
+            vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
+            if vec_f_a.function in Pb.funcs[vec_f_b_file].keys():
+                vec_f_b = Pb.funcs[vec_f_b_file][vec_f_a.function]
+            else:
+                err_exit(vec_f_a.function, vec_f_b_file, Pb.funcs[vec_f_b_file].keys())
+            ASTlists = dict()
+        except Exception as e:
+            err_exit(e, vec_f_b_file, vec_f_a, Pa.path, Pb.path, vec_f_a.function)
         
         Print.blue("Generating temp files for each pertinent function...")
         
-        gen_temp_files(vec_f_a, Pa, ASTlists)
-        gen_temp_files(vec_f_b, Pb, ASTlists)
-        gen_temp_files(vec_f_c, Pc, ASTlists)
+        try:
+            gen_temp_files(vec_f_a, Pa, ASTlists)
+            gen_temp_files(vec_f_b, Pb, ASTlists)
+            gen_temp_files(vec_f_c, Pc, ASTlists)
+        except:
+            err_exit("!!")
         
         Print.blue("Generating edit script from " + Pa.name + " to " + \
                    Pb.name + "...")
-        exec_com("gumtree diff output/temp_Pa.c output/temp_Pb.c > " + \
-                 "output/diff_script_AB", False)
-                 
-        Print.blue("Finding common structures in " + Pa.name + \
-                   " with respect to " + Pb.name + "...")
-        exec_com("gumtree diff output/temp_Pa.c output/temp_Pc.c | " + \
-                 "grep 'Match ' >  output/diff_script_AC", False)        
+        
+        try:
+            exec_com("gumtree diff output/temp_Pa.c output/temp_Pb.c > " + \
+                     "output/diff_script_AB", False)
+                     
+            Print.blue("Finding common structures in " + Pa.name + \
+                       " with respect to " + Pb.name + "...")
+            exec_com("gumtree diff output/temp_Pa.c output/temp_Pc.c | " + \
+                     "grep 'Match ' >  output/diff_script_AC", False)
+        except:
+            err_exit("!!!")
                       
         Print.blue("Generating edit script from Pc to Pd...")
 
@@ -509,137 +524,148 @@ def transplantation(to_patch):
             instruction = i[0]
             # Update nodeA to label -> Update nodeC to label
             if instruction == UPDATE:
-                nodeA = i[1]
-                label = i[2]
-                nodeC = "?"
-                if nodeA in match_AC.keys():
-                    nodeC = match_AC[nodeA]
-                    nodeC = nodeC.split("(")[-1][:-1]
-                    nodeC = ASTlists[Pc.name][int(nodeC)]
-                # TODO: else?
-                instruction_CD.append((UPDATE, nodeC, label))
+                try:
+                    nodeA = i[1]
+                    label = i[2]
+                    nodeC = "?"
+                    if nodeA in match_AC.keys():
+                        nodeC = match_AC[nodeA]
+                        nodeC = nodeC.split("(")[-1][:-1]
+                        nodeC = ASTlists[Pc.name][int(nodeC)]
+                    # TODO: else?
+                    instruction_CD.append((UPDATE, nodeC, label))
+                except Exception as e:
+                    err_exit(e, "Something went wrong with UPDATE.")
                 #print(UPDATE + " " + str(nodeC) + TO + label)
             # Delete nodeA -> Delete nodeC
             elif instruction == DELETE:
-                nodeA = i[1]
-                nodeC = "?"
-                if nodeA in match_AC.keys():
-                    nodeC = match_AC[nodeA]
-                    nodeC = nodeC.split("(")[-1][:-1]
-                    nodeC = ASTlists[Pc.name][int(nodeC)]
-                # TODO: else?
-                instruction_CD.append((DELETE, nodeC))
+                try:
+                    nodeA = i[1]
+                    nodeC = "?"
+                    if nodeA in match_AC.keys():
+                        nodeC = match_AC[nodeA]
+                        nodeC = nodeC.split("(")[-1][:-1]
+                        nodeC = ASTlists[Pc.name][int(nodeC)]
+                    # TODO: else?
+                    instruction_CD.append((DELETE, nodeC))
+                except Exception as e:
+                    err_exit(e, "Something went wrong with DELETE.")
                 #print(DELETE + " " + str(nodeC))
             # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
             elif instruction == MOVE:
-                nodeA = i[1]
-                nodeB = i[2]
-                pos = int(i[3])
-                nodeC = "?"
-                nodeD = nodeB
-                if "(" in nodeD:
-                    nodeD = nodeD.split("(")[-1][:-1]
-                    nodeD = ASTlists[Pb.name][int(nodeD)]
-                if nodeA in match_AC.keys():
-                    nodeC = match_AC[nodeA]
-                    if "(" in nodeC:
-                        nodeC = nodeC.split("(")[-1][:-1]
-                        nodeC = ASTlists[Pc.name][int(nodeC)]
-                    if nodeB in match_BA.keys():
-                        nodeA2 = match_BA[nodeB]
-                        if nodeA2 in match_AC.keys():
-                            nodeD = match_AC[nodeA2]
-                            if "(" in nodeD:
-                                nodeD = nodeD.split("(")[-1][:-1]
-                                nodeD = ASTlists[Pc.name][int(nodeD)]
-                            try:    
-                                m = 0
-                                M = len(nodeB.children)
-                                if pos != 0 and pos < M-1:
-                                    nodeB_l = nodeB.children[pos-1]
-                                    nodeB_r = nodeB.children[pos+1]
-                                    if nodeB_l in match_BA.keys():
-                                        nodeA_l = match_BA[nodeB_l]
-                                        if nodeA_l in match_AC.keys():
-                                            nodeC_l = match_AC[nodeA_l]
-                                            if nodeC_l in nodeD.children:
-                                                m = nodeD.children.index(nodeC_l)
-                                                pos = m+1
-                                    elif nodeB_r in match_BA.keys():
-                                        nodeA_r = match_BA[nodeB_r]
-                                        if nodeA_r in match_AC.keys():
-                                            nodeC_r = match_AC[nodeA_r]
-                                            if nodeC_r in nodeD.children:
-                                                M = nodeD.children.index(nodeC_r)
-                                                pos = M-1
-                                elif pos >= M - 1:
-                                    pos += len(nodeD.children) - M - 1
-                            except Exception as e:
-                                err_exit(e, "HERE1")
-                                        
-                # TODO: else?
-                instruction_CD.append((MOVE, nodeC, nodeD, pos))
+                try:
+                    nodeA = i[1]
+                    nodeB = i[2]
+                    pos = int(i[3])
+                    nodeC = "?"
+                    nodeD = nodeB
+                    if "(" in nodeD:
+                        nodeD = nodeD.split("(")[-1][:-1]
+                        nodeD = ASTlists[Pb.name][int(nodeD)]
+                    if nodeA in match_AC.keys():
+                        nodeC = match_AC[nodeA]
+                        if "(" in nodeC:
+                            nodeC = nodeC.split("(")[-1][:-1]
+                            nodeC = ASTlists[Pc.name][int(nodeC)]
+                        if nodeB in match_BA.keys():
+                            nodeA2 = match_BA[nodeB]
+                            if nodeA2 in match_AC.keys():
+                                nodeD = match_AC[nodeA2]
+                                if "(" in nodeD:
+                                    nodeD = nodeD.split("(")[-1][:-1]
+                                    nodeD = ASTlists[Pc.name][int(nodeD)]
+                                try:    
+                                    m = 0
+                                    M = len(nodeB.children)
+                                    if pos != 0 and pos < M-1:
+                                        nodeB_l = nodeB.children[pos-1]
+                                        nodeB_r = nodeB.children[pos+1]
+                                        if nodeB_l in match_BA.keys():
+                                            nodeA_l = match_BA[nodeB_l]
+                                            if nodeA_l in match_AC.keys():
+                                                nodeC_l = match_AC[nodeA_l]
+                                                if nodeC_l in nodeD.children:
+                                                    m = nodeD.children.index(nodeC_l)
+                                                    pos = m+1
+                                        elif nodeB_r in match_BA.keys():
+                                            nodeA_r = match_BA[nodeB_r]
+                                            if nodeA_r in match_AC.keys():
+                                                nodeC_r = match_AC[nodeA_r]
+                                                if nodeC_r in nodeD.children:
+                                                    M = nodeD.children.index(nodeC_r)
+                                                    pos = M-1
+                                    elif pos >= M - 1:
+                                        pos += len(nodeD.children) - M - 1
+                                except Exception as e:
+                                    err_exit(e, "HERE1")
+                                            
+                    # TODO: else?
+                    instruction_CD.append((MOVE, nodeC, nodeD, pos))
+                except Exception as e:
+                    err_exit(e, "Something went wrong with MOVE.")
                 #print(MOVE + " " + str(nodeC) + INTO + str(nodeD) + AT + pos)
             # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
             elif instruction == INSERT:
-                nodeB1 = i[1]
-                nodeB2 = i[2]
-                pos = int(i[3])
-                nodeD1 = nodeB1
-                if "(" in nodeD1:
-                    nodeD1 = nodeD1.split("(")[-1][:-1]
-                    nodeD1 = ASTlists[Pb.name][int(nodeD1)]
-                nodeD2 = nodeB2
-                if "(" in nodeD2:
-                    nodeD2 = nodeD2.split("(")[-1][:-1]
-                    nodeD2 = ASTlists[Pb.name][int(nodeD2)]
-                if nodeB1 in match_BA.keys():
-                    nodeA1 = match_BA[nodeB1]
-                    if nodeA1 in match_AC.keys():
-                        nodeD1 = match_AC[nodeA1]
-                        if "(" in nodeD1:
-                            nodeD1 = nodeD1.split("(")[-1][:-1]
-                            nodeD1 = ASTlists[Pc.name][int(nodeD1)]
-                if nodeB2 in match_BA.keys():
-                    nodeA2 = match_BA[nodeB2]
-                    if nodeA2 in match_AC.keys():
-                        nodeD2 = match_AC[nodeA2]
-                        if "(" in nodeD2:
-                            nodeD2 = nodeD2.split("(")[-1][:-1]
-                            nodeD2 = ASTlists[Pc.name][int(nodeD2)]
-                        try:
-                            m = 0
-                            if "(" in nodeB2:
-                                true_B2 = nodeB2.split("(")[-1][:-1]
-                                true_B2 = ASTlists[Pb.name][int(true_B2)]
-                            M = len(true_B2.children)
-                            if pos != 0 and pos < M-1:
-                                nodeB2_l = true_B2.children[pos-1]
-                                nodeB2_r = true_B2.children[pos+1]
-                                if nodeB2_l in match_BA.keys():
-                                    nodeA2_l = match_BA[nodeB2_l]
-                                    if nodeA2_l in match_AC.keys():
-                                        nodeD2_l = match_AC[nodeA2_l]
-                                        if nodeD2_l in nodeD2.children:
-                                            m = nodeD2.children.index(nodeD2_l)
-                                            pos = m+1
-                                elif nodeB2_r in match_BA.keys():
-                                    nodeA2_r = match_BA[nodeB2_r]
-                                    if nodeA2_r in match_AC.keys():
-                                        nodeD2_r = match_AC[nodeA2_r]
-                                        if nodeD2_r in nodeD2.children:
-                                            M = nodeD2.children.index(nodeD2_r)
-                                            pos = max(0, M-1)
-                            elif pos >= M - 1:
-                                pos += len(nodeD2.children) - M - 1
-                        except Exception as e:
-                            err_exit(e, "Here2")
-                instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
+                try:
+                    nodeB1 = i[1]
+                    nodeB2 = i[2]
+                    pos = int(i[3])
+                    nodeD1 = nodeB1
+                    if "(" in nodeD1:
+                        nodeD1 = nodeD1.split("(")[-1][:-1]
+                        nodeD1 = ASTlists[Pb.name][int(nodeD1)]
+                    nodeD2 = nodeB2
+                    if "(" in nodeD2:
+                        nodeD2 = nodeD2.split("(")[-1][:-1]
+                        nodeD2 = ASTlists[Pb.name][int(nodeD2)]
+                    if nodeB1 in match_BA.keys():
+                        nodeA1 = match_BA[nodeB1]
+                        if nodeA1 in match_AC.keys():
+                            nodeD1 = match_AC[nodeA1]
+                            if "(" in nodeD1:
+                                nodeD1 = nodeD1.split("(")[-1][:-1]
+                                nodeD1 = ASTlists[Pc.name][int(nodeD1)]
+                    if nodeB2 in match_BA.keys():
+                        nodeA2 = match_BA[nodeB2]
+                        if nodeA2 in match_AC.keys():
+                            nodeD2 = match_AC[nodeA2]
+                            if "(" in nodeD2:
+                                nodeD2 = nodeD2.split("(")[-1][:-1]
+                                nodeD2 = ASTlists[Pc.name][int(nodeD2)]
+                            try:
+                                m = 0
+                                if "(" in nodeB2:
+                                    true_B2 = nodeB2.split("(")[-1][:-1]
+                                    true_B2 = ASTlists[Pb.name][int(true_B2)]
+                                M = len(true_B2.children)
+                                if pos != 0 and pos < M-1:
+                                    nodeB2_l = true_B2.children[pos-1]
+                                    nodeB2_r = true_B2.children[pos+1]
+                                    if nodeB2_l in match_BA.keys():
+                                        nodeA2_l = match_BA[nodeB2_l]
+                                        if nodeA2_l in match_AC.keys():
+                                            nodeD2_l = match_AC[nodeA2_l]
+                                            if nodeD2_l in nodeD2.children:
+                                                m = nodeD2.children.index(nodeD2_l)
+                                                pos = m+1
+                                    elif nodeB2_r in match_BA.keys():
+                                        nodeA2_r = match_BA[nodeB2_r]
+                                        if nodeA2_r in match_AC.keys():
+                                            nodeD2_r = match_AC[nodeA2_r]
+                                            if nodeD2_r in nodeD2.children:
+                                                M = nodeD2.children.index(nodeD2_r)
+                                                pos = max(0, M-1)
+                                elif pos >= M - 1:
+                                    pos += len(nodeD2.children) - M - 1
+                            except Exception as e:
+                                err_exit(e, "Here2")
+                    instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
+                except Exception as e:
+                    err_exit(e, "Something went wrong with INSERT.")
                 #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
                 #      pos)
         for i in instruction_CD:
             print(" ".join([str(j) for j in i]))
-            
 def safe_exec(function, title, *args):
     Print.title("Starting " + title + "...")
     descr = title[0].lower() + title[1:]
