@@ -6,14 +6,13 @@ Created on Tue Jun 12 10:25:58 2018
 @author: pedrobw
 """
 
-import sys
 import time
 from Utils import exec_com, err_exit, find_files, clean, get_extensions
 import Project
 import Print
 import ASTVector
 import ASTgen
-import gumtreeASTparser
+import ASTparser
 
 Pa = None
 Pb = None
@@ -46,6 +45,7 @@ def find_diff_files():
 
     
 def gen_diff():
+    # TODO: Include cases where a file is added or removed
     global Pa, Pb
     nums = "0123456789"
     Print.blue("Finding differing files...")
@@ -96,7 +96,6 @@ def gen_diff():
                 err_exit(e, "HERE")
                         
             diff_line = diff.readline().strip()
-
     
     
 def gen_ASTs():
@@ -251,52 +250,60 @@ def longestSubstringFinder(string1, string2):
     return answer
     
 def generate_ast_map(source_a, source_b):
-    common_path = longestSubstringFinder(source_a, source_b).split("/")[:-1]
-    common_path = "/".join(common_path)
-    ast_diff_command = "gumtree diff " + source_a + " " + source_b + \
-                        " | grep -P 'Match GenericString: [A-Za-z0-9_]*\('" + \
-                        " > output/ast-map "
-    exec_com(ast_diff_command, False)
-    
+    c = "tools/clang-diff/clang-diff -dump-matches " + source_a + " " + \
+        source_b + " 2>> errors_clang_diff " \
+        "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr): '" + \
+        " > output/ast-map"
+    try:
+        exec_com(c, False)
+    except Exception as e:
+        err_exit(e, "Unexpected error in generate_ast_map.")
 
 def detect_matching_variables(f_a, file_a, f_c, file_c):
     
-    try:
-        generate_ast_map(Pa.path + "/" + file_a, Pc.path + "/" + file_c)
-    except Exception as e:
-        err_exit(e, "Unexpected error in generate_ast_map.")
+    generate_ast_map(Pa.path + "/" + file_a, Pc.path + "/" + file_c)
+    
+    
     function_a = Pa.funcs[Pa.path + file_a][f_a]
     variable_list_a = function_a.variables + function_a.params
-    #Print.white(variable_list_a)
     while '' in variable_list_a:
         variable_list_a.remove('')
         
+    Print.white(variable_list_a)
+    
     a_names = [i.split(" ")[-1] for i in variable_list_a]
         
     function_c = Pc.funcs[Pc.path + file_c][f_c]
     variable_list_c = function_c.variables + function_c.params
-    #Print.white(variable_list_c)
     while '' in variable_list_c:
         variable_list_c.remove('')
+    
+    Print.white(variable_list_c)
     
     ast_map = dict()
     try:
         with open("output/ast-map", "r", errors='replace') as ast_map_file:
             map_line = ast_map_file.readline().strip()
             while map_line:
-                aux = map_line.split(" to ")
-                var_a = aux[0].split("(")[0].split(" ")[-1]
-                var_c = aux[1].split("(")[0].split(" ")[-1]
+                nodeA, nodeB = clean_parse(map_line, " to ")
+                var_a = nodeA.split(": ")[1].split("(")
+                #type_a = var_a[1].split(")")[0]
+                var_a = var_a[0] #type_a + " " + var_a[0]
+                var_c = nodeB.split(": ")[1].split("(")
+                #type_c = var_c[1].split(")")[0]
+                var_c = var_c[0] #type_c + " " + var_c[0]
                 if var_a in a_names:
-                    if var_a not in ast_map:
+                    if var_a not in ast_map.keys():
                         ast_map[var_a] = dict()
-                    if var_c in ast_map[var_a]:
+                    if var_c in ast_map[var_a].keys():
                         ast_map[var_a][var_c] += 1
                     else:
                         ast_map[var_a][var_c] = 1
                 map_line = ast_map_file.readline().strip()
     except Exception as e:
         err_exit(e, "Unexpected error while parsing ast-map")
+        
+    print(ast_map)
 
     UNKNOWN = "#UNKNOWN#"
     variable_mapping = dict()
@@ -306,6 +313,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
             if var_a not in variable_mapping.keys():
                 a_name = var_a.split(" ")[-1]
                 if a_name in ast_map.keys():
+                    print(a_name)
                     max_match = -1
                     best_match = None
                     for var_c in ast_map[a_name].keys():
@@ -365,14 +373,12 @@ def gen_temp_files(vec_f, proj, ASTlists):
     Print.blue("\tFunction " + vec_f.function + " in " + proj.name + "...")
     temp_file = "output/temp_" + proj.name + ".c"
     gen_func_file(vec_f, temp_file)
-    Print.blue("\t\tGumtree parse " + vec_f.function + " in " + proj.name + "...")
-    gum_file = "output/gumtree_" + proj.name
-    c = "gumtree parse " + temp_file + " > " + gum_file
+    Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + "...")
+    json_file = "output/json_" + proj.name
+    c = "tools/clang-diff/clang-diff -ast-dump-json " + temp_file + " > " + \
+        json_file + " 2>> errors_AST_dump"
     exec_com(c, False)
-    # This thing is recursive: depth problem...
-    sys.setrecursionlimit(100000)
-    ASTlists[proj.name] = gumtreeASTparser.AST_from_file(gum_file)
-    sys.setrecursionlimit(1000)
+    ASTlists[proj.name] = ASTparser.AST_from_file(json_file)
     
 def clean_parse(content, separator):
     if content.count(separator) == 1:
@@ -401,6 +407,21 @@ def clean_parse(content, separator):
     node1 = separator.join(nodes[:half])
     node2 = separator.join(nodes[half:])
     return [node1, node2]
+    
+
+def ASTdump(file, output):
+    c = "tools/clang-diff/clang-diff -s 2147483647 -ast-dump-json " + file + \
+        " 2>> output/errors_clang_diff > " + output
+    exec_com(c)
+    
+
+def ASTscript(file1, file2, output, only_matches=False):
+    c = "tools/clang-diff/clang-diff -s 2147483647 -dump-matches " + file1 + \
+        " " + file2 + " 2>> output/errors_clang_diff "
+    if only_matches:
+        c += "| grep '^Match ' "
+    c += " > " + output
+    exec_com(c)
     
     
 def transplantation(to_patch):
@@ -434,21 +455,17 @@ def transplantation(to_patch):
         except:
             err_exit("!!")
         
-        Print.blue("Generating edit script from " + Pa.name + " to " + \
-                   Pb.name + "...")
+        Print.blue("Generating edit script: " + Pa.name + TO + Pb.name + "...")
         
         try:
-            exec_com("gumtree diff output/temp_Pa.c output/temp_Pb.c > " + \
-                     "output/diff_script_AB", False)
-                     
+            ASTscript(vec_f_a.file, vec_f_b_file, "output/diff_script_AB")
             Print.blue("Finding common structures in " + Pa.name + \
                        " with respect to " + Pb.name + "...")
-            exec_com("gumtree diff output/temp_Pa.c output/temp_Pc.c | " + \
-                     "grep 'Match ' >  output/diff_script_AC", False)
+            ASTscript(vec_f_a.file, vec_f_c.file, "output/diff_script_AC")
         except:
             err_exit("!!!")
                       
-        Print.blue("Generating edit script from Pc to Pd...")
+        Print.blue("Generating edit script: " + Pc.name + TO + "Pd...")
 
         instruction_AB = list()
         match_BA = dict()
@@ -519,7 +536,7 @@ def transplantation(to_patch):
                                  line, instruction, content)
                 line = script_AC.readline().strip()
         
-        instruction_CD = list()
+        '''instruction_CD = list()
         for i in instruction_AB:
             instruction = i[0]
             # Update nodeA to label -> Update nodeC to label
@@ -665,7 +682,9 @@ def transplantation(to_patch):
                 #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
                 #      pos)
         for i in instruction_CD:
-            print(" ".join([str(j) for j in i]))
+            print(" ".join([str(j) for j in i]))'''
+            
+
 def safe_exec(function, title, *args):
     Print.title("Starting " + title + "...")
     descr = title[0].lower() + title[1:]

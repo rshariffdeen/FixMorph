@@ -11,6 +11,7 @@ import ASTgen
 import ASTVector
 import gumtreeASTparser
 import Print
+from Utils import exec_com
 
 examples_path = "/media/pedrobw/6A384D7F384D4AF1/Users/Administrator/Examples/"
 
@@ -74,16 +75,26 @@ def test_function_gen():
     fileA = examples_path + "Backporting/Buffer_Overflow-Espruino/Pa/src"
     fileB = examples_path + "Backporting/Buffer_Overflow-Espruino/Pa/src"
     
+
+def test_ASTdump():
+    file = "output/temp_Pa.c"
+    c = "tools/clang-diff/clang-diff -ast-dump-json " + file + " > " + \
+        "output/test_AST 2> /dev/null"
+    exec_com(c)
+    ast = gumtreeASTparser.AST_from_file("output/test_AST")
+    print(ast)
+    
 def run():
     Print.title("Running crochet tests...")
     tests = [
              #test_ASTparsing,
-             test_ASTparsing1,
+             #test_ASTparsing1,
              #test_gumtreeParsing1,
              #test_gumtreeParsing2,
              #test_gen_AST,
              #test_gen_AST1,
-             test_dist
+             #test_dist,
+             test_ASTdump
              ]
     for i in tests:
         Print.green("-"*120)
