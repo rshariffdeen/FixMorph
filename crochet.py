@@ -368,14 +368,16 @@ def gen_func_file(ast_vec_func, output_file):
 
 def gen_temp_files(vec_f, proj, ASTlists):
     Print.blue("\tFunction " + vec_f.function + " in " + proj.name + "...")
-    temp_file = "output/temp_" + proj.name + ".c"
-    gen_func_file(vec_f, temp_file)
+    #temp_file = "output/temp_" + proj.name + ".c"
+    #gen_func_file(vec_f, temp_file)
     Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + "...")
     json_file = "output/json_" + proj.name
-    c = "tools/clang-diff/clang-diff -ast-dump-json " + temp_file + " > " + \
+    c = "tools/clang-diff/clang-diff -ast-dump-json " + vec_f.file + " > " + \
         json_file + " 2>> errors_AST_dump"
     exec_com(c, False)
-    ASTlists[proj.name] = ASTparser.AST_from_file(json_file)
+    ASTparser.AST_from_file(json_file)
+    ASTlists[proj.name] = [i for i in ASTparser.AST.nodes]
+    ASTparser.AST.nodes = []
     
 def clean_parse(content, separator):
     if content.count(separator) == 1:
@@ -435,10 +437,14 @@ def transplantation(to_patch):
     for (vec_f_a, vec_f_c, var_map) in to_patch:
         try:
             vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
+            if not vec_f_b_file in Pb.funcs.keys():
+                err_exit("Error: File not found among affected.", vec_f_b_file)
             if vec_f_a.function in Pb.funcs[vec_f_b_file].keys():
                 vec_f_b = Pb.funcs[vec_f_b_file][vec_f_a.function]
             else:
-                err_exit(vec_f_a.function, vec_f_b_file, Pb.funcs[vec_f_b_file].keys())
+                err_exit("Error: Function not found among affected.",
+                         vec_f_a.function, vec_f_b_file,
+                         Pb.funcs[vec_f_b_file].keys())
             ASTlists = dict()
         except Exception as e:
             err_exit(e, vec_f_b_file, vec_f_a, Pa.path, Pb.path, vec_f_a.function)
@@ -451,16 +457,20 @@ def transplantation(to_patch):
             gen_temp_files(vec_f_c, Pc, ASTlists)
         except:
             err_exit("!!")
-        
+            
         Print.blue("Generating edit script: " + Pa.name + TO + Pb.name + "...")
-        
         try:
-            ASTscript(vec_f_a.file, vec_f_b_file, "output/diff_script_AB")
-            Print.blue("Finding common structures in " + Pa.name + \
-                       " with respect to " + Pb.name + "...")
+            ASTscript(vec_f_a.file, vec_f_b.file, "output/diff_script_AB")
+        except Exception as e:
+            err_exit(e, "Unexpected fail at generating diff_script_AB.")
+        
+        Print.blue("Finding common structures in " + Pa.name + " w.r.t. " + \
+                   Pb.name + "...")
+        try:
             ASTscript(vec_f_a.file, vec_f_c.file, "output/diff_script_AC")
-        except:
-            err_exit("!!!")
+        except Exception as e:
+            err_exit(e, "Unexpected fail at generating diff_script_AC.")
+        
                       
         Print.blue("Generating edit script: " + Pc.name + TO + "Pd...")
 
@@ -544,8 +554,8 @@ def transplantation(to_patch):
                     nodeC = "?"
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
-                        #nodeC = nodeC.split("(")[-1][:-1]
-                        #nodeC = ASTlists[Pc.name][int(nodeC)]
+                        nodeC = nodeC.split("(")[-1][:-1]
+                        nodeC = ASTlists[Pc.name][int(nodeC)]
                     # TODO: else?
                     instruction_CD.append((UPDATE, nodeC, label))
                 except Exception as e:
@@ -558,8 +568,8 @@ def transplantation(to_patch):
                     nodeC = "?"
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
-                        #nodeC = nodeC.split("(")[-1][:-1]
-                        #nodeC = ASTlists[Pc.name][int(nodeC)]
+                        nodeC = nodeC.split("(")[-1][:-1]
+                        nodeC = ASTlists[Pc.name][int(nodeC)]
                     # TODO: else?
                     instruction_CD.append((DELETE, nodeC))
                 except Exception as e:
@@ -573,21 +583,21 @@ def transplantation(to_patch):
                     pos = int(i[3])
                     nodeC = "?"
                     nodeD = nodeB
-                    #if "(" in nodeD:
-                    #    nodeD = nodeD.split("(")[-1][:-1]
-                    #    nodeD = ASTlists[Pb.name][int(nodeD)]
+                    if "(" in nodeD:
+                        nodeD = nodeD.split("(")[-1][:-1]
+                        nodeD = ASTlists[Pb.name][int(nodeD)]
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
-                        #if "(" in nodeC:
-                        #    nodeC = nodeC.split("(")[-1][:-1]
-                        #    nodeC = ASTlists[Pc.name][int(nodeC)]
+                        if "(" in nodeC:
+                            nodeC = nodeC.split("(")[-1][:-1]
+                            nodeC = ASTlists[Pc.name][int(nodeC)]
                         if nodeB in match_BA.keys():
                             nodeA2 = match_BA[nodeB]
                             if nodeA2 in match_AC.keys():
                                 nodeD = match_AC[nodeA2]
-                                #if "(" in nodeD:
-                                #    nodeD = nodeD.split("(")[-1][:-1]
-                                #    nodeD = ASTlists[Pc.name][int(nodeD)]
+                                if "(" in nodeD:
+                                    nodeD = nodeD.split("(")[-1][:-1]
+                                    nodeD = ASTlists[Pc.name][int(nodeD)]
                                 try:    
                                     m = 0
                                     M = len(nodeB.children)
@@ -625,33 +635,33 @@ def transplantation(to_patch):
                     nodeB2 = i[2]
                     pos = int(i[3])
                     nodeD1 = nodeB1
-                    #if "(" in nodeD1:
-                    #    nodeD1 = nodeD1.split("(")[-1][:-1]
-                    #    nodeD1 = ASTlists[Pb.name][int(nodeD1)]
+                    if "(" in nodeD1:
+                        nodeD1 = nodeD1.split("(")[-1][:-1]
+                        nodeD1 = ASTlists[Pb.name][int(nodeD1)]
                     nodeD2 = nodeB2
-                    #if "(" in nodeD2:
-                    #    nodeD2 = nodeD2.split("(")[-1][:-1]
-                    #    nodeD2 = ASTlists[Pb.name][int(nodeD2)]
+                    if "(" in nodeD2:
+                        nodeD2 = nodeD2.split("(")[-1][:-1]
+                        nodeD2 = ASTlists[Pb.name][int(nodeD2)]
                     if nodeB1 in match_BA.keys():
                         nodeA1 = match_BA[nodeB1]
                         if nodeA1 in match_AC.keys():
                             nodeD1 = match_AC[nodeA1]
-                            #if "(" in nodeD1:
-                            #    nodeD1 = nodeD1.split("(")[-1][:-1]
-                            #    nodeD1 = ASTlists[Pc.name][int(nodeD1)]
+                            if "(" in nodeD1:
+                                nodeD1 = nodeD1.split("(")[-1][:-1]
+                                nodeD1 = ASTlists[Pc.name][int(nodeD1)]
                     if nodeB2 in match_BA.keys():
                         nodeA2 = match_BA[nodeB2]
                         if nodeA2 in match_AC.keys():
                             nodeD2 = match_AC[nodeA2]
-                            #if "(" in nodeD2:
-                            #    nodeD2 = nodeD2.split("(")[-1][:-1]
-                            #    nodeD2 = ASTlists[Pc.name][int(nodeD2)]
-                            '''try:
+                            if "(" in nodeD2:
+                                nodeD2 = nodeD2.split("(")[-1][:-1]
+                                nodeD2 = ASTlists[Pc.name][int(nodeD2)]
+                            try:
                                 m = 0
                                 true_B2 = nodeB2
-                                #if "(" in nodeB2:
-                                #    true_B2 = nodeB2.split("(")[-1][:-1]
-                                #    true_B2 = ASTlists[Pb.name][int(true_B2)]
+                                if "(" in nodeB2:
+                                    true_B2 = nodeB2.split("(")[-1][:-1]
+                                    true_B2 = ASTlists[Pb.name][int(true_B2)]
                                 M = len(true_B2.children)
                                 if pos != 0 and pos < M-1:
                                     nodeB2_l = true_B2.children[pos-1]
@@ -673,7 +683,7 @@ def transplantation(to_patch):
                                 elif pos >= M - 1:
                                     pos += len(nodeD2.children) - M - 1
                             except Exception as e:
-                                err_exit(e, "Here2")'''
+                                err_exit(e, "Here2")
                     instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")

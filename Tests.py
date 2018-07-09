@@ -82,7 +82,7 @@ def test_ASTdump():
         "output/test_AST 2> /dev/null"
     exec_com(c)
     ast = gumtreeASTparser.AST_from_file("output/test_AST")
-    print(ast)
+    print(ast.treeString())
     
 def run():
     Print.title("Running crochet tests...")

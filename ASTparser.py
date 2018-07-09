@@ -36,23 +36,23 @@ class AST:
         self.type = None
         self.char = char + "  "
         self.children = []
-        self.attributes = [self.id, self.identifier, self.begin, self.end,
+        self.attrs = [self.id, self.identifier, self.begin, self.end,
                            self.value, self.type]
         for i in range(len(self.attr_names)):
             key = AST.attr_names[i]
             if key in dict_ast.keys():
-                self.attributes[i] = dict_ast[key]
+                self.attrs[i] = dict_ast[key]
         if "children" in dict_ast.keys():
             for i in dict_ast['children']:
                     self.children.append(AST(i, char + "    "))
         
                     
-    def __str__(self):
+    def treeString(self):
         s = self.char[:-2] + "{\n"
-        for i in range(len(self.attributes)):
-            if self.attributes[i] != None:
+        for i in range(len(self.attrs)):
+            if self.attrs[i] != None:
                 s += self.char + self.attr_names[i] + ": "
-                s += str(self.attributes[i]) + "\n"
+                s += str(self.attrs[i]) + "\n"
         if len(self.children) > 0:
             s += self.char + "children [\n"
             for i in range(len(self.children)-1):
@@ -65,6 +65,15 @@ class AST:
         s += self.char[:-2] + "}"
         return s
         
+    def __str__(self):
+        s = ""
+        for i in range(len(self.attrs)):
+            if self.attrs[i] != None:
+                s += self.attr_names[i] + "(" + str(self.attrs[i]) + ") "
+        s += "children["
+        s += " ".join([str(i.id) for i in self.children])
+        s += "]\n"
+        return s
         
 def AST_from_file(file):
     
