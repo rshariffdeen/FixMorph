@@ -269,7 +269,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     while '' in variable_list_a:
         variable_list_a.remove('')
         
-    Print.white(variable_list_a)
+    #Print.white(variable_list_a)
     
     a_names = [i.split(" ")[-1] for i in variable_list_a]
         
@@ -278,7 +278,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     while '' in variable_list_c:
         variable_list_c.remove('')
     
-    Print.white(variable_list_c)
+    #Print.white(variable_list_c)
     
     ast_map = dict()
     try:
@@ -302,8 +302,6 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
                 map_line = ast_map_file.readline().strip()
     except Exception as e:
         err_exit(e, "Unexpected error while parsing ast-map")
-        
-    print(ast_map.keys())
 
     UNKNOWN = "#UNKNOWN#"
     variable_mapping = dict()
@@ -313,7 +311,6 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
             if var_a not in variable_mapping.keys():
                 a_name = var_a.split(" ")[-1]
                 if a_name in ast_map.keys():
-                    print(a_name)
                     max_match = -1
                     best_match = None
                     for var_c in ast_map[a_name].keys():
@@ -537,8 +534,7 @@ def transplantation(to_patch):
                 line = script_AC.readline().strip()
         
         instruction_CD = list()
-        print(instruction_AB, "\n\n", match_AC)
-        '''for i in instruction_AB:
+        for i in instruction_AB:
             instruction = i[0]
             # Update nodeA to label -> Update nodeC to label
             if instruction == UPDATE:
@@ -548,8 +544,8 @@ def transplantation(to_patch):
                     nodeC = "?"
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
-                        nodeC = nodeC.split("(")[-1][:-1]
-                        nodeC = ASTlists[Pc.name][int(nodeC)]
+                        #nodeC = nodeC.split("(")[-1][:-1]
+                        #nodeC = ASTlists[Pc.name][int(nodeC)]
                     # TODO: else?
                     instruction_CD.append((UPDATE, nodeC, label))
                 except Exception as e:
@@ -562,8 +558,8 @@ def transplantation(to_patch):
                     nodeC = "?"
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
-                        nodeC = nodeC.split("(")[-1][:-1]
-                        nodeC = ASTlists[Pc.name][int(nodeC)]
+                        #nodeC = nodeC.split("(")[-1][:-1]
+                        #nodeC = ASTlists[Pc.name][int(nodeC)]
                     # TODO: else?
                     instruction_CD.append((DELETE, nodeC))
                 except Exception as e:
@@ -577,21 +573,21 @@ def transplantation(to_patch):
                     pos = int(i[3])
                     nodeC = "?"
                     nodeD = nodeB
-                    if "(" in nodeD:
-                        nodeD = nodeD.split("(")[-1][:-1]
-                        nodeD = ASTlists[Pb.name][int(nodeD)]
+                    #if "(" in nodeD:
+                    #    nodeD = nodeD.split("(")[-1][:-1]
+                    #    nodeD = ASTlists[Pb.name][int(nodeD)]
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
-                        if "(" in nodeC:
-                            nodeC = nodeC.split("(")[-1][:-1]
-                            nodeC = ASTlists[Pc.name][int(nodeC)]
+                        #if "(" in nodeC:
+                        #    nodeC = nodeC.split("(")[-1][:-1]
+                        #    nodeC = ASTlists[Pc.name][int(nodeC)]
                         if nodeB in match_BA.keys():
                             nodeA2 = match_BA[nodeB]
                             if nodeA2 in match_AC.keys():
                                 nodeD = match_AC[nodeA2]
-                                if "(" in nodeD:
-                                    nodeD = nodeD.split("(")[-1][:-1]
-                                    nodeD = ASTlists[Pc.name][int(nodeD)]
+                                #if "(" in nodeD:
+                                #    nodeD = nodeD.split("(")[-1][:-1]
+                                #    nodeD = ASTlists[Pc.name][int(nodeD)]
                                 try:    
                                     m = 0
                                     M = len(nodeB.children)
@@ -629,32 +625,33 @@ def transplantation(to_patch):
                     nodeB2 = i[2]
                     pos = int(i[3])
                     nodeD1 = nodeB1
-                    if "(" in nodeD1:
-                        nodeD1 = nodeD1.split("(")[-1][:-1]
-                        nodeD1 = ASTlists[Pb.name][int(nodeD1)]
+                    #if "(" in nodeD1:
+                    #    nodeD1 = nodeD1.split("(")[-1][:-1]
+                    #    nodeD1 = ASTlists[Pb.name][int(nodeD1)]
                     nodeD2 = nodeB2
-                    if "(" in nodeD2:
-                        nodeD2 = nodeD2.split("(")[-1][:-1]
-                        nodeD2 = ASTlists[Pb.name][int(nodeD2)]
+                    #if "(" in nodeD2:
+                    #    nodeD2 = nodeD2.split("(")[-1][:-1]
+                    #    nodeD2 = ASTlists[Pb.name][int(nodeD2)]
                     if nodeB1 in match_BA.keys():
                         nodeA1 = match_BA[nodeB1]
                         if nodeA1 in match_AC.keys():
                             nodeD1 = match_AC[nodeA1]
-                            if "(" in nodeD1:
-                                nodeD1 = nodeD1.split("(")[-1][:-1]
-                                nodeD1 = ASTlists[Pc.name][int(nodeD1)]
+                            #if "(" in nodeD1:
+                            #    nodeD1 = nodeD1.split("(")[-1][:-1]
+                            #    nodeD1 = ASTlists[Pc.name][int(nodeD1)]
                     if nodeB2 in match_BA.keys():
                         nodeA2 = match_BA[nodeB2]
                         if nodeA2 in match_AC.keys():
                             nodeD2 = match_AC[nodeA2]
-                            if "(" in nodeD2:
-                                nodeD2 = nodeD2.split("(")[-1][:-1]
-                                nodeD2 = ASTlists[Pc.name][int(nodeD2)]
-                            try:
+                            #if "(" in nodeD2:
+                            #    nodeD2 = nodeD2.split("(")[-1][:-1]
+                            #    nodeD2 = ASTlists[Pc.name][int(nodeD2)]
+                            '''try:
                                 m = 0
-                                if "(" in nodeB2:
-                                    true_B2 = nodeB2.split("(")[-1][:-1]
-                                    true_B2 = ASTlists[Pb.name][int(true_B2)]
+                                true_B2 = nodeB2
+                                #if "(" in nodeB2:
+                                #    true_B2 = nodeB2.split("(")[-1][:-1]
+                                #    true_B2 = ASTlists[Pb.name][int(true_B2)]
                                 M = len(true_B2.children)
                                 if pos != 0 and pos < M-1:
                                     nodeB2_l = true_B2.children[pos-1]
@@ -676,14 +673,19 @@ def transplantation(to_patch):
                                 elif pos >= M - 1:
                                     pos += len(nodeD2.children) - M - 1
                             except Exception as e:
-                                err_exit(e, "Here2")
+                                err_exit(e, "Here2")'''
                     instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")
                 #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
                 #      pos)
+        Print.white("Proposed patch from Pc to Pd")
         for i in instruction_CD:
-            print(" ".join([str(j) for j in i]))'''
+            Print.white("\t" + " ".join([str(j) for j in i]))
+        
+        Print.white("Original patch from Pa to Pb")
+        for i in instruction_AB:
+            Print.white("\t" + " ".join([str(j) for j in i]))
             
 
 def safe_exec(function, title, *args):
