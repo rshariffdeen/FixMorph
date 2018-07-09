@@ -252,7 +252,7 @@ def longestSubstringFinder(string1, string2):
 def generate_ast_map(source_a, source_b):
     c = "tools/clang-diff/clang-diff -dump-matches " + source_a + " " + \
         source_b + " 2>> errors_clang_diff " \
-        "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr): '" + \
+        "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr)?: '" + \
         " > output/ast-map"
     try:
         exec_com(c, False)
@@ -303,7 +303,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     except Exception as e:
         err_exit(e, "Unexpected error while parsing ast-map")
         
-    print(ast_map)
+    print(ast_map.keys())
 
     UNKNOWN = "#UNKNOWN#"
     variable_mapping = dict()
@@ -536,8 +536,9 @@ def transplantation(to_patch):
                                  line, instruction, content)
                 line = script_AC.readline().strip()
         
-        '''instruction_CD = list()
-        for i in instruction_AB:
+        instruction_CD = list()
+        print(instruction_AB, "\n\n", match_AC)
+        '''for i in instruction_AB:
             instruction = i[0]
             # Update nodeA to label -> Update nodeC to label
             if instruction == UPDATE:
