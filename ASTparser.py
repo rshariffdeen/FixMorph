@@ -71,8 +71,8 @@ class AST:
             if self.attrs[i] != None:
                 s += self.attr_names[i] + "(" + str(self.attrs[i]) + ") "
         s += "children["
-        s += " ".join([str(i.id) for i in self.children])
-        s += "]\n"
+        s += str(len(self.children))
+        s += "]"
         return s
         
 def AST_from_file(file):
