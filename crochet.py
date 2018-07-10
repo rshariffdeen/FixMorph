@@ -256,12 +256,12 @@ def longestSubstringFinder(string1, string2):
     return answer
     
 def generate_ast_map(source_a, source_b):
-    c = "tools/bin/crochet-diff -dump-matches " + source_a + " " + \
+    c = "crochet-diff -dump-matches " + source_a + " " + \
         source_b + " 2>> errors_clang_diff " \
         "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr)?: '" + \
         " > output/ast-map"
     try:
-        exec_com(c, False)
+        exec_com(c, True)
     except Exception as e:
         err_exit(e, "Unexpected error in generate_ast_map.")
 
@@ -291,20 +291,21 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
         with open("output/ast-map", "r", errors='replace') as ast_map_file:
             map_line = ast_map_file.readline().strip()
             while map_line:
-                nodeA, nodeB = clean_parse(map_line, " to ")
-                var_a = nodeA.split(": ")[1].split("(")
-                #type_a = var_a[1].split(")")[0]
-                var_a = var_a[0] #type_a + " " + var_a[0]
-                var_c = nodeB.split(": ")[1].split("(")
-                #type_c = var_c[1].split(")")[0]
-                var_c = var_c[0] #type_c + " " + var_c[0]
-                if var_a in a_names:
-                    if var_a not in ast_map.keys():
-                        ast_map[var_a] = dict()
-                    if var_c in ast_map[var_a].keys():
-                        ast_map[var_a][var_c] += 1
-                    else:
-                        ast_map[var_a][var_c] = 1
+                if map_line.strip(" ")[0] == "Match":
+                    nodeA, nodeB = clean_parse(map_line, " to ")
+                    var_a = nodeA.split(": ")[1].split("(")
+                    #type_a = var_a[1].split(")")[0]
+                    var_a = var_a[0] #type_a + " " + var_a[0]
+                    var_c = nodeB.split(": ")[1].split("(")
+                    #type_c = var_c[1].split(")")[0]
+                    var_c = var_c[0] #type_c + " " + var_c[0]
+                    if var_a in a_names:
+                        if var_a not in ast_map.keys():
+                            ast_map[var_a] = dict()
+                        if var_c in ast_map[var_a].keys():
+                            ast_map[var_a][var_c] += 1
+                        else:
+                            ast_map[var_a][var_c] = 1
                 map_line = ast_map_file.readline().strip()
     except Exception as e:
         err_exit(e, "Unexpected error while parsing ast-map")
@@ -379,7 +380,7 @@ def gen_json(vec_f, proj, ASTlists):
     #gen_func_file(vec_f, temp_file)
     Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + "...")
     json_file = "output/json_" + proj.name
-    c = "tools/bin/crochet-diff -ast-dump-json " + vec_f.file + " > " + \
+    c = "crochet-diff -ast-dump-json " + vec_f.file + " > " + \
         json_file + " 2>> errors_AST_dump"
     exec_com(c, True)
     ASTparser.AST_from_file(json_file)
@@ -416,13 +417,13 @@ def clean_parse(content, separator):
     
 
 def ASTdump(file, output):
-    c = "tools/bin/crochet-diff -s 2147483647 -ast-dump-json " + file + \
+    c = "crochet-diff -s 2147483647 -ast-dump-json " + file + \
         " 2>> output/errors_clang_diff > " + output
     exec_com(c)
     
 
 def ASTscript(file1, file2, output, only_matches=False):
-    c = "tools/bin/crochet-diff -s 2147483647 -dump-matches " + file1 + \
+    c = "crochet-diff -s 2147483647 -dump-matches " + file1 + \
         " " + file2 + " 2>> output/errors_clang_diff "
     if only_matches:
         c += "| grep '^Match ' "
@@ -435,15 +436,23 @@ def inst_comp(i):
     
     
 def order_comp(inst):
-    Print.yellow(inst)
+    #Print.yellow("Instruction")
+    #Print.yellow(inst)
+    
     if inst[0] in order[0:2]:
-        Print.yellow(inst[1])
-        l = inst[1].line
+        l = inst[1]
     elif inst[0] in order[2:4]:
-        Print.yellow(inst[2])
-        l = inst[2].line
-    Print.yellow(l)
-    return -3*int(l) + inst_comp(inst[0])
+        l = inst[2]
+    #Print.yellow("Interesting Node")
+    #Print.yellow(l)
+    #Print.yellow("Parent")
+    #Print.yellow(l.parent)
+    #Print.yellow("Line")
+    #Print.yellow(l.line)
+    #if l.children:
+    #    Print.yellow("First Child")
+    #    Print.yellow(l.children[0])
+    return -3*int(l.line) + inst_comp(inst[0])
     
     
 def transplantation(to_patch):
@@ -526,7 +535,7 @@ def transplantation(to_patch):
                         pos = nodeB_at[-1]
                         instruction_AB.append((instruction, nodeA, nodeB, pos))
                     except Exception as e:
-                        err_exit(e, "Something went wrong in DELETE.")
+                        err_exit(e, "Something went wrong in MOVE.")
                 # Insert nodeB1 into nodeB2 at pos
                 elif instruction == INSERT:
                     try:
@@ -539,7 +548,11 @@ def transplantation(to_patch):
                     except Exception as e:
                         err_exit(e, "Something went wrong in INSERT.")
                 line = script_AB.readline().strip()
-                
+        
+        Print.white("Original patch from Pa to Pb")
+        for i in instruction_AB:
+            Print.white("\t" + " - ".join([str(j) for j in i]))
+        
         match_AC = dict()
         with open('output/diff_script_AC', 'r', errors='replace') as script_AC:
             line = script_AC.readline().strip()
@@ -555,6 +568,7 @@ def transplantation(to_patch):
                         err_exit(e, "Something went wrong in MATCH (AC).",
                                  line, instruction, content)
                 line = script_AC.readline().strip()
+                
         
         instruction_CD = list()
         for i in instruction_AB:
@@ -569,6 +583,8 @@ def transplantation(to_patch):
                         nodeC = match_AC[nodeA]
                         nodeC = nodeC.split("(")[-1][:-1]
                         nodeC = ASTlists[Pc.name][int(nodeC)]
+                        if nodeC.line == None:
+                            nodeC.line = nodeC.parent.line
                     instruction_CD.append((UPDATE, nodeC, label))
                 except Exception as e:
                     err_exit(e, "Something went wrong with UPDATE.")
@@ -582,6 +598,8 @@ def transplantation(to_patch):
                         nodeC = match_AC[nodeA]
                         nodeC = nodeC.split("(")[-1][:-1]
                         nodeC = ASTlists[Pc.name][int(nodeC)]
+                        if nodeC.line == None:
+                            nodeC.line = nodeC.parent.line
                     instruction_CD.append((DELETE, nodeC))
                 except Exception as e:
                     err_exit(e, "Something went wrong with DELETE.")
@@ -633,6 +651,12 @@ def transplantation(to_patch):
                                         pos += len(nodeD.children) - M - 1
                                 except Exception as e:
                                     err_exit(e, "HERE1")
+                    if type(nodeC) == ASTparser.AST:
+                        if nodeC.line == None:
+                            nodeC.line = nodeC.parent.line
+                    if type(nodeD) == ASTparser.AST:
+                        if nodeD.line == None:
+                            nodeD.line = nodeD.parent.line
                     instruction_CD.append((MOVE, nodeC, nodeD, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with MOVE.")
@@ -653,7 +677,10 @@ def transplantation(to_patch):
                         nodeD2 = nodeD2.split("(")[-1][:-1]
                         nodeD2 = ASTlists[Pb.name][int(nodeD2)]
                         if type(nodeD1) == ASTparser.AST:
-                            nodeD1.line = nodeD2.line
+                            if nodeD2.line != None:
+                                nodeD1.line = nodeD2.line
+                            else:
+                                nodeD1.line = nodeD2.parent.line
                     if nodeB1 in match_BA.keys():
                         nodeA1 = match_BA[nodeB1]
                         if nodeA1 in match_AC.keys():
@@ -696,6 +723,12 @@ def transplantation(to_patch):
                                     pos += len(nodeD2.children) - M - 1
                             except Exception as e:
                                 err_exit(e, "Here2")
+                    if type(nodeD1) == ASTparser.AST:
+                        if nodeD1.line == None:
+                            nodeD1.line = nodeD1.parent.line
+                    if type(nodeD2) == ASTparser.AST:
+                        if nodeD2.line == None:
+                            nodeD2.line = nodeD2.parent.line
                     instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")
@@ -709,10 +742,6 @@ def transplantation(to_patch):
         for i in instruction_CD:
             Print.white("\t" + " - ".join([str(j) for j in i]))
 
-        
-        Print.white("Original patch from Pa to Pb")
-        for i in instruction_AB:
-            Print.white("\t" + " - ".join([str(j) for j in i]))
             
 
 def safe_exec(function, title, *args):

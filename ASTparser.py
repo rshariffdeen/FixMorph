@@ -48,7 +48,9 @@ class AST:
             self.type = dict_ast['type']
         if 'children' in dict_ast.keys():
             for i in dict_ast['children']:
-                    self.children.append(AST(i, char + "    "))
+                child = AST(i, char + "    ")
+                self.children.append(child)
+                child.parent = self
         
                     
     def treeString(self):
