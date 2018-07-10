@@ -9,7 +9,8 @@ import time
 import Project
 import ASTgen
 import ASTVector
-import gumtreeASTparser
+import ASTparser
+import ASTdiffTest
 import Print
 from Utils import exec_com
 
@@ -73,12 +74,28 @@ def test_dist():
     
 
 def test_ASTdump():
-    file = "output/temp_Pa.c"
-    c = "tools/clang-diff/clang-diff -ast-dump-json " + file + " > " + \
+    file1 = examples_path + "Backporting/Buffer_Overflow-Libarchive/Pa/libarchive/archive_read_support_format_ar.c"
+    c = "tools/bin/crochet-diff -ast-dump-json " + file1 + " > " + \
         "output/test_AST 2> /dev/null"
     exec_com(c)
-    ast = gumtreeASTparser.AST_from_file("output/test_AST")
-    print(ast.treeString())
+    #ast = ASTparser.AST_from_file("output/test_AST")
+    #print(ast.treeString())
+    
+    ast = ASTdiffTest.AST_from_file("output/test_AST")
+    with open("output/test1", 'w') as f1:
+        f1.write(ast.treeString())
+        
+    file2 = examples_path + "Backporting/Buffer_Overflow-Libarchive/Pb/libarchive/archive_read_support_format_ar.c"
+    c = "tools/bin/crochet-diff -ast-dump-json " + file2 + " > " + \
+        "output/test_AST 2> /dev/null"
+    exec_com(c)
+    #ast = ASTparser.AST_from_file("output/test_AST")
+    #print(ast.treeString())
+    
+    ast = ASTdiffTest.AST_from_file("output/test_AST")
+    with open("output/test2", 'w') as f2:
+        f2.write(ast.treeString())
+    
     
 def run():
     Print.title("Running crochet tests...")

@@ -41,8 +41,8 @@ class AST:
             self.id = dict_ast['id']
         if 'identifier' in dict_ast.keys():
             self.identifier = dict_ast['identifier']
-        if 'line' in dict_ast.keys():
-            self.line = dict_ast['line']
+        if 'start line' in dict_ast.keys():
+            self.line = dict_ast['start line']
         if 'begin' in dict_ast.keys():
             self.begin = dict_ast['begin']
         if 'end' in dict_ast.keys():
@@ -82,7 +82,7 @@ class AST:
         s = ""
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:
-                s += self.attr_names[i] + "(" + str(self.attrs[i]) + ") "
+                s += AST.attr_names[i] + "(" + str(self.attrs[i]) + ") "
         s += "children["
         s += str(len(self.children))
         s += "]"

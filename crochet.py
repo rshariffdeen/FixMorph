@@ -261,7 +261,7 @@ def longestSubstringFinder(string1, string2):
     return answer
     
 def generate_ast_map(source_a, source_b):
-    c = "tools/clang-diff/clang-diff -dump-matches " + source_a + " " + \
+    c = "tools/bin/crochet-diff -dump-matches " + source_a + " " + \
         source_b + " 2>> errors_clang_diff " \
         "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr)?: '" + \
         " > output/ast-map"
@@ -384,7 +384,7 @@ def gen_json(vec_f, proj, ASTlists):
     #gen_func_file(vec_f, temp_file)
     Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + "...")
     json_file = "output/json_" + proj.name
-    c = "tools/clang-diff/clang-diff -ast-dump-json " + vec_f.file + " > " + \
+    c = "tools/bin/crochet-diff -ast-dump-json " + vec_f.file + " > " + \
         json_file + " 2>> errors_AST_dump"
     exec_com(c, True)
     ASTparser.AST_from_file(json_file)
@@ -421,18 +421,18 @@ def clean_parse(content, separator):
     
 
 def ASTdump(file, output):
-    c = "tools/clang-diff/clang-diff -s 2147483647 -ast-dump-json " + file + \
+    c = "tools/bin/crochet-diff -s 2147483647 -ast-dump-json " + file + \
         " 2>> output/errors_clang_diff > " + output
     exec_com(c)
     
 
 def ASTscript(file1, file2, output, only_matches=False):
-    c = "tools/clang-diff/clang-diff -s 2147483647 -dump-matches " + file1 + \
+    c = "tools/bin/crochet-diff -s 2147483647 -dump-matches " + file1 + \
         " " + file2 + " 2>> output/errors_clang_diff "
     if only_matches:
         c += "| grep '^Match ' "
     c += " > " + output
-    exec_com(c)
+    exec_com(c, True)
     
 
 def inst_comp(i):
@@ -440,10 +440,14 @@ def inst_comp(i):
     
     
 def order_comp(inst):
+    Print.yellow(inst)
     if inst[0] in order[0:2]:
+        Print.yellow(inst[1])
         l = inst[1].line
     elif inst[0] in order[2:4]:
+        Print.yellow(inst[2])
         l = inst[2].line
+    Print.yellow(l)
     return -3*int(l) + inst_comp(inst[0])
     
     
@@ -470,7 +474,7 @@ def transplantation(to_patch):
             gen_json(vec_f_b, Pb, ASTlists)
             gen_json(vec_f_c, Pc, ASTlists)
         except:
-            err_exit("Error parsing with clang-diff. Remember to bear make.")
+            err_exit("Error parsing with crochet-diff. Remember to bear make.")
             
         Print.blue("Generating edit script: " + Pa.name + TO + Pb.name + "...")
         try:
@@ -479,7 +483,7 @@ def transplantation(to_patch):
             err_exit(e, "Unexpected fail at generating diff_script_AB.")
         
         Print.blue("Finding common structures in " + Pa.name + " w.r.t. " + \
-                   Pb.name + "...")
+                   Pc.name + "...")
         try:
             ASTscript(vec_f_a.file, vec_f_c.file, "output/diff_script_AC")
         except Exception as e:
@@ -702,11 +706,14 @@ def transplantation(to_patch):
                     err_exit(e, "Something went wrong with INSERT.")
                 #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
                 #      pos)
-                    
-        instruction_CD.sort(key=order_comp)
+        try:
+            instruction_CD.sort(key=order_comp)
+        except:
+            err_exit("Bad sorting")
         Print.white("Proposed patch from Pc to Pd")
         for i in instruction_CD:
             Print.white("\t" + " - ".join([str(j) for j in i]))
+
         
         Print.white("Original patch from Pa to Pb")
         for i in instruction_AB:
