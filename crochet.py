@@ -1,10 +1,5 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jun 12 10:25:58 2018
-
-@author: pedrobw
-"""
 
 import time
 from Utils import exec_com, err_exit, find_files, clean, get_extensions

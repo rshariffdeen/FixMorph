@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jul  2 17:09:28 2018
-
-@author: pedrobw
-"""
 
 ''' Main vector generation functions '''
 

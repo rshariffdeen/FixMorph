@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 18 17:10:11 2018
-
-@author: pedrobw
-"""
 
 import sys
 

@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jun 19 08:54:05 2018
-
-@author: pedrobw
-"""
 
 import Print
 from Utils import exec_com, err_exit

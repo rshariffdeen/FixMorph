@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Jun 27 13:30:48 2018
-
-@author: pedrobw
-"""
 
 import time
 import Project
@@ -30,15 +25,15 @@ def test_ASTparsing1():
     ASTgen.parseAST(file, project)
     
     
-def test_gumtreeParsing1():
-    for i in gumtreeASTparser.AST_from_file("gumtree_parse_test"):
+def test_treeParsing1():
+    for i in ASTparser.AST_from_file("gumtree_parse_test"):
         Print.white(i)
     
     
-def test_gumtreeParsing2():
-    l = gumtreeASTparser.AST_from_file("gumtree_parse_test")
+def test_treeParsing2():
+    l = ASTparser.AST_from_file("gumtree_parse_test")
     root = l[-1]
-    gumtreeASTparser.recursive_print(root)
+    ASTparser.recursive_print(root)
     
 def test_gen_AST():
     src = examples_path + "Backporting/Invalid_Memory_Read-GraphicsMagick/Pc/"
@@ -102,8 +97,8 @@ def run():
     tests = [
              #test_ASTparsing,
              #test_ASTparsing1,
-             #test_gumtreeParsing1,
-             #test_gumtreeParsing2,
+             #test_treeParsing1,
+             #test_treeParsing2,
              #test_gen_AST,
              #test_gen_AST1,
              #test_dist,

@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Jun 20 16:17:47 2018
-
-@author: pedrobw
-"""
 
 import os
 from Utils import err_exit, clean_ASTs

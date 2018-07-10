@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jun 19 09:03:50 2018
-
-@author: pedrobw
-"""
 
 import os
 import subprocess
