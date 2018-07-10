@@ -26,7 +26,7 @@ def setup_docker_environment(dir_path):
     try:
         if docker_client.containers.get("crochet"):
             crochet_container = docker_client.containers.get("crochet")
-            print("crochet container already running...")
+            crochet_container.start()
 
     except:
         docker_volume_map = dict()
@@ -45,11 +45,10 @@ def clean_docker_environment():
     return
 
 
-def initialize_project(dir_path, var_list, binary_path):
+def initialize_project(dir_path, var_list):
     global project_path, variable_list
     project_path = dir_path
     variable_list = var_list
-    build_project(binary_path.split('/')[-1])
     return
 
 
@@ -122,6 +121,7 @@ def instrument_symbolic_execution(source_path, function_start_line):
     with open(project_path + source_path, "rw+") as source_file:
         original_source_code = source_file.readlines()
         source_lines = list(original_source_code)
+        source_lines.insert(1, "#include<klee/klee.h>")
         for variable in variable_list:
             klee_code = generate_klee_code(variable, False)
             if variable['line-number']:
@@ -131,6 +131,18 @@ def instrument_symbolic_execution(source_path, function_start_line):
         source_file.seek(0, 0)
         source_file.truncate()
         source_file.writelines(source_lines)
+    return
+
+
+def cleanup(source_path):
+
+    if os.path.isdir(project_path + "/crochet"):
+        os.rmdir(project_path + "/crochet")
+
+    with open(project_path + source_path, "rw+") as source_file:
+        source_file.seek(0, 0)
+        source_file.truncate()
+        source_file.writelines(original_source_code)
     return
 
 
@@ -161,10 +173,13 @@ def summarise_symbolic_expressions():
 def run_klee(project_path, source_path, binary_path, function_info, variable_list):
     setup_docker_environment(project_path)
     start_time = time.time()
-    initialize_project(project_path, variable_list, binary_path)
+    initialize_project(project_path, variable_list)
     instrument_symbolic_execution(source_path, function_info['start-line'])
+    build_project(binary_path.split('/')[-1])
     invoke_klee(binary_path, function_info['name'])
+
     summarise_symbolic_expressions()
+    cleanup(source_path)
     end_time = time.time()
     print("klee finished after " + str(end_time - start_time) + "seconds.")
 
