@@ -24,7 +24,7 @@ index = 0
 class AST:
     
     nodes = []
-    attr_names = ['id', 'identifier', 'begin', 'end', 'value', 'type']
+    attr_names = ['id', 'identifier', 'begin', 'end', 'value', 'type', 'line']
     
     def __init__(self, dict_ast, char=""):
         AST.nodes.append(self)
@@ -32,11 +32,12 @@ class AST:
         self.identifier = None
         self.begin = None
         self.end = None
+        self.line = None
         self.value = None
         self.type = None
         self.char = char + "  "
         self.children = []
-        self.attrs = [self.id, self.identifier, self.begin, self.end,
+        self.attrs = [self.id, self.identifier, self.line, self.begin, self.end,
                            self.value, self.type]
         for i in range(len(self.attr_names)):
             key = AST.attr_names[i]
