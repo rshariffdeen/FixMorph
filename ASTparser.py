@@ -88,6 +88,12 @@ class AST:
         s += "]"
         return s
         
+    def get_code(self, file):
+        with open(file, 'r', errors='replace') as f:
+            source_code = "".join(f.readlines())
+        return source_code[int(self.start):int(self.end)]
+                            
+        
 def AST_from_file(file):
     
     global ast
