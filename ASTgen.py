@@ -154,7 +154,6 @@ def parseAST(filepath, proj, Deckard=True):
                  ("invalid sloc" not in line):
                 line = "-".join(line.split("-")[1:]).split(" ")
                 line = remove_Hexa(line).split(" '")
-                # TODO: Get variable types
                 var_type = " '".join(line[1:]).split("'")[0]
                 line = line[0].split(" ")
                 line = line[0].replace("Decl", "") + " " + line[-1]

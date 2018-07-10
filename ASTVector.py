@@ -14,6 +14,7 @@ class ASTVector:
     deckard_path = "tools/Deckard/src/main/cvecgen_fail "
     deckard_path_2 = "tools/Deckard/src/main/cvecgen "
     deckard_vecs = dict()
+    vid = 0
     
     def __init__(self, proj, file, function, start, end, Deckard=True):
         self.proj = proj
@@ -31,6 +32,8 @@ class ASTVector:
         if proj.name not in ASTVector.deckard_vecs.keys():
             ASTVector.deckard_vecs[proj.name] = list()
         ASTVector.deckard_vecs[proj.name].append(self.vector)
+        self.id = ASTVector.vid
+        ASTVector.vid += 1
         
     def gen_Deckard_vec(self):
         current = "\t" + self.function + " " + str(self.start) + "-" + \

@@ -19,6 +19,16 @@ Pb = None
 Pc = None
 start = -1
 
+UPDATE = "Update"
+MOVE = "Move"
+INSERT = "Insert"
+DELETE = "Delete"
+MATCH = "Match"
+TO = " to "
+AT = " at "
+INTO = " into "
+order = [UPDATE, DELETE, MOVE, INSERT]
+
 def initialize():
     global Pa, Pb, Pc
     with open('crochet.conf', 'r', errors='replace') as file:
@@ -143,10 +153,12 @@ def compare():
     for i in vecs_A:
         best = vecs_C[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
+        dist = dict()
         
         # Get best match candidate
         for j in vecs_C:
             d = ASTVector.ASTVector.dist(i[1],j[1])
+            dist[j[0]] = d
             if d < best_d:
                 best = j
                 best_d = d
@@ -155,8 +167,7 @@ def compare():
         candidates = [best]
         candidates_d = [best_d]
         for j in vecs_C:
-            # TODO: Inefficient, computing twice. Should store somewhere?
-            d = ASTVector.ASTVector.dist(i[1],j[1])
+            d = dist[j[0]]
             if d <= factor*best_d:
                 candidates.append(j)
                 candidates_d.append(d)
@@ -341,6 +352,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     return variable_mapping
     
 
+# Unused since 
 def gen_func_file(ast_vec_func, output_file):
     start = ast_vec_func.start
     end = ast_vec_func.end
@@ -366,15 +378,15 @@ def gen_func_file(ast_vec_func, output_file):
             temp.write("".join(ls[start:end]))
             
 
-def gen_temp_files(vec_f, proj, ASTlists):
-    Print.blue("\tFunction " + vec_f.function + " in " + proj.name + "...")
+def gen_json(vec_f, proj, ASTlists):
+    #Print.blue("\tFunction " + vec_f.function + " in " + proj.name + "...")
     #temp_file = "output/temp_" + proj.name + ".c"
     #gen_func_file(vec_f, temp_file)
     Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + "...")
     json_file = "output/json_" + proj.name
     c = "tools/clang-diff/clang-diff -ast-dump-json " + vec_f.file + " > " + \
         json_file + " 2>> errors_AST_dump"
-    exec_com(c, False)
+    exec_com(c, True)
     ASTparser.AST_from_file(json_file)
     ASTlists[proj.name] = [i for i in ASTparser.AST.nodes]
     ASTparser.AST.nodes = []
@@ -422,18 +434,20 @@ def ASTscript(file1, file2, output, only_matches=False):
     c += " > " + output
     exec_com(c)
     
+
+def inst_comp(i):
+    return min(order.index(i), 2)
+    
+    
+def order_comp(inst):
+    if inst[0] in order[0:2]:
+        l = inst[1].line
+    elif inst[0] in order[2:4]:
+        l = inst[2].line
+    return -3*int(l) + inst_comp(inst[0])
+    
     
 def transplantation(to_patch):
-    
-    UPDATE = "Update"
-    MOVE = "Move"
-    INSERT = "Insert"
-    DELETE = "Delete"
-    MATCH = "Match"
-    TO = " to "
-    AT = " at "
-    INTO = " into "
-    
     for (vec_f_a, vec_f_c, var_map) in to_patch:
         try:
             vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
@@ -452,11 +466,11 @@ def transplantation(to_patch):
         Print.blue("Generating temp files for each pertinent function...")
         
         try:
-            gen_temp_files(vec_f_a, Pa, ASTlists)
-            gen_temp_files(vec_f_b, Pb, ASTlists)
-            gen_temp_files(vec_f_c, Pc, ASTlists)
+            gen_json(vec_f_a, Pa, ASTlists)
+            gen_json(vec_f_b, Pb, ASTlists)
+            gen_json(vec_f_c, Pc, ASTlists)
         except:
-            err_exit("!!")
+            err_exit("Error parsing with clang-diff. Remember to bear make.")
             
         Print.blue("Generating edit script: " + Pa.name + TO + Pb.name + "...")
         try:
@@ -556,7 +570,6 @@ def transplantation(to_patch):
                         nodeC = match_AC[nodeA]
                         nodeC = nodeC.split("(")[-1][:-1]
                         nodeC = ASTlists[Pc.name][int(nodeC)]
-                    # TODO: else?
                     instruction_CD.append((UPDATE, nodeC, label))
                 except Exception as e:
                     err_exit(e, "Something went wrong with UPDATE.")
@@ -570,7 +583,6 @@ def transplantation(to_patch):
                         nodeC = match_AC[nodeA]
                         nodeC = nodeC.split("(")[-1][:-1]
                         nodeC = ASTlists[Pc.name][int(nodeC)]
-                    # TODO: else?
                     instruction_CD.append((DELETE, nodeC))
                 except Exception as e:
                     err_exit(e, "Something went wrong with DELETE.")
@@ -622,8 +634,6 @@ def transplantation(to_patch):
                                         pos += len(nodeD.children) - M - 1
                                 except Exception as e:
                                     err_exit(e, "HERE1")
-                                            
-                    # TODO: else?
                     instruction_CD.append((MOVE, nodeC, nodeD, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with MOVE.")
@@ -638,10 +648,13 @@ def transplantation(to_patch):
                     if "(" in nodeD1:
                         nodeD1 = nodeD1.split("(")[-1][:-1]
                         nodeD1 = ASTlists[Pb.name][int(nodeD1)]
+                        nodeD1.children = []
                     nodeD2 = nodeB2
                     if "(" in nodeD2:
                         nodeD2 = nodeD2.split("(")[-1][:-1]
                         nodeD2 = ASTlists[Pb.name][int(nodeD2)]
+                        if type(nodeD1) == ASTparser.AST:
+                            nodeD1.line = nodeD2.line
                     if nodeB1 in match_BA.keys():
                         nodeA1 = match_BA[nodeB1]
                         if nodeA1 in match_AC.keys():
@@ -689,13 +702,15 @@ def transplantation(to_patch):
                     err_exit(e, "Something went wrong with INSERT.")
                 #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
                 #      pos)
+                    
+        instruction_CD.sort(key=order_comp)
         Print.white("Proposed patch from Pc to Pd")
         for i in instruction_CD:
-            Print.white("\t" + " ".join([str(j) for j in i]))
+            Print.white("\t" + " - ".join([str(j) for j in i]))
         
         Print.white("Original patch from Pa to Pb")
         for i in instruction_AB:
-            Print.white("\t" + " ".join([str(j) for j in i]))
+            Print.white("\t" + " - ".join([str(j) for j in i]))
             
 
 def safe_exec(function, title, *args):

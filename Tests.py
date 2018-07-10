@@ -71,10 +71,6 @@ def test_dist():
     Print.white("Relative distance:")
     Print.white(str(d12) + " < " + str(d13) + " ? " + str(d12 < d13))
     
-def test_function_gen():
-    fileA = examples_path + "Backporting/Buffer_Overflow-Espruino/Pa/src"
-    fileB = examples_path + "Backporting/Buffer_Overflow-Espruino/Pa/src"
-    
 
 def test_ASTdump():
     file = "output/temp_Pa.c"
