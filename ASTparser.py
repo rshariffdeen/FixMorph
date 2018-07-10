@@ -24,31 +24,41 @@ index = 0
 class AST:
     
     nodes = []
-    attr_names = ['id', 'identifier', 'begin', 'end', 'value', 'type', 'line']
+    attr_names = ['id', 'identifier', 'line', 'begin', 'end', 'value', 'type']
     
     def __init__(self, dict_ast, char=""):
         AST.nodes.append(self)
         self.id = None
         self.identifier = None
+        self.line = None
         self.begin = None
         self.end = None
-        self.line = None
         self.value = None
         self.type = None
         self.char = char + "  "
         self.children = []
-        self.attrs = [self.id, self.identifier, self.line, self.begin, self.end,
-                           self.value, self.type]
-        for i in range(len(self.attr_names)):
-            key = AST.attr_names[i]
-            if key in dict_ast.keys():
-                self.attrs[i] = dict_ast[key]
-        if "children" in dict_ast.keys():
+        if 'id' in dict_ast.keys():
+            self.id = dict_ast['id']
+        if 'identifier' in dict_ast.keys():
+            self.identifier = dict_ast['identifier']
+        if 'line' in dict_ast.keys():
+            self.line = dict_ast['line']
+        if 'begin' in dict_ast.keys():
+            self.begin = dict_ast['begin']
+        if 'end' in dict_ast.keys():
+            self.end = dict_ast['end']
+        if 'value' in dict_ast.keys():
+            self.value = dict_ast['value']
+        if 'type' in dict_ast.keys():
+            self.type = dict_ast['type']
+        if 'children' in dict_ast.keys():
             for i in dict_ast['children']:
                     self.children.append(AST(i, char + "    "))
         
                     
     def treeString(self):
+        self.attrs = [self.id, self.identifier, self.line, self.begin,
+                      self.end, self.value, self.type]
         s = self.char[:-2] + "{\n"
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:
@@ -67,6 +77,8 @@ class AST:
         return s
         
     def __str__(self):
+        self.attrs = [self.id, self.identifier, self.line, self.begin,
+                      self.end, self.value, self.type]
         s = ""
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:

@@ -19,6 +19,16 @@ Pb = None
 Pc = None
 start = -1
 
+UPDATE = "Update"
+MOVE = "Move"
+INSERT = "Insert"
+DELETE = "Delete"
+MATCH = "Match"
+TO = " to "
+AT = " at "
+INTO = " into "
+order = [UPDATE, DELETE, MOVE, INSERT]
+
 def initialize():
     global Pa, Pb, Pc
     with open('crochet.conf', 'r', errors='replace') as file:
@@ -148,7 +158,7 @@ def compare():
         # Get best match candidate
         for j in vecs_C:
             d = ASTVector.ASTVector.dist(i[1],j[1])
-            dist[str(j)] = d
+            dist[j[0]] = d
             if d < best_d:
                 best = j
                 best_d = d
@@ -157,8 +167,7 @@ def compare():
         candidates = [best]
         candidates_d = [best_d]
         for j in vecs_C:
-            # TODO: Inefficient, computing twice. Should store somewhere?
-            d = dist[str(j)]
+            d = dist[j[0]]
             if d <= factor*best_d:
                 candidates.append(j)
                 candidates_d.append(d)
@@ -377,7 +386,7 @@ def gen_json(vec_f, proj, ASTlists):
     json_file = "output/json_" + proj.name
     c = "tools/clang-diff/clang-diff -ast-dump-json " + vec_f.file + " > " + \
         json_file + " 2>> errors_AST_dump"
-    exec_com(c, False)
+    exec_com(c, True)
     ASTparser.AST_from_file(json_file)
     ASTlists[proj.name] = [i for i in ASTparser.AST.nodes]
     ASTparser.AST.nodes = []
@@ -425,18 +434,20 @@ def ASTscript(file1, file2, output, only_matches=False):
     c += " > " + output
     exec_com(c)
     
+
+def inst_comp(i):
+    return min(order.index(i), 2)
+    
+    
+def order_comp(inst):
+    if inst[0] in order[0:2]:
+        l = inst[1].line
+    elif inst[0] in order[2:4]:
+        l = inst[2].line
+    return -3*int(l) + inst_comp(inst[0])
+    
     
 def transplantation(to_patch):
-    
-    UPDATE = "Update"
-    MOVE = "Move"
-    INSERT = "Insert"
-    DELETE = "Delete"
-    MATCH = "Match"
-    TO = " to "
-    AT = " at "
-    INTO = " into "
-    
     for (vec_f_a, vec_f_c, var_map) in to_patch:
         try:
             vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
@@ -459,7 +470,7 @@ def transplantation(to_patch):
             gen_json(vec_f_b, Pb, ASTlists)
             gen_json(vec_f_c, Pc, ASTlists)
         except:
-            err_exit("!!")
+            err_exit("Error parsing with clang-diff. Remember to bear make.")
             
         Print.blue("Generating edit script: " + Pa.name + TO + Pb.name + "...")
         try:
@@ -637,10 +648,13 @@ def transplantation(to_patch):
                     if "(" in nodeD1:
                         nodeD1 = nodeD1.split("(")[-1][:-1]
                         nodeD1 = ASTlists[Pb.name][int(nodeD1)]
+                        nodeD1.children = []
                     nodeD2 = nodeB2
                     if "(" in nodeD2:
                         nodeD2 = nodeD2.split("(")[-1][:-1]
                         nodeD2 = ASTlists[Pb.name][int(nodeD2)]
+                        if type(nodeD1) == ASTparser.AST:
+                            nodeD1.line = nodeD2.line
                     if nodeB1 in match_BA.keys():
                         nodeA1 = match_BA[nodeB1]
                         if nodeA1 in match_AC.keys():
@@ -688,6 +702,8 @@ def transplantation(to_patch):
                     err_exit(e, "Something went wrong with INSERT.")
                 #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
                 #      pos)
+                    
+        instruction_CD.sort(key=order_comp)
         Print.white("Proposed patch from Pc to Pd")
         for i in instruction_CD:
             Print.white("\t" + " - ".join([str(j) for j in i]))
