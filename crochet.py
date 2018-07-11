@@ -244,22 +244,11 @@ def path_exception():
     return ValueError(m)    
     
     
-def longestSubstringFinder(string1, string2):
-    answer = ""
-    maxlen = min(len(string1), len(string2))
-    i = 0
-    while i < maxlen:
-        if string1[i] != string2[i]:
-            break
-        answer += string1[i]
-        i += 1
-    return answer
-    
 def generate_ast_map(source_a, source_b):
     c = "crochet-diff -dump-matches " + source_a + " " + \
         source_b + " 2>> errors_clang_diff " \
-        "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr)?: '" + \
-        " > output/ast-map"
+        "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr)?: ' " + \
+        "| grep '^Match' > output/ast-map"
     try:
         exec_com(c, True)
     except Exception as e:
@@ -291,21 +280,20 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
         with open("output/ast-map", "r", errors='replace') as ast_map_file:
             map_line = ast_map_file.readline().strip()
             while map_line:
-                if map_line.strip(" ")[0] == "Match":
-                    nodeA, nodeB = clean_parse(map_line, " to ")
-                    var_a = nodeA.split(": ")[1].split("(")
-                    #type_a = var_a[1].split(")")[0]
-                    var_a = var_a[0] #type_a + " " + var_a[0]
-                    var_c = nodeB.split(": ")[1].split("(")
-                    #type_c = var_c[1].split(")")[0]
-                    var_c = var_c[0] #type_c + " " + var_c[0]
-                    if var_a in a_names:
-                        if var_a not in ast_map.keys():
-                            ast_map[var_a] = dict()
-                        if var_c in ast_map[var_a].keys():
-                            ast_map[var_a][var_c] += 1
-                        else:
-                            ast_map[var_a][var_c] = 1
+                nodeA, nodeB = clean_parse(map_line, " to ")
+                var_a = nodeA.split(": ")[1].split("(")
+                #type_a = var_a[1].split(")")[0]
+                var_a = var_a[0] #type_a + " " + var_a[0]
+                var_c = nodeB.split(": ")[1].split("(")
+                #type_c = var_c[1].split(")")[0]
+                var_c = var_c[0] #type_c + " " + var_c[0]
+                if var_a in a_names:
+                    if var_a not in ast_map.keys():
+                        ast_map[var_a] = dict()
+                    if var_c in ast_map[var_a].keys():
+                        ast_map[var_a][var_c] += 1
+                    else:
+                        ast_map[var_a][var_c] = 1
                 map_line = ast_map_file.readline().strip()
     except Exception as e:
         err_exit(e, "Unexpected error while parsing ast-map")
@@ -434,11 +422,13 @@ def ASTscript(file1, file2, output, only_matches=False):
 def inst_comp(i):
     return min(order.index(i), 2)
     
+def rewrite(value):
+    
+    
     
 def order_comp(inst):
     #Print.yellow("Instruction")
     #Print.yellow(inst)
-    
     if inst[0] in order[0:2]:
         l = inst[1]
     elif inst[0] in order[2:4]:
@@ -453,6 +443,39 @@ def order_comp(inst):
     #    Print.yellow("First Child")
     #    Print.yellow(l.children[0])
     return -3*int(l.line) + inst_comp(inst[0])
+    
+def patch_instruction(inst, fileA, fileB, fileC):
+    Print.white("\t" + " - ".join([str(j) for j in inst]))
+    instruction = inst[0]
+    c = "crochet-patch "
+    
+    '''if instruction == UPDATE:
+        node = inst[1]
+        value = inst[2]
+        c += "-update -line=" + str(node.line) + " -query='" + node.type + \
+             ": " + node.get_code(fileC) + "' -value='" + rewrite(value) + \
+             " " + fileC
+        Print.green(c)
+    elif instruction == DELETE:
+        node = inst[1]
+        c += "-delete -line=" + str(node.line) + " -query='" + node.type + \
+             ": " + node.get_code(fileC) + "' " + fileC
+        print_green(c)
+    elif instruction == MOVE:
+        nodeB1 = inst[1]
+        nodeB2 = inst[2]
+        pos = inst[3]
+        pass
+    elif instruction == INSERT:
+        node = inst[1]
+        nodeC = inst[2]
+        pos = inst[3]
+        c += "-update -line=" + str(nodeC.line) + " -query='" + node.type + \
+             ": " + node.get_code(fileB) + "' -offset=" + str(pos) + \
+             " -value='" + nodeC.get_code(fileC) + "' " + f
+        print_green(c)
+        pass'''
+    
     
     
 def transplantation(to_patch):
@@ -671,7 +694,6 @@ def transplantation(to_patch):
                     if "(" in nodeD1:
                         nodeD1 = nodeD1.split("(")[-1][:-1]
                         nodeD1 = ASTlists[Pb.name][int(nodeD1)]
-                        nodeD1.children = []
                     nodeD2 = nodeB2
                     if "(" in nodeD2:
                         nodeD2 = nodeD2.split("(")[-1][:-1]
@@ -724,6 +746,7 @@ def transplantation(to_patch):
                             except Exception as e:
                                 err_exit(e, "Here2")
                     if type(nodeD1) == ASTparser.AST:
+                        nodeD1.children = []
                         if nodeD1.line == None:
                             nodeD1.line = nodeD1.parent.line
                     if type(nodeD2) == ASTparser.AST:
@@ -736,11 +759,12 @@ def transplantation(to_patch):
                 #      pos)
         try:
             instruction_CD.sort(key=order_comp)
-        except:
-            err_exit("Bad sorting")
+        except Exception as e:
+            err_exit(e, "Error at sorting instructions.")
         Print.white("Proposed patch from Pc to Pd")
+        
         for i in instruction_CD:
-            Print.white("\t" + " - ".join([str(j) for j in i]))
+            patch_instruction(i, vec_f_a.file, vec_f_b.file, vec_f_c.file)
 
             
 
