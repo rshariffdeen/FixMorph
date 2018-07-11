@@ -26,6 +26,7 @@ class AST:
         self.id = None
         self.identifier = None
         self.line = None
+        self.col = None
         self.begin = None
         self.end = None
         self.value = None
@@ -38,6 +39,8 @@ class AST:
             self.identifier = dict_ast['identifier']
         if 'start line' in dict_ast.keys():
             self.line = dict_ast['start line']
+        if 'start column' in dict_ast.keys():
+            self.col = dict_ast['start column']
         if 'begin' in dict_ast.keys():
             self.begin = dict_ast['begin']
         if 'end' in dict_ast.keys():

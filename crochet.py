@@ -22,6 +22,7 @@ MATCH = "Match"
 TO = " to "
 AT = " at "
 INTO = " into "
+AND = "and"
 order = [UPDATE, DELETE, MOVE, INSERT]
 
 def initialize():
@@ -363,9 +364,6 @@ def gen_func_file(ast_vec_func, output_file):
             
 
 def gen_json(vec_f, proj, ASTlists):
-    #Print.blue("\tFunction " + vec_f.function + " in " + proj.name + "...")
-    #temp_file = "output/temp_" + proj.name + ".c"
-    #gen_func_file(vec_f, temp_file)
     Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + "...")
     json_file = "output/json_" + proj.name
     c = "crochet-diff -ast-dump-json " + vec_f.file + " > " + \
@@ -422,8 +420,23 @@ def ASTscript(file1, file2, output, only_matches=False):
 def inst_comp(i):
     return min(order.index(i), 2)
     
-#def rewrite(value):
+def format_value(node, file):
+    if "VarDecl" in node.type:
+        nvalue = node.get_code(file)
+    elif "(anonymous struct)::" in node.value:
+        nvalue = node.get_code(file)
+    else:
+        nvalue = node.value
+    return nvalue
     
+def info(node, file):
+    if node.value:
+        return node.type + ": " + format_value(node, file)
+    return node.type
+        
+def value(node, file):
+    if node.value:
+        return format_value(node, file)
     
     
 def order_comp(inst):
@@ -449,32 +462,34 @@ def patch_instruction(inst, fileA, fileB, fileC):
     instruction = inst[0]
     c = "crochet-patch "
     
-    '''if instruction == UPDATE:
-        node = inst[1]
-        value = inst[2]
-        c += "-update -line=" + str(node.line) + " -query='" + node.type + \
-             ": " + node.get_code(fileC) + "' -value='" + rewrite(value) + \
-             " " + fileC
-        Print.green(c)
+    if instruction == UPDATE:
+        nodeC = inst[1]
+        nodeD = inst[2]
+        c += "-update -line=" + str(nodeC.line) + " -col=" + str(nodeC.col) + \
+             " -query='" + info(nodeC, fileC) + "' -value='" + \
+             value(nodeD, fileB) + "' " + fileC
     elif instruction == DELETE:
         node = inst[1]
-        c += "-delete -line=" + str(node.line) + " -query='" + node.type + \
-             ": " + node.get_code(fileC) + "' " + fileC
-        print_green(c)
+        c += "-delete -line=" + str(node.line) + " -col=" + str(node.col) + \
+             " -query='" + info(node, fileC) + "' " + fileC
     elif instruction == MOVE:
-        nodeB1 = inst[1]
-        nodeB2 = inst[2]
+        nodeC1 = inst[1]
+        nodeC2 = inst[2]
         pos = inst[3]
-        pass
+        c += "-move -line=" + str(nodeC1.line) + " -col=" + str(nodeC1.col) + \
+             " -query='" + info(nodeC1, fileC) + "'" + \
+             " -line2=" + str(nodeC2.line) + " -col2=" + str(nodeC2.col) + \
+             " -value='" + info(nodeC2, fileC) + "'" + \
+             " -offset=" + str(pos) + " " + fileC
     elif instruction == INSERT:
-        node = inst[1]
+        nodeB = inst[1]
         nodeC = inst[2]
         pos = inst[3]
-        c += "-update -line=" + str(nodeC.line) + " -query='" + node.type + \
-             ": " + node.get_code(fileB) + "' -offset=" + str(pos) + \
-             " -value='" + nodeC.get_code(fileC) + "' " + f
-        print_green(c)
-        pass'''
+        c += "-insert -line=" + str(nodeB.line) + " -col=" + str(nodeB.col) + \
+             " -query='" + info(nodeB, fileC) + "'"\
+             " -value='" + info(nodeC, fileC) + "'"\
+             " -offset=" + str(pos) + " " + fileC
+    Print.green(c)
     
     
     
@@ -525,8 +540,15 @@ def transplantation(to_patch):
             line = script_AB.readline().strip()
             while line:
                 line = line.split(" ")
-                instruction = line[0]
-                content = " ".join(line[1:])
+                if len(line) > 3 and line[0] == UPDATE and line[1] == AND and \
+                   line[2] == MOVE:
+                    instruction = line[2]
+                    content = " ".join(line[3:])
+                    nodeA, nodeB = clean_parse(content, TO)
+                    instruction_AB.append((UPDATE, match_BA[nodeA]))
+                else:
+                    instruction = line[0]
+                    content = " ".join(line[1:])
                 # Match nodeA to nodeB
                 if instruction == MATCH:
                     try:
@@ -613,7 +635,6 @@ def transplantation(to_patch):
                     instruction_CD.append((UPDATE, nodeC, nodeD))
                 except Exception as e:
                     err_exit(e, "Something went wrong with UPDATE.")
-                #print(UPDATE + " " + str(nodeC) + TO + label)
             # Delete nodeA -> Delete nodeC
             elif instruction == DELETE:
                 try:
@@ -628,7 +649,6 @@ def transplantation(to_patch):
                     instruction_CD.append((DELETE, nodeC))
                 except Exception as e:
                     err_exit(e, "Something went wrong with DELETE.")
-                #print(DELETE + " " + str(nodeC))
             # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
             elif instruction == MOVE:
                 try:
@@ -685,7 +705,6 @@ def transplantation(to_patch):
                     instruction_CD.append((MOVE, nodeC, nodeD, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with MOVE.")
-                #print(MOVE + " " + str(nodeC) + INTO + str(nodeD) + AT + pos)
             # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
             elif instruction == INSERT:
                 try:
@@ -757,8 +776,6 @@ def transplantation(to_patch):
                     instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")
-                #print(INSERT + " " + str(nodeD1) + INTO + str(nodeD2) + AT + \
-                #      pos)
         try:
             instruction_CD.sort(key=order_comp)
         except Exception as e:
@@ -767,7 +784,6 @@ def transplantation(to_patch):
         
         for i in instruction_CD:
             patch_instruction(i, vec_f_a.file, vec_f_b.file, vec_f_c.file)
-
             
 
 def safe_exec(function, title, *args):
@@ -785,7 +801,8 @@ def safe_exec(function, title, *args):
         Print.red("Crash during " + descr + ", after " + runtime + " seconds.")
         err_exit(e, "Unexpected error during " + descr + ".")
     return a
-                    
+              
+              
 def run_crochet():
     global Pa, Pb, Pc, start
     # Little crochet introduction
