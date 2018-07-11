@@ -422,7 +422,7 @@ def ASTscript(file1, file2, output, only_matches=False):
 def inst_comp(i):
     return min(order.index(i), 2)
     
-def rewrite(value):
+#def rewrite(value):
     
     
     
@@ -535,11 +535,11 @@ def transplantation(to_patch):
                     except Exception as e:
                         err_exit(e, "Something went wrong in MATCH (AB).",
                                  line, instruction, content)
-                # Update nodeA to label
+                # Update nodeA to nodeB (only care about value)
                 elif instruction == UPDATE:
                     try:
-                        nodeA, label = clean_parse(content, TO)
-                        instruction_AB.append((instruction, nodeA, label))
+                        nodeA, nodeB = clean_parse(content, TO)
+                        instruction_AB.append((instruction, nodeA, nodeB))
                     except Exception as e:
                         err_exit(e, "Something went wrong in UPDATE.")
                 # Delete nodeA
@@ -596,11 +596,11 @@ def transplantation(to_patch):
         instruction_CD = list()
         for i in instruction_AB:
             instruction = i[0]
-            # Update nodeA to label -> Update nodeC to label
+            # Update nodeA to nodeB (value) -> Update nodeC to nodeD (value)
             if instruction == UPDATE:
                 try:
                     nodeA = i[1]
-                    label = i[2]
+                    nodeB = i[2]
                     nodeC = "?"
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
@@ -608,7 +608,9 @@ def transplantation(to_patch):
                         nodeC = ASTlists[Pc.name][int(nodeC)]
                         if nodeC.line == None:
                             nodeC.line = nodeC.parent.line
-                    instruction_CD.append((UPDATE, nodeC, label))
+                    nodeD = nodeB.split("(")[-1][:-1]
+                    nodeD = ASTlists[Pb.name][int(nodeD)]
+                    instruction_CD.append((UPDATE, nodeC, nodeD))
                 except Exception as e:
                     err_exit(e, "Something went wrong with UPDATE.")
                 #print(UPDATE + " " + str(nodeC) + TO + label)
