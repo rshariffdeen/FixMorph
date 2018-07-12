@@ -370,9 +370,8 @@ def gen_json(vec_f, proj, ASTlists):
                "...")
     json_file = "output/json_" + proj.name
     ASTdump(vec_f.file, json_file)
-    ASTparser.AST_from_file(json_file)
-    ASTlists[proj.name] = [i for i in ASTparser.AST.nodes]
-    ASTparser.AST.nodes = []
+    ASTlists[proj.name] = ASTparser.AST_from_file(json_file)
+    
     
 def clean_parse(content, separator):
     if content.count(separator) == 1:
@@ -498,7 +497,8 @@ def patch_instruction(inst, fileA, fileB, fileC):
              " -offset=" + str(pos) + " " + fileC
     if implemented:
         #c += " > " + fileC.replace(Pc.path, Pd.path)
-        exec_com(c)
+        Print.green(c)
+        #exec_com(c)
     
     
     

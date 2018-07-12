@@ -24,9 +24,7 @@ class Project:
                 c = "cat " + path + "/compile_commands.json"
                 if int(len(exec_com(c)[0])) <=2:
                     self.bear_make(crochet_path)
-                #else:
-                #    self.bear_make(crochet_path)
-            with open(self.path + "/compile_commands.json", 'r', errors="replace") as file:
+            '''with open(self.path + "/compile_commands.json", 'r', errors="replace") as file:
                 text = "".join(file.readlines())[1:-1]
             text = "{\n\"a\":[\n" + text + "]}\n"
             dict_json = json.loads(text)["a"]
@@ -46,7 +44,7 @@ class Project:
                         dir_j = j["directory"]
                         if file_i == file_j and dir_i == dir_j:
                             nonexists = False
-                            j["arguments"] = j["arguments"].union(i["arguments"])
+                            #j["arguments"] = j["arguments"].union(i["arguments"])
                     if nonexists:
                         aux_dict.append(i)
                         
@@ -72,10 +70,10 @@ class Project:
                 if count  < L:
                     s += ","
                 s += "\n"
-            s += "]\n"
+            s += "]"
             #print(s)            
             with open(self.path + "/compile_commands.json", 'w') as file:
-                file.write(s)
+                file.write(s)'''
             c = "cd " + crochet_path
             exec_com(c)       
                 
@@ -84,9 +82,12 @@ class Project:
             
         
     def bear_make(self, crochet_path):
-        c = "cd " + self.path + "; make clean;" + \
-            "bear make > " + crochet_path + "/output/compile_warnings;"
-        exec_com(c)
+        try:
+            c = "cd " + self.path + "; make clean;" + \
+                "bear make > " + crochet_path + "/output/compile_warnings;"
+            exec_com(c)
+        except Exception as e:
+            err_exit(e, "Bear make failed. Configure first.")
         
     def clean(self):
         # Remove *.crochetAST, *.AST and *.vec files from directory

@@ -101,7 +101,9 @@ def AST_from_file(file):
     with open(file, 'r', errors='replace') as ast_file:
         ast = ast_file.readline()
     object_ast = json.loads(ast)
-    ast = AST(object_ast['root'])
+    AST(object_ast['root'])
+    ast = [i for i in AST.nodes]
+    AST.nodes = []
     return ast
 
 
