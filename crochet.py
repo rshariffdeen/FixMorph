@@ -462,19 +462,24 @@ def order_comp(inst):
 def patch_instruction(inst, fileA, fileB, fileC):
     Print.white("\t" + " - ".join([str(j) for j in inst]))
     instruction = inst[0]
+    implemented = False
     c = "crochet-patch "
     
     if instruction == UPDATE:
+        implemented = True
         nodeC = inst[1]
         nodeD = inst[2]
         c += "-update -line=" + str(nodeC.line) + " -column=" + str(nodeC.col) + \
              " -query='" + info(nodeC, fileC) + "' -value='" + \
              value(nodeD, fileB) + "' " + fileC
     elif instruction == DELETE:
+        implemented = True
         node = inst[1]
         c += "-delete -line=" + str(node.line) + " -column=" + str(node.col) + \
              " -query='" + info(node, fileC) + "' " + fileC
+    # Unimplemented
     elif instruction == MOVE:
+        implemented = False
         nodeC1 = inst[1]
         nodeC2 = inst[2]
         pos = inst[3]
@@ -484,6 +489,7 @@ def patch_instruction(inst, fileA, fileB, fileC):
              " -value='" + info(nodeC2, fileC) + "'" + \
              " -offset=" + str(pos) + " " + fileC
     elif instruction == INSERT:
+        implemented = False
         nodeB = inst[1]
         nodeC = inst[2]
         pos = inst[3]
@@ -491,8 +497,9 @@ def patch_instruction(inst, fileA, fileB, fileC):
              " -query='" + info(nodeB, fileC) + "'"\
              " -value='" + info(nodeC, fileC) + "'"\
              " -offset=" + str(pos) + " " + fileC
-    #c += " > " + fileC.replace(Pc.path, Pd.path)
-    exec_com(c)
+    if implemented:
+        #c += " > " + fileC.replace(Pc.path, Pd.path)
+        exec_com(c)
     
     
     
