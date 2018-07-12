@@ -366,11 +366,10 @@ def gen_func_file(ast_vec_func, output_file):
             
 
 def gen_json(vec_f, proj, ASTlists):
-    Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + "...")
+    Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + \
+               "...")
     json_file = "output/json_" + proj.name
-    c = "crochet-diff -ast-dump-json " + vec_f.file + " > " + \
-        json_file + " 2>> output/errors_AST_dump"
-    exec_com(c, True)
+    ASTdump(vec_f.file, json_file)
     ASTparser.AST_from_file(json_file)
     ASTlists[proj.name] = [i for i in ASTparser.AST.nodes]
     ASTparser.AST.nodes = []
@@ -406,7 +405,7 @@ def clean_parse(content, separator):
 
 def ASTdump(file, output):
     c = "crochet-diff -s 2147483647 -ast-dump-json " + file + \
-        " 2>> output/errors_clang_diff > " + output
+        " 2>> output/errors_AST_dump > " + output
     exec_com(c)
     
 
@@ -469,22 +468,22 @@ def patch_instruction(inst, fileA, fileB, fileC):
         implemented = True
         nodeC = inst[1]
         nodeD = inst[2]
-        c += "-update -line=" + str(nodeC.line) + " -column=" + str(nodeC.col) + \
-             " -query='" + info(nodeC, fileC) + "' -value='" + \
-             value(nodeD, fileB) + "' " + fileC
+        c += "-update -line=" + str(nodeC.line) + " -column=" + \
+             str(nodeC.col) + " -query='" + info(nodeC, fileC) + \
+             "' -value='" + value(nodeD, fileB) + "' " + fileC
     elif instruction == DELETE:
         implemented = True
         node = inst[1]
-        c += "-delete -line=" + str(node.line) + " -column=" + str(node.col) + \
-             " -query='" + info(node, fileC) + "' " + fileC
+        c += "-delete -line=" + str(node.line) + " -column=" + \
+             str(node.col) +  " -query='" + info(node, fileC) + "' " + fileC
     # Unimplemented
     elif instruction == MOVE:
         implemented = False
         nodeC1 = inst[1]
         nodeC2 = inst[2]
         pos = inst[3]
-        c += "-move -line=" + str(nodeC1.line) + " -column=" + str(nodeC1.col) + \
-             " -query='" + info(nodeC1, fileC) + "'" + \
+        c += "-move -line=" + str(nodeC1.line) + " -column=" + \
+             str(nodeC1.col) + " -query='" + info(nodeC1, fileC) + "'" + \
              " -line2=" + str(nodeC2.line) + " -column2=" + str(nodeC2.col) + \
              " -value='" + info(nodeC2, fileC) + "'" + \
              " -offset=" + str(pos) + " " + fileC
@@ -493,8 +492,8 @@ def patch_instruction(inst, fileA, fileB, fileC):
         nodeB = inst[1]
         nodeC = inst[2]
         pos = inst[3]
-        c += "-insert -line=" + str(nodeB.line) + " -column=" + str(nodeB.col) + \
-             " -query='" + info(nodeB, fileC) + "'"\
+        c += "-insert -line=" + str(nodeB.line) + " -column=" + \
+             str(nodeB.col) + " -query='" + info(nodeB, fileC) + "'"\
              " -value='" + info(nodeC, fileC) + "'"\
              " -offset=" + str(pos) + " " + fileC
     if implemented:
@@ -517,7 +516,8 @@ def transplantation(to_patch):
                          Pb.funcs[vec_f_b_file].keys())
             ASTlists = dict()
         except Exception as e:
-            err_exit(e, vec_f_b_file, vec_f_a, Pa.path, Pb.path, vec_f_a.function)
+            err_exit(e, vec_f_b_file, vec_f_a, Pa.path, Pb.path,
+                     vec_f_a.function)
         
         Print.blue("Generating temp files for each pertinent function...")
         
@@ -693,14 +693,16 @@ def transplantation(to_patch):
                                             if nodeA_l in match_AC.keys():
                                                 nodeC_l = match_AC[nodeA_l]
                                                 if nodeC_l in nodeD.children:
-                                                    m = nodeD.children.index(nodeC_l)
+                                                    m = nodeD.children
+                                                    m = m.index(nodeC_l)
                                                     pos = m+1
                                         elif nodeB_r in match_BA.keys():
                                             nodeA_r = match_BA[nodeB_r]
                                             if nodeA_r in match_AC.keys():
                                                 nodeC_r = match_AC[nodeA_r]
                                                 if nodeC_r in nodeD.children:
-                                                    M = nodeD.children.index(nodeC_r)
+                                                    M = nodeD.children
+                                                    M = M.index(nodeC_r)
                                                     pos = M-1
                                     elif pos >= M - 1:
                                         pos += len(nodeD.children) - M - 1
@@ -763,14 +765,16 @@ def transplantation(to_patch):
                                         if nodeA2_l in match_AC.keys():
                                             nodeD2_l = match_AC[nodeA2_l]
                                             if nodeD2_l in nodeD2.children:
-                                                m = nodeD2.children.index(nodeD2_l)
+                                                m = nodeD2.children
+                                                m = m.index(nodeD2_l)
                                                 pos = m+1
                                     elif nodeB2_r in match_BA.keys():
                                         nodeA2_r = match_BA[nodeB2_r]
                                         if nodeA2_r in match_AC.keys():
                                             nodeD2_r = match_AC[nodeA2_r]
                                             if nodeD2_r in nodeD2.children:
-                                                M = nodeD2.children.index(nodeD2_r)
+                                                M = nodeD2.children
+                                                M = M.index(nodeD2_r)
                                                 pos = max(0, M-1)
                                 elif pos >= M - 1:
                                     pos += len(nodeD2.children) - M - 1
