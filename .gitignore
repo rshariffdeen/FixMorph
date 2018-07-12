@@ -25,3 +25,7 @@ ASTParser.pyc
 ASTParser.py_*
 Cfiles
 failed
+Tests.py
+ASTdiffTest.py
+empty_file.c
+test

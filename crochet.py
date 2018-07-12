@@ -12,6 +12,7 @@ import ASTparser
 Pa = None
 Pb = None
 Pc = None
+Pd = None
 start = -1
 
 UPDATE = "Update"
@@ -26,15 +27,16 @@ AND = "and"
 order = [UPDATE, DELETE, MOVE, INSERT]
 
 def initialize():
-    global Pa, Pb, Pc
+    global Pa, Pb, Pc, Pd
     with open('crochet.conf', 'r', errors='replace') as file:
         args = [i.strip() for i in file.readlines()]
-    if (len(args) < 3):
-        err_exit("Insufficient arguments: Pa, Pb, Pc source paths required.",
-                 "Try running:", "\tpython3 ASTcrochet.py $Pa $Pb $Pc")
+    if (len(args) < 4):
+        err_exit("Insufficient arguments: Pa, Pb, Pc, and Pd source paths " + \
+                 "required.")
     Pa = Project.Project(args[0], "Pa")
     Pb = Project.Project(args[1], "Pb")
     Pc = Project.Project(args[2], "Pc")
+    Pc = Project.Project(args[3], "Pd")
     clean()
 
 
@@ -247,7 +249,7 @@ def path_exception():
     
 def generate_ast_map(source_a, source_b):
     c = "crochet-diff -dump-matches " + source_a + " " + \
-        source_b + " 2>> errors_clang_diff " \
+        source_b + " 2>> output/errors_clang_diff " \
         "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr)?: ' " + \
         "| grep '^Match' > output/ast-map"
     try:
@@ -367,7 +369,7 @@ def gen_json(vec_f, proj, ASTlists):
     Print.blue("\t\tClang AST parse " + vec_f.function + " in " + proj.name + "...")
     json_file = "output/json_" + proj.name
     c = "crochet-diff -ast-dump-json " + vec_f.file + " > " + \
-        json_file + " 2>> errors_AST_dump"
+        json_file + " 2>> output/errors_AST_dump"
     exec_com(c, True)
     ASTparser.AST_from_file(json_file)
     ASTlists[proj.name] = [i for i in ASTparser.AST.nodes]
@@ -465,31 +467,32 @@ def patch_instruction(inst, fileA, fileB, fileC):
     if instruction == UPDATE:
         nodeC = inst[1]
         nodeD = inst[2]
-        c += "-update -line=" + str(nodeC.line) + " -col=" + str(nodeC.col) + \
+        c += "-update -line=" + str(nodeC.line) + " -column=" + str(nodeC.col) + \
              " -query='" + info(nodeC, fileC) + "' -value='" + \
              value(nodeD, fileB) + "' " + fileC
     elif instruction == DELETE:
         node = inst[1]
-        c += "-delete -line=" + str(node.line) + " -col=" + str(node.col) + \
+        c += "-delete -line=" + str(node.line) + " -column=" + str(node.col) + \
              " -query='" + info(node, fileC) + "' " + fileC
     elif instruction == MOVE:
         nodeC1 = inst[1]
         nodeC2 = inst[2]
         pos = inst[3]
-        c += "-move -line=" + str(nodeC1.line) + " -col=" + str(nodeC1.col) + \
+        c += "-move -line=" + str(nodeC1.line) + " -column=" + str(nodeC1.col) + \
              " -query='" + info(nodeC1, fileC) + "'" + \
-             " -line2=" + str(nodeC2.line) + " -col2=" + str(nodeC2.col) + \
+             " -line2=" + str(nodeC2.line) + " -column2=" + str(nodeC2.col) + \
              " -value='" + info(nodeC2, fileC) + "'" + \
              " -offset=" + str(pos) + " " + fileC
     elif instruction == INSERT:
         nodeB = inst[1]
         nodeC = inst[2]
         pos = inst[3]
-        c += "-insert -line=" + str(nodeB.line) + " -col=" + str(nodeB.col) + \
+        c += "-insert -line=" + str(nodeB.line) + " -column=" + str(nodeB.col) + \
              " -query='" + info(nodeB, fileC) + "'"\
              " -value='" + info(nodeC, fileC) + "'"\
              " -offset=" + str(pos) + " " + fileC
-    Print.green(c)
+    #c += " > " + fileC.replace(Pc.path, Pd.path)
+    exec_com(c)
     
     
     
