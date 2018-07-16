@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from Utils import exec_com, err_exit, find_files, clean, get_extensions
+from Utils import exec_com, err_exit, find_files, clean, backup, get_extensions
 import Project
 import Print
 import ASTVector
@@ -27,18 +27,17 @@ AND = "and"
 order = [UPDATE, DELETE, MOVE, INSERT]
 
 def initialize():
-    global Pa, Pb, Pc, Pd
+    global Pa, Pb, Pc
     with open('crochet.conf', 'r', errors='replace') as file:
         args = [i.strip() for i in file.readlines()]
-    if (len(args) < 4):
+    if (len(args) < 3):
         err_exit("Insufficient arguments: Pa, Pb, Pc, and Pd source paths " + \
                  "required.")
     Pa = Project.Project(args[0], "Pa")
     Pb = Project.Project(args[1], "Pb")
     Pc = Project.Project(args[2], "Pc")
-    Pc = Project.Project(args[3], "Pd")
     clean()
-
+    backup(Pc.path)
 
 def find_diff_files():
     global Pa, Pb
@@ -161,7 +160,7 @@ def compare():
                 best = j
                 best_d = d
         
-        # Get all pertinent matches (at dist d' < k*best_d) (with k=2?)
+        # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
         candidates = [best]
         candidates_d = [best_d]
         for j in vecs_C:
@@ -249,7 +248,7 @@ def path_exception():
     
 def generate_ast_map(source_a, source_b):
     c = "crochet-diff -dump-matches " + source_a + " " + \
-        source_b + " 2>> output/errors_clang_diff " \
+        source_b + " 2> output/errors_clang_diff " \
         "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr)?: ' " + \
         "| grep '^Match' > output/ast-map"
     try:
@@ -259,10 +258,14 @@ def generate_ast_map(source_a, source_b):
 
 def detect_matching_variables(f_a, file_a, f_c, file_c):
     
-    generate_ast_map(Pa.path + "/" + file_a, Pc.path + "/" + file_c)
+    try:
+        generate_ast_map(Pa.path + "/" + file_a, Pc.path + "/" + file_c)
+    except Exception as e:
+        err_exit(e, "Error at generate_ast_map.")
     
-    
+    #Print.yellow(Pa.funcs)
     function_a = Pa.funcs[Pa.path + file_a][f_a]
+    #Print.yellow(function_a)
     variable_list_a = function_a.variables + function_a.params
     while '' in variable_list_a:
         variable_list_a.remove('')
@@ -337,32 +340,6 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
         err_exit(e, "ASdasdas")
     
     return variable_mapping
-    
-
-# Unused since 
-def gen_func_file(ast_vec_func, output_file):
-    start = ast_vec_func.start
-    end = ast_vec_func.end
-    Print.blue("\t\tStart line: " + str(start))
-    Print.blue("\t\tEnd line: " + str(end))
-    
-    with open(output_file, 'w') as temp:
-        with open(ast_vec_func.file, 'r', errors='replace') as file:
-            ls = file.readlines()
-            # FIXME: This thing isn't copying the function properly sometimes
-            if "}" in ls[start] or "#" in ls [start] or ";" in ls[start] or \
-                     "/" in ls[start]:
-                start += 1
-            while start > 0:
-                j = start-1
-                if len(ls[j].strip()) == 0:
-                    break
-                elif "}" in ls[j] or "#" in ls [j] or ";" in ls[j] or \
-                     "/" in ls[j]:
-                    start += 1
-                    break
-                start = j
-            temp.write("".join(ls[start:end]))
             
 
 def gen_json(vec_f, proj, ASTlists):
@@ -404,13 +381,13 @@ def clean_parse(content, separator):
 
 def ASTdump(file, output):
     c = "crochet-diff -s 2147483647 -ast-dump-json " + file + \
-        " 2>> output/errors_AST_dump > " + output
+        " 2> output/errors_AST_dump > " + output
     exec_com(c)
     
 
 def ASTscript(file1, file2, output, only_matches=False):
     c = "crochet-diff -s 2147483647 -dump-matches " + file1 + \
-        " " + file2 + " 2>> output/errors_clang_diff "
+        " " + file2 + " 2> output/errors_clang_diff "
     if only_matches:
         c += "| grep '^Match ' "
     c += " > " + output
@@ -439,13 +416,31 @@ def value(node, file):
         return format_value(node, file)
     
     
-def order_comp(inst):
+def order_comp(inst1, inst2):
+    
     #Print.yellow("Instruction")
     #Print.yellow(inst)
-    if inst[0] in order[0:2]:
-        l = inst[1]
-    elif inst[0] in order[2:4]:
-        l = inst[2]
+    if inst1[0] in order[0:2]:
+        l1 = inst1[1]
+    elif inst1[0] in order[2:4]:
+        l1 = inst1[2]
+        
+    if inst2[0] in order[0:2]:
+        l2 = inst2[1]
+    elif inst1[0] in order[2:4]:
+        l2 = inst2[2]
+        
+    line1 = int(l1.line)
+    line2 = int(l2.line)
+    if line1 != line2:
+        return line2-line1
+    
+    col1 = int(l1.col)
+    col2 = int(l2.col)
+    if col1 != col2:
+        return col2-col1
+    
+    return inst_comp(inst2[0]) - inst_comp(inst1[0])
     #Print.yellow("Interesting Node")
     #Print.yellow(l)
     #Print.yellow("Parent")
@@ -455,7 +450,28 @@ def order_comp(inst):
     #if l.children:
     #    Print.yellow("First Child")
     #    Print.yellow(l.children[0])
-    return -3*int(l.line) + inst_comp(inst[0])
+    #return -3*int(l.line) + inst_comp(inst[0])
+    
+
+def cmp_to_key(mycmp):
+    'Convert a cmp= function into a key= function'
+    class K(object):
+        def __init__(self, obj, *args):
+            self.obj = obj
+        def __lt__(self, other):
+            return mycmp(self.obj, other.obj) < 0
+        def __gt__(self, other):
+            return mycmp(self.obj, other.obj) > 0
+        def __eq__(self, other):
+            return mycmp(self.obj, other.obj) == 0
+        def __le__(self, other):
+            return mycmp(self.obj, other.obj) <= 0  
+        def __ge__(self, other):
+            return mycmp(self.obj, other.obj) >= 0
+        def __ne__(self, other):
+            return mycmp(self.obj, other.obj) != 0
+    return K
+    
     
 def patch_instruction(inst, fileA, fileB, fileC):
     Print.white("\t" + " - ".join([str(j) for j in inst]))
@@ -495,11 +511,15 @@ def patch_instruction(inst, fileA, fileB, fileC):
              str(nodeB.col) + " -query='" + info(nodeB, fileC) + "'"\
              " -value='" + info(nodeC, fileC) + "'"\
              " -offset=" + str(pos) + " " + fileC
-    if implemented:
-        #c += " > " + fileC.replace(Pc.path, Pd.path)
-        Print.green(c)
-        #exec_com(c)
-    
+    Print.green(c)
+    if implemented and False:
+        new_file = exec_com(c)[0]
+        last = new_file.index("/* End Crochet Output */")
+        new_file = new_file[:last]
+        print(new_file)
+        #with open(fileC, 'w') as file_to_correct:
+        #    file_to_correct.write(new_file)
+
     
     
 def transplantation(to_patch):
@@ -545,6 +565,7 @@ def transplantation(to_patch):
         Print.blue("Generating edit script: " + Pc.name + TO + "Pd...")
 
         instruction_AB = list()
+        inserted_B = list()
         match_BA = dict()
         with open('output/diff_script_AB', 'r', errors='replace') as script_AB:
             line = script_AB.readline().strip()
@@ -553,9 +574,10 @@ def transplantation(to_patch):
                 if len(line) > 3 and line[0] == UPDATE and line[1] == AND and \
                    line[2] == MOVE:
                     instruction = line[2]
+                    #Print.yellow(line)
                     content = " ".join(line[3:])
-                    nodeA, nodeB = clean_parse(content, TO)
-                    instruction_AB.append((UPDATE, match_BA[nodeA]))
+                    nodeA, nodeB = clean_parse(content, INTO)
+                    instruction_AB.append((UPDATE, match_BA[nodeA], nodeA))
                 else:
                     instruction = line[0]
                     content = " ".join(line[1:])
@@ -600,6 +622,7 @@ def transplantation(to_patch):
                         pos = nodeB2_at[-1]
                         instruction_AB.append((instruction, nodeB1, nodeB2,
                                               pos))
+                        inserted_B.append(nodeB1)
                     except Exception as e:
                         err_exit(e, "Something went wrong in INSERT.")
                 line = script_AB.readline().strip()
@@ -626,6 +649,7 @@ def transplantation(to_patch):
                 
         
         instruction_CD = list()
+        match_BD = dict()
         for i in instruction_AB:
             instruction = i[0]
             # Update nodeA to nodeB (value) -> Update nodeC to nodeD (value)
@@ -650,6 +674,8 @@ def transplantation(to_patch):
                 try:
                     nodeA = i[1]
                     nodeC = "?"
+                    #Print.yellow(nodeA)
+                    #Print.yellow(match_AC)
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
                         nodeC = nodeC.split("(")[-1][:-1]
@@ -662,52 +688,79 @@ def transplantation(to_patch):
             # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
             elif instruction == MOVE:
                 try:
-                    nodeA = i[1]
-                    nodeB = i[2]
+                    nodeB1 = i[1]
+                    nodeB2 = i[2]
                     pos = int(i[3])
-                    nodeC = "?"
-                    nodeD = nodeB
-                    if "(" in nodeD:
-                        nodeD = nodeD.split("(")[-1][:-1]
-                        nodeD = ASTlists[Pb.name][int(nodeD)]
-                    if nodeA in match_AC.keys():
-                        nodeC = match_AC[nodeA]
-                        if "(" in nodeC:
-                            nodeC = nodeC.split("(")[-1][:-1]
-                            nodeC = ASTlists[Pc.name][int(nodeC)]
-                        if nodeB in match_BA.keys():
-                            nodeA2 = match_BA[nodeB]
-                            if nodeA2 in match_AC.keys():
-                                nodeD = match_AC[nodeA2]
-                                if "(" in nodeD:
-                                    nodeD = nodeD.split("(")[-1][:-1]
-                                    nodeD = ASTlists[Pc.name][int(nodeD)]
-                                try:    
-                                    m = 0
-                                    M = len(nodeB.children)
-                                    if pos != 0 and pos < M-1:
-                                        nodeB_l = nodeB.children[pos-1]
-                                        nodeB_r = nodeB.children[pos+1]
-                                        if nodeB_l in match_BA.keys():
-                                            nodeA_l = match_BA[nodeB_l]
-                                            if nodeA_l in match_AC.keys():
-                                                nodeC_l = match_AC[nodeA_l]
-                                                if nodeC_l in nodeD.children:
-                                                    m = nodeD.children
-                                                    m = m.index(nodeC_l)
-                                                    pos = m+1
-                                        elif nodeB_r in match_BA.keys():
-                                            nodeA_r = match_BA[nodeB_r]
-                                            if nodeA_r in match_AC.keys():
-                                                nodeC_r = match_AC[nodeA_r]
-                                                if nodeC_r in nodeD.children:
-                                                    M = nodeD.children
-                                                    M = M.index(nodeC_r)
-                                                    pos = M-1
-                                    elif pos >= M - 1:
-                                        pos += len(nodeD.children) - M - 1
-                                except Exception as e:
-                                    err_exit(e, "HERE1")
+                    nodeC1 = "?"
+                    nodeC2 = "?"
+                    # TODO: Add case when nodeB1 was inserted before
+                    if nodeB1 in match_BA.keys():
+                        nodeA1 = match_BA[nodeB1]
+                        if nodeA1 in match_AC.keys():
+                            nodeC1 = match_AC[nodeA1]
+                            print(nodeC1)
+                            if "(" in nodeC1:
+                                nodeC1 = nodeC1.split("(")[-1][:-1]
+                                nodeC1 = ASTlists[Pc.name][int(nodeC1)]
+                        else:
+                            # TODO: Manage case in which nodeA1 is unmatched
+                            Print.yellow("Node in Pa not found in Pc: (1)")
+                            Print.yellow(nodeA1)
+                    else:
+                        nodeB1 = nodeB1.split("(")[-1][:-1]
+                        if nodeB1 in match_BD.keys():
+                            nodeC1 = match_BD[nodeB1]
+                        else:
+                            # TODO: Manage case for node not found
+                            Print.yellow("Node to be moved was not found. (2)")
+                            Print.yellow(nodeB1)
+                    # TODO: Add case when nodeB2 was inserted before
+                    if nodeB2 in match_BA.keys():
+                        nodeA2 = match_BA[nodeB2]
+                        if nodeA2 in match_AC.keys():
+                            nodeC2 = match_AC[nodeA2]
+                            if "(" in nodeC2:
+                                nodeC2 = nodeC2.split("(")[-1][:-1]
+                                nodeC2 = ASTlists[Pc.name][int(nodeC2)]
+                        else:
+                            # TODO: Manage case for unmatched nodeA2
+                            Print.yellow("Node in Pa not found in Pc: (1)")
+                            Print.yellow(nodeA2)
+                    else:
+                        nodeB2 = nodeB2.split("(")[-1][:-1]
+                        if nodeB2 in match_BD.keys():
+                            nodeC2 = match_BD[nodeB2]
+                        else:
+                            # TODO: Manage case for node not found
+                            Print.yellow("Node to be moved was not found. (2)")
+                            Print.yellow(nodeB2)
+                    # FIXME: Get position right for move
+                    '''try:
+                        m = 0
+                        M = len(nodeB2.children)
+                        if pos != 0 and pos < M-1:
+                            nodeB_l = nodeB2.children[pos-1]
+                            nodeB_r = nodeB2.children[pos+1]
+                            if nodeB_l in match_BA.keys():
+                                nodeA_l = match_BA[nodeB_l]
+                                if nodeA_l in match_AC.keys():
+                                    nodeC_l = match_AC[nodeA_l]
+                                    if nodeC_l in nodeC2.children:
+                                        m = nodeC2.children.index(nodeC_l)
+                                        pos = m+1
+                            elif nodeB_r in match_BA.keys():
+                                nodeA_r = match_BA[nodeB_r]
+                                if nodeA_r in match_AC.keys():
+                                    nodeC_r = match_AC[nodeA_r]
+                                    if nodeC_r in nodeC2.children:
+                                        M = nodeC2.children.index(nodeC_r)
+                                        pos = M-1
+                        elif pos >= M - 1:
+                            pos += len(nodeC2.children) - M - 1
+                    except Exception as e:
+                        print(instruction_CD, match_BD)
+                        err_exit(e, "Something went wrong with MOVE. (pos)")'''
+                    
                     if type(nodeC) == ASTparser.AST:
                         if nodeC.line == None:
                             nodeC.line = nodeC.parent.line
@@ -723,26 +776,19 @@ def transplantation(to_patch):
                     nodeB1 = i[1]
                     nodeB2 = i[2]
                     pos = int(i[3])
-                    nodeD1 = nodeB1
-                    if "(" in nodeD1:
-                        nodeD1 = nodeD1.split("(")[-1][:-1]
-                        nodeD1 = ASTlists[Pb.name][int(nodeD1)]
-                    nodeD2 = nodeB2
-                    if "(" in nodeD2:
-                        nodeD2 = nodeD2.split("(")[-1][:-1]
-                        nodeD2 = ASTlists[Pb.name][int(nodeD2)]
-                        if type(nodeD1) == ASTparser.AST:
-                            if nodeD2.line != None:
-                                nodeD1.line = nodeD2.line
-                            else:
-                                nodeD1.line = nodeD2.parent.line
-                    if nodeB1 in match_BA.keys():
-                        nodeA1 = match_BA[nodeB1]
-                        if nodeA1 in match_AC.keys():
-                            nodeD1 = match_AC[nodeA1]
-                            if "(" in nodeD1:
-                                nodeD1 = nodeD1.split("(")[-1][:-1]
-                                nodeD1 = ASTlists[Pc.name][int(nodeD1)]
+                    nodeD1 = nodeB1.split("(")[-1][:-1]
+                    nodeD1 = ASTlists[Pb.name][int(nodeD1)]
+                    # TODO: Edit nodeD1 to get right structures
+                    match_BD[nodeB1] = nodeD1
+                    
+                    nodeD2 = nodeB2.split("(")[-1][:-1]
+                    nodeD2 = ASTlists[Pb.name][int(nodeD2)]
+                    if nodeD2.line != None:
+                        nodeD1.line = nodeD2.line
+                    else:
+                        nodeD1.line = nodeD2.parent.line
+                    # TODO: Edit nodeD2 to get right structures
+                    
                     if nodeB2 in match_BA.keys():
                         nodeA2 = match_BA[nodeB2]
                         if nodeA2 in match_AC.keys():
@@ -750,12 +796,11 @@ def transplantation(to_patch):
                             if "(" in nodeD2:
                                 nodeD2 = nodeD2.split("(")[-1][:-1]
                                 nodeD2 = ASTlists[Pc.name][int(nodeD2)]
+                                # TODO: Edit nodeD2 to get right structures
                             try:
                                 m = 0
-                                true_B2 = nodeB2
-                                if "(" in nodeB2:
-                                    true_B2 = nodeB2.split("(")[-1][:-1]
-                                    true_B2 = ASTlists[Pb.name][int(true_B2)]
+                                true_B2 = nodeB2.split("(")[-1][:-1]
+                                true_B2 = ASTlists[Pb.name][int(true_B2)]
                                 M = len(true_B2.children)
                                 if pos != 0 and pos < M-1:
                                     nodeB2_l = true_B2.children[pos-1]
@@ -777,9 +822,9 @@ def transplantation(to_patch):
                                                 M = M.index(nodeD2_r)
                                                 pos = max(0, M-1)
                                 elif pos >= M - 1:
-                                    pos += len(nodeD2.children) - M - 1
+                                    pos += len(nodeD2.children) - M
                             except Exception as e:
-                                err_exit(e, "Here2")
+                                err_exit(e, "Failed at locating pos.")
                     if type(nodeD1) == ASTparser.AST:
                         nodeD1.children = []
                         if nodeD1.line == None:
@@ -791,9 +836,9 @@ def transplantation(to_patch):
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")
         try:
-            instruction_CD.sort(key=order_comp)
+            instruction_CD.sort(key=cmp_to_key(order_comp))
         except Exception as e:
-            err_exit(e, "Error at sorting instructions.")
+            err_exit(e, instruction_CD, "Error at sorting instructions.")
         Print.white("Proposed patch from Pc to Pd")
         
         for i in instruction_CD:
@@ -803,14 +848,17 @@ def transplantation(to_patch):
 def safe_exec(function, title, *args):
     Print.title("Starting " + title + "...")
     descr = title[0].lower() + title[1:]
-    try:
+    if True:
+    #try:
         if not args:
             a = function()
         else:
             a = function(*args)
         runtime = str(time.time() - start)
         Print.rose("Successful " + descr + ", after " + runtime + " seconds.")
-    except Exception as e:
+    else:
+        e = ""
+    #except Exception as e:
         runtime = str(time.time() - start)
         Print.red("Crash during " + descr + ", after " + runtime + " seconds.")
         err_exit(e, "Unexpected error during " + descr + ".")

@@ -39,8 +39,12 @@ class AST:
             self.identifier = dict_ast['identifier']
         if 'start line' in dict_ast.keys():
             self.line = dict_ast['start line']
+        if 'end line' in dict_ast.keys():
+            self.line_end = dict_ast['end line']
         if 'start column' in dict_ast.keys():
             self.col = dict_ast['start column']
+        if 'end column' in dict_ast.keys():
+            self.col_end = dict_ast['end column']
         if 'begin' in dict_ast.keys():
             self.begin = dict_ast['begin']
         if 'end' in dict_ast.keys():
@@ -92,6 +96,20 @@ class AST:
         with open(file, 'r', errors='replace') as f:
             source_code = "".join(f.readlines())
         return source_code[int(self.begin):int(self.end)]
+        
+    def get_nodes(self, attribute, value, nodes):
+        self.attrs = [self.id, self.identifier, self.line, self.begin,
+                      self.end, self.value, self.type]
+        if attribute not in AST.attr_names:
+            return 0
+        index = AST.attr_names.index(attribute)
+        if self.attrs[index] == value:
+            nodes.append(self)
+        for child in self.children:
+            if child.get_nodes(attribute, value, nodes) == 0:
+                return 0
+        return 1
+            
                             
         
 def AST_from_file(file):

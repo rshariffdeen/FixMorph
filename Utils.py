@@ -23,14 +23,28 @@ def err_exit(*args):
     print("\n")
     for i in args:
         Print.red(i)
+    # TODO: Ask for file restauration and restaure if so
+    a = "Maybe"
+    while a != "Y" and a != "N":
+        a = str(input("Do you wish to restaure your original files? (Y/N): "))
+        a = a.upper()
+    if a == "Y":
+        Print.green("Restauring original files, do not kill the program.")
+    else:
+        b = str(input("Any changes will remain. Are you sure? (Y/N): "))
+        if b.upper() != "N":
+            Print.green("No restauration needed. Exiting.")
+        else:
+            err_exit()
     exit(-1)
     
 ''' Cleaning Residual files '''
 
 def clean_ASTs(src_path):
     # Erase *.crochetAST, *.AST and *.vec files
-    c = "find " + src_path + " -type f  \( -name '\*.crochetAST'" \
-        + " -o -name '\*.AST' -o -name '\*.vec' -o -name '\*.ASTalt' \) -exec rm -f {} \;"
+    c = "find " + src_path + " -type f  \( -name '\*.crochetAST'" + \
+        " -o -name '\*.AST' -o -name '\*.vec' -o -name '\*.ASTalt' \) " + \
+        "-exec rm -f {} \;"
     exec_com(c, False)
     
     
@@ -38,8 +52,14 @@ def clean():
     # Remove other residual files stored in ./output/
     Print.blue("Removing other residual files...")
     if os.path.isdir("output"):
-        r = "rm -rf 'output'; mkdir output;"
+        r = "rm -rf output Backup_Folder; mkdir output Backup_Folder;"
         exec_com(r, False)
+        
+def backup(path):
+    Print.blue("Backing up project...")
+    if os.path.isdir(path):
+        c = "cp -a " + path + "/. " + "./Backup_Folder/"
+        exec_com(c)
         
     
 ''' Finding files with specific extension'''

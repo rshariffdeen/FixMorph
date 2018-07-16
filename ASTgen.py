@@ -46,12 +46,12 @@ def gen_AST(file, src_dir):
             line = h_files.readline().strip()
     for include in includes:
         c += "-I " + include + " "
-    c += file + " > " + file + ".AST 2>> output/errors"
+    c += file + " > " + file + ".AST 2> output/errors"
     try:
         exec_com(c, False)
     except Exception as e:
         err_exit(e, "Error with clang AST dump on file:", file,
-                 "Reproduce with command:", c.replace("2>> errors", ""),
+                 "Reproduce with command:", c.replace("2> output/errors", ""),
                  "or look at file 'errors'.")
 
 
@@ -68,8 +68,9 @@ def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
 
 def ASTdump(file, output):
     c = "crochet-diff -s 2147483647 -ast-dump-json " + file + \
-        " 2>> output/errors_AST_dump > " + output
-    exec_com(c, False)
+        " 2> output/errors_AST_dump > " + output
+    a = exec_com(c, True)
+    Print.yellow(a[0])
 
 def gen_json(filepath):
     json_file = filepath + ".ASTalt"
@@ -77,6 +78,13 @@ def gen_json(filepath):
     return ASTparser.AST_from_file(json_file)
 
 def parseAST(filepath, proj, Deckard=True):
+
+    # Save functions here
+    function_lines = []
+    # Save variables for each function d[function] = "typevar namevar; ...;"
+    dict_file = dict()    
+    
+    working = True
     try:
         
         # OLD CODE #        
@@ -90,15 +98,13 @@ def parseAST(filepath, proj, Deckard=True):
             ast = gen_json(filepath)
         except:
             Print.yellow("Skipping... Failed for file:\n\t" + filepath)
-            return ""
+            working = False
+            return [], dict()
         
     except Exception as e:
         err_exit(e, "Unexpected error in gen_AST with file:", filepath)
         
-    # Save functions here
-    function_lines = []
-    # Save variables for each function d[function] = "typevar namevar; ...;"
-    dict_file = dict()
+    
     # If we're inside the tree parsing a function
     in_function = False
     # If we're inside the tree parsing a struct
@@ -111,16 +117,26 @@ def parseAST(filepath, proj, Deckard=True):
     
     if Deckard:
         Print.grey("Generating vectors for " + filepath.split("/")[-1])
-        
     
-    # NEW CODE #
-    
-    for node in ast:
-        if "FunctionDecl" in node.type:
-            #Print.yellow(node.value)
-            for child_node in node.children:
-                #Print.yellow(child_node.type)
+    if working:
+        # NEW CODE #
+        function_nodes = []
+        root = ast[0]
+        root.get_nodes("type", "FunctionDecl", function_nodes)
+            
+        interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
+                       "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
+        for node in function_nodes:
+            #Print.yellow(node.type + " " + node.value)
+            #Print.yellow("\t" + str(node.line))
+            structural_nodes = []
+            for interesting_type in interesting:
+                node.get_nodes("type", interesting_type, structural_nodes)
+            for struct_node in structural_nodes:
+                #Print.yellow("\t" + struct_node.type + " " + struct_node.value)
                 pass
+            
+            #err_exit("Adasd")
                 
     
     

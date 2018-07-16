@@ -59,7 +59,7 @@ class ASTVector:
         c = "echo " + self.vector_path + "\n >>  output/errors; "
         c += ASTVector.deckard_path + " --start-line-number " + \
             str(self.start) + " --end-line-number " + str(self.end) + " " + \
-            self.file + " -o " + self.vector_path + " 2>> output/errors"
+            self.file + " -o " + self.vector_path + " 2> output/errors"
             
         try:
             exec_com(c, False)
@@ -71,7 +71,7 @@ class ASTVector:
             c1 += ASTVector.deckard_path_2 + " --start-line-number " + \
                  str(self.start) + " --end-line-number " + str(self.end) + \
                  " " + self.file + " -o " + self.vector_path + \
-                 " 2>> output/errors"
+                 " 2> output/errors"
             try:
                 exec_com(c1, False)
             except Exception as e:
