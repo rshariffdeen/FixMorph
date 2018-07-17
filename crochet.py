@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+
 import time
 from Utils import exec_com, err_exit, find_files, clean, backup, get_extensions
 import Project
@@ -13,7 +14,11 @@ Pa = None
 Pb = None
 Pc = None
 Pd = None
-start = -1
+
+crochet_patch = "crochet-patch "
+crochet_diff = "crochet-diff "
+interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
+               "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
 UPDATE = "Update"
 MOVE = "Move"
@@ -25,6 +30,7 @@ AT = " at "
 INTO = " into "
 AND = "and"
 order = [UPDATE, DELETE, MOVE, INSERT]
+
 
 def initialize():
     global Pa, Pb, Pc
@@ -38,6 +44,7 @@ def initialize():
     Pc = Project.Project(args[2], "Pc")
     clean()
     backup(Pc.path)
+
 
 def find_diff_files():
     global Pa, Pb
@@ -164,20 +171,22 @@ def compare():
         candidates = [best]
         candidates_d = [best_d]
         for j in vecs_C:
-            d = dist[j[0]]
-            if d <= factor*best_d:
-                candidates.append(j)
-                candidates_d.append(d)
+            if j != best:
+                d = dist[j[0]]
+                if d <= factor*best_d:
+                    candidates.append(j)
+                    candidates_d.append(d)
                 
         count_unknown = [0 for i in candidates]
         count_vars = [0 for i in candidates]
         var_maps = []
         
-        # We go up to -4 to remove the ".vec" part
+        # We go up to -4 to remove the ".vec" part [filepath.function.vec]
         fa = i[0].replace(Pa.path, "")[:-4].split(".")
         f_a = fa[-1]
         file_a = ".".join(fa[:-1])
         
+        # TODO: Correct once I have appropriate only function comparison
         for k in range(len(candidates)):
             candidate = candidates[k]
             fc = candidate[0].replace(Pc.path, "")[:-4].split(".")
@@ -241,20 +250,18 @@ def compare():
                          Pc.funcs[Pc.path + file_c][f_c], var_map))
     return to_patch
     
-def path_exception():
-    m = "ValueError Exception: Incorrect directory path"
-    return ValueError(m)    
-    
     
 def generate_ast_map(source_a, source_b):
-    c = "crochet-diff -dump-matches " + source_a + " " + \
+                   
+    c = crochet_diff + "-s 10000 -dump-matches " + source_a + " " + \
         source_b + " 2> output/errors_clang_diff " \
-        "| grep -P '^Match (ParmVar|Var)?Decl(RefExpr)?: ' " + \
-        "| grep '^Match' > output/ast-map"
+        "| grep -P '^Match (" + "|".join(interesting) + ")\(' " + \
+        "| grep '^Match ' > output/ast-map"
     try:
-        exec_com(c, True)
+        exec_com(c, False)
     except Exception as e:
         err_exit(e, "Unexpected error in generate_ast_map.")
+
 
 def detect_matching_variables(f_a, file_a, f_c, file_c):
     
@@ -281,18 +288,24 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     
     #Print.white(variable_list_c)
     
+    json_file_A = Pa.path + "/" + file_a + ".ASTalt"
+    ast_A = ASTparser.AST_from_file(json_file_A)
+    json_file_C = Pc.path + "/" + file_c + ".ASTalt"
+    ast_C = ASTparser.AST_from_file(json_file_C)
+    
     ast_map = dict()
     try:
         with open("output/ast-map", "r", errors='replace') as ast_map_file:
             map_line = ast_map_file.readline().strip()
             while map_line:
                 nodeA, nodeB = clean_parse(map_line, " to ")
-                var_a = nodeA.split(": ")[1].split("(")
-                #type_a = var_a[1].split(")")[0]
-                var_a = var_a[0] #type_a + " " + var_a[0]
-                var_c = nodeB.split(": ")[1].split("(")
-                #type_c = var_c[1].split(")")[0]
-                var_c = var_c[0] #type_c + " " + var_c[0]
+                
+                var_a = nodeA.split("(")[1][:-1]
+                var_a = ast_A[int(var_a)].value
+                
+                var_c = nodeB.split("(")[1][:-1]
+                var_c = ast_C[int(var_c)].value
+                
                 if var_a in a_names:
                     if var_a not in ast_map.keys():
                         ast_map[var_a] = dict()
@@ -380,13 +393,13 @@ def clean_parse(content, separator):
     
 
 def ASTdump(file, output):
-    c = "crochet-diff -s 2147483647 -ast-dump-json " + file + \
+    c = crochet_diff + "-ast-dump-json " + file + \
         " 2> output/errors_AST_dump > " + output
     exec_com(c)
     
 
 def ASTscript(file1, file2, output, only_matches=False):
-    c = "crochet-diff -s 2147483647 -dump-matches " + file1 + \
+    c = crochet_diff + "-s 2147483647 -dump-matches " + file1 + \
         " " + file2 + " 2> output/errors_clang_diff "
     if only_matches:
         c += "| grep '^Match ' "
@@ -396,6 +409,7 @@ def ASTscript(file1, file2, output, only_matches=False):
 
 def inst_comp(i):
     return min(order.index(i), 2)
+
     
 def format_value(node, file):
     if "VarDecl" in node.type:
@@ -405,12 +419,14 @@ def format_value(node, file):
     else:
         nvalue = node.value
     return nvalue
-    
+   
+   
 def info(node, file):
     if node.value:
         return node.type + ": " + format_value(node, file)
     return node.type
-        
+     
+     
 def value(node, file):
     if node.value:
         return format_value(node, file)
@@ -418,8 +434,6 @@ def value(node, file):
     
 def order_comp(inst1, inst2):
     
-    #Print.yellow("Instruction")
-    #Print.yellow(inst)
     if inst1[0] in order[0:2]:
         l1 = inst1[1]
     elif inst1[0] in order[2:4]:
@@ -427,7 +441,7 @@ def order_comp(inst1, inst2):
         
     if inst2[0] in order[0:2]:
         l2 = inst2[1]
-    elif inst1[0] in order[2:4]:
+    elif inst2[0] in order[2:4]:
         l2 = inst2[2]
         
     line1 = int(l1.line)
@@ -441,16 +455,6 @@ def order_comp(inst1, inst2):
         return col2-col1
     
     return inst_comp(inst2[0]) - inst_comp(inst1[0])
-    #Print.yellow("Interesting Node")
-    #Print.yellow(l)
-    #Print.yellow("Parent")
-    #Print.yellow(l.parent)
-    #Print.yellow("Line")
-    #Print.yellow(l.line)
-    #if l.children:
-    #    Print.yellow("First Child")
-    #    Print.yellow(l.children[0])
-    #return -3*int(l.line) + inst_comp(inst[0])
     
 
 def cmp_to_key(mycmp):
@@ -471,15 +475,45 @@ def cmp_to_key(mycmp):
         def __ne__(self, other):
             return mycmp(self.obj, other.obj) != 0
     return K
+
+
+def script_node(node):
+    return node.type + "(" + str(node.id) + ")"
     
     
-def patch_instruction(inst, fileA, fileB, fileC):
+def patch_instruction(inst):
     Print.white("\t" + " - ".join([str(j) for j in inst]))
-    instruction = inst[0]
+    
     implemented = False
-    c = "crochet-patch "
+    c = ""
+    
+    instruction = inst[0]
     
     if instruction == UPDATE:
+        implemented = True
+        nodeC = inst[1]
+        nodeD = inst[2]
+        c = UPDATE + " " + script_node(nodeC) + TO + script_node(nodeD)
+            
+    elif instruction == DELETE:
+        implemented = True
+        nodeC = inst[1]
+        c = DELETE + " " + script_node(nodeC)
+        
+    elif instruction == MOVE:
+        nodeD1 = script_node(inst[1])
+        nodeD2 = script_node(inst[2])
+        pos = str(inst[3])
+        c = MOVE + " " + nodeD1 + INTO + nodeD2 + AT + pos
+    
+    elif instruction == INSERT:
+        nodeB = script_node(inst[1])
+        nodeC = script_node(inst[2])
+        pos = str(inst[3])
+        c = INSERT + " " + nodeB + INTO + nodeC + AT + pos
+        
+    
+    '''if instruction == UPDATE:
         implemented = True
         nodeC = inst[1]
         nodeD = inst[2]
@@ -510,17 +544,19 @@ def patch_instruction(inst, fileA, fileB, fileC):
         c += "-insert -line=" + str(nodeB.line) + " -column=" + \
              str(nodeB.col) + " -query='" + info(nodeB, fileC) + "'"\
              " -value='" + info(nodeC, fileC) + "'"\
-             " -offset=" + str(pos) + " " + fileC
-    Print.green(c)
-    if implemented and False:
+             " -offset=" + str(pos) + " " + fileC'''
+    if implemented:
+        Print.green(c)
+    else:
+        Print.red("#" + c)
+    '''if implemented and False:
         new_file = exec_com(c)[0]
         last = new_file.index("/* End Crochet Output */")
         new_file = new_file[:last]
         print(new_file)
         #with open(fileC, 'w') as file_to_correct:
-        #    file_to_correct.write(new_file)
+        #    file_to_correct.write(new_file)'''
 
-    
     
 def transplantation(to_patch):
     for (vec_f_a, vec_f_c, var_map) in to_patch:
@@ -560,7 +596,6 @@ def transplantation(to_patch):
             ASTscript(vec_f_a.file, vec_f_c.file, "output/diff_script_AC")
         except Exception as e:
             err_exit(e, "Unexpected fail at generating diff_script_AC.")
-        
                       
         Print.blue("Generating edit script: " + Pc.name + TO + "Pd...")
 
@@ -646,7 +681,6 @@ def transplantation(to_patch):
                         err_exit(e, "Something went wrong in MATCH (AC).",
                                  line, instruction, content)
                 line = script_AC.readline().strip()
-                
         
         instruction_CD = list()
         match_BD = dict()
@@ -842,10 +876,13 @@ def transplantation(to_patch):
         Print.white("Proposed patch from Pc to Pd")
         
         for i in instruction_CD:
-            patch_instruction(i, vec_f_a.file, vec_f_b.file, vec_f_c.file)
+            patch_instruction(i)
+        
+        #vec_f_a.file, vec_f_b.file, vec_f_c.file
             
 
 def safe_exec(function, title, *args):
+    start = time.time()
     Print.title("Starting " + title + "...")
     descr = title[0].lower() + title[1:]
     if True:
@@ -866,7 +903,7 @@ def safe_exec(function, title, *args):
               
               
 def run_crochet():
-    global Pa, Pb, Pc, start
+    global Pa, Pb, Pc
     # Little crochet introduction
     Print.start()
     

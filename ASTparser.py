@@ -31,6 +31,7 @@ class AST:
         self.end = None
         self.value = None
         self.type = None
+        self.file = None
         self.char = char + "  "
         self.children = []
         if 'id' in dict_ast.keys():
@@ -53,6 +54,8 @@ class AST:
             self.value = dict_ast['value']
         if 'type' in dict_ast.keys():
             self.type = dict_ast['type']
+        if 'file' in dict_ast.keys():
+            self.file = dict_ast['file']
         if 'children' in dict_ast.keys():
             for i in dict_ast['children']:
                 child = AST(i, char + "    ")

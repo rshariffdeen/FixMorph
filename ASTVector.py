@@ -42,8 +42,8 @@ class ASTVector:
             if int(end) > max_line:
                 # TODO: This shouldn't happen!
                 Print.red(current)
-                err_exit("Deckard fail. The following file was not generated:",
-                         self.vector_path)
+                err_exit("Deckard fail. The following file was not " + \
+                             "generated:\n" + self.vector_path)
                 return None
             while start > 0:
                 j = start-1
@@ -79,7 +79,7 @@ class ASTVector:
         
         if not os.path.isfile(self.vector_path):
             Print.yellow("Deckard fail. The vector file was not generated:")
-            Print.yellow(self.vector_path)
+            Print.yellow(self.vector_path + "\n")
             with open('output/reproduce_errors', 'a') as file:
                     file.write(c + "\n" + c1 + "\n")
             return None

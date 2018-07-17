@@ -68,19 +68,6 @@ def find_files(src_path, extension, output):
     # Save paths to all files in src_path with extension extension to output
     c = "find " + src_path + " -name '" + extension + "' > " + output
     exec_com(c, False)
-    
-
-''' Remove annoying hexadecimal numbers from some line.split(" ") '''
-
-def remove_Hexa(linelist):
-    for i in range(len(linelist)):
-        # We remove hexadecimal numbers referring to memory
-        if len(linelist[i]) >= 2:
-            if ("0x" == linelist[i][0:2]):
-                linelist[i] = ""
-    # Back to a string, without annoying hexadecimal numbers
-    line = " ".join(linelist)
-    return line
 
 
 ''' Put irrelevant extensions and files in src_path line by line in output'''

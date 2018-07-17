@@ -41,4 +41,4 @@ class Project:
     def clean(self):
         # Remove *.crochetAST, *.AST and *.vec files from directory
         Print.blue("Cleaning " + self.name + "...")
-        clean_ASTs(self.path)
+        clean_ASTs(self.path + "/")
