@@ -3,25 +3,18 @@ set(LLVM_LINK_COMPONENTS
   )
 
 add_clang_library(crochetPatch
-  lib/Tooling/ASTMutate.cpp
 
+  lib/ASTDiff.cpp
+  lib/ASTPatch.cpp
   LINK_LIBS
-  clangAnalysis
   clangAST
-  clangBasic
-  clangDriver
-  clangEdit
-  clangFormat
+  clangBasic 
   clangFrontend
-  clangLex
-  clangParse
-  clangRewrite
-  clangRewriteFrontend
-  clangSerialization
+  clangLex 
+  clangRewrite 
   clangTooling
   clangToolingCore
-  clangToolingRefactor
-
+  
 
   )
 

@@ -1,26 +1,26 @@
 set(LLVM_LINK_COMPONENTS
-  ${LLVM_TARGETS_TO_BUILD}
-  Option
   Support
   )
 
-add_clang_executable(crochet-diff
-  CrochetDiff.cpp
-  )
-
-target_link_libraries(crochet-diff
-  PRIVATE
+add_clang_library(crochetDiff
+  lib/ASTDiff.cpp
+  LINK_LIBS
   clangAST
-  clangBasic
-  clangDriver
+  clangBasic 
   clangFrontend
-  clangRewrite
-  clangRewriteFrontend
-  clangStaticAnalyzerFrontend
+  clangLex 
+  clangRewrite 
   clangTooling
-  clangToolingASTDiff
   clangToolingCore
+  
   )
 
-install(TARGETS crochet-diff
-  RUNTIME DESTINATION bin)
+
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  include
+  )
+
+
+add_subdirectory(tool)
+
