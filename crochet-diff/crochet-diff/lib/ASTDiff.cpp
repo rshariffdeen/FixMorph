@@ -710,6 +710,134 @@ llvm::Optional<StringRef> Node::getIdentifier() const {
   return llvm::None;
 }
 
+static std::string getInitializerValue(const CXXCtorInitializer *Init, const PrintingPolicy &TypePP) {
+  if (Init->isAnyMemberInitializer())
+    return Init->getAnyMember()->getName();
+  if (Init->isBaseInitializer())
+    return QualType(Init->getBaseClass(), 0).getAsString(TypePP);
+  if (Init->isDelegatingInitializer())
+    return Init->getTypeSourceInfo()->getType().getAsString(TypePP);
+  llvm_unreachable("Unknown initializer type");
+}
+
+// Returns the qualified name of ND. If it is subordinate to Context,
+// then the prefix of the latter is removed from the returned value.
+std::string Node::getRelativeName(const NamedDecl *ND, const DeclContext *Context) const {
+  std::string Val = ND->getQualifiedNameAsString();
+  std::string ContextPrefix; 
+  if (!Context)
+    return Val;
+  if (auto *Namespace = dyn_cast<NamespaceDecl>(Context))
+    ContextPrefix = Namespace->getQualifiedNameAsString();
+  else if (auto *Record = dyn_cast<RecordDecl>(Context))
+    ContextPrefix = Record->getQualifiedNameAsString();
+  else if (Tree.AST.getLangOpts().CPlusPlus11)
+    if (auto *Tag = dyn_cast<TagDecl>(Context))
+      ContextPrefix = Tag->getQualifiedNameAsString();
+  // Strip the qualifier, if Val refers to something in the current scope.
+  // But leave one leading ':' in place, so that we know that this is a
+  // relative path.
+  if (!ContextPrefix.empty() && StringRef(Val).startswith(ContextPrefix))
+    Val = Val.substr(ContextPrefix.size() + 1);
+  return Val;
+}
+
+std::string Node::getRelativeName(const NamedDecl *ND) const {
+  return getRelativeName(ND, ND->getDeclContext());
+}
+
+std::string Node::getFileName() const {
+
+  const SourceManager &SM = Tree.AST.getSourceManager();
+  CharSourceRange Range = getSourceRange();
+  SourceLocation EndLoc = Range.getEnd(); 
+  FileID fileID = SM.getFileID(EndLoc);
+  const FileEntry *fileEntry = SM.getFileEntryForID(fileID);
+  
+  if (fileEntry->isValid())
+    return fileEntry->getName();
+  return "";
+
+}
+
+std::string Node::getValue() const {
+
+  if (auto *S = ASTNode.get<Stmt>())
+    return getStmtValue(S);
+  if (auto *D = ASTNode.get<Decl>())
+    return getDeclValue(D);
+  if (auto *Init = ASTNode.get<CXXCtorInitializer>())
+    return getInitializerValue(Init, Tree.TypePP);
+
+  return "";
+
+  llvm_unreachable("Fatal: unhandled AST node: \n" );
+
+}
+
+std::string Node::getDeclValue(const Decl *D) const {
+  std::string Value;
+  if (auto *V = dyn_cast<ValueDecl>(D))
+    return getRelativeName(V) + "(" + V->getType().getAsString(Tree.TypePP) + ")";
+  if (auto *N = dyn_cast<NamedDecl>(D))
+    Value += getRelativeName(N) + ";";
+  if (auto *T = dyn_cast<TypedefNameDecl>(D))
+    return Value + T->getUnderlyingType().getAsString(Tree.TypePP) + ";";
+  if (auto *T = dyn_cast<TypeDecl>(D))
+    if (T->getTypeForDecl())
+      Value +=
+          T->getTypeForDecl()->getCanonicalTypeInternal().getAsString(Tree.TypePP) +
+          ";";
+  if (auto *U = dyn_cast<UsingDirectiveDecl>(D))
+    return U->getNominatedNamespace()->getName();
+  if (auto *A = dyn_cast<AccessSpecDecl>(D)) {
+    CharSourceRange Range(A->getSourceRange(), false);
+    return Lexer::getSourceText(Range, Tree.AST.getSourceManager(),
+                                Tree.AST.getLangOpts());
+  }
+  return Value;
+}
+
+const DeclContext *Node::getEnclosingDeclContext(ASTContext &AST, const Stmt *S) const {
+  while (S) {
+    const auto &Parents = AST.getParents(*S);
+    if (Parents.empty())
+      return nullptr;
+    const auto &P = Parents[0];
+    if (const auto *D = P.get<Decl>())
+      return D->getDeclContext();
+    S = P.get<Stmt>();
+  }
+  return nullptr;
+}
+
+std::string Node::getStmtValue(const Stmt *S) const {
+  if (auto *U = dyn_cast<UnaryOperator>(S))
+    return UnaryOperator::getOpcodeStr(U->getOpcode());
+  if (auto *B = dyn_cast<BinaryOperator>(S))
+    return B->getOpcodeStr();
+  if (auto *M = dyn_cast<MemberExpr>(S))
+    return getRelativeName(M->getMemberDecl());
+  if (auto *I = dyn_cast<IntegerLiteral>(S)) {
+    SmallString<256> Str;
+    I->getValue().toString(Str, /*Radix=*/10, /*Signed=*/false);
+    return Str.str();
+  }
+  if (auto *F = dyn_cast<FloatingLiteral>(S)) {
+    SmallString<256> Str;
+    F->getValue().toString(Str);
+    return Str.str();
+  }
+  if (auto *D = dyn_cast<DeclRefExpr>(S))
+    return getRelativeName(D->getDecl(), getEnclosingDeclContext(Tree.AST.getASTContext(), S));
+  if (auto *String = dyn_cast<StringLiteral>(S))
+    return String->getString();
+  if (auto *B = dyn_cast<CXXBoolLiteralExpr>(S))
+    return B->getValue() ? "true" : "false";
+  return "";
+}
+
+
 NodeRefIterator Node::begin() const {
   return {&Tree, isLeaf() ? nullptr : &Children[0]};
 }
@@ -1298,6 +1426,8 @@ static void dumpDstChange(raw_ostream &OS, const ASTDiff::Impl &Diff,
   case Update:
     OS << " ";
     Src->dump(OS);
+    OS << " to ";
+    Dst.dump(OS);
     OS << "\n";
     break;
   case Insert:

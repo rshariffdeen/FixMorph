@@ -359,6 +359,15 @@ static void printNodeAttributes(raw_ostream &OS, diff::SyntaxTree &Tree,
   OS << R"("id":)" << int(Node.getId());
   OS << R"(,"type":")" << Node.getTypeLabel() << '"';
 
+  if (Node.getTypeLabel() == "FunctionDecl"){
+    std::string fileName = Node.getFileName();
+      if (!fileName.empty()) {
+      OS << R"(,"file":")";
+      printJsonString(OS, fileName);
+      OS << '"';
+    } 
+  }
+
 
   auto Offsets = Node.getSourceRangeOffsets();  
   auto StartLoc = Node.getSourceBeginLocation();   
@@ -370,6 +379,13 @@ static void printNodeAttributes(raw_ostream &OS, diff::SyntaxTree &Tree,
 
   OS << R"(,"begin":)" << Offsets.first;
   OS << R"(,"end":)" << Offsets.second;
+
+  std::string Value = Node.getValue();
+  if (!Value.empty()) {
+    OS << R"(,"value":")";
+    printJsonString(OS, Value);
+    OS << '"';
+  }
 }
 
 static void printNodeAsJson(raw_ostream &OS, diff::SyntaxTree &Tree,

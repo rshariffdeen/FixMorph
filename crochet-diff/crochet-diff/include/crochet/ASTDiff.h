@@ -139,6 +139,18 @@ struct Node {
   NodeRefIterator begin() const;
   NodeRefIterator end() const;
 
+  const DeclContext *getEnclosingDeclContext(ASTContext &AST, const Stmt *S) const;
+
+  std::string getRelativeName(const NamedDecl *ND, const DeclContext *Context) const;
+  std::string getRelativeName(const NamedDecl *ND) const;
+
+  std::string getDeclValue(const Decl *D) const;
+  std::string getStmtValue(const Stmt *S) const;
+
+
+  std::string getValue() const;
+  std::string getFileName() const;
+
   void dump(raw_ostream &OS) const {
     OS << getTypeLabel() << "(" << getId() << ")";
   }
