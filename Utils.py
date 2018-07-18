@@ -42,10 +42,10 @@ def err_exit(*args):
 
 def clean_ASTs(src_path):
     # Erase *.crochetAST, *.AST and *.vec files
-    c = "find " + src_path + " -type f  \( -name '\*.crochetAST'" + \
-        " -o -name '\*.AST' -o -name '\*.vec' -o -name '\*.ASTalt' \) " + \
+    c = "find " + src_path + " -type f  \( -name '*.crochetAST'" + \
+        " -o -name '*.AST' -o -name '*.vec' -o -name '*.ASTalt' \) " + \
         "-exec rm -f {} \;"
-    exec_com(c, False)
+    exec_com(c, True)
     
     
 def clean():

@@ -19,7 +19,8 @@ index = 0
 class AST:
     
     nodes = []
-    attr_names = ['id', 'identifier', 'line', 'begin', 'end', 'value', 'type']
+    attr_names = ['id', 'identifier', 'line', 'line_end', 'col', 'col_end',
+                  'begin', 'end', 'value', 'type', 'file']
     
     def __init__(self, dict_ast, char=""):
         AST.nodes.append(self)
@@ -64,8 +65,8 @@ class AST:
         
                     
     def treeString(self):
-        self.attrs = [self.id, self.identifier, self.line, self.begin,
-                      self.end, self.value, self.type]
+        self.attrs = [self.id, self.identifier, self.line, self.line_end,
+                      self.col, self.col_end, self.value, self.type]
         s = self.char[:-2] + "{\n"
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:
@@ -84,8 +85,8 @@ class AST:
         return s
         
     def __str__(self):
-        self.attrs = [self.id, self.identifier, self.line, self.begin,
-                      self.end, self.value, self.type]
+        self.attrs = [self.id, self.identifier, self.line, self.line_end,
+                      self.col, self.col_end, self.value, self.type]
         s = ""
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:
@@ -101,8 +102,9 @@ class AST:
         return source_code[int(self.begin):int(self.end)]
         
     def get_nodes(self, attribute, value, nodes):
-        self.attrs = [self.id, self.identifier, self.line, self.begin,
-                      self.end, self.value, self.type]
+        self.attrs = [self.id, self.identifier, self.line, self.line_end,
+                      self.col, self.col_end, self.begin, self.end, self.value,
+                      self.type, self.file]
         if attribute not in AST.attr_names:
             return 0
         index = AST.attr_names.index(attribute)

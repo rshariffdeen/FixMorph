@@ -253,7 +253,7 @@ def compare():
     
 def generate_ast_map(source_a, source_b):
                    
-    c = crochet_diff + "-s 10000 -dump-matches " + source_a + " " + \
+    c = crochet_diff + "-s -dump-matches " + source_a + " " + \
         source_b + " 2> output/errors_clang_diff " \
         "| grep -P '^Match (" + "|".join(interesting) + ")\(' " + \
         "| grep '^Match ' > output/ast-map"
@@ -447,12 +447,22 @@ def order_comp(inst1, inst2):
     line1 = int(l1.line)
     line2 = int(l2.line)
     if line1 != line2:
-        return line2-line1
+        return line2 - line1
+    
+    line1 = int(l1.line_end)
+    line2 = int(l2.line_end)
+    if line1 != line2:
+        return line2 - line1
     
     col1 = int(l1.col)
     col2 = int(l2.col)
     if col1 != col2:
-        return col2-col1
+        return col2 - col1
+        
+    col1 = int(l1.col_end)
+    col2 = int(l2.col_end)
+    if col1 != col2:
+        return col2 - col1
     
     return inst_comp(inst2[0]) - inst_comp(inst1[0])
     
@@ -512,39 +522,6 @@ def patch_instruction(inst):
         pos = str(inst[3])
         c = INSERT + " " + nodeB + INTO + nodeC + AT + pos
         
-    
-    '''if instruction == UPDATE:
-        implemented = True
-        nodeC = inst[1]
-        nodeD = inst[2]
-        c += "-update -line=" + str(nodeC.line) + " -column=" + \
-             str(nodeC.col) + " -query='" + info(nodeC, fileC) + \
-             "' -value='" + value(nodeD, fileB) + "' " + fileC
-    elif instruction == DELETE:
-        implemented = True
-        node = inst[1]
-        c += "-delete -line=" + str(node.line) + " -column=" + \
-             str(node.col) +  " -query='" + info(node, fileC) + "' " + fileC
-    # Unimplemented
-    elif instruction == MOVE:
-        implemented = False
-        nodeC1 = inst[1]
-        nodeC2 = inst[2]
-        pos = inst[3]
-        c += "-move -line=" + str(nodeC1.line) + " -column=" + \
-             str(nodeC1.col) + " -query='" + info(nodeC1, fileC) + "'" + \
-             " -line2=" + str(nodeC2.line) + " -column2=" + str(nodeC2.col) + \
-             " -value='" + info(nodeC2, fileC) + "'" + \
-             " -offset=" + str(pos) + " " + fileC
-    elif instruction == INSERT:
-        implemented = False
-        nodeB = inst[1]
-        nodeC = inst[2]
-        pos = inst[3]
-        c += "-insert -line=" + str(nodeB.line) + " -column=" + \
-             str(nodeB.col) + " -query='" + info(nodeB, fileC) + "'"\
-             " -value='" + info(nodeC, fileC) + "'"\
-             " -offset=" + str(pos) + " " + fileC'''
     if implemented:
         Print.green(c)
     else:

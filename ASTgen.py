@@ -26,7 +26,7 @@ def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
 def ASTdump(file, output):
     c = crochet_diff + "-ast-dump-json " + file + \
         " 2> output/errors_AST_dump > " + output
-    a = exec_com(c, False)
+    a = exec_com(c, True)
     Print.yellow(a[0])
 
 def gen_json(filepath):
@@ -37,7 +37,7 @@ def gen_json(filepath):
 def parseAST(filepath, proj, Deckard=True):
 
     # Save functions here
-    function_lines = []
+    function_lines = list()
     # Save variables for each function d[function] = "typevar namevar; ...;"
     dict_file = dict()
     try:        
@@ -46,7 +46,7 @@ def parseAST(filepath, proj, Deckard=True):
             ast = gen_json(filepath)
         except:
             Print.yellow("Skipping... Failed for file:\n\t" + filepath)
-            return [], dict()
+            return function_lines, dict_file
         
     except Exception as e:
         err_exit(e, "Unexpected error in gen_json with file:", filepath)
@@ -59,7 +59,6 @@ def parseAST(filepath, proj, Deckard=True):
     # Start and ending line of the function/struct
     start = 0
     end = 0
-    
     file = filepath.split("/")[-1]
     
     if Deckard:
@@ -68,14 +67,11 @@ def parseAST(filepath, proj, Deckard=True):
     function_nodes = []
     root = ast[0]
     root.get_nodes("type", "FunctionDecl", function_nodes)
-    
+    #Print.white(function_nodes)
     for node in function_nodes:
         set_struct_nodes = set()
-        #Print.yellow(node.type + " " + node.value)
-        #length = int(node.line_end) - int(node.line)
-        if file in node.file:
-            #Print.yellow("\t" + str(node.line) + ":" + str(node.col) + "-" + \
-            #         str(node.line_end) + ":" + str(node.col_end))
+        #Print.yellow(node.file)
+        if node.file != None and file in node.file:
             f = node.value.split("(")[0]
             start = int(node.line)
             end = int(node.line_end)
@@ -93,13 +89,7 @@ def parseAST(filepath, proj, Deckard=True):
                     dict_file[f] = ""
                 dict_file[f] = dict_file[f] + line
                 set_struct_nodes.add(struct_node.value)
-        
-            #Print.white(str(node.value) + " " + str(set_struct_nodes))
-        
-        
-        
-        #err_exit("Adasd")
-    
+                
     with open('output/function-lines', 'w') as func_l:
         for l in function_lines:
             func_l.write(l[0] + " " + str(l[1]) + "-" + str(l[2]) + "\n")
@@ -110,6 +100,7 @@ def parseAST(filepath, proj, Deckard=True):
                 func_l.write("\t" + line.replace("  ", "") + "\n")
     if Deckard:
         get_vars(proj, filepath, dict_file)
+   
     return function_lines, dict_file
 
 
