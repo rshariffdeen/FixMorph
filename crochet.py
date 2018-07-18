@@ -253,12 +253,12 @@ def compare():
     
 def generate_ast_map(source_a, source_b):
                    
-    c = crochet_diff + "-s 10000 -dump-matches " + source_a + " " + \
+    c = crochet_diff + "-dump-matches " + source_a + " " + \
         source_b + " 2> output/errors_clang_diff " \
         "| grep -P '^Match (" + "|".join(interesting) + ")\(' " + \
         "| grep '^Match ' > output/ast-map"
     try:
-        exec_com(c, False)
+        exec_com(c, True)
     except Exception as e:
         err_exit(e, "Unexpected error in generate_ast_map.")
 
@@ -342,7 +342,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
                 if var_a not in variable_mapping.keys():
                     variable_mapping[var_a] = UNKNOWN
     except Exception as e:
-        err_exit(e, "Unexpected error while matching vars.")
+        err_exit(e, "Unexpected error while mapping vars.")
 
     try:
         with open("output/var-map", "w", errors='replace') as var_map_file:
@@ -447,12 +447,22 @@ def order_comp(inst1, inst2):
     line1 = int(l1.line)
     line2 = int(l2.line)
     if line1 != line2:
-        return line2-line1
+        return line2 - line1
+    
+    line1 = int(l1.line_end)
+    line2 = int(l2.line_end)
+    if line1 != line2:
+        return line2 - line1
     
     col1 = int(l1.col)
     col2 = int(l2.col)
     if col1 != col2:
-        return col2-col1
+        return col2 - col1
+        
+    col1 = int(l1.col_end)
+    col2 = int(l2.col_end)
+    if col1 != col2:
+        return col2 - col1
     
     return inst_comp(inst2[0]) - inst_comp(inst1[0])
     
@@ -512,50 +522,10 @@ def patch_instruction(inst):
         pos = str(inst[3])
         c = INSERT + " " + nodeB + INTO + nodeC + AT + pos
         
-    
-    '''if instruction == UPDATE:
-        implemented = True
-        nodeC = inst[1]
-        nodeD = inst[2]
-        c += "-update -line=" + str(nodeC.line) + " -column=" + \
-             str(nodeC.col) + " -query='" + info(nodeC, fileC) + \
-             "' -value='" + value(nodeD, fileB) + "' " + fileC
-    elif instruction == DELETE:
-        implemented = True
-        node = inst[1]
-        c += "-delete -line=" + str(node.line) + " -column=" + \
-             str(node.col) +  " -query='" + info(node, fileC) + "' " + fileC
-    # Unimplemented
-    elif instruction == MOVE:
-        implemented = False
-        nodeC1 = inst[1]
-        nodeC2 = inst[2]
-        pos = inst[3]
-        c += "-move -line=" + str(nodeC1.line) + " -column=" + \
-             str(nodeC1.col) + " -query='" + info(nodeC1, fileC) + "'" + \
-             " -line2=" + str(nodeC2.line) + " -column2=" + str(nodeC2.col) + \
-             " -value='" + info(nodeC2, fileC) + "'" + \
-             " -offset=" + str(pos) + " " + fileC
-    elif instruction == INSERT:
-        implemented = False
-        nodeB = inst[1]
-        nodeC = inst[2]
-        pos = inst[3]
-        c += "-insert -line=" + str(nodeB.line) + " -column=" + \
-             str(nodeB.col) + " -query='" + info(nodeB, fileC) + "'"\
-             " -value='" + info(nodeC, fileC) + "'"\
-             " -offset=" + str(pos) + " " + fileC'''
     if implemented:
         Print.green(c)
     else:
         Print.red("#" + c)
-    '''if implemented and False:
-        new_file = exec_com(c)[0]
-        last = new_file.index("/* End Crochet Output */")
-        new_file = new_file[:last]
-        print(new_file)
-        #with open(fileC, 'w') as file_to_correct:
-        #    file_to_correct.write(new_file)'''
 
     
 def transplantation(to_patch):
@@ -683,7 +653,7 @@ def transplantation(to_patch):
                 line = script_AC.readline().strip()
         
         instruction_CD = list()
-        match_BD = dict()
+        match_BD = dict()        
         for i in instruction_AB:
             instruction = i[0]
             # Update nodeA to nodeB (value) -> Update nodeC to nodeD (value)
@@ -708,15 +678,16 @@ def transplantation(to_patch):
                 try:
                     nodeA = i[1]
                     nodeC = "?"
-                    #Print.yellow(nodeA)
-                    #Print.yellow(match_AC)
                     if nodeA in match_AC.keys():
                         nodeC = match_AC[nodeA]
                         nodeC = nodeC.split("(")[-1][:-1]
                         nodeC = ASTlists[Pc.name][int(nodeC)]
                         if nodeC.line == None:
                             nodeC.line = nodeC.parent.line
-                    instruction_CD.append((DELETE, nodeC))
+                            instruction_CD.append((DELETE, nodeC))
+                    else:
+                        Print.yellow("Warning: Match for " + str(nodeA) + \
+                                     "not found. Skipping Delete instruction.")
                 except Exception as e:
                     err_exit(e, "Something went wrong with DELETE.")
             # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
@@ -732,7 +703,6 @@ def transplantation(to_patch):
                         nodeA1 = match_BA[nodeB1]
                         if nodeA1 in match_AC.keys():
                             nodeC1 = match_AC[nodeA1]
-                            print(nodeC1)
                             if "(" in nodeC1:
                                 nodeC1 = nodeC1.split("(")[-1][:-1]
                                 nodeC1 = ASTlists[Pc.name][int(nodeC1)]
@@ -740,8 +710,7 @@ def transplantation(to_patch):
                             # TODO: Manage case in which nodeA1 is unmatched
                             Print.yellow("Node in Pa not found in Pc: (1)")
                             Print.yellow(nodeA1)
-                    else:
-                        nodeB1 = nodeB1.split("(")[-1][:-1]
+                    elif nodeB1 in inserted_B:
                         if nodeB1 in match_BD.keys():
                             nodeC1 = match_BD[nodeB1]
                         else:
@@ -760,8 +729,7 @@ def transplantation(to_patch):
                             # TODO: Manage case for unmatched nodeA2
                             Print.yellow("Node in Pa not found in Pc: (1)")
                             Print.yellow(nodeA2)
-                    else:
-                        nodeB2 = nodeB2.split("(")[-1][:-1]
+                    elif nodeB2 in inserted_B:
                         if nodeB2 in match_BD.keys():
                             nodeC2 = match_BD[nodeB2]
                         else:
@@ -813,8 +781,6 @@ def transplantation(to_patch):
                     nodeD1 = nodeB1.split("(")[-1][:-1]
                     nodeD1 = ASTlists[Pb.name][int(nodeD1)]
                     # TODO: Edit nodeD1 to get right structures
-                    match_BD[nodeB1] = nodeD1
-                    
                     nodeD2 = nodeB2.split("(")[-1][:-1]
                     nodeD2 = ASTlists[Pb.name][int(nodeD2)]
                     if nodeD2.line != None:
@@ -866,6 +832,7 @@ def transplantation(to_patch):
                     if type(nodeD2) == ASTparser.AST:
                         if nodeD2.line == None:
                             nodeD2.line = nodeD2.parent.line
+                    match_BD[nodeB1] = nodeD1
                     instruction_CD.append((INSERT, nodeD1, nodeD2, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")
