@@ -45,7 +45,7 @@ def clean_ASTs(src_path):
     c = "find " + src_path + " -type f  \( -name '*.crochetAST'" + \
         " -o -name '*.AST' -o -name '*.vec' -o -name '*.ASTalt' \) " + \
         "-exec rm -f {} \;"
-    exec_com(c, True)
+    exec_com(c, False)
     
     
 def clean():

@@ -26,7 +26,7 @@ def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
 def ASTdump(file, output):
     c = crochet_diff + "-ast-dump-json " + file + \
         " 2> output/errors_AST_dump > " + output
-    a = exec_com(c, True)
+    a = exec_com(c, False)
     Print.yellow(a[0])
 
 def gen_json(filepath):
