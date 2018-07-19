@@ -762,6 +762,8 @@ std::string Node::getFileName() const {
 
 std::string Node::getValue() const {
 
+  if (isMacro())
+    return getMacroValue();
   if (auto *S = ASTNode.get<Stmt>())
     return getStmtValue(S);
   if (auto *D = ASTNode.get<Decl>())
@@ -773,6 +775,12 @@ std::string Node::getValue() const {
 
   llvm_unreachable("Fatal: unhandled AST node: \n" );
 
+}
+
+std::string Node::getMacroValue() const {
+  return Lexer::getSourceText(getSourceRange(), Tree.AST.getSourceManager(),
+                                Tree.AST.getLangOpts());
+  
 }
 
 std::string Node::getDeclValue(const Decl *D) const {

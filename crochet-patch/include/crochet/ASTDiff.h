@@ -146,7 +146,7 @@ struct Node {
 
   std::string getDeclValue(const Decl *D) const;
   std::string getStmtValue(const Stmt *S) const;
-
+  std::string getMacroValue() const;
 
   std::string getValue() const;
   std::string getFileName() const;

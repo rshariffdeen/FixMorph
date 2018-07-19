@@ -751,17 +751,23 @@ std::string Node::getFileName() const {
   const SourceManager &SM = Tree.AST.getSourceManager();
   CharSourceRange Range = getSourceRange();
   SourceLocation EndLoc = Range.getEnd(); 
-  FileID fileID = SM.getFileID(EndLoc);
-  const FileEntry *fileEntry = SM.getFileEntryForID(fileID);
+  if (EndLoc.isValid()){
+    FileID fileID = SM.getFileID(EndLoc);
+    if (fileID.isValid()){
+      const FileEntry *fileEntry = SM.getFileEntryForID(fileID);
+      if (fileEntry->isValid())
+        return fileEntry->getName();
+    }
+  }
   
-  if (fileEntry->isValid())
-    return fileEntry->getName();
   return "";
 
 }
 
 std::string Node::getValue() const {
 
+  if (isMacro())
+    return getMacroValue();
   if (auto *S = ASTNode.get<Stmt>())
     return getStmtValue(S);
   if (auto *D = ASTNode.get<Decl>())
@@ -773,6 +779,12 @@ std::string Node::getValue() const {
 
   llvm_unreachable("Fatal: unhandled AST node: \n" );
 
+}
+
+std::string Node::getMacroValue() const {
+  return Lexer::getSourceText(getSourceRange(), Tree.AST.getSourceManager(),
+                                Tree.AST.getLangOpts());
+  
 }
 
 std::string Node::getDeclValue(const Decl *D) const {
@@ -797,6 +809,7 @@ std::string Node::getDeclValue(const Decl *D) const {
   }
   return Value;
 }
+
 
 const DeclContext *Node::getEnclosingDeclContext(ASTContext &AST, const Stmt *S) const {
   while (S) {
@@ -1416,8 +1429,12 @@ static void dumpDstChange(raw_ostream &OS, const ASTDiff::Impl &Diff,
                           SyntaxTree::Impl &SrcTree, SyntaxTree::Impl &DstTree,
                           NodeRef Dst) {
   const Node *Src = Diff.getMapped(Dst);
+  const Node *DstParent = Dst.getParent();
   ChangeKind Change = Diff.getNodeChange(Dst);
   printChangeKind(OS, Change);
+  int offset;
+  int numChildren;
+  
   switch (Change) {
   case NoChange:
     break;
@@ -1431,6 +1448,48 @@ static void dumpDstChange(raw_ostream &OS, const ASTDiff::Impl &Diff,
     OS << "\n";
     break;
   case Insert:
+    // offset = Dst.findPositionInParent();
+        
+    // // llvm::errs() << offset << "-" << numChildren << "\n";
+    // OS << " ";
+    // Dst.dump(OS);
+    // OS << " into ";
+    // if (!Dst.getParent())
+    //   OS << "None";
+    // else{
+    //   if (Diff.getMapped(*DstParent) != NULL){
+    //     Diff.getMapped(*DstParent)->dump(OS);
+    //     OS << " at " << Src->findPositionInParent() << "\n";
+    //     // numChildren = Diff.getMapped(*DstParent)->getNumChildren();
+    //     // if ((offset + 1) != numChildren){
+    //     //   OS << " before ";
+    //     //   NodeRef nextChild = Dst.getParent()->getChild(offset + 1);
+    //     //   if (Diff.getMapped(nextChild) != NULL){
+    //     //     Diff.getMapped(nextChild)->dump(OS);
+    //     //   } else {
+    //     //     nextChild.dump(OS); 
+    //     //   } 
+    //     // }
+    //     // if (offset  > 1){
+    //     //   NodeRef prevChild = Dst.getParent()->getChild(offset - 1);
+    //     //   OS << " after ";
+    //     //   if (Diff.getMapped(prevChild) != NULL){
+    //     //     Diff.getMapped(prevChild)->dump(OS);
+    //     //   } else {
+    //     //     prevChild.dump(OS); 
+    //     //   } 
+       
+    //     // }
+
+    //   }
+    //   else 
+    //     DstParent->dump(OS);
+    //     OS << " at " << Dst.findPositionInParent() << "\n";
+    // } 
+
+    // OS << "\n";    
+    // break;
+
   case Move:
   case UpdateMove:
     OS << " ";

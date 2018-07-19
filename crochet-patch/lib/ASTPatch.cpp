@@ -117,6 +117,8 @@ class Patcher {
 
 public:
   Rewriter Rewrite;
+  std::pair<int, bool>
+  findPointOfInsertion(NodeRef N, PatchedTreeNode &TargetParent) const;
   Patcher(SyntaxTree &Src, SyntaxTree &Dst, SyntaxTree &Target,
           const ComparisonOptions &Options, RefactoringTool &TargetTool,
           bool Debug)
@@ -142,8 +144,7 @@ private:
   // Recursively builds the text that is represented by this subtree.
   std::string buildSourceText(PatchedTreeNode &PatchedNode);
   void setOwnedSourceText(PatchedTreeNode &PatchedNode);
-  std::pair<int, bool>
-  findPointOfInsertion(NodeRef N, PatchedTreeNode &TargetParent) const;
+  
   bool isInserted(const PatchedTreeNode &PatchedNode) const {
     return isFromDst(PatchedNode);
   }
@@ -621,52 +622,123 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
         std::string offset = line.substr(line.find(" at ") + 4);
         int Offset = stoi(offset);
         line = line.substr(0, line.find(" at "));
-        std::string nodeC = line.substr(line.find(" ") + 1, line.find(")") - line.find(" "));
-        std::string nodeTypeC = nodeC.substr(0, nodeC.find("(") );
-        std::string nodeIdC = nodeC.substr(nodeC.find("(") + 1, nodeC.find(")") - nodeC.find("(") - 1);
+        std::string nextChild, nextChildType, nextChildId;
+        std::string prevChild, prevChildType, prevChildId;
 
-        std::string nodeB = line.substr(line.find(" into ") + 4);
+        //  if (line.find(" after ") != std::string::npos){          
+        //   line = line.substr(0, line.find(" after "));
+        //   prevChild = line.substr(line.find(" after ") + 7);
+        //   prevChildType = prevChild.substr(0, prevChild.find("(") );
+        //   prevChildId = prevChild.substr(prevChild.find("(") + 1, prevChild.find(")") - prevChild.find("(") - 1);
+        //   llvm::outs() << "Prev Child\n";
+        //   llvm::outs() << prevChild << "\n";
+        //   llvm::outs() << prevChildType << "\n";
+        //   llvm::outs() << prevChildId << "\n";
+        // }
+
+
+        // if (line.find(" before ") != std::string::npos){                  
+        //   nextChild = line.substr(line.find(" before ") + 8);
+        //   nextChildType = nextChild.substr(0, nextChild.find("(") );
+        //   nextChildId = nextChild.substr(nextChild.find("(") + 1, nextChild.find(")") - nextChild.find("(") - 1);
+        //   llvm::outs() << "Next Child\n";
+        //   llvm::outs() << nextChild << "\n";
+        //   llvm::outs() << nextChildType << "\n";
+        //   llvm::outs() << nextChildId << "\n";
+        // }
+
+       
+        std::string nodeB = line.substr(line.find(" ") + 1, line.find(")") - line.find(" "));
         std::string nodeTypeB = nodeB.substr(0, nodeB.find("(") );
         std::string nodeIdB = nodeB.substr(nodeB.find("(") + 1, nodeB.find(")") - nodeB.find("(") - 1);
 
-        NodeRef NB = Dst.getNode(NodeId(stoi(nodeIdB)));
-        NodeRef NC = Target.getNode(NodeId(stoi(nodeIdC)));
+        std::string nodeC = line.substr(line.find(" into ") + 6);
+        std::string nodeTypeC = nodeC.substr(0, nodeC.find("(") );
+        std::string nodeIdC = nodeC.substr(nodeC.find("(") + 1, nodeC.find(")") - nodeC.find("(") - 1);
 
-        if ((NC.getTypeLabel() == nodeTypeC) && (NB.getTypeLabel() == nodeTypeB)){
+        // llvm::outs() << nodeC << "\n";
+        // llvm::outs() << nodeIdC << "\n";
+        // llvm::outs() << nodeTypeC << "\n";
+
+        // llvm::outs() << nodeB << "\n";
+        // llvm::outs() << nodeIdB << "\n";
+        // llvm::outs() << nodeTypeB << "\n";
+
+        NodeRef insertNode = Dst.getNode(NodeId(stoi(nodeIdB)));
+        NodeRef targetNode = Target.getNode(NodeId(stoi(nodeIdC)));
+
+
+        // NodeRef targetParentNode = targetNode.getParent();
+
+
+       
+
+        // llvm::outs() << insertNode.getTypeLabel() << "\n";
+        // llvm::outs() << targetNode.getTypeLabel() << "\n";
+
+        if ((targetNode.getTypeLabel() == nodeTypeC) && (insertNode.getTypeLabel() == nodeTypeB)){
 
           // llvm::outs() << "nodes matched\n";
-          CharSourceRange range = NC.getSourceRange();
-          const std::string insertValue = NB.getValue();
 
-          if (!insertValue.empty()) {
 
-             // if (Offset == 0){
-             //   SourceRange r = expandRange(s->getSourceRange()); 
-             //   PresumedLoc InsertLoc = SM.getPresumedLoc(r.getBegin()); 
-             //   Rewrite.InsertTextAfter(r.getBegin(), insert_value);
-             //   llvm::errs() << "InsertLoc: " << InsertLoc.getLine() << ":" << InsertLoc.getColumn() << "\n";
+          CharSourceRange range = targetNode.getSourceRange();
+          CharSourceRange extractRange = insertNode.getSourceRange();
+          std::string insertStatement;
+          SourceLocation startLoc = range.getBegin();
+          
 
-             //  } else {
+          if (startLoc.isMacroID()){
+            // llvm::outs() << "Macro identified\n";
+            // Get the start/end expansion locations
+            CharSourceRange expansionRange = crochetPatcher.Rewrite.getSourceMgr().getImmediateExpansionRange( startLoc );
+            // We're just interested in the start location
+            startLoc = expansionRange.getBegin();  
+            range.setBegin(startLoc);       
+          }
+
+          
+          insertStatement = Lexer::getSourceText(extractRange, Dst.getSourceManager(), Dst.getLangOpts());
+          
+
+          if (!insertStatement.empty()) {
+
+             llvm::outs() << insertStatement << "\n";
+            unsigned int NumChildren = targetNode.getNumChildren();
+
+             if (Offset == 0){
+                if (NumChildren > 0){
+                  // NodeRef firstChild = targetNode.getChild(Offset);
+                  // startLoc = firstChild.getSourceRange().getBegin();
+                  // crochetPatcher.Rewrite.InsertTextBefore(startLoc, insertStatement);
+                  crochetPatcher.Rewrite.InsertTextAfterToken(startLoc, insertStatement);
+                   
+
+                } else {
+
+                  crochetPatcher.Rewrite.InsertTextAfter(startLoc, insertStatement);
+               // Rewrite.InsertTextAfter(r.getBegin(), insert_value);
+               // PresumedLoc InsertLoc = SM.getPresumedLoc(r.getBegin());
+               // llvm::outs() << "InsertLoc: " << InsertLoc.getLine() << ":" << InsertLoc.getColumn() << "\n";
+                }
+
+              } else {
                 
-             //    unsigned int iteration = 0;        
-             //    for (Stmt::child_iterator i = s->child_begin(), e = s->child_end(); i != e; ++i) {    
-             //          Stmt *currStmt = *i;         
-             //          if (iteration == Offset){  
-             //            Out << "getting offset\n" ;             
-             //            SourceRange r = expandRange(currStmt->getSourceRange()); 
-             //            PresumedLoc InsertLoc = SM.getPresumedLoc(r.getBegin()); 
-             //            Rewrite.InsertTextBefore(r.getBegin(), insert_value);
-             //            llvm::errs() << "InsertLoc: " << InsertLoc.getLine() << ":" << InsertLoc.getColumn() << "\n";               
-             //            break;
-             //          }
+                
 
-             //          iteration++;            
-                      
-             //    }
-             //  }
+                if (Offset <= NumChildren -1){
+                   NodeRef nearestChildNode = targetNode.getChild(Offset);
+                   startLoc = nearestChildNode.getSourceRange().getBegin();
+                   crochetPatcher.Rewrite.InsertText(startLoc, insertStatement);
+
+                } else {
+
+                }
+
+                
+              }
 
 
-            // crochetPatcher.Rewrite.InsertText(SourceRange(range.getBegin(), range.getEnd()), insertValue);
+             
           }          
 
         } else {
@@ -674,6 +746,102 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
           return error(patching_error::failed_to_apply_replacements);
 
         }
+
+      } else if (operation == "Move") {
+
+        // llvm::outs() << "move op\n";
+        std::string offset = line.substr(line.find(" at ") + 4);
+        int Offset = stoi(offset);
+        line = line.substr(0, line.find(" at "));
+        std::string nodeB = line.substr(line.find(" ") + 1, line.find(")") - line.find(" "));
+        std::string nodeTypeB = nodeB.substr(0, nodeB.find("(") );
+        std::string nodeIdB = nodeB.substr(nodeB.find("(") + 1, nodeB.find(")") - nodeB.find("(") - 1);
+
+        std::string nodeC = line.substr(line.find(" into ") + 6);
+        std::string nodeTypeC = nodeC.substr(0, nodeC.find("(") );
+        std::string nodeIdC = nodeC.substr(nodeC.find("(") + 1, nodeC.find(")") - nodeC.find("(") - 1);
+
+        NodeRef movingNode = Target.getNode(NodeId(stoi(nodeIdB)));
+        NodeRef targetNode = Target.getNode(NodeId(stoi(nodeIdC)));
+        // NodeRef targetParentNode = targetNode.getParent();
+
+
+        // llvm::outs() << nodeC << "\n";
+        // llvm::outs() << nodeIdC << "\n";
+        // llvm::outs() << nodeTypeC << "\n";
+
+        // llvm::outs() << nodeB << "\n";
+        // llvm::outs() << nodeIdB << "\n";
+        // llvm::outs() << nodeTypeB << "\n";
+
+        // llvm::outs() << movingNode.getTypeLabel() << "\n";
+        // llvm::outs() << targetNode.getTypeLabel() << "\n";
+
+        if ((targetNode.getTypeLabel() == nodeTypeC) && (movingNode.getTypeLabel() == nodeTypeB)){
+
+          // llvm::outs() << "nodes matched\n";
+
+
+          CharSourceRange range = targetNode.getSourceRange();
+          CharSourceRange extractRange = movingNode.getSourceRange();
+          CharSourceRange deleteRange = movingNode.findRangeForDeletion();
+          std::string movingStatement;
+          SourceLocation startLoc = range.getBegin();
+          
+
+          if (startLoc.isMacroID()){
+            // llvm::outs() << "Macro identified\n";
+            // Get the start/end expansion locations
+            CharSourceRange expansionRange = crochetPatcher.Rewrite.getSourceMgr().getImmediateExpansionRange( startLoc );
+            // We're just interested in the start location
+            startLoc = expansionRange.getBegin();  
+            range.setBegin(startLoc);       
+          }
+
+          
+          movingStatement = Lexer::getSourceText(extractRange, Target.getSourceManager(), Target.getLangOpts());
+          crochetPatcher.Rewrite.RemoveText(deleteRange);
+          
+
+          if (!movingStatement.empty()) {
+
+            llvm::outs() << movingStatement << "\n";
+
+             if (Offset == 0){
+                crochetPatcher.Rewrite.InsertText(startLoc, movingStatement);
+               // Rewrite.InsertTextAfter(r.getBegin(), insert_value);
+               // PresumedLoc InsertLoc = SM.getPresumedLoc(r.getBegin());
+               // llvm::outs() << "InsertLoc: " << InsertLoc.getLine() << ":" << InsertLoc.getColumn() << "\n";
+
+              } else {
+                
+                unsigned int NumChildren = targetNode.getNumChildren();
+
+                if (Offset <= NumChildren -1){
+                   NodeRef nearestChildNode = targetNode.getChild(Offset);
+                   startLoc = nearestChildNode.getSourceRange().getBegin();
+                   crochetPatcher.Rewrite.InsertText(startLoc, movingStatement);
+
+                } else {
+
+                }
+
+                
+              }
+
+
+             
+          }          
+
+        } else {
+          llvm::errs() << "Error: wrong node type for given Id\n";
+          return error(patching_error::failed_to_apply_replacements);
+
+        }
+
+
+
+
 
       } else if (operation == "Update"){
 
@@ -687,8 +855,8 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
         std::string nodeTypeB = nodeB.substr(0, nodeB.find("(") );
         std::string nodeIdB = nodeB.substr(nodeB.find("(") + 1, nodeB.find(")") - nodeB.find("(") - 1);
 
-        NodeRef NB = Dst.getNode(NodeId(stoi(nodeIdB)));
-        NodeRef NC = Target.getNode(NodeId(stoi(nodeIdC)));
+        NodeRef updateNode = Dst.getNode(NodeId(stoi(nodeIdB)));
+        NodeRef targetNode = Target.getNode(NodeId(stoi(nodeIdC)));
 
         // llvm::outs() << nodeC << "\n";
         // llvm::outs() << nodeIdC << "\n";
@@ -698,34 +866,65 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
         // llvm::outs() << nodeIdB << "\n";
         // llvm::outs() << nodeTypeB << "\n";
 
-        // llvm::outs() << NB.getTypeLabel() << "\n";
-        // llvm::outs() << NC.getTypeLabel() << "\n";
+        // llvm::outs() << updateNode.getTypeLabel() << "\n";
+        // llvm::outs() << targetNode.getTypeLabel() << "\n";
 
-        if ((NC.getTypeLabel() == nodeTypeC) && (NB.getTypeLabel() == nodeTypeB)){
+        if ((targetNode.getTypeLabel() == nodeTypeC) && (updateNode.getTypeLabel() == nodeTypeB)){
 
           // llvm::outs() << "nodes matched\n";
-          CharSourceRange range = NC.getSourceRange();
-          const std::string updateValue = NB.getValue();
-          const std::string oldValue = NC.getValue();
+          CharSourceRange range;
+          if (targetNode.getTypeLabel() == "BinaryOperator"){
+
+            SourceRange r = targetNode.ASTNode.getSourceRange();
+            range.setBegin(r.getBegin());
+            range.setEnd(r.getBegin());
+
+          } 
+             
+          else {
+            range = targetNode.getSourceRange();
+          }
+
+          SourceLocation startLoc = range.getBegin();
+          SourceLocation endLoc = range.getEnd();
+
+          if (startLoc.isMacroID()){
+            // llvm::outs() << "Macro identified\n";
+            // Get the start/end expansion locations
+            CharSourceRange expansionRange = crochetPatcher.Rewrite.getSourceMgr().getImmediateExpansionRange( startLoc );
+            // We're just interested in the start location
+            startLoc = expansionRange.getBegin();  
+            range.setBegin(startLoc);       
+          }
+
+          const std::string updateValue = updateNode.getValue();
+          const std::string oldValue = targetNode.getValue();
+
+          // llvm::outs() << updateValue << "\n";
+          // llvm::outs() << oldValue << "\n";
 
           if (!updateValue.empty()) {
-            std::string statement = crochetPatcher.Rewrite.getRewrittenText(SourceRange(range.getBegin(), range.getEnd()));
+            std::string statement = Lexer::getSourceText(range, Target.getSourceManager(),
+                                Target.getLangOpts());
+
+            // llvm::outs() << statement << "\n";
             replaceSubString(statement, oldValue, updateValue);
-            crochetPatcher.Rewrite.RemoveText(range);
-            crochetPatcher.Rewrite.InsertText(range.getBegin(), statement);
+            // llvm::outs() << statement << "\n";
+            if (crochetPatcher.Rewrite.RemoveText(range))
+              return error(patching_error::failed_to_apply_replacements);
+
+            // llvm::outs() << "statement removed" << "\n";
+            if (crochetPatcher.Rewrite.InsertText(range.getBegin(), statement))
+              return error(patching_error::failed_to_apply_replacements);
+            // llvm::outs() << "statement updated" << "\n";
           }          
 
         } else {
-          llvm::errs() << "Error: wrong node type for given Id\n";
+          // llvm::errs() << "Error: wrong node type for given Id\n";
           return error(patching_error::failed_to_apply_replacements);
 
         }
 
-        
-
-
-
-         
 
       } else if (operation == "Delete"){
 
@@ -734,17 +933,28 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
         std::string nodeType   = line.substr(line.find(" ") + 1, line.find("(") - operation.length() - 1);
         std::string nodeId = line.substr(line.find("(") + 1, line.find(")") - line.find("(") - 1);
 
-        NodeRef N = Target.getNode(NodeId(stoi(nodeId)));
+        NodeRef deleteNode = Target.getNode(NodeId(stoi(nodeId)));
 
         // llvm::outs() << N.getTypeLabel() << "\n";
         // llvm::outs() << "type: " << nodeType << "\n";
         // llvm::outs() << "id: " << nodeId << "\n";
 
-        if (N.getTypeLabel() == nodeType){
-          CharSourceRange range = N.findRangeForDeletion();
+        if (deleteNode.getTypeLabel() == nodeType){
+          CharSourceRange range = deleteNode.findRangeForDeletion();
+
+          SourceLocation startLoc = range.getBegin();
+          SourceLocation endLoc = range.getEnd();
+
+          if (startLoc.isMacroID()){
+            // llvm::outs() << "Macro identified\n";
+            // Get the start/end expansion locations
+            CharSourceRange expansionRange = crochetPatcher.Rewrite.getSourceMgr().getImmediateExpansionRange( startLoc );
+            // We're just interested in the start location
+            startLoc = expansionRange.getBegin();  
+            range.setBegin(startLoc);       
+          }
+
           crochetPatcher.Rewrite.RemoveText(range);
-
-
 
 
         } else {
@@ -756,16 +966,12 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
         
         
 
-      } else if (operation == "Move"){
-
-        // llvm::outs() << "update and move op\n"; 
-
-      } else if (operation == "UpdateMove"){
+      }  else if (operation == "UpdateMove"){
 
         // llvm::outs() << "move op\n"; 
 
       } else {
-        // llvm::outs() << "unknown op\n"; 
+        llvm::errs() << "unknown op\n"; 
         return error(patching_error::failed_to_apply_replacements);
       }
 

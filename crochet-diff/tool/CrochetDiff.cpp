@@ -379,6 +379,7 @@ static void printNodeAttributes(raw_ostream &OS, diff::SyntaxTree &Tree,
 
   OS << R"(,"begin":)" << Offsets.first;
   OS << R"(,"end":)" << Offsets.second;
+  
 
   std::string Value = Node.getValue();
   if (!Value.empty()) {
