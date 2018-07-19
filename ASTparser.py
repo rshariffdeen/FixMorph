@@ -66,7 +66,8 @@ class AST:
                     
     def treeString(self):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
-                      self.col, self.col_end, self.value, self.type]
+                      self.col, self.col_end, self.begin, self.end, self.value,
+                      self.type, self.file]
         s = self.char[:-2] + "{\n"
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:
@@ -86,7 +87,8 @@ class AST:
         
     def __str__(self):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
-                      self.col, self.col_end, self.value, self.type]
+                      self.col, self.col_end, self.begin, self.end, self.value,
+                      self.type, self.file]
         s = ""
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:

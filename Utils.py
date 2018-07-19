@@ -55,12 +55,6 @@ def clean():
         r = "rm -rf output Backup_Folder; mkdir output Backup_Folder;"
         exec_com(r, False)
         
-def backup(path):
-    Print.blue("Backing up project...")
-    if os.path.isdir(path):
-        c = "cp -a " + path + "/. " + "./Backup_Folder/"
-        exec_com(c)
-        
     
 ''' Finding files with specific extension'''
     
