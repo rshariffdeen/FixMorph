@@ -14,7 +14,7 @@ import ASTparser
 Pa = None
 Pb = None
 Pc = None
-Pd = None
+crash = None
 
 crochet_patch = "crochet-patch "
 crochet_diff = "crochet-diff "
@@ -32,17 +32,25 @@ INTO = " into "
 AND = "and"
 order = [UPDATE, DELETE, MOVE, INSERT]
 
+changes = dict()
+n_changes = 0
+
 
 def initialize():
-    global Pa, Pb, Pc
+    global Pa, Pb, Pc, crash
     with open('crochet.conf', 'r', errors='replace') as file:
         args = [i.strip() for i in file.readlines()]
     if (len(args) < 3):
-        err_exit("Insufficient arguments: Pa, Pb, Pc, and Pd source paths " + \
+        err_exit("Insufficient arguments: Pa, Pb, and Pc source paths " + \
                  "required.")
     Pa = Project.Project(args[0], "Pa")
     Pb = Project.Project(args[1], "Pb")
     Pc = Project.Project(args[2], "Pc")
+    if len(args) >= 4:
+        if os.path.isfile(args[3]):
+            crash = args[3]
+        else:
+            Print.yellow("No script for crash provided. Running anyways.")
     clean()
 
 
@@ -258,7 +266,7 @@ def generate_ast_map(source_a, source_b):
         "| grep -P '^Match (" + "|".join(interesting) + ")\(' " + \
         "| grep '^Match ' > output/ast-map"
     try:
-        exec_com(c, False)
+        exec_com(c, True)
     except Exception as e:
         err_exit(e, "Unexpected error in generate_ast_map.")
 
@@ -877,30 +885,56 @@ def transplantation(to_patch):
         patch(vec_f_a.file, vec_f_b.file, vec_f_c.file)
         
 def patch(file_a, file_b, file_c):
+    global changes, n_changes
+    n_changes += 1
     if not (os.path.isfile("output/script")):
         err_exit("No script was generated. Exiting with error.")
-    c = "cp " + file_c + " Backup_Folder;"
+    c = ""
+    if file_c not in changes.keys():
+        filename = file_c.split("/")[-1]
+        backup_file = str(n_changes) + "_" + filename
+        changes[file_c] = backup_file
+        c += "cp " + file_c + " Backup_Folder/" + backup_file
     c += crochet_patch + "-script=output/script -source=" + file_a + \
-        " -destination=" + file_b + " -target=" + file_c + " > " + \
-        "output/temp_" + file_c.split("/")[-1]
-    exec_com(c) 
+        " -destination=" + file_b + " -target=" + file_c + \
+        " 2> output/errors > " + file_c
+    exec_com(c)
+    
+def verification():
+    if crash != None:
+        try:
+            Pc.make(bear=False)
+        except Exception as e:
+            Print.yellow("Make failed.")
+            Print.yellow(e)
+            Print.yellow("Restoring files...")
+            for file in changes.keys():
+                backup_file = changes[file]
+                c = "cp Backup_Folder/" + backup_file + " " + file
+                exec_com(c)
+            Print.yellow("Files restored")
+            err_exit("Crochet failed at patching. Project did not compile" + \
+                     "after changes. Exiting.")
+        try:
+            # TODO: Execute crash
+            pass
+        except:
+            pass
+            
             
 
 def safe_exec(function, title, *args):
     start = time.time()
     Print.title("Starting " + title + "...")
     descr = title[0].lower() + title[1:]
-    if True:
-    #try:
+    try:
         if not args:
             a = function()
         else:
             a = function(*args)
         runtime = str(time.time() - start)
         Print.rose("Successful " + descr + ", after " + runtime + " seconds.")
-    else:
-        e = ""
-    #except Exception as e:
+    except Exception as e:
         runtime = str(time.time() - start)
         Print.red("Crash during " + descr + ", after " + runtime + " seconds.")
         err_exit(e, "Unexpected error during " + descr + ".")

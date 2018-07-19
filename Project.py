@@ -15,28 +15,26 @@ class Project:
         self.structs = dict()
         self.clean()
         try:
-            c = "echo $PWD"
-            crochet_path = exec_com(c)[0]
             if not (os.path.isfile(path + "/compile_commands.json")):
-                self.bear_make(crochet_path)
+                self.make(bear=True)
             else:
                 c = "cat " + path + "/compile_commands.json"
                 if int(len(exec_com(c)[0])) <=2:
-                    self.bear_make(crochet_path)
-            c = "cd " + crochet_path
-            exec_com(c)       
+                    self.make(bear=True)      
                 
         except Exception as e:
-            err_exit(e, "Failed at bear making project.")
+            err_exit(e, "Failed at bear making project. Check configuration.")
             
-        
-    def bear_make(self, crochet_path):
-        try:
-            c = "cd " + self.path + "; make clean;" + \
-                "bear make > " + crochet_path + "/output/compile_warnings;"
-            exec_com(c)
-        except Exception as e:
-            err_exit(e, "Bear make failed. Configure first.")
+    def make(self, bear=False):
+        c = "echo $PWD"
+        crochet_path = exec_com(c)[0]
+        c = "cd " + self.path + "; make clean;"
+        if bear:
+            c += "bear "
+        c += "make > " + crochet_path + "/output/compile_warnings;"
+        exec_com(c)
+        c = "cd " + crochet_path
+        exec_com(c)
         
     def clean(self):
         # Remove *.crochetAST, *.AST and *.vec files from directory
