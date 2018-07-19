@@ -793,21 +793,21 @@ def transplantation(to_patch):
                         print(instruction_CD, match_BD)
                         err_exit(e, "Something went wrong with MOVE. (pos)")'''
                     
-                    if type(nodeC) == ASTparser.AST:
-                        if nodeC.line == None:
-                            nodeC.line = nodeC.parent.line
-                        if type(nodeD) == ASTparser.AST:
-                            if nodeD.line == None:
-                                nodeD.line = nodeD.parent.line
+                    if type(nodeC1) == ASTparser.AST:
+                        if nodeC1.line == None:
+                            nodeC1.line = nodeC1.parent.line
+                        if type(nodeC2) == ASTparser.AST:
+                            if nodeC2.line == None:
+                                nodeC2.line = nodeD.parent.line
                             # I'm pretty sure this is wrong but Ridwan insisted
-                            if nodeD in inserted_D:
-                                instruction_CD.append((DELETE, nodeC, nodeD,
+                            if nodeC2 in inserted_D:
+                                instruction_CD.append((DELETE, nodeC1, nodeC2,
                                                        pos))
                             else:
-                                instruction_CD.append((MOVE, nodeC, nodeD,
+                                instruction_CD.append((MOVE, nodeC1, nodeC2,
                                                        pos))
                             # Predicting what he has in mind, this should help
-                            inserted_D.append(nodeC)
+                            inserted_D.append(nodeC1)
                         else:
                             Print.yellow("Could not find match for node. " + \
                                          "Ignoring MOVE operation. (D)")
@@ -947,6 +947,8 @@ def restore_files():
         c = "cp Backup_Folder/" + backup_file + " " + file
         exec_com(c)
     Print.yellow("Files restored")
+    
+    
 def verification():
     if crash != None:
         try:
