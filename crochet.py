@@ -48,9 +48,15 @@ def initialize():
     Pc = Project.Project(args[2], "Pc")
     if len(args) >= 4:
         if os.path.isfile(args[3]):
-            crash = args[3]
+            if len(args[3]) >= 4 and args[3][:-3] == ".sh":
+                crash = args[3]
+            else:
+                Print.yellow("Script must be path to a shell (.sh) file." + \
+                             "Running anyway.")
         else:
-            Print.yellow("No script for crash provided. Running anyways.")
+            Print.yellow("No script for crash provided. Running anyway.")
+    else:
+            Print.yellow("No script for crash provided. Running anyway.")
     clean()
 
 
@@ -472,7 +478,7 @@ def order_comp(inst1, inst2):
     if col1 != col2:
         return col2 - col1
     
-    return inst_comp(inst2[0]) - inst_comp(inst1[0])
+    return inst_comp(inst1[0]) - inst_comp(inst2[0])
     
 
 def cmp_to_key(mycmp):
@@ -533,13 +539,15 @@ def patch_instruction(inst):
         
     if implemented:
         Print.green(c)
-        if not (os.path.isfile("output/script")):
-            edit = 'w'
+        script_path = "output/script"
+        if not (os.path.isfile(script_path)):
+            with open(script_path, 'w') as script:
+                script.write(c)
         else:
-            edit = 'a'
+            with open(script_path, 'a') as script:
+                script.write("\n" + c)
             
-        with open("output/script", edit) as script:
-            script.write(c + "\n")
+        
     else:
         Print.red("#" + c)
 
@@ -704,7 +712,7 @@ def transplantation(to_patch):
                         nodeC = ASTlists[Pc.name][int(nodeC)]
                         if nodeC.line == None:
                             nodeC.line = nodeC.parent.line
-                            instruction_CD.append((DELETE, nodeC))
+                        instruction_CD.append((DELETE, nodeC))
                     else:
                         Print.yellow("Warning: Match for " + str(nodeA) + \
                                      "not found. Skipping DELETE instruction.")
@@ -817,6 +825,7 @@ def transplantation(to_patch):
                     # TODO: Edit nodeD1 to get right structures
                     nodeD2 = nodeB2.split("(")[-1][:-1]
                     nodeD2 = ASTlists[Pb.name][int(nodeD2)]
+                    # TODO: Is this correct?
                     if nodeD2.line != None:
                         nodeD1.line = nodeD2.line
                     else:
@@ -827,38 +836,42 @@ def transplantation(to_patch):
                         nodeA2 = match_BA[nodeB2]
                         if nodeA2 in match_AC.keys():
                             nodeD2 = match_AC[nodeA2]
-                            if "(" in nodeD2:
-                                nodeD2 = nodeD2.split("(")[-1][:-1]
-                                nodeD2 = ASTlists[Pc.name][int(nodeD2)]
-                                # TODO: Edit nodeD2 to get right structures
-                            try:
-                                m = 0
-                                true_B2 = nodeB2.split("(")[-1][:-1]
-                                true_B2 = ASTlists[Pb.name][int(true_B2)]
-                                M = len(true_B2.children)
-                                if pos != 0 and pos < M-1:
-                                    nodeB2_l = true_B2.children[pos-1]
-                                    nodeB2_r = true_B2.children[pos+1]
-                                    if nodeB2_l in match_BA.keys():
-                                        nodeA2_l = match_BA[nodeB2_l]
-                                        if nodeA2_l in match_AC.keys():
-                                            nodeD2_l = match_AC[nodeA2_l]
-                                            if nodeD2_l in nodeD2.children:
-                                                m = nodeD2.children
-                                                m = m.index(nodeD2_l)
-                                                pos = m+1
-                                    elif nodeB2_r in match_BA.keys():
-                                        nodeA2_r = match_BA[nodeB2_r]
-                                        if nodeA2_r in match_AC.keys():
-                                            nodeD2_r = match_AC[nodeA2_r]
-                                            if nodeD2_r in nodeD2.children:
-                                                M = nodeD2.children
-                                                M = M.index(nodeD2_r)
-                                                pos = max(0, M-1)
-                                elif pos >= M - 1:
-                                    pos += len(nodeD2.children) - M
-                            except Exception as e:
-                                err_exit(e, "Failed at locating pos.")
+                            nodeD2 = nodeD2.split("(")[-1][:-1]
+                            nodeD2 = ASTlists[Pc.name][int(nodeD2)]
+                            # TODO: Edit nodeD2 to get right structures
+                    elif nodeB2 in match_BD.keys():
+                        nodeD2 = match_BD[nodeB2]
+                    else:
+                        Print.yellow("Warning: node for insertion not" + \
+                                     " found. Skipping INSERT operation.")
+                    try:
+                        m = 0
+                        true_B2 = nodeB2.split("(")[-1][:-1]
+                        true_B2 = ASTlists[Pb.name][int(true_B2)]
+                        M = len(true_B2.children)
+                        if pos != 0 and pos < M-1:
+                            nodeB2_l = true_B2.children[pos-1]
+                            nodeB2_r = true_B2.children[pos+1]
+                            if nodeB2_l in match_BA.keys():
+                                nodeA2_l = match_BA[nodeB2_l]
+                                if nodeA2_l in match_AC.keys():
+                                    nodeD2_l = match_AC[nodeA2_l]
+                                    if nodeD2_l in nodeD2.children:
+                                        m = nodeD2.children
+                                        m = m.index(nodeD2_l)
+                                        pos = m+1
+                            elif nodeB2_r in match_BA.keys():
+                                nodeA2_r = match_BA[nodeB2_r]
+                                if nodeA2_r in match_AC.keys():
+                                    nodeD2_r = match_AC[nodeA2_r]
+                                    if nodeD2_r in nodeD2.children:
+                                        M = nodeD2.children
+                                        M = M.index(nodeD2_r)
+                                        pos = max(0, M-1)
+                        elif pos >= M - 1:
+                            pos += len(nodeD2.children) - M
+                    except Exception as e:
+                        err_exit(e, "Failed at locating pos.")
                     match_BD[nodeB1] = nodeD1
                     inserted_D.append(nodeD1)
                     if type(nodeD1) == ASTparser.AST:
@@ -874,7 +887,9 @@ def transplantation(to_patch):
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")
         try:
+            Print.white([[str(j) for j in i] for i in instruction_CD])
             instruction_CD.sort(key=cmp_to_key(order_comp))
+            Print.white([[str(j) for j in i] for i in instruction_CD])
         except Exception as e:
             err_exit(e, instruction_CD, "Error at sorting instructions.")
         Print.white("Proposed patch from Pc to Pd")
@@ -894,10 +909,11 @@ def patch(file_a, file_b, file_c):
         filename = file_c.split("/")[-1]
         backup_file = str(n_changes) + "_" + filename
         changes[file_c] = backup_file
-        c += "cp " + file_c + " Backup_Folder/" + backup_file
+        c += "cp " + file_c + " Backup_Folder/" + backup_file + "; "
     c += crochet_patch + "-script=output/script -source=" + file_a + \
         " -destination=" + file_b + " -target=" + file_c + \
-        " 2> output/errors > " + file_c
+        " 2> output/errors > output/temp.c; "
+    c += "cp output/temp.c " + file_c
     exec_com(c)
     
 def verification():
@@ -916,10 +932,26 @@ def verification():
             err_exit("Crochet failed at patching. Project did not compile" + \
                      "after changes. Exiting.")
         try:
-            # TODO: Execute crash
-            pass
-        except:
-            pass
+            c = "sh " + crash
+            exec_com(c)
+        except Exception as e:
+            Print.yellow("Crash gave an error.")
+            Print.yellow(e)
+            Print.yellow("Restoring files...")
+            for file in changes.keys():
+                backup_file = changes[file]
+                c = "cp Backup_Folder/" + backup_file + " " + file
+                exec_com(c)
+            Print.yellow("Files restored")
+            err_exit("Crochet failed at patching. Project did not compile" + \
+                     "after changes. Exiting.")
+    # Remove this part when we don't care anymore
+    Print.blue("Restoring files...")
+    for file in changes.keys():
+        backup_file = changes[file]
+        c = "cp Backup_Folder/" + backup_file + " " + file
+        exec_com(c)
+    Print.blue("Files restored")
             
             
 
@@ -963,6 +995,9 @@ def run_crochet():
     
     # Using all previous structures to transplant patch
     safe_exec(transplantation, "patch transplantation", to_patch)
+    
+    # Verification by compiling and re-running crash
+    safe_exec(verification, "program verification")
     
     # Final clean
     Print.title("Cleaning residual files generated by Crochet...")
