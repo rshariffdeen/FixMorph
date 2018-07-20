@@ -803,11 +803,12 @@ def transplantation(to_patch):
                             if nodeC2 in inserted_D:
                                 instruction_CD.append((DELETE, nodeC1, nodeC2,
                                                        pos))
+                                # Guessing what's in his mind, this could help
+                                inserted_D.append(nodeC1)
                             else:
                                 instruction_CD.append((MOVE, nodeC1, nodeC2,
                                                        pos))
-                            # Predicting what he has in mind, this should help
-                            inserted_D.append(nodeC1)
+                            
                         else:
                             Print.yellow("Could not find match for node. " + \
                                          "Ignoring MOVE operation. (D)")
