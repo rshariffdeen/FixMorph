@@ -452,13 +452,17 @@ def order_comp(inst1, inst2):
     
     if inst1[0] in order[0:2]:
         l1 = inst1[1]
+        pos1 = 0
     elif inst1[0] in order[2:4]:
         l1 = inst1[2]
+        pos1 = inst1[3]
         
     if inst2[0] in order[0:2]:
         l2 = inst2[1]
+        pos2 = 0
     elif inst2[0] in order[2:4]:
         l2 = inst2[2]
+        pos2 = inst2[3]
         
     line1 = int(l1.line)
     line2 = int(l2.line)
@@ -479,6 +483,9 @@ def order_comp(inst1, inst2):
     col2 = int(l2.col_end)
     if col1 != col2:
         return col2 - col1
+    
+    if inst1[0] == inst2[0] and pos1 != pos2:
+        return pos2 - pos1
     
     return inst_comp(inst1[0]) - inst_comp(inst2[0])
     
