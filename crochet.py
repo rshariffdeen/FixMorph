@@ -18,6 +18,8 @@ crash = None
 
 crochet_patch = "crochet-patch "
 crochet_diff = "crochet-diff "
+clang_check = "clang-check "
+clang_format = "clang-format -style=LLVM "
 interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
@@ -791,21 +793,22 @@ def transplantation(to_patch):
                         print(instruction_CD, match_BD)
                         err_exit(e, "Something went wrong with MOVE. (pos)")'''
                     
-                    if type(nodeC) == ASTparser.AST:
-                        if nodeC.line == None:
-                            nodeC.line = nodeC.parent.line
-                        if type(nodeD) == ASTparser.AST:
-                            if nodeD.line == None:
-                                nodeD.line = nodeD.parent.line
+                    if type(nodeC1) == ASTparser.AST:
+                        if nodeC1.line == None:
+                            nodeC1.line = nodeC1.parent.line
+                        if type(nodeC2) == ASTparser.AST:
+                            if nodeC2.line == None:
+                                nodeC2.line = nodeD.parent.line
                             # I'm pretty sure this is wrong but Ridwan insisted
-                            if nodeD in inserted_D:
-                                instruction_CD.append((DELETE, nodeC, nodeD,
+                            if nodeC2 in inserted_D:
+                                instruction_CD.append((DELETE, nodeC1, nodeC2,
                                                        pos))
+                                # Guessing what's in his mind, this could help
+                                inserted_D.append(nodeC1)
                             else:
-                                instruction_CD.append((MOVE, nodeC, nodeD,
+                                instruction_CD.append((MOVE, nodeC1, nodeC2,
                                                        pos))
-                            # Predicting what he has in mind, this should help
-                            inserted_D.append(nodeC)
+                            
                         else:
                             Print.yellow("Could not find match for node. " + \
                                          "Ignoring MOVE operation. (D)")
@@ -901,20 +904,51 @@ def transplantation(to_patch):
         
 def patch(file_a, file_b, file_c):
     global changes, n_changes
+    # This is to have an id of the file we're patching
     n_changes += 1
+    # Check for an edit script
     if not (os.path.isfile("output/script")):
         err_exit("No script was generated. Exiting with error.")
+        
+    output_file = "output/" + str(n_changes) + "_temp.c"
     c = ""
+    # We add file_c into our dict (changes) to be able to backup and copy it
     if file_c not in changes.keys():
         filename = file_c.split("/")[-1]
         backup_file = str(n_changes) + "_" + filename
         changes[file_c] = backup_file
         c += "cp " + file_c + " Backup_Folder/" + backup_file + "; "
+    # We apply the patch using the script and crochet-patch
     c += crochet_patch + "-script=output/script -source=" + file_a + \
         " -destination=" + file_b + " -target=" + file_c + \
-        " 2> output/errors > output/temp.c; "
-    c += "cp output/temp.c " + file_c
+        " 2> output/errors > " + output_file + "; "
+    c += "cp " + output_file + " " + file_c
     exec_com(c)
+    # We fix basic syntax errors that could have been introduced by the patch
+    c2 = clang_check + "-fixit " + file_c + " 2> output/syntax_errors"
+    exec_com(c2)
+    # We check that everything went fine, otherwise, we restore everything
+    try:
+        c3 = clang_check + file_c
+        exec_com(c3)
+    except Exception as e:
+        Print.red("Clang-check could not repair syntax errors.")
+        restore_files()
+        err_exit(e, "Crochet failed.")
+    # We format the file to be with proper spacing (needed?)
+    c3 = clang_format + file_c + " > " + output_file + "; "
+    c3 += "cp " + output_file + " " + file_c + ";"
+    exec_com(c3)
+    
+    
+def restore_files():
+    Print.yellow("Restoring files...")
+    for file in changes.keys():
+        backup_file = changes[file]
+        c = "cp Backup_Folder/" + backup_file + " " + file
+        exec_com(c)
+    Print.yellow("Files restored")
+    
     
 def verification():
     if crash != None:
@@ -923,12 +957,7 @@ def verification():
         except Exception as e:
             Print.yellow("Make failed.")
             Print.yellow(e)
-            Print.yellow("Restoring files...")
-            for file in changes.keys():
-                backup_file = changes[file]
-                c = "cp Backup_Folder/" + backup_file + " " + file
-                exec_com(c)
-            Print.yellow("Files restored")
+            restore_files()
             err_exit("Crochet failed at patching. Project did not compile" + \
                      "after changes. Exiting.")
         try:
@@ -937,21 +966,11 @@ def verification():
         except Exception as e:
             Print.yellow("Crash gave an error.")
             Print.yellow(e)
-            Print.yellow("Restoring files...")
-            for file in changes.keys():
-                backup_file = changes[file]
-                c = "cp Backup_Folder/" + backup_file + " " + file
-                exec_com(c)
-            Print.yellow("Files restored")
+            restore_files()
             err_exit("Crochet failed at patching. Project did not compile" + \
                      "after changes. Exiting.")
-    # Remove this part when we don't care anymore
-    Print.blue("Restoring files...")
-    for file in changes.keys():
-        backup_file = changes[file]
-        c = "cp Backup_Folder/" + backup_file + " " + file
-        exec_com(c)
-    Print.blue("Files restored")
+    # TODO: Remove this part when we don't care anymore
+    restore_files()
             
             
 
