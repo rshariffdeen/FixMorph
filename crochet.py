@@ -680,6 +680,7 @@ def transplantation(to_patch):
         
         instruction_CD = list()
         inserted_D = list()
+        deleted_D = list()
         match_BD = dict()        
         for i in instruction_AB:
             instruction = i[0]
@@ -714,6 +715,16 @@ def transplantation(to_patch):
                         nodeC = ASTlists[Pc.name][int(nodeC)]
                         if nodeC.line == None:
                             nodeC.line = nodeC.parent.line
+                        inside_deleted = False
+                        # TODO: Sequence of delete must be corrected
+                        '''for node in deleted_D:
+                            if node.contains(nodeC):
+                                inside_deleted = True
+                                break
+                            elif nodeC.contains(node):
+                                instruction_CD.'''
+                               
+                        deleted_D.append(nodeC)
                         instruction_CD.append((DELETE, nodeC))
                     else:
                         Print.yellow("Warning: Match for " + str(nodeA) + \
