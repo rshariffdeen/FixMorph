@@ -127,6 +127,26 @@ class AST:
             if self.col <= other.col and self.col_end >= other.col_end:
                 return True
         return False
+        
+    def format_value(self, file):
+        if "VarDecl" in self.type:
+            nvalue = self.get_code(file)
+        elif "(anonymous struct)::" in self.value:
+            nvalue = self.get_code(file)
+        else:
+            nvalue = self.value
+        return nvalue
+       
+       
+    def info(self, file):
+        if self.value:
+            return node.type + ": " + self.format_value(file)
+        return node.type
+         
+         
+    def value_calc(self, file):
+        if self.value:
+            return self.format_value(file)
             
                             
         

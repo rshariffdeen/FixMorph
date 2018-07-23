@@ -317,10 +317,10 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
                 nodeA, nodeB = clean_parse(map_line, " to ")
                 
                 var_a = nodeA.split("(")[1][:-1]
-                var_a = ast_A[int(var_a)].value
+                var_a = ast_A[int(var_a)].value_calc(Pa.path + "/" + file_a)
                 
                 var_c = nodeB.split("(")[1][:-1]
-                var_c = ast_C[int(var_c)].value
+                var_c = ast_C[int(var_c)].value_calc(Pc.path + "/" + file_c)
                 
                 if var_a in a_names:
                     if var_a not in ast_map.keys():
@@ -425,27 +425,6 @@ def ASTscript(file1, file2, output, only_matches=False):
 
 def inst_comp(i):
     return min(order.index(i), 2)
-
-    
-def format_value(node, file):
-    if "VarDecl" in node.type:
-        nvalue = node.get_code(file)
-    elif "(anonymous struct)::" in node.value:
-        nvalue = node.get_code(file)
-    else:
-        nvalue = node.value
-    return nvalue
-   
-   
-def info(node, file):
-    if node.value:
-        return node.type + ": " + format_value(node, file)
-    return node.type
-     
-     
-def value(node, file):
-    if node.value:
-        return format_value(node, file)
     
     
 def order_comp(inst1, inst2):
@@ -660,7 +639,32 @@ def transplantation(to_patch):
         
         Print.white("Original patch from Pa to Pb")
         for i in instruction_AB:
-            Print.white("\t" + " - ".join([str(j) for j in i]))
+            inst = i[0]
+            if inst == DELETE:
+                nodeA = i[1].split("(")[-1][:-1]
+                nodeA = ASTlists[Pa.name][int(nodeA)]
+                Print.white("\t" + DELETE + " - " + str(nodeA))
+            elif inst == UPDATE:
+                nodeA = i[1].split("(")[-1][:-1]
+                nodeA = ASTlists[Pa.name][int(nodeA)]
+                nodeB = i[2].split("(")[-1][:-1]
+                nodeB = ASTlists[Pb.name][int(nodeB)]
+                Print.white("\t" + UPDATE + " - " + str(nodeA) + " - " + \
+                            str(nodeB))
+            elif inst == MOVE:
+                nodeB1 = i[1].split("(")[-1][:-1]
+                nodeB1 = ASTlists[Pb.name][int(nodeB1)]
+                nodeB2 = i[1].split("(")[-1][:-1]
+                nodeB2 = ASTlists[Pb.name][int(nodeB2)]
+                Print.white("\t" + MOVE + " - " + str(nodeB1) + " - " + \
+                            str(nodeB2))
+            elif inst == INSERT:
+                nodeB1 = i[1].split("(")[-1][:-1]
+                nodeB1 = ASTlists[Pb.name][int(nodeB1)]
+                nodeB2 = i[1].split("(")[-1][:-1]
+                nodeB2 = ASTlists[Pb.name][int(nodeB2)]
+                Print.white("\t" + INSERT + " - " + str(nodeB1) + " - " + \
+                            str(nodeB2))
         
         match_AC = dict()
         with open('output/diff_script_AC', 'r', errors='replace') as script_AC:
@@ -680,7 +684,6 @@ def transplantation(to_patch):
         
         instruction_CD = list()
         inserted_D = list()
-        deleted_D = list()
         match_BD = dict()        
         for i in instruction_AB:
             instruction = i[0]
@@ -875,9 +878,9 @@ def transplantation(to_patch):
                             pos += len(nodeD2.children) - M
                     except Exception as e:
                         err_exit(e, "Failed at locating pos.")
-                    match_BD[nodeB1] = nodeD1
-                    inserted_D.append(nodeD1)
                     if type(nodeD1) == ASTparser.AST:
+                        match_BD[nodeB1] = nodeD1
+                        inserted_D.append(nodeD1)
                         nodeD1.children = []
                         if nodeD1.line == None:
                             nodeD1.line = nodeD1.parent.line
@@ -895,10 +898,11 @@ def transplantation(to_patch):
             
             # Delete overlapping DELETE operations
             reduced_CD = set()
-            for i in range(len(instruction_CD)):
+            n_inst = len(instruction_CD)
+            for i in range(n_inst):
                 inst1 = instruction_CD[i]
                 if inst1[0] == DELETE:
-                    for j in range(i+1, len(instruction_CD)):
+                    for j in range(i+1, n_inst):
                         inst2 = instruction_CD[j]
                         if inst2[0] == DELETE:
                             node1 = inst1[1]
@@ -907,8 +911,10 @@ def transplantation(to_patch):
                                 reduced_CD.add(j)
                             elif node2.contains(node1):
                                 reduced_CD.add(i)
-            instruction_CD = [instruction_CD[i] for i in range(len(instruction_CD)) if i not in reduced_CD]
-            
+            Print.white([str(i) for i in instruction_CD])
+            instruction_CD = [instruction_CD[i] for i in range(n_inst)
+                              if i not in reduced_CD]
+            Print.white([str(i) for i in instruction_CD])
             # Adjusting position for MOVE and INSERT operations
             for i in range(0, len(instruction_CD)-1):
                 inst1 = instruction_CD[i][0]
@@ -919,7 +925,8 @@ def transplantation(to_patch):
                     node2 = instruction_CD[i+1][2]
                     if node1 == node2:
                         pos1 = instruction_CD[i][3]
-                        instruction_CD[i+1] = (inst2, node2, pos1)
+                        instruction_CD[i+1] = (inst2, instruction_CD[i+1][1],
+                                               node2, pos1)
         except Exception as e:
             err_exit(e, instruction_CD, "Error at sorting instructions.")
         Print.white("Proposed patch from Pc to Pd")
