@@ -715,16 +715,6 @@ def transplantation(to_patch):
                         nodeC = ASTlists[Pc.name][int(nodeC)]
                         if nodeC.line == None:
                             nodeC.line = nodeC.parent.line
-                        inside_deleted = False
-                        # TODO: Sequence of delete must be corrected
-                        '''for node in deleted_D:
-                            if node.contains(nodeC):
-                                inside_deleted = True
-                                break
-                            elif nodeC.contains(node):
-                                instruction_CD.'''
-                               
-                        deleted_D.append(nodeC)
                         instruction_CD.append((DELETE, nodeC))
                     else:
                         Print.yellow("Warning: Match for " + str(nodeA) + \
@@ -900,9 +890,36 @@ def transplantation(to_patch):
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")
         try:
-            Print.white([[str(j) for j in i] for i in instruction_CD])
+            # Sort according to our criteria for better patching
             instruction_CD.sort(key=cmp_to_key(order_comp))
-            Print.white([[str(j) for j in i] for i in instruction_CD])
+            
+            # Delete overlapping DELETE operations
+            reduced_CD = set()
+            for i in range(len(instruction_CD)):
+                inst1 = instruction_CD[i]
+                if inst1[0] == DELETE:
+                    for j in range(i+1, len(instruction_CD)):
+                        inst2 = instruction_CD[j]
+                        if inst2[0] == DELETE:
+                            node1 = inst1[1]
+                            node2 = inst2[1]
+                            if node1.contains(node2):
+                                reduced_CD.add(j)
+                            elif node2.contains(node1):
+                                reduced_CD.add(i)
+            instruction_CD = [instruction_CD[i] for i in range(len(instruction_CD)) if i not in reduced_CD]
+            
+            # Adjusting position for MOVE and INSERT operations
+            for i in range(0, len(instruction_CD)-1):
+                inst1 = instruction_CD[i][0]
+                inst2 = instruction_CD[i+1][0]
+                if (inst1 == INSERT or inst1 == MOVE) and (inst2 == INSERT or 
+                    inst2 == MOVE):
+                    node1 = instruction_CD[i][2]
+                    node2 = instruction_CD[i+1][2]
+                    if node1 == node2:
+                        pos1 = instruction_CD[i][3]
+                        instruction_CD[i+1] = (inst2, node2, pos1)
         except Exception as e:
             err_exit(e, instruction_CD, "Error at sorting instructions.")
         Print.white("Proposed patch from Pc to Pd")

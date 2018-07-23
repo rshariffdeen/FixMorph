@@ -116,6 +116,17 @@ class AST:
             if child.get_nodes(attribute, value, nodes) == 0:
                 return 0
         return 1
+        
+    # Note: I'm assuming contention is the only way of overlapping.
+    def contains(self, other):
+        if self.line < other.line and self.line_end >= other.line_end:
+            return True
+        elif self.line <= other.line and self.line_end > other.line_end:
+            return True
+        elif self.line == other.line and self.line_end == other.line_end:
+            if self.col <= other.col and self.col_end >= other.col_end:
+                return True
+        return False
             
                             
         
