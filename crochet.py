@@ -452,17 +452,13 @@ def order_comp(inst1, inst2):
     
     if inst1[0] in order[0:2]:
         l1 = inst1[1]
-        pos1 = 0
     elif inst1[0] in order[2:4]:
         l1 = inst1[2]
-        pos1 = inst1[3]
         
     if inst2[0] in order[0:2]:
         l2 = inst2[1]
-        pos2 = 0
     elif inst2[0] in order[2:4]:
         l2 = inst2[2]
-        pos2 = inst2[3]
         
     line1 = int(l1.line)
     line2 = int(l2.line)
@@ -483,9 +479,6 @@ def order_comp(inst1, inst2):
     col2 = int(l2.col_end)
     if col1 != col2:
         return col2 - col1
-    
-    if inst1[0] == inst2[0] and pos1 != pos2:
-        return pos2 - pos1
     
     return inst_comp(inst1[0]) - inst_comp(inst2[0])
     
@@ -817,11 +810,8 @@ def transplantation(to_patch):
                         if type(nodeC2) == ASTparser.AST:
                             if nodeC2.line == None:
                                 nodeC2.line = nodeD.parent.line
-                            # I'm pretty sure this is wrong but Ridwan insisted
                             if nodeC2 in inserted_D:
-                                instruction_CD.append((DELETE, nodeC1, nodeC2,
-                                                       pos))
-                                # Guessing what's in his mind, this could help
+                                instruction_CD.append((DELETE, nodeC1))
                                 inserted_D.append(nodeC1)
                             else:
                                 instruction_CD.append((MOVE, nodeC1, nodeC2,
@@ -836,6 +826,8 @@ def transplantation(to_patch):
                 except Exception as e:
                     err_exit(e, "Something went wrong with MOVE.")
             # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
+                    
+            # TODO: Adapt pos in similar way to insert
             elif instruction == INSERT:
                 try:
                     nodeB1 = i[1]
