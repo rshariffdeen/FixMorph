@@ -487,21 +487,18 @@ def script_node(node):
     
     
 def patch_instruction(inst):
-    Print.white("\t" + " - ".join([str(j) for j in inst]))
-    
-    implemented = False
+    #Print.white("\t" + " - ".join([str(j) for j in inst]))
+
     c = ""
     
     instruction = inst[0]
     
     if instruction == UPDATE:
-        implemented = True
         nodeC = inst[1]
         nodeD = inst[2]
         c = UPDATE + " " + script_node(nodeC) + TO + script_node(nodeD)
             
     elif instruction == DELETE:
-        implemented = True
         nodeC = inst[1]
         c = DELETE + " " + script_node(nodeC)
         
@@ -512,25 +509,19 @@ def patch_instruction(inst):
         c = MOVE + " " + nodeD1 + INTO + nodeD2 + AT + pos
     
     elif instruction == INSERT:
-        implemented = True
         nodeB = script_node(inst[1])
         nodeC = script_node(inst[2])
         pos = str(inst[3])
         c = INSERT + " " + nodeB + INTO + nodeC + AT + pos
         
-    if implemented:
-        Print.green(c)
-        script_path = "output/script"
-        if not (os.path.isfile(script_path)):
-            with open(script_path, 'w') as script:
-                script.write(c)
-        else:
-            with open(script_path, 'a') as script:
-                script.write("\n" + c)
-            
-        
+    Print.green(c)
+    script_path = "output/script"
+    if not (os.path.isfile(script_path)):
+        with open(script_path, 'w') as script:
+            script.write(c)
     else:
-        Print.red("#" + c)
+        with open(script_path, 'a') as script:
+            script.write("\n" + c)
 
     
 def transplantation(to_patch):
