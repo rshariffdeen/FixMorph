@@ -700,37 +700,40 @@ def transplantation(to_patch):
                             reduced_AB.add(i)
         modified_AB = [modified_AB[i] for i in range(n_inst)
                           if i not in reduced_AB]
+        
         # Adjusting position for MOVE and INSERT operations
         i = 0
-        while i < len(modified_AB) - 1:
+        while i < len(modified_AB):
             inst1 = modified_AB[i][0]
             if inst1 == INSERT or inst1 == MOVE:
-                j = i
-                node1 = modified_AB[i][2]
-                while j < len(modified_AB) - 1:
-                    j += 1
+                node_into_1 = modified_AB[i][2]
+                k = i+1
+                for j in range(i+1, len(modified_AB)):
+                    k = j
                     inst2 = modified_AB[j][0]
                     if inst2 != INSERT and inst2 != MOVE:
                         break
-                    node2 = modified_AB[j][2]
-                    if node1 != node2:
+                    node_into_2 = modified_AB[j][2]
+                    if node_into_1 != node_into_2:
                         break
-                    pos1 = int(modified_AB[j-1][3])
-                    pos2 = int(modified_AB[j][3])
-                    if pos2 != pos1 + 1:
+                    pos_at_1 = modified_AB[j-1][3]
+                    pos_at_2 = modified_AB[j][3]
+                    if pos_at_1 < pos_at_2 - 1:
                         break
-                for k in range(i, j):
-                    inst = modified_AB[k][0]
-                    nodeB1 = modified_AB[k][1]
-                    nodeB2 = modified_AB[k][2]
-                    # We put pos of i to all of them up to j-1
+                for l in range(i, k):
+                    Print.red(modified_AB[l])
+                    inst = modified_AB[l][0]
+                    node1 = modified_AB[l][1]
+                    node2 = modified_AB[l][2]
                     pos = modified_AB[i][3]
-                    modified_AB[k] = (inst, nodeB1, nodeB2, pos)
-                i = j-1 
-            i += 1
+                    modified_AB[l] = (inst, node1, node2, pos)
+                i = k
+            else:
+                i += 1
+        
         Print.green("Modified simplified script:")
         for j in [" - ".join([str(k) for k in i]) for i in modified_AB]:
-            Print.white("\t" + j)
+            Print.green("\t" + j)
             
         instruction_AB = []
         for i in modified_AB:
