@@ -11,6 +11,7 @@ import ASTVector
 import ASTgen
 import ASTparser
 
+
 Pa = None
 Pb = None
 Pc = None
@@ -767,7 +768,6 @@ def transplantation(to_patch):
                         true_B2 = ASTlists[Pb.name][int(true_B2)]
                         M = len(true_B2.children)
                         if pos != 0 and pos < M-1:
-                            Print.yellow("Intermediate pos")
                             nodeB2_l = true_B2.children[pos-1]
                             nodeB2_r = true_B2.children[pos+1]
                             if nodeB2_l in match_BA.keys():
@@ -776,7 +776,7 @@ def transplantation(to_patch):
                                     nodeC2_l = match_AC[nodeA2_l]
                                     if nodeC2_l in nodeC2.children:
                                         m = nodeC2.children.index(nodeC2_l)
-                                        pos = m+1
+                                        pos = m + 1
                             elif nodeB2_r in match_BA.keys():
                                 nodeA2_r = match_BA[nodeB2_r]
                                 if nodeA2_r in match_AC.keys():
@@ -785,7 +785,6 @@ def transplantation(to_patch):
                                         M = nodeC2.children.index(nodeC2_r)
                                         pos = M
                         elif pos >= M - 1:
-                            Print.yellow("Edge pos")
                             pos += len(nodeC2.children) - M + 1
                     except Exception as e:
                         err_exit(e, "Failed at locating pos.")
@@ -856,7 +855,7 @@ def transplantation(to_patch):
                                     nodeD2_l = match_AC[nodeA2_l]
                                     if nodeD2_l in nodeD2.children:
                                         m = nodeD2.children.index(nodeD2_l)
-                                        pos = m+1
+                                        pos = m + 1
                             elif nodeB2_r in match_BA.keys():
                                 nodeA2_r = match_BA[nodeB2_r]
                                 if nodeA2_r in match_AC.keys():
