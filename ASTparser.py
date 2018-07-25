@@ -116,6 +116,37 @@ class AST:
             if child.get_nodes(attribute, value, nodes) == 0:
                 return 0
         return 1
+        
+    # Note: I'm assuming contention is the only way of overlapping.
+    def contains(self, other):
+        if self.line < other.line and self.line_end >= other.line_end:
+            return True
+        elif self.line <= other.line and self.line_end > other.line_end:
+            return True
+        elif self.line == other.line and self.line_end == other.line_end:
+            if self.col <= other.col and self.col_end >= other.col_end:
+                return True
+        return False
+        
+    def format_value(self, file):
+        if "VarDecl" in self.type:
+            nvalue = self.get_code(file)
+        elif "(anonymous struct)::" in self.value:
+            nvalue = self.get_code(file)
+        else:
+            nvalue = self.value
+        return nvalue
+       
+       
+    def info(self, file):
+        if self.value:
+            return node.type + ": " + self.format_value(file)
+        return node.type
+         
+         
+    def value_calc(self, file):
+        if self.value:
+            return self.format_value(file)
             
                             
         

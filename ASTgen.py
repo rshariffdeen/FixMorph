@@ -26,7 +26,7 @@ def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
 def ASTdump(file, output):
     c = crochet_diff + "-ast-dump-json " + file + \
         " 2> output/errors_AST_dump > " + output
-    a = exec_com(c, False)
+    a = exec_com(c, True)
     Print.yellow(a[0])
 
 def gen_json(filepath):
@@ -71,7 +71,8 @@ def parseAST(filepath, proj, Deckard=True):
     for node in function_nodes:
         set_struct_nodes = set()
         #Print.yellow(node.file)
-        if node.file != None and file in node.file:
+        
+        if node.file != None and file == node.file.split("/")[-1]:
             f = node.value.split("(")[0]
             start = int(node.line)
             end = int(node.line_end)
