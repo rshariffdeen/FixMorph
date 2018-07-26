@@ -716,8 +716,8 @@ def transplantation(to_patch):
                     node_into_2 = modified_AB[j][2]
                     if node_into_1 != node_into_2:
                         break
-                    pos_at_1 = modified_AB[j-1][3]
-                    pos_at_2 = modified_AB[j][3]
+                    pos_at_1 = int(modified_AB[j-1][3])
+                    pos_at_2 = int(modified_AB[j][3])
                     if pos_at_1 < pos_at_2 - 1:
                         break
                 for l in range(i, k):
@@ -725,7 +725,7 @@ def transplantation(to_patch):
                     inst = modified_AB[l][0]
                     node1 = modified_AB[l][1]
                     node2 = modified_AB[l][2]
-                    pos = modified_AB[i][3]
+                    pos = int(modified_AB[i][3])
                     modified_AB[l] = (inst, node1, node2, pos)
                 i = k
             else:
