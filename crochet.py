@@ -17,7 +17,7 @@ Pb = None
 Pc = None
 crash = None
 
-crochet_patch = "crochet-patch "
+crochet_patch = "crochet-patch -s 2147483647 "
 crochet_diff = "crochet-diff "
 clang_check = "clang-check "
 clang_format = "clang-format -style=LLVM "
@@ -127,8 +127,7 @@ def gen_diff():
                 err_exit(e, "HERE")
                         
             diff_line = diff.readline().strip()
-    
-    
+        
 def gen_ASTs():
     # Generates an AST file for each .c file
     find_files(Pc.path, "*.c", "output/Cfiles")
@@ -683,6 +682,7 @@ def transplantation(to_patch):
         
         #Sort in reverse order and depending on instruction for application
         modified_AB.sort(key=cmp_to_key(order_comp))
+        
         # Delete overlapping DELETE operations
         reduced_AB = set()
         n_inst = len(modified_AB)
@@ -712,15 +712,18 @@ def transplantation(to_patch):
                     k = j
                     inst2 = modified_AB[j][0]
                     if inst2 != INSERT and inst2 != MOVE:
+                        k -= 1
                         break
                     node_into_2 = modified_AB[j][2]
                     if node_into_1 != node_into_2:
+                        k -= 1
                         break
                     pos_at_1 = int(modified_AB[j-1][3])
                     pos_at_2 = int(modified_AB[j][3])
                     if pos_at_1 < pos_at_2 - 1:
+                        k -= 1
                         break
-                Print.red("HELLO")
+                k += 1
                 for l in range(i, k):
                     inst = modified_AB[l][0]
                     node1 = modified_AB[l][1]
@@ -845,9 +848,8 @@ def transplantation(to_patch):
                         nodeA2 = match_BA[nodeB2]
                         if nodeA2 in match_AC.keys():
                             nodeC2 = match_AC[nodeA2]
-                            if "(" in nodeC2:
-                                nodeC2 = nodeC2.split("(")[-1][:-1]
-                                nodeC2 = ASTlists[Pc.name][int(nodeC2)]
+                            nodeC2 = nodeC2.split("(")[-1][:-1]
+                            nodeC2 = ASTlists[Pc.name][int(nodeC2)]
                         else:
                             # TODO: Manage case for unmatched nodeA2
                             Print.yellow("Node in Pa not found in Pc: (1)")
@@ -864,25 +866,26 @@ def transplantation(to_patch):
                         true_B2 = nodeB2.split("(")[-1][:-1]
                         true_B2 = ASTlists[Pb.name][int(true_B2)]
                         M = len(true_B2.children)
-                        if pos != 0 and pos < M-1:
+                        if pos != 0:
                             nodeB2_l = true_B2.children[pos-1]
-                            nodeB2_r = true_B2.children[pos+1]
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
                                 if nodeA2_l in match_AC.keys():
                                     nodeC2_l = match_AC[nodeA2_l]
+                                    nodeC2_l = nodeC2_l.split("(")[-1][:-1]
+                                    nodeC2_l = ASTlists[Pc.name][int(nodeC2_l)]
                                     if nodeC2_l in nodeC2.children:
-                                        m = nodeC2.children.index(nodeC2_l)
-                                        pos = m + 1
-                            elif nodeB2_r in match_BA.keys():
-                                nodeA2_r = match_BA[nodeB2_r]
-                                if nodeA2_r in match_AC.keys():
-                                    nodeC2_r = match_AC[nodeA2_r]
-                                    if nodeC2_r in nodeC2.children:
-                                        M = nodeC2.children.index(nodeC2_r)
-                                        pos = M
-                        elif pos >= M - 1:
-                            pos += len(nodeC2.children) - M + 1
+                                        Print.red("<" + str(pos))
+                                        pos = nodeC2.children.index(nodeC2_l)
+                                        pos += 1
+                                        Print.green(">" + str(pos))
+                                    else:
+                                        Print.yellow("Node not in children.")
+                                else:
+                                    Print.yellow("Failed at locating match" + \
+                                                 " for nodeA2_l.")
+                            else:
+                                Print.yellow("Failed at match for child.")
                     except Exception as e:
                         err_exit(e, "Failed at locating pos.")
                     
@@ -943,25 +946,19 @@ def transplantation(to_patch):
                         true_B2 = nodeB2.split("(")[-1][:-1]
                         true_B2 = ASTlists[Pb.name][int(true_B2)]
                         M = len(true_B2.children)
-                        if pos != 0 and pos < M-1:
+                        if pos != 0 and pos < M:
                             nodeB2_l = true_B2.children[pos-1]
-                            nodeB2_r = true_B2.children[pos+1]
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
                                 if nodeA2_l in match_AC.keys():
                                     nodeD2_l = match_AC[nodeA2_l]
+                                    nodeD2_l = nodeD2_l.split("(")[-1][:-1]
+                                    nodeD2_l = ASTlists[Pc.name][int(nodeD2)]
                                     if nodeD2_l in nodeD2.children:
                                         m = nodeD2.children.index(nodeD2_l)
                                         pos = m + 1
-                            elif nodeB2_r in match_BA.keys():
-                                nodeA2_r = match_BA[nodeB2_r]
-                                if nodeA2_r in match_AC.keys():
-                                    nodeD2_r = match_AC[nodeA2_r]
-                                    if nodeD2_r in nodeD2.children:
-                                        M = nodeD2.children.index(nodeD2_r)
-                                        pos = M
-                        elif pos >= M - 1:
-                            pos += len(nodeD2.children) - M + 1
+                        elif pos == M:
+                            pos += len(nodeD2.children)
                     except Exception as e:
                         err_exit(e, "Failed at locating pos.")
                     if type(nodeD1) == ASTparser.AST:
