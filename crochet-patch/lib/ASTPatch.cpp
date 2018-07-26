@@ -16,6 +16,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <map>
 
 using namespace llvm;
 using namespace clang;
@@ -102,30 +103,72 @@ private:
 
 namespace {
 class Patcher {
-  SyntaxTree &Dst, &Target;
+  SyntaxTree &Src, &Dst, &Target;
   SourceManager &SM;  
   const LangOptions &LangOpts;
   BeforeThanCompare<SourceLocation> Less;
-  ASTDiff Diff, TargetDiff;
+
   RefactoringTool &TargetTool;
   bool Debug;
   std::vector<PatchedTreeNode> PatchedTreeNodes;
   std::map<NodeId, PatchedTreeNode *> InsertedNodes;
+  std::map<std::string, int> LocNodeMap; //mapping location to noderef id for program C
   // Maps NodeId in Dst to a flag that is true if this node is
   // part of an inserted subtree.
   std::vector<bool> AtomicInsertions;
 
 public:
   Rewriter Rewrite;
+  ASTDiff Diff,TargetDiff;
   std::pair<int, bool>
   findPointOfInsertion(NodeRef N, PatchedTreeNode &TargetParent) const;
+  std::string translateVariables(NodeRef node, std::string statement);
   Patcher(SyntaxTree &Src, SyntaxTree &Dst, SyntaxTree &Target,
           const ComparisonOptions &Options, RefactoringTool &TargetTool,
           bool Debug)
-      : Dst(Dst), Target(Target), SM(Target.getSourceManager()),
+      : Src(Src), Dst(Dst), Target(Target), SM(Target.getSourceManager()),
         LangOpts(Target.getLangOpts()), Less(SM) , Diff(Src, Dst, Options),
         TargetDiff(Src, Target, Options), TargetTool(TargetTool), Debug(Debug) {
+
           Rewrite.setSourceMgr(SM, LangOpts);
+          int count = 0;
+          for (diff::NodeRef node : Dst) {            
+
+            if (node.getTypeLabel() == "VarDecl" || node.getTypeLabel() == "ParmVarDecl" || node.getTypeLabel() == "FieldDecl") {
+              
+               if(auto vardec = node.ASTNode.get<VarDecl>()){
+                 count++;
+                 SourceLocation loc = vardec->getLocation();
+                 std::string locId = loc.printToString(Dst.getSourceManager());
+                 int nodeid = node.getId().Id;
+                 // llvm::outs() << nodeid << "\n";
+                 LocNodeMap[locId] = nodeid;
+
+               } else if(auto pardec = node.ASTNode.get<ParmVarDecl>()){
+                 count++;
+                 SourceLocation loc = pardec->getLocation();
+                 std::string locId = loc.printToString(Dst.getSourceManager());
+                 int nodeid = node.getId().Id;
+                 // llvm::outs() << nodeid << "\n";
+                 LocNodeMap[locId] = nodeid;
+
+               } else if(auto fielddec = node.ASTNode.get<FieldDecl>()){
+                 count++;
+                 SourceLocation loc = fielddec->getLocation();
+                 std::string locId = loc.printToString(Dst.getSourceManager());
+                 int nodeid = node.getId().Id;
+                 // llvm::outs() << nodeid << "\n";
+                 LocNodeMap[locId] = nodeid;
+
+               }
+               
+
+            }
+          }
+
+          // llvm::outs() << "added to map: " << count << "\n";
+
+
   }
 
   Error apply();
@@ -596,6 +639,152 @@ bool replaceSubString(std::string& str, const std::string& from, const std::stri
       return true;
 }
 
+std::string Patcher::translateVariables(NodeRef node, std::string statement){
+
+  unsigned childNodesInUpdateRange = node.getNumChildren();
+  // llvm::errs() << "child count " << childNodesInUpdateRange << "\n"; 
+
+
+  if (node.getTypeLabel() == "MemberExpr") {   
+
+      // llvm::outs() << "translating member name \n";        
+      auto memNode = node.ASTNode.get<MemberExpr>();
+      auto decNode = memNode->getMemberDecl();
+      SourceLocation loc = decNode->getLocation();
+      std::string locId = loc.printToString(Dst.getSourceManager());
+      // llvm::errs() << locId << "\n";
+      // llvm::outs() << node.getValue() << "\n";
+
+      if ( LocNodeMap.find(locId) == LocNodeMap.end() ) {
+
+        llvm::errs() << "invalid key referenced: " << locId << "\n";
+
+      } else {
+        int nodeid = LocNodeMap.at(locId);
+        NodeRef nodeInDst = Dst.getNode(NodeId(nodeid));      
+        
+        if (Diff.getMapped(nodeInDst) != NULL){
+          NodeRef nodeInSrc = *Diff.getMapped(nodeInDst);
+          std::string variableNameInSource = *nodeInDst.getIdentifier();
+          // llvm::outs() << "before translation: " << variableNameInSource << "\n";
+
+          if (TargetDiff.getMapped(nodeInSrc) != NULL){         
+            NodeRef nodeInTarget = *TargetDiff.getMapped(nodeInSrc);
+            // llvm::outs() << "mapped node: " << nodeInTarget.getValue() << "\n";
+            std::string variableNameInTarget = *nodeInTarget.getIdentifier(); 
+            // llvm::outs() << "after translation: " << variableNameInTarget << "\n";
+            replaceSubString(statement, variableNameInSource, variableNameInTarget);      
+            
+          } else {
+            llvm::errs() << "mapping not found for member definition";
+          }
+
+        } 
+        
+      }
+      
+     
+  } else if (node.getTypeLabel() == "VarDecl") {   
+
+      // llvm::outs() << "translating variable definition \n";        
+      auto decNode = node.ASTNode.get<VarDecl>();      
+      SourceLocation loc = decNode->getLocation();
+      std::string locId = loc.printToString(Dst.getSourceManager());
+      // llvm::errs() << locId << "\n";
+      // llvm::outs() << node.getValue() << "\n";
+
+      if ( LocNodeMap.find(locId) == LocNodeMap.end() ) {
+
+        llvm::errs() << "invalid key referenced: " << locId << "\n";
+
+      } else {
+        // llvm::outs() << "found location\n" ;
+        int nodeid = LocNodeMap.at(locId);
+        NodeRef nodeInDst = Dst.getNode(NodeId(nodeid));  
+        std::string variableNameInSource = *nodeInDst.getIdentifier();    
+        // llvm::outs() << "before translation: " << variableNameInSource << "\n";
+
+        if (Diff.getMapped(nodeInDst) != NULL){
+          NodeRef nodeInSrc = *Diff.getMapped(nodeInDst);        
+      
+          if (TargetDiff.getMapped(nodeInSrc) != NULL){         
+            NodeRef nodeInTarget = *TargetDiff.getMapped(nodeInSrc);
+            // llvm::outs() << "mapped node: " << nodeInTarget.getValue() << "\n";
+            std::string variableNameInTarget = *nodeInTarget.getIdentifier(); 
+            // llvm::outs() << "after translation: " << variableNameInTarget << "\n";
+            replaceSubString(statement, variableNameInSource, variableNameInTarget);      
+            
+          } 
+
+        } else {
+            std::string variableNameInTarget = variableNameInSource + "_crochet"; 
+            // llvm::outs() << "after translation: " << variableNameInTarget << "\n";
+            replaceSubString(statement, variableNameInSource, variableNameInTarget);
+        }
+        
+      }
+      
+     
+  }
+
+
+  for (unsigned childIndex = 0; childIndex < childNodesInUpdateRange; childIndex++){
+    // llvm::errs() << "child " << childIndex << "\n";        
+    NodeRef childNode = node.getChild(childIndex);
+    // llvm::outs() << "child " << childIndex << " type " << childNode.getTypeLabel() << "\n";
+    
+    if (childNode.getTypeLabel() == "DeclRefExpr") { 
+
+      // llvm::outs() << "translating variable reference \n";   
+            
+      auto decRefNode = childNode.ASTNode.get<DeclRefExpr>();
+      auto decNode = decRefNode->getDecl();
+      SourceLocation loc = decNode->getLocation();
+      std::string locId = loc.printToString(Dst.getSourceManager());
+
+      if ( LocNodeMap.find(locId) == LocNodeMap.end() ) {
+        llvm::errs() << "invalid key referenced: " << locId << "\n";
+
+      } else {
+        int nodeid = LocNodeMap.at(locId);
+        NodeRef nodeInDst = Dst.getNode(NodeId(nodeid)); 
+        std::string variableNameInSource = *nodeInDst.getIdentifier();
+        // llvm::outs() << "before translation: " << variableNameInSource << "\n";
+        if (Diff.getMapped(nodeInDst) != NULL){
+          NodeRef nodeInSrc = *Diff.getMapped(nodeInDst);       
+          
+
+          if (TargetDiff.getMapped(nodeInSrc) != NULL){
+            NodeRef nodeInTarget = *TargetDiff.getMapped(nodeInSrc); 
+            std::string variableNameInTarget = *nodeInTarget.getIdentifier(); 
+            // llvm::outs() << "after translation: " << variableNameInTarget << "\n";
+            replaceSubString(statement, variableNameInSource, variableNameInTarget);      
+            
+          } 
+
+        } else {
+           std::string variableNameInTarget = variableNameInSource + "_crochet"; 
+           // llvm::outs() << "after translation: " << variableNameInTarget << "\n";
+           replaceSubString(statement, variableNameInSource, variableNameInTarget);
+        }     
+       
+      }
+     
+    }
+
+    if (childNode.getNumChildren() > 0){
+      statement = translateVariables(childNode,statement);
+    }
+
+  }
+
+  return statement;
+}
+
+
+
+
+
 Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::string ScriptFilePath,
             const ComparisonOptions &Options, bool Debug) {
 
@@ -610,6 +799,7 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
 
   std::ifstream infile(ScriptFilePath);
   std::string line;
+  bool modified = false;
 
   while (std::getline(infile, line))
   {
@@ -684,38 +874,71 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
           CharSourceRange range = targetNode.getSourceRange();
           CharSourceRange extractRange = insertNode.getSourceRange();
           std::string insertStatement;
-          SourceLocation startLoc = range.getBegin();
+          SourceLocation insertLoc = range.getBegin();
           
 
-          if (startLoc.isMacroID()){
+          if (insertLoc.isMacroID()){
             // llvm::outs() << "Macro identified\n";
             // Get the start/end expansion locations
-            CharSourceRange expansionRange = crochetPatcher.Rewrite.getSourceMgr().getImmediateExpansionRange( startLoc );
+            CharSourceRange expansionRange = crochetPatcher.Rewrite.getSourceMgr().getImmediateExpansionRange( insertLoc );
             // We're just interested in the start location
-            startLoc = expansionRange.getBegin();  
-            range.setBegin(startLoc);       
+            insertLoc = expansionRange.getBegin();  
+            range.setBegin(insertLoc);       
           }
 
           
           insertStatement = Lexer::getSourceText(extractRange, Dst.getSourceManager(), Dst.getLangOpts());
+          // llvm::outs() << insertStatement << "\n";
+          insertStatement = crochetPatcher.translateVariables(insertNode, insertStatement);
+          // llvm::outs() << insertStatement << "\n";
           
 
           if (!insertStatement.empty()) {
 
-             llvm::outs() << insertStatement << "\n";
+            
             unsigned int NumChildren = targetNode.getNumChildren();
 
-             if (Offset == 0){
+            if (targetNode.getTypeLabel() == "CompoundStmt"){
+
+              insertStatement = "\n" + insertStatement + "\n";
+
+              if (Offset == 0){
+                if (NumChildren > 0){                  
+                  crochetPatcher.Rewrite.InsertTextAfterToken(insertLoc, insertStatement);
+                  modified = true;                   
+
+                } else {
+                  crochetPatcher.Rewrite.InsertTextAfter(insertLoc, insertStatement);
+                  modified = true;     
+                }
+
+              } else {                             
+
+                  NodeRef nearestChildNode = targetNode.getChild(Offset - 1);                  
+                  insertLoc = nearestChildNode.getSourceRange().getEnd();
+                
+                  if (crochetPatcher.Rewrite.InsertTextAfterToken(insertLoc, insertStatement))
+                    llvm::errs() << "error inserting\n";              
+                  modified = true;
+
+                
+              }
+
+            } else {
+
+              if (Offset == 0){
                 if (NumChildren > 0){
                   // NodeRef firstChild = targetNode.getChild(Offset);
                   // startLoc = firstChild.getSourceRange().getBegin();
                   // crochetPatcher.Rewrite.InsertTextBefore(startLoc, insertStatement);
-                  crochetPatcher.Rewrite.InsertTextAfterToken(startLoc, insertStatement);
+                  crochetPatcher.Rewrite.InsertTextAfterToken(insertLoc, insertStatement);
+                  modified = true;
                    
 
                 } else {
 
-                  crochetPatcher.Rewrite.InsertTextAfter(startLoc, insertStatement);
+                  crochetPatcher.Rewrite.InsertTextAfter(insertLoc, insertStatement);
+                  modified = true;
                // Rewrite.InsertTextAfter(r.getBegin(), insert_value);
                // PresumedLoc InsertLoc = SM.getPresumedLoc(r.getBegin());
                // llvm::outs() << "InsertLoc: " << InsertLoc.getLine() << ":" << InsertLoc.getColumn() << "\n";
@@ -723,19 +946,39 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
 
               } else {
                 
-                
+                // llvm::outs() << Offset << "\n";
+                // llvm::outs() << NumChildren << "\n";
 
                 if (Offset <= NumChildren -1){
+                   // llvm::outs() <<"if leg\n";
                    NodeRef nearestChildNode = targetNode.getChild(Offset);
-                   startLoc = nearestChildNode.getSourceRange().getBegin();
-                   crochetPatcher.Rewrite.InsertText(startLoc, insertStatement);
+                   // llvm::outs() <<"got child\n";
+                   insertLoc = nearestChildNode.getSourceRange().getBegin();
+                   // llvm::outs() <<"got loc\n";
+                   // if (insertLoc.isValid())
+                   //  llvm::outs() <<"valid\n";
+                   if (crochetPatcher.Rewrite.InsertText(insertLoc, insertStatement))
+                    llvm::errs() << "error inserting\n";
+                   // llvm::outs() <<"inserted\n";
+                   modified = true;
 
                 } else {
-
+                   // llvm::outs() <<"else leg\n";
+                   NodeRef nearestChildNode = targetNode.getChild(Offset - 1);
+                   // llvm::outs() <<"got child\n";
+                   insertLoc = nearestChildNode.getSourceRange().getEnd();
+                   // llvm::outs() <<"got loc\n";
+                   crochetPatcher.Rewrite.InsertTextAfterToken(insertLoc, insertStatement);
+                   // llvm::outs() <<"inserted\n";
+                   modified = true;
                 }
 
                 
               }
+
+            }
+
+             
 
 
              
@@ -798,16 +1041,24 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
             range.setBegin(startLoc);       
           }
 
-          
+    
           movingStatement = Lexer::getSourceText(extractRange, Target.getSourceManager(), Target.getLangOpts());
-          crochetPatcher.Rewrite.RemoveText(deleteRange);
+          Rewriter::RewriteOptions delRangeOpts;
+          delRangeOpts.RemoveLineIfEmpty = true;
+          crochetPatcher.Rewrite.RemoveText(deleteRange, delRangeOpts);
+          modified = true;
           
 
           if (!movingStatement.empty()) {
 
-            llvm::outs() << movingStatement << "\n";
+            // llvm::outs() << movingStatement << "\n";
+            //InsertText (SourceLocation Loc, StringRef Str, bool InsertAfter=true, bool indentNewLines=false)
 
-             if (Offset == 0){
+            if (targetNode.getTypeLabel() == "CompoundStmt"){
+
+              movingStatement = "\n" + movingStatement + "\n";
+
+              if (Offset == 0){
                 crochetPatcher.Rewrite.InsertText(startLoc, movingStatement);
                // Rewrite.InsertTextAfter(r.getBegin(), insert_value);
                // PresumedLoc InsertLoc = SM.getPresumedLoc(r.getBegin());
@@ -816,18 +1067,54 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
               } else {
                 
                 unsigned int NumChildren = targetNode.getNumChildren();
+                // llvm::outs() << "NumChildren " << NumChildren << "\n";
+                // llvm::outs() << "Offset " << Offset << "\n";
 
                 if (Offset <= NumChildren -1){
                    NodeRef nearestChildNode = targetNode.getChild(Offset);
                    startLoc = nearestChildNode.getSourceRange().getBegin();
-                   crochetPatcher.Rewrite.InsertText(startLoc, movingStatement);
+                   crochetPatcher.Rewrite.InsertTextBefore(startLoc, movingStatement);
 
                 } else {
-
+                   NodeRef lastChildNode = targetNode.getChild(NumChildren-1);
+                   startLoc = lastChildNode.getSourceRange().getEnd();
+                   crochetPatcher.Rewrite.InsertText(startLoc, movingStatement, true, true);
                 }
 
                 
               }
+
+            } else {
+
+              if (Offset == 0){
+                crochetPatcher.Rewrite.InsertText(startLoc, movingStatement);
+               // Rewrite.InsertTextAfter(r.getBegin(), insert_value);
+               // PresumedLoc InsertLoc = SM.getPresumedLoc(r.getBegin());
+               // llvm::outs() << "InsertLoc: " << InsertLoc.getLine() << ":" << InsertLoc.getColumn() << "\n";
+
+              } else {
+                
+                unsigned int NumChildren = targetNode.getNumChildren();
+                // llvm::outs() << "NumChildren " << NumChildren << "\n";
+                // llvm::outs() << "Offset " << Offset << "\n";
+
+                if (Offset <= NumChildren -1){
+                   NodeRef nearestChildNode = targetNode.getChild(Offset);
+                   startLoc = nearestChildNode.getSourceRange().getBegin();
+                   crochetPatcher.Rewrite.InsertTextBefore(startLoc, movingStatement);
+
+                } else {
+                   NodeRef lastChildNode = targetNode.getChild(NumChildren-1);
+                   startLoc = lastChildNode.getSourceRange().getEnd();
+                   crochetPatcher.Rewrite.InsertTextAfterToken(startLoc, movingStatement);
+                }
+
+                
+              }
+
+            }
+
+             
 
 
              
@@ -858,6 +1145,7 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
         NodeRef updateNode = Dst.getNode(NodeId(stoi(nodeIdB)));
         NodeRef targetNode = Target.getNode(NodeId(stoi(nodeIdC)));
 
+  
         // llvm::outs() << nodeC << "\n";
         // llvm::outs() << nodeIdC << "\n";
         // llvm::outs() << nodeTypeC << "\n";
@@ -877,7 +1165,7 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
 
             SourceRange r = targetNode.ASTNode.getSourceRange();
             range.setBegin(r.getBegin());
-            range.setEnd(r.getBegin());
+            range.setEnd(r.getEnd());
 
           } 
              
@@ -897,8 +1185,20 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
             range.setBegin(startLoc);       
           }
 
-          const std::string updateValue = updateNode.getValue();
-          const std::string oldValue = targetNode.getValue();
+          std::string updateValue = updateNode.getValue();
+          std::string oldValue = targetNode.getValue();
+
+
+          if (targetNode.getTypeLabel() == "MemberExpr"){
+
+            updateValue = updateValue.substr(1);
+            oldValue = oldValue.substr(1);
+
+          } 
+
+       
+
+          updateValue = crochetPatcher.translateVariables(updateNode, updateValue);
 
           // llvm::outs() << updateValue << "\n";
           // llvm::outs() << oldValue << "\n";
@@ -912,6 +1212,8 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
             // llvm::outs() << statement << "\n";
             if (crochetPatcher.Rewrite.RemoveText(range))
               return error(patching_error::failed_to_apply_replacements);
+
+            modified = true;
 
             // llvm::outs() << "statement removed" << "\n";
             if (crochetPatcher.Rewrite.InsertText(range.getBegin(), statement))
@@ -955,6 +1257,7 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
           }
 
           crochetPatcher.Rewrite.RemoveText(range);
+          modified = true;
 
 
         } else {
@@ -983,7 +1286,8 @@ Error patch(RefactoringTool &TargetTool, SyntaxTree &Src, SyntaxTree &Dst, std::
 
   const RewriteBuffer *RewriteBuf = crochetPatcher.Rewrite.getRewriteBufferFor(Target.getSourceManager().getMainFileID());
   // llvm::outs()  << "/* Start Crochet Output */\n";  
-  llvm::outs()  << std::string(RewriteBuf->begin(), RewriteBuf->end());
+  if (modified)
+    llvm::outs()  << std::string(RewriteBuf->begin(), RewriteBuf->end());
   // llvm::outs()  << "/* End Crochet Output */\n";  
    
   // return Patcher(Src, Dst, Target, Options, TargetTool, Debug).apply();

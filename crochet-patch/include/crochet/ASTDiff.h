@@ -190,6 +190,7 @@ struct Node {
   /// Returns the starting locations of all tokens in getOwnedSourceRanges().
   SmallVector<SourceLocation, 4> getOwnedTokens() const;
 };
+
 void forEachTokenInRange(CharSourceRange Range, SyntaxTree &Tree,
                          std::function<void(Token &)> Body);
 

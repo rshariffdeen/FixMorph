@@ -710,6 +710,7 @@ llvm::Optional<StringRef> Node::getIdentifier() const {
   return llvm::None;
 }
 
+
 static std::string getInitializerValue(const CXXCtorInitializer *Init, const PrintingPolicy &TypePP) {
   if (Init->isAnyMemberInitializer())
     return Init->getAnyMember()->getName();
