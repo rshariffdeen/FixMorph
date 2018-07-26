@@ -848,9 +848,8 @@ def transplantation(to_patch):
                         nodeA2 = match_BA[nodeB2]
                         if nodeA2 in match_AC.keys():
                             nodeC2 = match_AC[nodeA2]
-                            if "(" in nodeC2:
-                                nodeC2 = nodeC2.split("(")[-1][:-1]
-                                nodeC2 = ASTlists[Pc.name][int(nodeC2)]
+                            nodeC2 = nodeC2.split("(")[-1][:-1]
+                            nodeC2 = ASTlists[Pc.name][int(nodeC2)]
                         else:
                             # TODO: Manage case for unmatched nodeA2
                             Print.yellow("Node in Pa not found in Pc: (1)")
@@ -873,6 +872,8 @@ def transplantation(to_patch):
                                 nodeA2_l = match_BA[nodeB2_l]
                                 if nodeA2_l in match_AC.keys():
                                     nodeC2_l = match_AC[nodeA2_l]
+                                    nodeC2_l = nodeC2_l.split("(")[-1][:-1]
+                                    nodeC2_l = ASTlists[Pc.name][int(nodeC2_l)]
                                     if nodeC2_l in nodeC2.children:
                                         Print.red("<" + str(pos))
                                         pos = nodeC2.children.index(nodeC2_l)
@@ -951,6 +952,8 @@ def transplantation(to_patch):
                                 nodeA2_l = match_BA[nodeB2_l]
                                 if nodeA2_l in match_AC.keys():
                                     nodeD2_l = match_AC[nodeA2_l]
+                                    nodeD2_l = nodeD2_l.split("(")[-1][:-1]
+                                    nodeD2_l = ASTlists[Pc.name][int(nodeD2)]
                                     if nodeD2_l in nodeD2.children:
                                         m = nodeD2.children.index(nodeD2_l)
                                         pos = m + 1
