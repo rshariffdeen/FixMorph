@@ -89,7 +89,10 @@ def gen_diff():
             diff_line = diff_line.split(" ")
             file_a = diff_line[1]
             file_b = diff_line[3]
-            c = "diff -ENBbwr " + file_a + " " + file_b + " > output/file_diff"
+            ASTgen.llvm_format(file_a)
+            ASTgen.llvm_format(file_b)
+            c = "diff -ENBZbwr " + file_a + " " + file_b + \
+                " > output/file_diff"
             exec_com(c, False)
             pertinent_lines = []
             pertinent_lines_b = []
@@ -124,7 +127,7 @@ def gen_diff():
                 Print.blue("\tProject Pb...")
                 ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
             except Exception as e:
-                err_exit(e, "HERE")
+                err_exit(e, "Failed at finding affected functions.")
                         
             diff_line = diff.readline().strip()
         
