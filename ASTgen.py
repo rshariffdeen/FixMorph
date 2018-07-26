@@ -8,6 +8,7 @@ import ASTparser
 import Print
 
 crochet_diff = "crochet-diff "
+clang_format = "clang-format -style=LLVM "
 
 interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
@@ -33,30 +34,33 @@ def gen_json(filepath):
     json_file = filepath + ".ASTalt"
     ASTdump(filepath, json_file)
     return ASTparser.AST_from_file(json_file)
+    
+def llvm_format(file):
+    try:
+        c = "cp " + file + " output/last.c; "
+        exec_com(c, True)
+        c = clang_format + file + "> output/temp.c; cp output/temp.c " + file
+        exec_com(c, True)
+    except Exception as e:
+        Print.yellow(e)
+        Print.yellow("Error in llvm_format with file:")
+        Print.tellow(file)
+        Print.yellow("Restoring and skipping")
+        c = "cp output/last.c " + file
+        exec_com(c, True)
 
 def parseAST(filepath, proj, Deckard=True):
-
+    llvm_format(filepath)
     # Save functions here
     function_lines = list()
     # Save variables for each function d[function] = "typevar namevar; ...;"
     dict_file = dict()
-    try:        
-        # NEW CODE #
-        try:
-            ast = gen_json(filepath)
-        except:
-            Print.yellow("Skipping... Failed for file:\n\t" + filepath)
-            return function_lines, dict_file
-        
-    except Exception as e:
-        err_exit(e, "Unexpected error in gen_json with file:", filepath)
-        
-    
-    # If we're inside the tree parsing a function
-    #in_function = False
-    # If we're inside the tree parsing a struct
-    #in_struct = False
-    # Start and ending line of the function/struct
+    try:
+        ast = gen_json(filepath)
+    except:
+        Print.yellow("Skipping... Failed for file:\n\t" + filepath)
+        return function_lines, dict_file
+
     start = 0
     end = 0
     file = filepath.split("/")[-1]
