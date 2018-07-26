@@ -712,21 +712,17 @@ def transplantation(to_patch):
                     k = j
                     inst2 = modified_AB[j][0]
                     if inst2 != INSERT and inst2 != MOVE:
-                        Print.red(1)
                         k -= 1
                         break
                     node_into_2 = modified_AB[j][2]
                     if node_into_1 != node_into_2:
-                        Print.red(2)
                         k -= 1
                         break
                     pos_at_1 = int(modified_AB[j-1][3])
                     pos_at_2 = int(modified_AB[j][3])
                     if pos_at_1 < pos_at_2 - 1:
-                        Print.red(3)
                         k -= 1
                         break
-                Print.red("HELLO")
                 k += 1
                 for l in range(i, k):
                     inst = modified_AB[l][0]
@@ -882,6 +878,13 @@ def transplantation(to_patch):
                                         pos = nodeC2.children.index(nodeC2_l)
                                         pos += 1
                                         Print.green(">" + str(pos))
+                                    else:
+                                        Print.yellow("Node not in children.")
+                                else:
+                                    Print.yellow("Failed at locating match" + \
+                                                 " for nodeA2_l.")
+                            else:
+                                Print.yellow("Failed at match for child.")
                     except Exception as e:
                         err_exit(e, "Failed at locating pos.")
                     
