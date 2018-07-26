@@ -720,13 +720,14 @@ def transplantation(to_patch):
                     pos_at_2 = int(modified_AB[j][3])
                     if pos_at_1 < pos_at_2 - 1:
                         break
+                Print.red("HELLO")
                 for l in range(i, k):
-                    Print.red(modified_AB[l])
                     inst = modified_AB[l][0]
                     node1 = modified_AB[l][1]
                     node2 = modified_AB[l][2]
                     pos = int(modified_AB[i][3])
                     modified_AB[l] = (inst, node1, node2, pos)
+                    Print.red(modified_AB[l])
                 i = k
             else:
                 i += 1
