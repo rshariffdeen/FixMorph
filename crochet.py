@@ -875,6 +875,8 @@ def transplantation(to_patch):
                                        str(nodeB2_l.id) + ")"
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
+                                nodeA2_l = nodeA2_l.split("(")[-1][:-1]
+                                nodeA2_l = ASTlists[Pa.name][int(nodeA2_l)]
                                 if nodeA2_l in match_AC.keys():
                                     nodeC2_l = match_AC[nodeA2_l]
                                     nodeC2_l = nodeC2_l.split("(")[-1][:-1]
@@ -957,6 +959,8 @@ def transplantation(to_patch):
                                        str(nodeB2_l.id) + ")"
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
+                                nodeA2_l = nodeA2_l.split("(")[-1][:-1]
+                                nodeA2_l = ASTlists[Pa.name][int(nodeA2_l)]
                                 if nodeA2_l in match_AC.keys():
                                     nodeD2_l = match_AC[nodeA2_l]
                                     nodeD2_l = nodeD2_l.split("(")[-1][:-1]
