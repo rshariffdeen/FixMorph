@@ -872,17 +872,17 @@ def transplantation(to_patch):
                         true_B2 = nodeB2.split("(")[-1][:-1]
                         true_B2 = ASTlists[Pb.name][int(true_B2)]
                         M = len(true_B2.children)
-                        if pos != 0 and pos < M:
+                        if pos != 0:
                             nodeB2_l = true_B2.children[pos-1]
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
                                 if nodeA2_l in match_AC.keys():
                                     nodeC2_l = match_AC[nodeA2_l]
                                     if nodeC2_l in nodeC2.children:
-                                        m = nodeC2.children.index(nodeC2_l)
-                                        pos = m + 1
-                        elif pos == M:
-                            pos = len(nodeC2.children)
+                                        Print.red("<" + str(pos))
+                                        pos = nodeC2.children.index(nodeC2_l)
+                                        pos += 1
+                                        Print.green(">" + str(pos))
                     except Exception as e:
                         err_exit(e, "Failed at locating pos.")
                     
