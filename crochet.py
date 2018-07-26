@@ -127,20 +127,6 @@ def gen_diff():
                 err_exit(e, "HERE")
                         
             diff_line = diff.readline().strip()
-
-def llvm_format(file):
-    try:
-        c = "cp " + file + " output/last.c; "
-        exec_com(c, True)
-        c = clang_format + file + "> output/temp.c; cp output/temp.c " + file
-        exec_com(c, True)
-    except Exception as e:
-        Print.yellow(e)
-        Print.yellow("Error in llvm_format with file:")
-        Print.tellow(file)
-        Print.yellow("Restoring")
-        c = "cp output/last.c " + file
-        exec_com(c, True)
         
 def gen_ASTs():
     # Generates an AST file for each .c file
@@ -149,7 +135,6 @@ def gen_ASTs():
         file = files.readline().strip()
         while file:
             # Parses it to remove useless information (for us) and gen vects
-            llvm_format(file)
             try:
                 ASTgen.parseAST(file, Pc)
             except Exception as e:
