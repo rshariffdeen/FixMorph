@@ -17,7 +17,7 @@ Pb = None
 Pc = None
 crash = None
 
-crochet_patch = "crochet-patch "
+crochet_patch = "crochet-patch -s 2147483647 "
 crochet_diff = "crochet-diff "
 clang_check = "clang-check "
 clang_format = "clang-format -style=LLVM "
@@ -712,13 +712,16 @@ def transplantation(to_patch):
                     k = j
                     inst2 = modified_AB[j][0]
                     if inst2 != INSERT and inst2 != MOVE:
+                        Print.red(1)
                         break
                     node_into_2 = modified_AB[j][2]
                     if node_into_1 != node_into_2:
+                        Print.red(2)
                         break
                     pos_at_1 = int(modified_AB[j-1][3])
                     pos_at_2 = int(modified_AB[j][3])
                     if pos_at_1 < pos_at_2 - 1:
+                        Print.red(3)
                         break
                 Print.red("HELLO")
                 for l in range(i, k):
