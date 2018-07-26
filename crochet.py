@@ -629,6 +629,8 @@ def transplantation(to_patch):
                         err_exit(e, "Something went wrong in INSERT.")
                 line = script_AB.readline().strip()
         
+        modified_AB = []
+        inserted = []
         Print.white("Original patch from Pa to Pb")
         for i in instruction_AB:
             inst = i[0]
@@ -636,6 +638,7 @@ def transplantation(to_patch):
                 nodeA = i[1].split("(")[-1][:-1]
                 nodeA = ASTlists[Pa.name][int(nodeA)]
                 Print.white("\t" + DELETE + " - " + str(nodeA))
+                modified_AB.append((DELETE, nodeA))
             elif inst == UPDATE:
                 nodeA = i[1].split("(")[-1][:-1]
                 nodeA = ASTlists[Pa.name][int(nodeA)]
@@ -643,6 +646,7 @@ def transplantation(to_patch):
                 nodeB = ASTlists[Pb.name][int(nodeB)]
                 Print.white("\t" + UPDATE + " - " + str(nodeA) + " - " + \
                             str(nodeB))
+                modified_AB.append((UPDATE, nodeA, nodeB))
             elif inst == MOVE:
                 nodeB1 = i[1].split("(")[-1][:-1]
                 nodeB1 = ASTlists[Pb.name][int(nodeB1)]
@@ -651,6 +655,20 @@ def transplantation(to_patch):
                 pos = i[3]
                 Print.white("\t" + MOVE + " - " + str(nodeB1) + " - " + \
                             str(nodeB2) + " - " + str(pos))
+                inserted.append(nodeB1)
+                if nodeB2 not in inserted:
+                    modified_AB.append((MOVE, nodeB1, nodeB2, pos))
+                else:
+                    if i[1] in match_BA.keys():
+                        nodeA = match_BA[i[1]]
+                        nodeA = nodeA.split("(")[-1][:-1]
+                        nodeA = ASTlists[Pa.name][int(nodeA)]
+                        modified_AB.append((DELETE, nodeA))
+                    else:
+                        Print.yellow("Warning: node " + str(nodeB1) + \
+                                     "could not be matched. " + \
+                                     "Skipping MOVE instruction...")
+                        Print.yellow(i)
             elif inst == INSERT:
                 nodeB1 = i[1].split("(")[-1][:-1]
                 nodeB1 = ASTlists[Pb.name][int(nodeB1)]
@@ -659,6 +677,85 @@ def transplantation(to_patch):
                 pos = i[3]
                 Print.white("\t" + INSERT + " - " + str(nodeB1) + " - " + \
                             str(nodeB2) + " - " + str(pos))
+                inserted.append(nodeB1)
+                if nodeB2 not in inserted:
+                    modified_AB.append((INSERT, nodeB1, nodeB2, pos))
+        
+        #Sort in reverse order and depending on instruction for application
+        modified_AB.sort(key=cmp_to_key(order_comp))
+        # Delete overlapping DELETE operations
+        reduced_AB = set()
+        n_inst = len(modified_AB)
+        for i in range(n_inst):
+            inst1 = modified_AB[i]
+            if inst1[0] == DELETE:
+                for j in range(i+1, n_inst):
+                    inst2 = modified_AB[j]
+                    if inst2[0] == DELETE:
+                        node1 = inst1[1]
+                        node2 = inst2[1]
+                        if node1.contains(node2):
+                            reduced_AB.add(j)
+                        elif node2.contains(node1):
+                            reduced_AB.add(i)
+        modified_AB = [modified_AB[i] for i in range(n_inst)
+                          if i not in reduced_AB]
+        
+        # Adjusting position for MOVE and INSERT operations
+        i = 0
+        while i < len(modified_AB):
+            inst1 = modified_AB[i][0]
+            if inst1 == INSERT or inst1 == MOVE:
+                node_into_1 = modified_AB[i][2]
+                k = i+1
+                for j in range(i+1, len(modified_AB)):
+                    k = j
+                    inst2 = modified_AB[j][0]
+                    if inst2 != INSERT and inst2 != MOVE:
+                        break
+                    node_into_2 = modified_AB[j][2]
+                    if node_into_1 != node_into_2:
+                        break
+                    pos_at_1 = int(modified_AB[j-1][3])
+                    pos_at_2 = int(modified_AB[j][3])
+                    if pos_at_1 < pos_at_2 - 1:
+                        break
+                Print.red("HELLO")
+                for l in range(i, k):
+                    inst = modified_AB[l][0]
+                    node1 = modified_AB[l][1]
+                    node2 = modified_AB[l][2]
+                    pos = int(modified_AB[i][3])
+                    modified_AB[l] = (inst, node1, node2, pos)
+                    Print.red(modified_AB[l])
+                i = k
+            else:
+                i += 1
+        
+        Print.green("Modified simplified script:")
+        for j in [" - ".join([str(k) for k in i]) for i in modified_AB]:
+            Print.green("\t" + j)
+            
+        instruction_AB = []
+        for i in modified_AB:
+            inst = i[0]
+            if inst == DELETE:
+                nodeA = str(i[1].type) + "(" + str(i[1].id) + ")"
+                instruction_AB.append((DELETE, nodeA))
+            elif inst == UPDATE:
+                nodeA = str(i[1].type) + "(" + str(i[1].id) + ")"
+                nodeB = str(i[2].type) + "(" + str(i[2].id) + ")"
+                instruction_AB.append((UPDATE, nodeA, nodeB))
+            elif inst == INSERT:
+                nodeB1 = str(i[1].type) + "(" + str(i[1].id) + ")"
+                nodeB2 = str(i[2].type) + "(" + str(i[2].id) + ")"
+                pos = int(i[3])
+                instruction_AB.append((INSERT, nodeB1, nodeB2, pos))
+            elif inst == MOVE:
+                nodeB1 = str(i[1].type) + "(" + str(i[1].id) + ")"
+                nodeB2 = str(i[2].type) + "(" + str(i[2].id) + ")"
+                pos = int(i[3])
+                instruction_AB.append((MOVE, nodeB1, nodeB2, pos))
         
         match_AC = dict()
         with open('output/diff_script_AC', 'r', errors='replace') as script_AC:
@@ -797,10 +894,10 @@ def transplantation(to_patch):
                                 nodeC2.line = nodeD.parent.line
                             if nodeC2 in inserted_D:
                                 instruction_CD.append((DELETE, nodeC1))
-                                inserted_D.append(nodeC1)
                             else:
                                 instruction_CD.append((MOVE, nodeC1, nodeC2,
                                                        pos))
+                            inserted_D.append(nodeC1)
                             
                         else:
                             Print.yellow("Could not find match for node. " + \
@@ -881,57 +978,7 @@ def transplantation(to_patch):
                                                        pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong with INSERT.")
-        try:
-            # Sort according to our criteria for better patching
-            instruction_CD.sort(key=cmp_to_key(order_comp))
-            
-            # Delete overlapping DELETE operations
-            reduced_CD = set()
-            n_inst = len(instruction_CD)
-            for i in range(n_inst):
-                inst1 = instruction_CD[i]
-                if inst1[0] == DELETE:
-                    for j in range(i+1, n_inst):
-                        inst2 = instruction_CD[j]
-                        if inst2[0] == DELETE:
-                            node1 = inst1[1]
-                            node2 = inst2[1]
-                            if node1.contains(node2):
-                                reduced_CD.add(j)
-                            elif node2.contains(node1):
-                                reduced_CD.add(i)
-            instruction_CD = [instruction_CD[i] for i in range(n_inst)
-                              if i not in reduced_CD]
-            # Adjusting position for MOVE and INSERT operations
-            i = 0
-            while i < len(instruction_CD) - 1:
-                inst1 = instruction_CD[i][0]
-                if inst1 == INSERT or inst1 == MOVE:
-                    j = i
-                    node1 = instruction_CD[i][2]
-                    while j < len(instruction_CD) - 1:
-                        j += 1
-                        inst2 = instruction_CD[j][0]
-                        if inst2 != INSERT and inst2 != MOVE:
-                            break
-                        node2 = instruction_CD[j][2]
-                        if node1 != node2:
-                            break
-                        pos1 = instruction_CD[j-1][3]
-                        pos2 = instruction_CD[j][3]
-                        if pos2 != pos1 + 1:
-                            break
-                    for k in range(i, j):
-                        inst = instruction_CD[k][0]
-                        nodeB1 = instruction_CD[k][1]
-                        nodeB2 = instruction_CD[k][2]
-                        # We put pos of i to all of them up to j-1
-                        pos = instruction_CD[i][3]
-                        instruction_CD[k] = (inst, nodeB1, nodeB2, pos)
-                    i = j-1 
-                i += 1
-        except Exception as e:
-            err_exit(e, instruction_CD, "Error at sorting instructions.")
+        
         Print.white("Proposed patch from Pc to Pd")
         
         for i in instruction_CD:
