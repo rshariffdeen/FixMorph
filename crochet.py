@@ -871,6 +871,8 @@ def transplantation(to_patch):
                         M = len(true_B2.children)
                         if pos != 0:
                             nodeB2_l = true_B2.children[pos-1]
+                            nodeB2_l = str(nodeB2_l.type) + "(" + \
+                                       str(nodeB2_l.id) + ")"
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
                                 if nodeA2_l in match_AC.keys():
@@ -951,6 +953,8 @@ def transplantation(to_patch):
                         M = len(true_B2.children)
                         if pos != 0 and pos < M:
                             nodeB2_l = true_B2.children[pos-1]
+                            nodeB2_l = str(nodeB2_l.type) + "(" + \
+                                       str(nodeB2_l.id) + ")"
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
                                 if nodeA2_l in match_AC.keys():
