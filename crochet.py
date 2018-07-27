@@ -962,7 +962,7 @@ def transplantation(to_patch):
                                     nodeD2_l = ASTlists[Pc.name][nodeD2_l]
                                     if nodeD2_l in nodeD2.children:
                                         Print.red("<" + str(pos))
-                                        pos = nodeC2.children.index(nodeD2_l)
+                                        pos = nodeD2.children.index(nodeD2_l)
                                         pos += 1
                                         Print.green(">" + str(pos))
                                     else:
