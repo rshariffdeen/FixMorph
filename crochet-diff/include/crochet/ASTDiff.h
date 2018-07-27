@@ -151,6 +151,7 @@ struct Node {
 
   std::string getValue() const;
   std::string getFileName() const;
+  std::string getRefType() const;
 
   void dump(raw_ostream &OS) const {
     OS << getTypeLabel() << "(" << getId() << ")";

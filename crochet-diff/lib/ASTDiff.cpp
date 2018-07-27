@@ -781,6 +781,23 @@ std::string Node::getValue() const {
 
 }
 
+std::string Node::getRefType() const {
+  std::string refType;
+
+  if (getTypeLabel() == "DeclRefExpr"){
+    auto decRefNode = ASTNode.get<DeclRefExpr>();
+    auto decNode = decRefNode->getDecl();
+    if (auto *ref = dyn_cast<ParmVarDecl>(decNode))    
+      refType =  "ParmVarDecl";
+    if (auto *ref = dyn_cast<VarDecl>(decNode))    
+      refType = "VarDecl";
+    if (auto *ref = dyn_cast<FunctionDecl>(decNode))    
+      refType = "FunctionDecl";
+  }
+  return refType;
+
+}
+
 std::string Node::getMacroValue() const {
   return Lexer::getSourceText(getSourceRange(), Tree.AST.getSourceManager(),
                                 Tree.AST.getLangOpts());

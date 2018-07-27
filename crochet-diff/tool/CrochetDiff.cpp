@@ -395,6 +395,8 @@ static void printNodeAsJson(raw_ostream &OS, diff::SyntaxTree &Tree,
   printNodeAttributes(OS, Tree, Node);
   auto Identifier = Node.getIdentifier();
   auto QualifiedIdentifier = Node.getQualifiedIdentifier();
+  std::string RefType = Node.getRefType();
+
   if (Identifier) {
     OS << R"(,"identifier":")";
     printJsonString(OS, *Identifier);
@@ -405,6 +407,13 @@ static void printNodeAsJson(raw_ostream &OS, diff::SyntaxTree &Tree,
       OS << R"(")";
     }
   }
+
+  if (!RefType.empty()){
+    OS << R"(,"ref_type":")";
+    printJsonString(OS, RefType);
+    OS << R"(")";
+  }
+
   OS << R"(,"children":[)";
   auto ChildBegin = Node.begin(), ChildEnd = Node.end();
   if (ChildBegin != ChildEnd) {
