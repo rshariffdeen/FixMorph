@@ -875,6 +875,7 @@ def transplantation(to_patch):
                                        str(nodeB2_l.id) + ")"
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
+                                Print.red(nodeA2_l)
                                 nodeA2_l = nodeA2_l.split("(")[-1][:-1]
                                 nodeA2_l = ASTlists[Pa.name][int(nodeA2_l)]
                                 if nodeA2_l in match_AC.keys():
@@ -890,7 +891,9 @@ def transplantation(to_patch):
                                         Print.yellow("Node not in children.")
                                 else:
                                     Print.yellow("Failed at locating match" + \
-                                                 " for nodeA2_l.")
+                                                 " for " + nodeA2_l)
+                                    Print.yellow(match_AC)
+                                    
                             else:
                                 Print.yellow("Failed at match for child.")
                     except Exception as e:
