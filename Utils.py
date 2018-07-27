@@ -68,7 +68,8 @@ def find_files(src_path, extension, output):
 
 def get_extensions(src_path, output):
     extensions = set()
-    c = "find " + src_path + " -type f -not -name '*\.c' > " + output
+    c = "find " + src_path + " -type f -not -name '*\.c' -not -name '*\.h'" + \
+        " > " + output
     exec_com(c, False)
     with open(output, 'r') as f:
         a = f.readline().strip()

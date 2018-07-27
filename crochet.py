@@ -70,13 +70,13 @@ def find_diff_files():
     with open('output/exclude_pats', 'w', errors='replace') as exclusions:
         for pattern in extensions:
             exclusions.write(pattern + "\n")
+    # TODO: Include cases where a file is added or removed
     c = "diff -ENZBbwqr " + Pa.path + " " + Pb.path + \
-        " -X output/exclude_pats | grep -P '\.c and ' > output/diff"
+        " -X output/exclude_pats | grep -P '\.(c|h) and ' > output/diff"
     exec_com(c, False)
 
     
 def gen_diff():
-    # TODO: Include cases where a file is added or removed
     global Pa, Pb
     nums = "0123456789"
     Print.blue("Finding differing files...")
@@ -133,8 +133,20 @@ def gen_diff():
         
 def gen_ASTs():
     # Generates an AST file for each .c file
-    find_files(Pc.path, "*.c", "output/Cfiles")
+    find_files(Pc.path, "*\.c", "output/Cfiles")
     with open("output/Cfiles", 'r', errors='replace') as files:
+        file = files.readline().strip()
+        while file:
+            # Parses it to get useful information and generate vectors
+            try:
+                ASTgen.parseAST(file, Pc)
+            except Exception as e:
+                err_exit(e, "Unexpected error in parseAST with file:", file)
+            file = files.readline().strip()
+            
+    # Generates an AST file for each .h file
+    find_files(Pc.path, "*\.h", "output/Hfiles")
+    with open("output/Hfiles", 'r', errors='replace') as files:
         file = files.readline().strip()
         while file:
             # Parses it to get useful information and generate vectors
@@ -148,7 +160,7 @@ def gen_ASTs():
 def get_vector_list(proj):
     Print.blue("Getting vectors for " + proj.name + "...")
     filepath = "output/vectors_" + proj.name
-    find_files(proj.path, "*.vec",  filepath)
+    find_files(proj.path, "*.c.*.vec",  filepath)
     with open(filepath, "r", errors='replace') as file:
         files = [vec.strip() for vec in file.readlines()]
     vecs = []
@@ -307,9 +319,9 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     
     #Print.white(variable_list_c)
     
-    json_file_A = Pa.path + "/" + file_a + ".ASTalt"
+    json_file_A = Pa.path + "/" + file_a + ".AST"
     ast_A = ASTparser.AST_from_file(json_file_A)
-    json_file_C = Pc.path + "/" + file_c + ".ASTalt"
+    json_file_C = Pc.path + "/" + file_c + ".AST"
     ast_C = ASTparser.AST_from_file(json_file_C)
     
     ast_map = dict()
@@ -840,7 +852,6 @@ def transplantation(to_patch):
                             # TODO: Manage case for node not found
                             Print.yellow("Node to be moved was not found. (2)")
                             Print.yellow(nodeB1)
-                    # TODO: else?
                     if nodeB2 in match_BA.keys():
                         nodeA2 = match_BA[nodeB2]
                         if nodeA2 in match_AC.keys():
@@ -858,7 +869,6 @@ def transplantation(to_patch):
                             # TODO: Manage case for node not found
                             Print.yellow("Node to be moved was not found. (2)")
                             Print.yellow(nodeB2)
-                    # TODO: else?
                     try:
                         m = 0
                         true_B2 = nodeB2.split("(")[-1][:-1]
@@ -880,6 +890,9 @@ def transplantation(to_patch):
                                         Print.green(">" + str(pos))
                                     else:
                                         Print.yellow("Node not in children.")
+                                        Print.yellow(nodeC2_l)
+                                        Print.yellow([str(i) for i in
+                                                      nodeC2.children])
                                 else:
                                     Print.yellow("Failed at locating match" + \
                                                  " for " + nodeA2_l)
