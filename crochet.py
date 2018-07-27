@@ -78,7 +78,6 @@ def find_diff_files():
     
 def gen_diff():
     global Pa, Pb
-    nums = "0123456789"
     Print.blue("Finding differing files...")
     find_diff_files()
     
@@ -100,7 +99,7 @@ def gen_diff():
                 file_line = file_diff.readline().strip()
                 while file_line:
                     # In file_diff, line starts with a number, <, >, or -.
-                    if file_line[0] in nums:
+                    if 48 <= ord(file_line[0]) <= 57:
                         # change (delete + add)
                         if 'c' in file_line:
                             l = file_line.split('c')
@@ -130,31 +129,28 @@ def gen_diff():
                 err_exit(e, "Failed at finding affected functions.")
                         
             diff_line = diff.readline().strip()
-        
+
+
+def gen_ASTs_ext(ext, output):
+    # Generates an AST file for each file of extension ext
+    find_files(Pc.path, ext, output)
+    with open(output, 'r', errors='replace') as files:
+        file = files.readline().strip()
+        while file:
+            # Parses it to get useful information and generate vectors
+            try:
+                ASTgen.parseAST(file, Pc)
+            except Exception as e:
+                err_exit(e, "Unexpected error in parseAST with file:", file)
+            file = files.readline().strip()
+    
+    
 def gen_ASTs():
     # Generates an AST file for each .c file
-    find_files(Pc.path, "*\.c", "output/Cfiles")
-    with open("output/Cfiles", 'r', errors='replace') as files:
-        file = files.readline().strip()
-        while file:
-            # Parses it to get useful information and generate vectors
-            try:
-                ASTgen.parseAST(file, Pc)
-            except Exception as e:
-                err_exit(e, "Unexpected error in parseAST with file:", file)
-            file = files.readline().strip()
+    gen_ASTs_ext("*\.c", "output/Cfiles")
             
     # Generates an AST file for each .h file
-    find_files(Pc.path, "*\.h", "output/Hfiles")
-    with open("output/Hfiles", 'r', errors='replace') as files:
-        file = files.readline().strip()
-        while file:
-            # Parses it to get useful information and generate vectors
-            try:
-                ASTgen.parseAST(file, Pc)
-            except Exception as e:
-                err_exit(e, "Unexpected error in parseAST with file:", file)
-            file = files.readline().strip()
+    gen_ASTs_ext("*\.h", "output/Hfiles")
 
     
 def get_vector_list(proj):
@@ -710,7 +706,7 @@ def transplantation(to_patch):
         
         # Adjusting position for MOVE and INSERT operations
         i = 0
-        while i < len(modified_AB):
+        while i < len(modified_AB) - 1:
             inst1 = modified_AB[i][0]
             if inst1 == INSERT or inst1 == MOVE:
                 node_into_1 = modified_AB[i][2]
@@ -737,7 +733,6 @@ def transplantation(to_patch):
                     node2 = modified_AB[l][2]
                     pos = int(modified_AB[i][3])
                     modified_AB[l] = (inst, node1, node2, pos)
-                    Print.red(modified_AB[l])
                 i = k
             else:
                 i += 1
