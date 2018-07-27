@@ -2,8 +2,6 @@
 
 import json
 
-node = -1
-
 ttype = [None]
 label = [None]
 typeLabel = ["Root"]
@@ -62,7 +60,6 @@ class AST:
                 child = AST(i, char + "    ")
                 self.children.append(child)
                 child.parent = self
-        
                     
     def treeString(self):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
@@ -117,7 +114,7 @@ class AST:
                 return 0
         return 1
         
-    # Note: I'm assuming contention is the only way of overlapping.
+    # Note: I'm assuming contention is the only way of overlapping for DELETE.
     def contains(self, other):
         if self.line < other.line and self.line_end >= other.line_end:
             return True
@@ -140,14 +137,16 @@ class AST:
        
     def info(self, file):
         if self.value:
-            return node.type + ": " + self.format_value(file)
-        return node.type
+            return self.type + ": " + self.format_value(file)
+        return self.type
          
          
     def value_calc(self, file):
         if self.value:
             return self.format_value(file)
-            
+    
+    def simple_print(self):
+        return str(self.type) + "(" + str(self.id) + ")"
                             
         
 def AST_from_file(file):

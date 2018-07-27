@@ -31,7 +31,7 @@ def ASTdump(file, output):
     Print.yellow(a[0])
 
 def gen_json(filepath):
-    json_file = filepath + ".ASTalt"
+    json_file = filepath + ".AST"
     ASTdump(filepath, json_file)
     return ASTparser.AST_from_file(json_file)
     
@@ -94,15 +94,7 @@ def parseAST(filepath, proj, Deckard=True):
                     dict_file[f] = ""
                 dict_file[f] = dict_file[f] + line
                 set_struct_nodes.add(struct_node.value)
-                
-    with open('output/function-lines', 'w') as func_l:
-        for l in function_lines:
-            func_l.write(l[0] + " " + str(l[1]) + "-" + str(l[2]) + "\n")
-    with open('output/function-vars', 'w') as func_l:
-        for func in dict_file.keys():
-            func_l.write(func + "\n")
-            for line in dict_file[func].split(";"):
-                func_l.write("\t" + line.replace("  ", "") + "\n")
+
     if Deckard:
         get_vars(proj, filepath, dict_file)
    
