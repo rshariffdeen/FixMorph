@@ -67,12 +67,15 @@ def find_diff_files():
     global Pa, Pb
     extensions = get_extensions(Pa.path, "output/files1")
     extensions = extensions.union(get_extensions(Pb.path, "output/files2"))
-    with open('output/exclude_pats', 'w', errors='replace') as exclusions:
+    excluded = 'output/excluded'
+    with open(excluded, 'w', errors='replace') as exclusions:
         for pattern in extensions:
             exclusions.write(pattern + "\n")
     # TODO: Include cases where a file is added or removed
-    c = "diff -ENZBbwqr " + Pa.path + " " + Pb.path + \
-        " -X output/exclude_pats | grep -P '\.(c|h) and ' > output/diff"
+    c = "diff -ENZBbwqr " + Pa.path + " " + Pb.path + " -X " + excluded + \
+        "> output/diff; "
+    c += "cat output/diff | grep -P '\.c and ' > output/diff_C; "
+    c += "cat output/diff | grep -P '\.h and ' > output/diff_H; "
     exec_com(c, False)
 
     
@@ -82,7 +85,7 @@ def gen_diff():
     find_diff_files()
     
     Print.blue("Starting fine-grained diff...\n")
-    with open('output/diff', 'r', errors='replace') as diff:
+    with open('output/diff_C', 'r', errors='replace') as diff:
         diff_line = diff.readline().strip()
         while diff_line:
             diff_line = diff_line.split(" ")
@@ -120,10 +123,8 @@ def gen_diff():
                         pertinent_lines_b.append((start_b, end_b))
                     file_line = file_diff.readline().strip()
             try:
-                Print.blue("\tProject Pa...")
                 ASTgen.find_affected_funcs(Pa, file_a, pertinent_lines)
                 Print.blue("")
-                Print.blue("\tProject Pb...")
                 ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
             except Exception as e:
                 err_exit(e, "Failed at finding affected functions.")
@@ -148,7 +149,6 @@ def gen_ASTs_ext(ext, output):
 def gen_ASTs():
     # Generates an AST file for each .c file
     gen_ASTs_ext("*\.c", "output/Cfiles")
-            
     # Generates an AST file for each .h file
     gen_ASTs_ext("*\.h", "output/Hfiles")
 
@@ -875,14 +875,12 @@ def transplantation(to_patch):
                                     nodeC2_l = id_from_string(nodeC2_l)
                                     nodeC2_l = ASTlists[Pc.name][nodeC2_l]
                                     if nodeC2_l in nodeC2.children:
-                                        Print.red("<" + str(pos))
                                         pos = nodeC2.children.index(nodeC2_l)
                                         pos += 1
-                                        Print.green(">" + str(pos))
                                     else:
                                         Print.yellow("Node not in children.")
                                         Print.yellow(nodeC2_l)
-                                        Print.yellow([str(i) for i in
+                                        Print.yellow([i.simple_print() for i in
                                                       nodeC2.children])
                                 else:
                                     Print.yellow("Failed at locating match" + \
@@ -894,6 +892,7 @@ def transplantation(to_patch):
                                     parent = nodeA2_l.parent
                                     if parent != None:
                                         pos = parent.children.index(nodeA2_l)
+                                        pos += 1
                             else:
                                 Print.yellow("Failed at match for child.")
                     except Exception as e:
@@ -961,14 +960,12 @@ def transplantation(to_patch):
                                     nodeD2_l = id_from_string(nodeD2_l)
                                     nodeD2_l = ASTlists[Pc.name][nodeD2_l]
                                     if nodeD2_l in nodeD2.children:
-                                        Print.red("<" + str(pos))
                                         pos = nodeD2.children.index(nodeD2_l)
                                         pos += 1
-                                        Print.green(">" + str(pos))
                                     else:
                                         Print.yellow("Node not in children.")
                                         Print.yellow(nodeD2_l)
-                                        Print.yellow([str(i) for i in
+                                        Print.yellow([i.simple_print() for i in
                                                       nodeD2.children])
                                 else:
                                     Print.yellow("Failed at locating match" + \
@@ -980,6 +977,7 @@ def transplantation(to_patch):
                                     parent = nodeA2_l.parent
                                     if parent != None:
                                         pos = parent.children.index(nodeA2_l)
+                                        pos += 1
                                     
                             else:
                                 Print.yellow("Failed at match for child.")

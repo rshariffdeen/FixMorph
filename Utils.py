@@ -23,20 +23,7 @@ def err_exit(*args):
     print("\n")
     for i in args:
         Print.red(i)
-    # TODO: Ask for file restauration and restaure if so
-    '''a = "Maybe"
-    while a != "Y" and a != "N":
-        a = str(input("Do you wish to restaure your original files? (Y/N): "))
-        a = a.upper()
-    if a == "Y":
-        Print.green("Restauring original files, do not kill the program.")
-    else:
-        b = str(input("Any changes will remain. Are you sure? (Y/N): "))
-        if b.upper() != "N":
-            Print.green("No restauration needed. Exiting.")
-        else:
-            err_exit()'''
-    raise Exception("ERROR")
+    raise Exception("Error. Exiting...")
     
 ''' Cleaning Residual files '''
 

@@ -114,6 +114,7 @@ def intersect(start, end, start2, end2):
     
                         
 def find_affected_funcs(proj, file, pertinent_lines):
+    Print.blue("\tProject " + proj.name + "...")
     try:
         function_lines, dict_file = parseAST(file, proj, False)
     except Exception as e:
