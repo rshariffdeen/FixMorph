@@ -31,7 +31,7 @@ def ASTdump(file, output):
     Print.yellow(a[0])
 
 def gen_json(filepath):
-    json_file = filepath + ".ASTalt"
+    json_file = filepath + ".AST"
     ASTdump(filepath, json_file)
     return ASTparser.AST_from_file(json_file)
     
