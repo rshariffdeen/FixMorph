@@ -42,18 +42,9 @@ class ASTVector:
             if int(end) > max_line:
                 # TODO: This shouldn't happen!
                 Print.red(current)
-                err_exit("Deckard fail. The following file was not " + \
-                             "generated:\n" + self.vector_path)
+                err_exit("Deckard fail. The following file was not generated:",
+                         self.vector_path)
                 return None
-            # This shouldn't be necessary now but just in case we need it later
-            '''while start > 0:
-                j = start-1
-                if j < len(ls):
-                    if ";" in ls[j] or "}" in ls[j] or "#include" in ls[j]:
-                        break
-                else:
-                    break
-                start = j'''
         self.start = start
         self.end = end
         
