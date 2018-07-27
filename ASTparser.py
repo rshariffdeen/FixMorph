@@ -147,6 +147,9 @@ class AST:
     def value_calc(self, file):
         if self.value:
             return self.format_value(file)
+    
+    def simple_print(self):
+        return str(self.type) + "(" + str(self.id) + ")"
             
                             
         

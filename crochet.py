@@ -70,7 +70,7 @@ def find_diff_files():
     with open('output/exclude_pats', 'w', errors='replace') as exclusions:
         for pattern in extensions:
             exclusions.write(pattern + "\n")
-    c = "diff -ENBbwqr " + Pa.path + " " + Pb.path + \
+    c = "diff -ENZBbwqr " + Pa.path + " " + Pb.path + \
         " -X output/exclude_pats | grep -P '\.c and ' > output/diff"
     exec_com(c, False)
 
@@ -137,7 +137,7 @@ def gen_ASTs():
     with open("output/Cfiles", 'r', errors='replace') as files:
         file = files.readline().strip()
         while file:
-            # Parses it to remove useless information (for us) and gen vects
+            # Parses it to get useful information and generate vectors
             try:
                 ASTgen.parseAST(file, Pc)
             except Exception as e:
@@ -196,8 +196,8 @@ def compare():
                     candidates.append(j)
                     candidates_d.append(d)
                 
-        count_unknown = [0 for i in candidates]
-        count_vars = [0 for i in candidates]
+        count_unknown = [0]*len(candidates)
+        count_vars = [0]*len(candidates)
         var_maps = []
         
         # We go up to -4 to remove the ".vec" part [filepath.function.vec]
@@ -483,37 +483,31 @@ def cmp_to_key(mycmp):
         def __ne__(self, other):
             return mycmp(self.obj, other.obj) != 0
     return K
-
-
-def script_node(node):
-    return node.type + "(" + str(node.id) + ")"
     
     
 def patch_instruction(inst):
-    #Print.white("\t" + " - ".join([str(j) for j in inst]))
-
-    c = ""
     
     instruction = inst[0]
+    c = ""
     
     if instruction == UPDATE:
         nodeC = inst[1]
         nodeD = inst[2]
-        c = UPDATE + " " + script_node(nodeC) + TO + script_node(nodeD)
+        c = UPDATE + " " + nodeC.simple_print() + TO + nodeD.simple_print()
             
     elif instruction == DELETE:
         nodeC = inst[1]
-        c = DELETE + " " + script_node(nodeC)
+        c = DELETE + " " + nodeC.simple_print()
         
     elif instruction == MOVE:
-        nodeD1 = script_node(inst[1])
-        nodeD2 = script_node(inst[2])
+        nodeD1 = inst[1].simple_print()
+        nodeD2 = inst[2].simple_print()
         pos = str(inst[3])
         c = MOVE + " " + nodeD1 + INTO + nodeD2 + AT + pos
     
     elif instruction == INSERT:
-        nodeB = script_node(inst[1])
-        nodeC = script_node(inst[2])
+        nodeB = inst[1].simple_print()
+        nodeC = inst[2].simple_print()
         pos = str(inst[3])
         c = INSERT + " " + nodeB + INTO + nodeC + AT + pos
         
@@ -746,20 +740,20 @@ def transplantation(to_patch):
         for i in modified_AB:
             inst = i[0]
             if inst == DELETE:
-                nodeA = str(i[1].type) + "(" + str(i[1].id) + ")"
+                nodeA = i[1].simple_print()
                 instruction_AB.append((DELETE, nodeA))
             elif inst == UPDATE:
-                nodeA = str(i[1].type) + "(" + str(i[1].id) + ")"
-                nodeB = str(i[2].type) + "(" + str(i[2].id) + ")"
+                nodeA = i[1].simple_print()
+                nodeB = i[2].simple_print()
                 instruction_AB.append((UPDATE, nodeA, nodeB))
             elif inst == INSERT:
-                nodeB1 = str(i[1].type) + "(" + str(i[1].id) + ")"
-                nodeB2 = str(i[2].type) + "(" + str(i[2].id) + ")"
+                nodeB1 = i[1].simple_print()
+                nodeB2 = i[2].simple_print()
                 pos = int(i[3])
                 instruction_AB.append((INSERT, nodeB1, nodeB2, pos))
             elif inst == MOVE:
-                nodeB1 = str(i[1].type) + "(" + str(i[1].id) + ")"
-                nodeB2 = str(i[2].type) + "(" + str(i[2].id) + ")"
+                nodeB1 = i[1].simple_print()
+                nodeB2 = i[2].simple_print()
                 pos = int(i[3])
                 instruction_AB.append((MOVE, nodeB1, nodeB2, pos))
         
@@ -833,9 +827,8 @@ def transplantation(to_patch):
                         nodeA1 = match_BA[nodeB1]
                         if nodeA1 in match_AC.keys():
                             nodeC1 = match_AC[nodeA1]
-                            if "(" in nodeC1:
-                                nodeC1 = nodeC1.split("(")[-1][:-1]
-                                nodeC1 = ASTlists[Pc.name][int(nodeC1)]
+                            nodeC1 = nodeC1.split("(")[-1][:-1]
+                            nodeC1 = ASTlists[Pc.name][int(nodeC1)]
                         else:
                             # TODO: Manage case in which nodeA1 is unmatched
                             Print.yellow("Node in Pa not found in Pc: (1)")
@@ -847,6 +840,7 @@ def transplantation(to_patch):
                             # TODO: Manage case for node not found
                             Print.yellow("Node to be moved was not found. (2)")
                             Print.yellow(nodeB1)
+                    # TODO: else?
                     if nodeB2 in match_BA.keys():
                         nodeA2 = match_BA[nodeB2]
                         if nodeA2 in match_AC.keys():
@@ -864,6 +858,7 @@ def transplantation(to_patch):
                             # TODO: Manage case for node not found
                             Print.yellow("Node to be moved was not found. (2)")
                             Print.yellow(nodeB2)
+                    # TODO: else?
                     try:
                         m = 0
                         true_B2 = nodeB2.split("(")[-1][:-1]
@@ -871,13 +866,9 @@ def transplantation(to_patch):
                         M = len(true_B2.children)
                         if pos != 0:
                             nodeB2_l = true_B2.children[pos-1]
-                            nodeB2_l = str(nodeB2_l.type) + "(" + \
-                                       str(nodeB2_l.id) + ")"
+                            nodeB2_l = nodeB2_l.simple_print()
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
-                                Print.red(nodeA2_l)
-                                nodeA2_l = nodeA2_l.split("(")[-1][:-1]
-                                nodeA2_l = ASTlists[Pa.name][int(nodeA2_l)]
                                 if nodeA2_l in match_AC.keys():
                                     nodeC2_l = match_AC[nodeA2_l]
                                     nodeC2_l = nodeC2_l.split("(")[-1][:-1]
@@ -958,12 +949,9 @@ def transplantation(to_patch):
                         M = len(true_B2.children)
                         if pos != 0 and pos < M:
                             nodeB2_l = true_B2.children[pos-1]
-                            nodeB2_l = str(nodeB2_l.type) + "(" + \
-                                       str(nodeB2_l.id) + ")"
+                            nodeB2_l = nodeB2_l.simple_print()
                             if nodeB2_l in match_BA.keys():
                                 nodeA2_l = match_BA[nodeB2_l]
-                                nodeA2_l = nodeA2_l.split("(")[-1][:-1]
-                                nodeA2_l = ASTlists[Pa.name][int(nodeA2_l)]
                                 if nodeA2_l in match_AC.keys():
                                     nodeD2_l = match_AC[nodeA2_l]
                                     nodeD2_l = nodeD2_l.split("(")[-1][:-1]
