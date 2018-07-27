@@ -892,8 +892,13 @@ def transplantation(to_patch):
                                 else:
                                     Print.yellow("Failed at locating match" + \
                                                  " for " + nodeA2_l)
-                                    Print.yellow(match_AC)
-                                    
+                                    Print.yellow("Trying to get pos anyway.")
+                                    # This is more likely to be correct
+                                    nodeA2_l = id_from_string(nodeA2_l)
+                                    nodeA2_l = ASTlists[Pa.name][nodeA2_l]
+                                    parent = nodeA2_l.parent
+                                    if parent != None:
+                                        pos = parent.children.index(nodeA2_l)
                             else:
                                 Print.yellow("Failed at match for child.")
                     except Exception as e:
@@ -973,7 +978,13 @@ def transplantation(to_patch):
                                 else:
                                     Print.yellow("Failed at locating match" + \
                                                  " for " + nodeA2_l)
-                                    Print.yellow(match_AC)
+                                    Print.yellow("Trying to get pos anyway.")
+                                    # This is more likely to be correct
+                                    nodeA2_l = id_from_string(nodeA2_l)
+                                    nodeA2_l = ASTlists[Pa.name][nodeA2_l]
+                                    parent = nodeA2_l.parent
+                                    if parent != None:
+                                        pos = parent.children.index(nodeA2_l)
                                     
                             else:
                                 Print.yellow("Failed at match for child.")
