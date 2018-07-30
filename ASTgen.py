@@ -26,8 +26,8 @@ def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
 
 def ASTdump(file, output, h_file=False):
     c = crochet_diff + "-ast-dump-json " + file
-    if h_file:
-        c += " -- "
+    if file[-1] == "h":
+        c += " --"
     c += " 2> output/errors_AST_dump > " + output
     a = exec_com(c, True)
     Print.yellow(a[0])
@@ -69,34 +69,38 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
     
     if Deckard:
         Print.grey("Generating vectors for " + filepath.split("/")[-1])
+        
+    if h_file:
+        ASTVector.ASTVector(proj, file, None, None, None, Deckard=True)
+    
+    else:
+        function_nodes = []
+        root = ast[0]
+        root.get_nodes("type", "FunctionDecl", function_nodes)
+        #Print.white(function_nodes)
+        for node in function_nodes:
+            set_struct_nodes = set()
+            #Print.yellow(node.file)
+            if node.file != None and file == node.file.split("/")[-1]:
+                f = node.value.split("(")[0]
+                start = int(node.line)
+                end = int(node.line_end)
+                function_lines.append((f, start, end))
+                gen_vec(proj, proj.funcs, filepath, f, start, end, Deckard)
+                structural_nodes = []
+                for interesting_type in interesting:
+                    node.get_nodes("type", interesting_type, structural_nodes)
+                for struct_node in structural_nodes:
+                    var = struct_node.value.split("(")
+                    var_type = var[-1][:-1]
+                    var = var[0]
+                    line = var_type + " " + var + ";"
+                    if f not in dict_file.keys():
+                        dict_file[f] = ""
+                    dict_file[f] = dict_file[f] + line
+                    set_struct_nodes.add(struct_node.value)
 
-    function_nodes = []
-    root = ast[0]
-    root.get_nodes("type", "FunctionDecl", function_nodes)
-    #Print.white(function_nodes)
-    for node in function_nodes:
-        set_struct_nodes = set()
-        #Print.yellow(node.file)
-        if node.file != None and file == node.file.split("/")[-1]:
-            f = node.value.split("(")[0]
-            start = int(node.line)
-            end = int(node.line_end)
-            function_lines.append((f, start, end))
-            gen_vec(proj, proj.funcs, filepath, f, start, end, Deckard)
-            structural_nodes = []
-            for interesting_type in interesting:
-                node.get_nodes("type", interesting_type, structural_nodes)
-            for struct_node in structural_nodes:
-                var = struct_node.value.split("(")
-                var_type = var[-1][:-1]
-                var = var[0]
-                line = var_type + " " + var + ";"
-                if f not in dict_file.keys():
-                    dict_file[f] = ""
-                dict_file[f] = dict_file[f] + line
-                set_struct_nodes.add(struct_node.value)
-
-    if Deckard:
+    if Deckard and not h_file:
         get_vars(proj, filepath, dict_file)
    
     return function_lines, dict_file

@@ -86,6 +86,19 @@ def gen_diff():
     Print.blue("Finding differing files...")
     find_diff_files()
     
+    # H files
+    with open('output/diff_H', 'r', errors='replace') as diff:
+        diff_line = diff.readline().strip()
+        while diff_line:
+            diff_line = diff_line.split(" ")
+            file_a = diff_line[1]
+            file_b = diff_line[3]
+            ASTgen.llvm_format(file_a)
+            ASTgen.llvm_format(file_b)
+            proj = Pa
+            ASTVector.ASTVector(proj, file_a, None, None, None, Deckard=True)
+            diff_line = diff.readline().strip()
+            
     # C files
     Print.blue("Starting fine-grained diff...\n")
     with open('output/diff_C', 'r', errors='replace') as diff:
@@ -103,15 +116,17 @@ def gen_diff():
             with open('output/C_diff', 'r', errors='replace') as file_diff:
                 file_line = file_diff.readline().strip()
                 while file_line:
-                    # In file_diff, line starts with a number, <, >, or -.
+                    # We only want lines starting with a line number
                     if 48 <= ord(file_line[0]) <= 57:
-                        # change (delete + add)
-                        if 'c' in file_line:
-                            l = file_line.split('c')
+                        # add
+                        if 'a' in file_line:
+                            l = file_line.split('a')
+                        # delete
                         elif 'd' in file_line:
                             l = file_line.split('d')
-                        elif 'a' in file_line:
-                            l = file_line.split('a')
+                        # change (delete + add)
+                        elif 'c' in file_line:
+                            l = file_line.split('c')
                         # range for file_a
                         a = l[0].split(',')
                         start_a = int(a[0])
@@ -126,53 +141,6 @@ def gen_diff():
                     file_line = file_diff.readline().strip()
             try:
                 ASTgen.find_affected_funcs(Pa, file_a, pertinent_lines)
-                Print.blue("")
-                ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
-            except Exception as e:
-                err_exit(e, "Failed at finding affected functions.")
-                        
-            diff_line = diff.readline().strip()
-    
-    # H files
-    with open('output/diff_H', 'r', errors='replace') as diff:
-        diff_line = diff.readline().strip()
-        while diff_line:
-            diff_line = diff_line.split(" ")
-            file_a = diff_line[1]
-            file_b = diff_line[3]
-            ASTgen.llvm_format(file_a)
-            ASTgen.llvm_format(file_b)
-            c = "diff -ENBZbwr " + file_a + " " + file_b + " > output/H_diff"
-            exec_com(c, False)
-            pertinent_lines = []
-            pertinent_lines_b = []
-            with open('output/H_diff', 'r', errors='replace') as file_diff:
-                file_line = file_diff.readline().strip()
-                while file_line:
-                    # In file_diff, line starts with a number, <, >, or -.
-                    if 48 <= ord(file_line[0]) <= 57:
-                        # change (delete + add)
-                        if 'c' in file_line:
-                            l = file_line.split('c')
-                        elif 'd' in file_line:
-                            l = file_line.split('d')
-                        elif 'a' in file_line:
-                            l = file_line.split('a')
-                        # range for file_a
-                        a = l[0].split(',')
-                        start_a = int(a[0])
-                        end_a = int(a[-1])
-                        # range for file_b
-                        b = l[1].split(',')
-                        start_b = int(b[0])
-                        end_b = int(b[-1])
-                        # Pertinent lines in file_a
-                        pertinent_lines.append((start_a, end_a))
-                        pertinent_lines_b.append((start_b, end_b))
-                    file_line = file_diff.readline().strip()
-            try:
-                ASTgen.find_affected_funcs(Pa, file_a, pertinent_lines)
-                Print.blue("")
                 ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
             except Exception as e:
                 err_exit(e, "Failed at finding affected functions.")
@@ -181,6 +149,8 @@ def gen_diff():
 
 
 def gen_ASTs_ext(ext, output, is_h=False):
+    rxt = ext
+    Print.blue("Gen vectors for " + rxt + " files in " + Pc.name + "...")
     # Generates an AST file for each file of extension ext
     find_files(Pc.path, ext, output)
     with open(output, 'r', errors='replace') as files:
@@ -198,13 +168,13 @@ def gen_ASTs():
     # Generates an AST file for each .c file
     gen_ASTs_ext("*\.c", "output/Cfiles", is_h=False)
     # Generates an AST file for each .h file
-    #gen_ASTs_ext("*\.h", "output/Hfiles", is_h=True)
+    gen_ASTs_ext("*\.h", "output/Hfiles", is_h=True)
 
     
 def get_vector_list(proj, ext):
-    rxt = ext[:3]
+    rxt = ext
     Print.blue("Getting vectors for " + rxt + " files in " + proj.name + "...")
-    filepath = "output/vectors_" + proj.name
+    filepath = "output/vectors_" + rxt + "_" + proj.name
     find_files(proj.path, ext,  filepath)
     with open(filepath, "r", errors='replace') as file:
         files = [vec.strip() for vec in file.readlines()]
@@ -221,7 +191,7 @@ def get_vector_list(proj, ext):
 
 def compare_H():
     global Pa, Pc
-    h_ext = "*.h.*.vec"
+    h_ext = "*\.h\.vec"
     vecs_A = get_vector_list(Pa, h_ext)
     to_patch = []
     if len(vecs_A) == 0:
@@ -320,7 +290,7 @@ def compare_H():
     
 def compare_C():
     global Pa, Pc
-    c_ext = "*.c.*.vec"
+    c_ext = "*\.c\.*\.vec"
     vecs_A = get_vector_list(Pa, c_ext)
     vecs_C = get_vector_list(Pc, c_ext)
     
@@ -633,14 +603,20 @@ def clean_parse(content, separator):
     
 
 def ASTdump(file, output):
+    extra_arg = ""
+    if file[-1] == "h":
+        extra_arg = " --"
     c = crochet_diff + " -s=" + crochet_diff_size  + " -ast-dump-json " + \
-        file + " 2> output/errors_AST_dump > " + output
+        file + extra_arg + " 2> output/errors_AST_dump > " + output
     exec_com(c)
     
 
 def ASTscript(file1, file2, output, only_matches=False):
+    extra_arg = ""
+    if file1[-2:] == ".h":
+        extra_arg = " --"
     c = crochet_diff + " -s=" + crochet_diff_size  + " -dump-matches " + \
-        file1 + " " + file2 + " 2> output/errors_clang_diff "
+        file1 + " " + file2 + extra_arg + " 2> output/errors_clang_diff "
     if only_matches:
         c += "| grep '^Match ' "
     c += " > " + output
