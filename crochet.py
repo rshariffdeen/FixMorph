@@ -82,9 +82,11 @@ def find_diff_files():
     
 def gen_diff():
     global Pa, Pb
+    # .h and .c files
     Print.blue("Finding differing files...")
     find_diff_files()
     
+    # C files
     Print.blue("Starting fine-grained diff...\n")
     with open('output/diff_C', 'r', errors='replace') as diff:
         diff_line = diff.readline().strip()
@@ -94,12 +96,57 @@ def gen_diff():
             file_b = diff_line[3]
             ASTgen.llvm_format(file_a)
             ASTgen.llvm_format(file_b)
-            c = "diff -ENBZbwr " + file_a + " " + file_b + \
-                " > output/file_diff"
+            c = "diff -ENBZbwr " + file_a + " " + file_b + " > output/C_diff"
             exec_com(c, False)
             pertinent_lines = []
             pertinent_lines_b = []
-            with open('output/file_diff', 'r', errors='replace') as file_diff:
+            with open('output/C_diff', 'r', errors='replace') as file_diff:
+                file_line = file_diff.readline().strip()
+                while file_line:
+                    # In file_diff, line starts with a number, <, >, or -.
+                    if 48 <= ord(file_line[0]) <= 57:
+                        # change (delete + add)
+                        if 'c' in file_line:
+                            l = file_line.split('c')
+                        elif 'd' in file_line:
+                            l = file_line.split('d')
+                        elif 'a' in file_line:
+                            l = file_line.split('a')
+                        # range for file_a
+                        a = l[0].split(',')
+                        start_a = int(a[0])
+                        end_a = int(a[-1])
+                        # range for file_b
+                        b = l[1].split(',')
+                        start_b = int(b[0])
+                        end_b = int(b[-1])
+                        # Pertinent lines in file_a
+                        pertinent_lines.append((start_a, end_a))
+                        pertinent_lines_b.append((start_b, end_b))
+                    file_line = file_diff.readline().strip()
+            try:
+                ASTgen.find_affected_funcs(Pa, file_a, pertinent_lines)
+                Print.blue("")
+                ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
+            except Exception as e:
+                err_exit(e, "Failed at finding affected functions.")
+                        
+            diff_line = diff.readline().strip()
+    
+    # H files
+    with open('output/diff_H', 'r', errors='replace') as diff:
+        diff_line = diff.readline().strip()
+        while diff_line:
+            diff_line = diff_line.split(" ")
+            file_a = diff_line[1]
+            file_b = diff_line[3]
+            ASTgen.llvm_format(file_a)
+            ASTgen.llvm_format(file_b)
+            c = "diff -ENBZbwr " + file_a + " " + file_b + " > output/H_diff"
+            exec_com(c, False)
+            pertinent_lines = []
+            pertinent_lines_b = []
+            with open('output/H_diff', 'r', errors='replace') as file_diff:
                 file_line = file_diff.readline().strip()
                 while file_line:
                     # In file_diff, line starts with a number, <, >, or -.
@@ -1332,7 +1379,6 @@ def run_crochet():
     
     
 if __name__=="__main__":
-    #test_parsing()
     try:
         run_crochet()
     except KeyboardInterrupt as e:

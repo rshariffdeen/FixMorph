@@ -42,14 +42,14 @@ def llvm_format(file):
         c = "cp " + file + " output/last.c; "
         exec_com(c, True)
         c = clang_format + file + "> output/temp.c; cp output/temp.c " + file
-        exec_com(c, True)
+        exec_com(c, False)
     except Exception as e:
         Print.yellow(e)
         Print.yellow("Error in llvm_format with file:")
         Print.tellow(file)
         Print.yellow("Restoring and skipping")
         c = "cp output/last.c " + file
-        exec_com(c, True)
+        exec_com(c, False)
 
 def parseAST(filepath, proj, Deckard=True, h_file=False):
     llvm_format(filepath)
@@ -77,7 +77,6 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
     for node in function_nodes:
         set_struct_nodes = set()
         #Print.yellow(node.file)
-        
         if node.file != None and file == node.file.split("/")[-1]:
             f = node.value.split("(")[0]
             start = int(node.line)
