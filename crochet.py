@@ -16,9 +16,9 @@ Pa = None
 Pb = None
 Pc = None
 crash = None
-crochet_patch_size = "10000"
+crochet_patch_size = "1000000"
 crochet_patch = "crochet-patch"
-crochet_diff_size = "10000"
+crochet_diff_size = "1000000"
 crochet_diff = "crochet-diff "
 clang_check = "clang-check "
 clang_format = "clang-format -style=LLVM "
@@ -401,9 +401,11 @@ def compare_C():
     
     
 def generate_ast_map(source_a, source_b):
-    c = crochet_diff + "-dump-matches " + source_a + " " + \
-        source_b + " 2>> output/errors_clang_diff " + \
-        "| grep -P '^Match ' | grep -P '^Match ' > output/ast-map"
+    c = crochet_diff + "-dump-matches " + source_a + " " + source_b
+    if source_a[-1] == "h":
+        c += "-- "
+    c += " 2>> output/errors_clang_diff "
+    c += "| grep -P '^Match ' | grep -P '^Match ' > output/ast-map"
     try:
         exec_com(c, True)
     except Exception as e:
