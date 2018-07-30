@@ -198,7 +198,7 @@ def gen_ASTs():
     # Generates an AST file for each .c file
     gen_ASTs_ext("*\.c", "output/Cfiles", is_h=False)
     # Generates an AST file for each .h file
-    gen_ASTs_ext("*\.h", "output/Hfiles", is_h=True)
+    #gen_ASTs_ext("*\.h", "output/Hfiles", is_h=True)
 
     
 def get_vector_list(proj, ext):
