@@ -24,15 +24,17 @@ def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
         proj_attribute[file][f_or_struct] = v
     return v
 
-def ASTdump(file, output):
-    c = crochet_diff + "-ast-dump-json " + file + \
-        " 2> output/errors_AST_dump > " + output
+def ASTdump(file, output, h_file=False):
+    c = crochet_diff + "-ast-dump-json " + file
+    if h_file:
+        c += " -- "
+    c += " 2> output/errors_AST_dump > " + output
     a = exec_com(c, True)
     Print.yellow(a[0])
 
-def gen_json(filepath):
+def gen_json(filepath, h_file=False):
     json_file = filepath + ".AST"
-    ASTdump(filepath, json_file)
+    ASTdump(filepath, json_file, h_file)
     return ASTparser.AST_from_file(json_file)
     
 def llvm_format(file):
@@ -49,14 +51,14 @@ def llvm_format(file):
         c = "cp output/last.c " + file
         exec_com(c, True)
 
-def parseAST(filepath, proj, Deckard=True):
+def parseAST(filepath, proj, Deckard=True, h_file=False):
     llvm_format(filepath)
     # Save functions here
     function_lines = list()
     # Save variables for each function d[function] = "typevar namevar; ...;"
     dict_file = dict()
     try:
-        ast = gen_json(filepath)
+        ast = gen_json(filepath, h_file)
     except:
         Print.yellow("Skipping... Failed for file:\n\t" + filepath)
         return function_lines, dict_file
@@ -106,7 +108,7 @@ def get_vars(proj, file, dict_file):
         for line in dict_file[func].split(";"):
             if file in proj.funcs.keys():
                 if func in proj.funcs[file].keys():
-                    proj.funcs[file][func].params.append(line)
+                    proj.funcs[file][func].variables.append(line)
                         
 
 def intersect(start, end, start2, end2):

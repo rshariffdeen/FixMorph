@@ -19,7 +19,6 @@ class ASTVector:
         self.end = end
         self.length = int(end) - int(start)
         self.variables = []
-        self.params = []
         self.vector_path = self.file + "." + self.function + ".vec"
         self.vector = None
         if Deckard:
