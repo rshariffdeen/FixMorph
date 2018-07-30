@@ -286,7 +286,7 @@ def compare_H():
         Print.green("\t\tBest match for " + file_a + " in Pa:")
         Print.blue("\t\tFile: " + file_c + " in Pc")
         Print.blue("\t\tDistance: " + d_c + "\n")
-        Print.green(Pa.path + file_a, Pc.path + file_c, var_map)
+        Print.green((Pa.path + file_a, Pc.path + file_c, var_map))
         '''to_patch.append((Pa.funcs[Pa.path + file_a][f_a],
                          Pc.funcs[Pc.path + file_c][f_c], var_map))'''
     return to_patch
