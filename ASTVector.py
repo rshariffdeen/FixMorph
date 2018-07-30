@@ -53,7 +53,7 @@ class ASTVector:
             self.file + " -o " + self.vector_path + " 2> output/errors"
             
         try:
-            exec_com(c, False)
+            exec_com(c, True)
         except Exception as e:
             err_exit(e, "Error with Deckard vector generation. Exiting...")
     
@@ -64,7 +64,7 @@ class ASTVector:
                  " " + self.file + " -o " + self.vector_path + \
                  " 2> output/errors"
             try:
-                exec_com(c1, False)
+                exec_com(c1, True)
             except Exception as e:
                 err_exit(e, "Error with Deckard vector generation. Exiting...")
         
