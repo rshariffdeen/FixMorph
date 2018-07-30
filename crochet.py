@@ -172,7 +172,10 @@ def gen_ASTs():
 
     
 def get_vector_list(proj, ext):
-    rxt = ext
+    if "c" in ext:
+        rxt = "C"
+    else:
+        rxt = "h"
     Print.blue("Getting vectors for " + rxt + " files in " + proj.name + "...")
     filepath = "output/vectors_" + rxt + "_" + proj.name
     find_files(proj.path, ext,  filepath)
