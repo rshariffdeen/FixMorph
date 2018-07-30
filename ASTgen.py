@@ -40,7 +40,7 @@ def gen_json(filepath, h_file=False):
 def llvm_format(file):
     try:
         c = "cp " + file + " output/last.c; "
-        exec_com(c, True)
+        exec_com(c, False)
         c = clang_format + file + "> output/temp.c; cp output/temp.c " + file
         exec_com(c, False)
     except Exception as e:
@@ -59,6 +59,8 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
     dict_file = dict()
     try:
         ast = gen_json(filepath, h_file)
+        if h_file:
+            print(filepath)
     except:
         Print.yellow("Skipping... Failed for file:\n\t" + filepath)
         return function_lines, dict_file
@@ -71,8 +73,8 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
         Print.grey("Generating vectors for " + filepath.split("/")[-1])
         
     if h_file:
-        ASTVector.ASTVector(proj, file, None, None, None, Deckard=True)
-    
+        if Deckard:
+            ASTVector.ASTVector(proj, filepath, None, None, None, Deckard=True)
     else:
         function_nodes = []
         root = ast[0]
@@ -100,8 +102,8 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
                     dict_file[f] = dict_file[f] + line
                     set_struct_nodes.add(struct_node.value)
 
-    if Deckard and not h_file:
-        get_vars(proj, filepath, dict_file)
+        if Deckard:
+            get_vars(proj, filepath, dict_file)
    
     return function_lines, dict_file
 

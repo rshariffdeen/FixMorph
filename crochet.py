@@ -95,8 +95,7 @@ def gen_diff():
             file_b = diff_line[3]
             ASTgen.llvm_format(file_a)
             ASTgen.llvm_format(file_b)
-            proj = Pa
-            ASTVector.ASTVector(proj, file_a, None, None, None, Deckard=True)
+            ASTgen.parseAST(file_a, Pa, Deckard=True, h_file=True)
             diff_line = diff.readline().strip()
             
     # C files
@@ -165,10 +164,11 @@ def gen_ASTs_ext(ext, output, is_h=False):
     
     
 def gen_ASTs():
-    # Generates an AST file for each .c file
-    gen_ASTs_ext("*\.c", "output/Cfiles", is_h=False)
     # Generates an AST file for each .h file
     gen_ASTs_ext("*\.h", "output/Hfiles", is_h=True)
+    # Generates an AST file for each .c file
+    gen_ASTs_ext("*\.c", "output/Cfiles", is_h=False)
+    
 
     
 def get_vector_list(proj, ext):
@@ -567,7 +567,16 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
             var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
     
     return variable_mapping
-            
+
+
+def ASTdump(file, output):
+    extra_arg = ""
+    if file[-1] == "h":
+        extra_arg = " --"
+    c = crochet_diff + " -s=" + crochet_diff_size  + " -ast-dump-json " + \
+        file + extra_arg + " 2> output/errors_AST_dump > " + output
+    exec_com(c)
+           
 
 def gen_json(vec_f, name, ASTlists):
     Print.blue("\t\tClang AST parse " + vec_f.function + " in " + name + "...")
@@ -603,15 +612,6 @@ def clean_parse(content, separator):
     node1 = separator.join(nodes[:half])
     node2 = separator.join(nodes[half:])
     return [node1, node2]
-    
-
-def ASTdump(file, output):
-    extra_arg = ""
-    if file[-1] == "h":
-        extra_arg = " --"
-    c = crochet_diff + " -s=" + crochet_diff_size  + " -ast-dump-json " + \
-        file + extra_arg + " 2> output/errors_AST_dump > " + output
-    exec_com(c)
     
 
 def ASTscript(file1, file2, output, only_matches=False):
