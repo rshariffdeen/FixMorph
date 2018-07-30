@@ -16,8 +16,9 @@ Pa = None
 Pb = None
 Pc = None
 crash = None
-
-crochet_patch = "crochet-patch -s 2147483647 "
+crochet_patch_size = "2147483647"
+crochet_patch = "crochet-patch"
+crochet_diff_size = "2147483647"
 crochet_diff = "crochet-diff "
 clang_check = "clang-check "
 clang_format = "clang-format -style=LLVM "
@@ -585,14 +586,14 @@ def clean_parse(content, separator):
     
 
 def ASTdump(file, output):
-    c = crochet_diff + "-ast-dump-json " + file + \
-        " 2> output/errors_AST_dump > " + output
+    c = crochet_diff + " -s=" + crochet_diff_size  + " -ast-dump-json " + \
+        file + " 2> output/errors_AST_dump > " + output
     exec_com(c)
     
 
 def ASTscript(file1, file2, output, only_matches=False):
-    c = crochet_diff + "-s 2147483647 -dump-matches " + file1 + \
-        " " + file2 + " 2> output/errors_clang_diff "
+    c = crochet_diff + " -s=" + crochet_diff_size  + " -dump-matches " + \
+        file1 + " " + file2 + " 2> output/errors_clang_diff "
     if only_matches:
         c += "| grep '^Match ' "
     c += " > " + output
@@ -1217,9 +1218,10 @@ def patch(file_a, file_b, file_c):
         changes[file_c] = backup_file
         c += "cp " + file_c + " Backup_Folder/" + backup_file + "; "
     # We apply the patch using the script and crochet-patch
-    c += crochet_patch + "-script=output/script -source=" + file_a + \
-        " -destination=" + file_b + " -target=" + file_c + \
-        " 2> output/errors > " + output_file + "; "
+    c += crochet_patch + " -s=" + crochet_patch_size + \
+         " -script=output/script -source=" + file_a + \
+         " -destination=" + file_b + " -target=" + file_c + \
+         " 2> output/errors > " + output_file + "; "
     c += "cp " + output_file + " " + file_c
     exec_com(c)
     # We fix basic syntax errors that could have been introduced by the patch
