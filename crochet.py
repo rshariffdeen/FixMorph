@@ -16,9 +16,9 @@ Pa = None
 Pb = None
 Pc = None
 crash = None
-crochet_patch_size = "2147483647"
+crochet_patch_size = "10000"
 crochet_patch = "crochet-patch"
-crochet_diff_size = "2147483647"
+crochet_diff_size = "10000"
 crochet_diff = "crochet-diff "
 clang_check = "clang-check "
 clang_format = "clang-format -style=LLVM "
