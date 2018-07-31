@@ -134,8 +134,9 @@ namespace clang {
                 findPointOfInsertion(NodeRef N, PatchedTreeNode &TargetParent) const;
 
                 std::string translateVariables(NodeRef node, std::string statement);
+                CharSourceRange expandRange(CharSourceRange range, SyntaxTree &Tree);
 
-                bool insertCode(NodeRef insertNode, NodeRef targetNode, int Offset);
+                bool insertCode(NodeRef insertNode, NodeRef targetNode, int Offset, SyntaxTree &SourceTree);
                 bool deleteCode(NodeRef deleteNode);
 
                 Patcher(SyntaxTree &Src, SyntaxTree &Dst, SyntaxTree &Target,
@@ -858,6 +859,36 @@ namespace clang {
             return statement;
         }
 
+        CharSourceRange Patcher::expandRange(CharSourceRange range, SyntaxTree &Tree) {
+
+            SourceLocation startLoc = range.getBegin();
+            SourceLocation endLoc = range.getEnd();
+
+            // llvm::outs() << endLoc.printToString(Target.getSourceManager()) << "\n";
+            endLoc = Lexer::getLocForEndOfToken(endLoc, /*Offset=*/0, Tree.getSourceManager(), Tree.getLangOpts());
+            // llvm::outs() << endLoc.printToString(Target.getSourceManager()) << "\n";
+
+            // Break down the source location.
+            std::pair<FileID, unsigned> endLocInfo = Tree.getSourceManager().getDecomposedLoc(endLoc);
+            // Try to load the file buffer.
+            bool invalidTemp = false;
+            StringRef file = Tree.getSourceManager().getBufferData(endLocInfo.first, &invalidTemp);
+
+            if (!invalidTemp) {
+                const char *tokenBegin = file.data() + endLocInfo.second;
+                // Lex from the start of the given location.
+                Lexer lexer(Tree.getSourceManager().getLocForStartOfFile(endLocInfo.first), Tree.getLangOpts(), file.begin(), tokenBegin, file.end());
+                Token tok;
+                lexer.LexFromRawLexer(tok);
+                // llvm::outs() << tok.getName() << "\n";
+                if (tok.is(tok::semi) || tok.is(tok::comma) || tok.is(tok::raw_identifier)) {
+                    // llvm::outs() << "ok\n";
+                    range.setEnd(endLoc);
+                }
+            }
+            return range;
+        }
+
         bool Patcher::deleteCode(NodeRef deleteNode) {
             bool modified = false;
             CharSourceRange range = deleteNode.findRangeForDeletion();
@@ -873,30 +904,8 @@ namespace clang {
                 range.setBegin(startLoc);
             }
 
-            if (deleteNode.getTypeLabel() == "BinaryOperator" || deleteNode.getTypeLabel() == "DeclStmt") {
-                // llvm::outs() << endLoc.printToString(Target.getSourceManager()) << "\n";
-
-                endLoc = Lexer::getLocForEndOfToken(endLoc, /*Offset=*/0, Target.getSourceManager(),Target.getLangOpts());
-
-                // llvm::outs() << endLoc.printToString(Target.getSourceManager()) << "\n";
-                // Break down the source location.
-                std::pair<FileID, unsigned> endLocInfo = Target.getSourceManager().getDecomposedLoc(endLoc);
-                // Try to load the file buffer.
-                bool invalidTemp = false;
-                StringRef file = Target.getSourceManager().getBufferData(endLocInfo.first, &invalidTemp);
-                if (!invalidTemp) {
-
-                    const char *tokenBegin = file.data() + endLocInfo.second;
-                    // Lex from the start of the given location.
-                    Lexer lexer(Target.getSourceManager().getLocForStartOfFile(endLocInfo.first), Target.getLangOpts(), file.begin(), tokenBegin, file.end());
-                    Token tok;
-                    lexer.LexFromRawLexer(tok);
-                    // llvm::outs() << tok.getName() << "\n";
-                    if (tok.is(tok::semi) || tok.is(tok::comma) || tok.is(tok::raw_identifier)) {
-                        // llvm::outs() << "ok\n";
-                        range.setEnd(endLoc);
-                    }
-                }
+            if (deleteNode.getTypeLabel() == "BinaryOperator" || deleteNode.getTypeLabel() == "DeclStmt" || deleteNode.getTypeLabel() == "Macro") {
+                range = expandRange(range,Target);
             }
 
             Rewriter::RewriteOptions delRangeOpts;
@@ -906,7 +915,7 @@ namespace clang {
             return modified;
         }
 
-        bool Patcher::insertCode(NodeRef insertNode, NodeRef targetNode, int Offset) {
+        bool Patcher::insertCode(NodeRef insertNode, NodeRef targetNode, int Offset, SyntaxTree &SourceTree) {
 
             bool modified = false;
 
@@ -914,8 +923,8 @@ namespace clang {
 
             CharSourceRange range = targetNode.getSourceRange();
             CharSourceRange extractRange = insertNode.getSourceRange();
-            std::string insertStatement;
             SourceLocation insertLoc = range.getBegin();
+            std::string insertStatement;
 
 
             if (insertLoc.isMacroID()) {
@@ -930,12 +939,14 @@ namespace clang {
 
             }
 
+            extractRange = expandRange(extractRange, SourceTree);            
+            insertStatement = Lexer::getSourceText(extractRange, SourceTree.getSourceManager(), SourceTree.getLangOpts());
+            insertStatement = " " + insertStatement + " ";
 
-            insertStatement = Lexer::getSourceText(extractRange, Dst.getSourceManager(), Dst.getLangOpts());
             // llvm::outs() << insertStatement << "\n";
             insertStatement = translateVariables(insertNode, insertStatement);
             // llvm::outs() << insertStatement << "\n";
-            insertStatement = " " + insertStatement + " ";
+
 
 
             if (!insertStatement.empty()) {
@@ -996,31 +1007,22 @@ namespace clang {
 
                     insertStatement = " " + insertStatement + " ";
                     // llvm::outs() << insertLoc.printToString(Target.getSourceManager()) << "\n";
+                    auto binaryNode = targetNode.ASTNode.get<BinaryOperator>();
+                    insertLoc = binaryNode->getOperatorLoc();
+                    std::string locId = insertLoc.printToString(Target.getSourceManager());
+                    // llvm::outs() << locId << "\n";
 
                     if (Offset == 0) {
-                        auto binaryNode = targetNode.ASTNode.get<BinaryOperator>();
-                        auto leftOperandi = binaryNode->getLHS();
-                        insertLoc = leftOperandi->getExprLoc();
-                        std::string locId = insertLoc.printToString(Target.getSourceManager());
-                        // llvm::outs() << locId << "\n";
-
-                        if (Rewrite.InsertTextAfterToken(insertLoc, insertStatement))
+                        if (Rewrite.InsertTextBefore(insertLoc, insertStatement))
                             llvm::errs() << "error inserting\n";
-                        modified = true;
+
 
                     } else {
-
-                        auto binaryNode = targetNode.ASTNode.get<BinaryOperator>();
-                        auto rightOperandi = binaryNode->getRHS();
-                        insertLoc = binaryNode->getOperatorLoc();
-                        std::string locId = insertLoc.printToString(Target.getSourceManager());
-                        // llvm::outs() << locId << "\n";
                         if (Rewrite.InsertTextAfterToken(insertLoc, insertStatement))
                             llvm::errs() << "error inserting\n";
-                        modified = true;
-
-
                     }
+
+                    modified = true;
 
                 } else {
 
@@ -1138,8 +1140,8 @@ namespace clang {
                     // llvm::outs() << targetNode.getTypeLabel() << "\n";
 
 
-                    if ((targetNode.getTypeLabel() == nodeTypeC) && (insertNode.getTypeLabel() == nodeTypeB)) {
-                        modified = crochetPatcher.insertCode(insertNode, targetNode, Offset);
+                    if ((targetNode.getTypeLabel() == nodeTypeC) && (insertNode.getTypeLabel() == nodeTypeB)) {                        
+                        modified = crochetPatcher.insertCode(insertNode, targetNode, Offset, Dst);
 
                     } else {
                         llvm::errs() << "Error: wrong node type for given Id\n";
@@ -1183,15 +1185,15 @@ namespace clang {
 
                         CharSourceRange deleteRange = movingNode.findRangeForDeletion();
 
-                        if(crochetPatcher.deleteCode(movingNode)){
-                          modified = crochetPatcher.insertCode(movingNode, targetNode, Offset);
+                        if (crochetPatcher.deleteCode(movingNode)) {                            
+                            modified = crochetPatcher.insertCode(movingNode, targetNode, Offset, Target);
                         } else {
-                          llvm::errs() << "Error: couldn't remove code for move\n";
-                          return error(patching_error::failed_to_apply_replacements);
+                            llvm::errs() << "Error: couldn't remove code for move\n";
+                            return error(patching_error::failed_to_apply_replacements);
 
-                    }
+                        }
 
-      
+
                     } else {
                         llvm::errs() << "Error: wrong node type for given Id\n";
                         return error(patching_error::failed_to_apply_replacements);
