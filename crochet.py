@@ -86,6 +86,21 @@ def gen_diff():
     Print.blue("Finding differing files...")
     find_diff_files()
     
+    # H files
+    with open('output/diff_H', 'r', errors='replace') as diff:
+        diff_line = diff.readline().strip()
+        while diff_line:
+            diff_line = diff_line.split(" ")
+            file_a = diff_line[1]
+            file_b = diff_line[3]
+            ASTgen.llvm_format(file_a)
+            ASTgen.llvm_format(file_b)
+            ASTgen.parseAST(file_a, Pa, Deckard=True, h_file=True)
+            Print.rose("\t\tFile successfully found: " + \
+                       file_a.split("/")[-1] + " from " + Pa.name + " to " + \
+                       Pb.name)
+            diff_line = diff.readline().strip()
+            
     # C files
     Print.blue("Starting fine-grained diff...\n")
     with open('output/diff_C', 'r', errors='replace') as diff:
@@ -103,15 +118,17 @@ def gen_diff():
             with open('output/C_diff', 'r', errors='replace') as file_diff:
                 file_line = file_diff.readline().strip()
                 while file_line:
-                    # In file_diff, line starts with a number, <, >, or -.
+                    # We only want lines starting with a line number
                     if 48 <= ord(file_line[0]) <= 57:
-                        # change (delete + add)
-                        if 'c' in file_line:
-                            l = file_line.split('c')
+                        # add
+                        if 'a' in file_line:
+                            l = file_line.split('a')
+                        # delete
                         elif 'd' in file_line:
                             l = file_line.split('d')
-                        elif 'a' in file_line:
-                            l = file_line.split('a')
+                        # change (delete + add)
+                        elif 'c' in file_line:
+                            l = file_line.split('c')
                         # range for file_a
                         a = l[0].split(',')
                         start_a = int(a[0])
@@ -126,53 +143,6 @@ def gen_diff():
                     file_line = file_diff.readline().strip()
             try:
                 ASTgen.find_affected_funcs(Pa, file_a, pertinent_lines)
-                Print.blue("")
-                ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
-            except Exception as e:
-                err_exit(e, "Failed at finding affected functions.")
-                        
-            diff_line = diff.readline().strip()
-    
-    # H files
-    with open('output/diff_H', 'r', errors='replace') as diff:
-        diff_line = diff.readline().strip()
-        while diff_line:
-            diff_line = diff_line.split(" ")
-            file_a = diff_line[1]
-            file_b = diff_line[3]
-            ASTgen.llvm_format(file_a)
-            ASTgen.llvm_format(file_b)
-            c = "diff -ENBZbwr " + file_a + " " + file_b + " > output/H_diff"
-            exec_com(c, False)
-            pertinent_lines = []
-            pertinent_lines_b = []
-            with open('output/H_diff', 'r', errors='replace') as file_diff:
-                file_line = file_diff.readline().strip()
-                while file_line:
-                    # In file_diff, line starts with a number, <, >, or -.
-                    if 48 <= ord(file_line[0]) <= 57:
-                        # change (delete + add)
-                        if 'c' in file_line:
-                            l = file_line.split('c')
-                        elif 'd' in file_line:
-                            l = file_line.split('d')
-                        elif 'a' in file_line:
-                            l = file_line.split('a')
-                        # range for file_a
-                        a = l[0].split(',')
-                        start_a = int(a[0])
-                        end_a = int(a[-1])
-                        # range for file_b
-                        b = l[1].split(',')
-                        start_b = int(b[0])
-                        end_b = int(b[-1])
-                        # Pertinent lines in file_a
-                        pertinent_lines.append((start_a, end_a))
-                        pertinent_lines_b.append((start_b, end_b))
-                    file_line = file_diff.readline().strip()
-            try:
-                ASTgen.find_affected_funcs(Pa, file_a, pertinent_lines)
-                Print.blue("")
                 ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
             except Exception as e:
                 err_exit(e, "Failed at finding affected functions.")
@@ -181,6 +151,8 @@ def gen_diff():
 
 
 def gen_ASTs_ext(ext, output, is_h=False):
+    rxt = ext
+    Print.blue("Gen vectors for " + rxt + " files in " + Pc.name + "...")
     # Generates an AST file for each file of extension ext
     find_files(Pc.path, ext, output)
     with open(output, 'r', errors='replace') as files:
@@ -195,16 +167,20 @@ def gen_ASTs_ext(ext, output, is_h=False):
     
     
 def gen_ASTs():
+    # Generates an AST file for each .h file
+    gen_ASTs_ext("*\.h", "output/Hfiles", is_h=True)
     # Generates an AST file for each .c file
     gen_ASTs_ext("*\.c", "output/Cfiles", is_h=False)
-    # Generates an AST file for each .h file
-    #gen_ASTs_ext("*\.h", "output/Hfiles", is_h=True)
+    
 
     
 def get_vector_list(proj, ext):
-    rxt = ext[:3]
+    if "c" in ext:
+        rxt = "C"
+    else:
+        rxt = "h"
     Print.blue("Getting vectors for " + rxt + " files in " + proj.name + "...")
-    filepath = "output/vectors_" + proj.name
+    filepath = "output/vectors_" + rxt + "_" + proj.name
     find_files(proj.path, ext,  filepath)
     with open(filepath, "r", errors='replace') as file:
         files = [vec.strip() for vec in file.readlines()]
@@ -221,7 +197,7 @@ def get_vector_list(proj, ext):
 
 def compare_H():
     global Pa, Pc
-    h_ext = "*.h.*.vec"
+    h_ext = "*\.h\.vec"
     vecs_A = get_vector_list(Pa, h_ext)
     to_patch = []
     if len(vecs_A) == 0:
@@ -229,7 +205,6 @@ def compare_H():
     vecs_C = get_vector_list(Pc, h_ext)
     
     factor = 2
-    UNKNOWN = "#UNKNOWN"
     
     Print.blue("Variable mapping for *.h files")
     for i in vecs_A:
@@ -254,9 +229,9 @@ def compare_H():
                     candidates.append(j)
                     candidates_d.append(d)
         
-        count_unknown = [0] * len(candidates)
-        count_vars = [0] * len(candidates)
-        var_maps = []
+        var_maps = list()
+        match_score = list()
+        matches = list()
         
         file_a = i[0].replace(Pa.path, "")[:-4]
         for k in range(len(candidates)):
@@ -269,58 +244,56 @@ def compare_H():
             Print.blue("\tVariable mapping from " + file_a + " to " + \
                        file_c + ":")
             try:
-                var_map = detect_matching(file_a, file_c)
+                var_map, match, edit = detect_matching(file_a, file_c)
                 var_maps.append(var_map)
+                match_score.append((match-edit)/(match+edit))
+                matches.append(match)
             except Exception as e:
                 err_exit(e, "Unexpected error while matching variables.")
             with open('output/var-map', 'r', errors='replace') as mapped:
                 mapping = mapped.readline().strip()
                 while mapping:
                     Print.grey("\t\t" + mapping)
-                    if UNKNOWN in mapping:
-                        count_unknown[k] += 1
-                    count_vars[k] += 1
                     mapping = mapped.readline().strip()
         
-        best_count = count_unknown[0]
+        best_score = match_score[0]
         best = candidates[0]
         best_d = candidates_d[0]
-        best_prop = 1
+        best_match = matches[0]
+        best_index = [k]
         var_map = var_maps[0]
-        for k in range(1, len(count_unknown)):
-            if count_vars[k] > 0:
-                if count_unknown[k] < best_count:
-                    best_count = count_unknown[k]
-                    best = candidates[k]
-                    best_d = candidates_d[k]
-                    best_prop = count_unknown[k]/count_vars[k]
-                    var_map = var_maps[k]
-                elif count_unknown[k] == best_count:
-                    prop = count_unknown[k]/count_vars[k]
-                    if prop < best_prop:
-                        best = candidates[k]
-                        best_d = candidates_d[k]
-                        best_prop = prop
-                        var_map = var_maps[k]
-                    elif prop == best_prop:
-                        if candidates_d[k] <= best_d:
-                            best = candidates[k]
-                            best_d = candidates_d[k]
-                            var_map = var_maps[k]
-        
-        file_c = best[0].replace(Pc.path, "")[:-4]
-        d_c = str(best_d)
-        Print.green("\t\tBest match for " + file_a + " in Pa:")
-        Print.blue("\t\tFile: " + file_c + " in Pc")
-        Print.blue("\t\tDistance: " + d_c + "\n")
-        Print.green(Pa.path + file_a, Pc.path + file_c, var_map)
-        '''to_patch.append((Pa.funcs[Pa.path + file_a][f_a],
-                         Pc.funcs[Pc.path + file_c][f_c], var_map))'''
+        for k in range(1, len(candidates)):
+            score = match_score[k]
+            d = candidates_d[k]
+            match = matches[k]
+            if score > best_score:
+                best_index = [k]
+            elif score == best_score:
+                if d < best_d:
+                    best_index = [k]
+                elif d == best_d:
+                    if match > best_match:
+                        best_index = [k]
+                    else:
+                        best_index.append(k)
+        # Potentially many identical matches
+        M = len(best_index)
+        m = min(1, M)
+        Print.green("\t" + str(M) + " match" + "es" * m + " for " + file_a)
+        for index in best_index:
+            file_c = candidates[index][0][:-4].replace(Pc.path, "")
+            d_c = str(candidates_d[index])
+            var_map = var_maps[index]
+            Print.green("\t\tMatch for " + file_a + " in Pa:")
+            Print.blue("\t\tFile: " + file_c + " in Pc.")
+            Print.blue("\t\tDistance: " + d_c + ".\n")
+            Print.green((Pa.path + file_a, Pc.path + file_c, var_map))
+            to_patch.append((Pa.path + file_a, Pc.path + file_c, var_map))
     return to_patch
     
 def compare_C():
     global Pa, Pc
-    c_ext = "*.c.*.vec"
+    c_ext = "*\.c\.*\.vec"
     vecs_A = get_vector_list(Pa, c_ext)
     vecs_C = get_vector_list(Pc, c_ext)
     
@@ -428,13 +401,25 @@ def compare_C():
     
     
 def generate_ast_map(source_a, source_b):
-    c = crochet_diff + "-dump-matches " + source_a + " " + \
-        source_b + " 2>> output/errors_clang_diff " + \
-        "| grep -P '^Match ' | grep -P '^Match ' > output/ast-map"
+    c = crochet_diff + "-dump-matches " + source_a + " " + source_b
+    if source_a[-1] == "h":
+        c += " --"
+    c += " 2>> output/errors_clang_diff"
+    c += "| grep -P '^Match ' | grep -P '^Match ' > output/ast-map"
     try:
         exec_com(c, True)
     except Exception as e:
         err_exit(e, "Unexpected error in generate_ast_map.")
+        
+def simple_crochet_diff(source_a, source_b):
+    c = crochet_diff + "-dump-matches " + source_a + " " + source_b
+    if source_a[-1] == "h":
+        c += " --"
+    c += " 2>> output/errors_clang_diff > output/ast-map"
+    try:
+        exec_com(c, True)
+    except Exception as e:
+        err_exit(e, "Unexpected error in simple_crochet_diff.")
 
 def id_from_string(simplestring):
     return int(simplestring.split("(")[-1][:-1])
@@ -442,80 +427,40 @@ def id_from_string(simplestring):
 def detect_matching(file_a, file_c):
     
     try:
-        generate_ast_map(Pa.path + "/" + file_a, Pc.path + "/" + file_c)
+        simple_crochet_diff(Pa.path + file_a, Pc.path + file_c)
     except Exception as e:
         err_exit(e, "Error at generate_ast_map.")
         
-    json_file_A = Pa.path + "/" + file_a + ".AST"
-    ast_A = ASTparser.AST_from_file(json_file_A)
-    json_file_C = Pc.path + "/" + file_c + ".AST"
-    ast_C = ASTparser.AST_from_file(json_file_C)
-    
     ast_map = dict()
     
     try:
         with open("output/ast-map", "r", errors="replace") as ast_map_file:
-            map_line = ast_map_file.readline().strip()
-            while map_line:
-                nodeA, nodeC = clean_parse(map_line, TO)
-                
-                var_a = id_from_string(nodeA)
-                var_a = ast_A[var_a].value_calc(Pa.path + "/" + file_a)
-                
-                var_c = id_from_string(nodeC)
-                var_c = ast_C[var_c].value_calc(Pc.path + "/" + file_c)
-                
-                if var_a not in ast_map.keys():
-                    ast_map[var_a] = dict()
-                if var_c in ast_map[var_a].keys():
-                    ast_map[var_a][var_c] += 1
-                else:
-                    ast_map[var_a][var_c] = 1
-                map_line = ast_map_file.readline().strip()
+            map_lines = ast_map_file.readlines()
     except Exception as e:
         err_exit(e, "Unexpected error parsing ast-map in detect_matching")
     
-    variable_list_a = ast_map.keys()
-    
-    UNKNOWN = "#UNKNOWN#"
-    variable_mapping = dict()
-    try:
-        while variable_list_a:
-            var_a = variable_list_a.pop()
-            if var_a not in variable_mapping.keys():
-                a_name = var_a.split(" ")[-1]
-                if a_name in ast_map.keys():
-                    max_match = -1
-                    best_match = None
-                    for var_c in ast_map[a_name].keys():
-                        if max_match == -1:
-                            max_match = ast_map[a_name][var_c]
-                            best_match = var_c
-                        elif ast_map[a_name][var_c] > max_match:
-                            max_match = ast_map[a_name][var_c]
-                            best_match = var_c
-                    if best_match:
-                        variable_list_c = ast_map[var_a].keys()
-                        for var_c in variable_list_c:
-                            c_name = var_c.split(" ")[-1]
-                            if c_name == best_match:
-                                variable_mapping[var_a] = var_c
-                if var_a not in variable_mapping.keys():
-                    variable_mapping[var_a] = UNKNOWN
-    except Exception as e:
-        err_exit(e, "Unexpected error while mapping vars.")
+    matches = 0
+    edits = 0
+    for line in map_lines:
+        line = line.strip()
+        if len(line) > 6 and line[:5] == "Match":
+            matches += 1
+            line = clean_parse(line[6:], TO)
+            ast_map[line[0]] = line[1]
+        else:
+            edits += 1
 
     with open("output/var-map", "w", errors='replace') as var_map_file:
-        for var_a in variable_mapping.keys():
-            var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
+        for var_a in ast_map.keys():
+            var_map_file.write(var_a + " -> " + ast_map[var_a] + "\n")
     
-    return variable_mapping
+    return ast_map, matches, edits
             
 
 def detect_matching_variables(f_a, file_a, f_c, file_c):
     
     try:
-        generate_ast_map(Pa.path + "/" + file_a, Pc.path + "/" + file_c)
+        generate_ast_map(Pa.path + file_a, Pc.path + file_c)
     except Exception as e:
         err_exit(e, "Error at generate_ast_map.")
     
@@ -531,11 +476,11 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     while '' in variable_list_c:
         variable_list_c.remove('')
     
-    Print.white(variable_list_c)
+    #Print.white(variable_list_c)
     
-    json_file_A = Pa.path + "/" + file_a + ".AST"
+    json_file_A = Pa.path + file_a + ".AST"
     ast_A = ASTparser.AST_from_file(json_file_A)
-    json_file_C = Pc.path + "/" + file_c + ".AST"
+    json_file_C = Pc.path + file_c + ".AST"
     ast_C = ASTparser.AST_from_file(json_file_C)
     
     ast_map = dict()
@@ -546,10 +491,10 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
                 nodeA, nodeC = clean_parse(map_line, TO)
                 
                 var_a = id_from_string(nodeA)
-                var_a = ast_A[var_a].value_calc(Pa.path + "/" + file_a)
+                var_a = ast_A[var_a].value_calc(Pa.path + file_a)
                 
                 var_c = id_from_string(nodeC)
-                var_c = ast_C[var_c].value_calc(Pc.path + "/" + file_c)
+                var_c = ast_C[var_c].value_calc(Pc.path + file_c)
                 
                 if var_a in a_names:
                     if var_a not in ast_map.keys():
@@ -594,12 +539,21 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
             var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
     
     return variable_mapping
-            
 
-def gen_json(vec_f, name, ASTlists):
-    Print.blue("\t\tClang AST parse " + vec_f.function + " in " + name + "...")
+
+def ASTdump(file, output):
+    extra_arg = ""
+    if file[-1] == "h":
+        extra_arg = " --"
+    c = crochet_diff + " -s=" + crochet_diff_size  + " -ast-dump-json " + \
+        file + extra_arg + " 2> output/errors_AST_dump > " + output
+    exec_com(c)
+           
+
+def gen_json(file, name, ASTlists):
+    Print.blue("\t\tClang AST parse " + file + " in " + name + "...")
     json_file = "output/json_" + name
-    ASTdump(vec_f.file, json_file)
+    ASTdump(file, json_file)
     ASTlists[name] = ASTparser.AST_from_file(json_file)
     
     
@@ -632,15 +586,12 @@ def clean_parse(content, separator):
     return [node1, node2]
     
 
-def ASTdump(file, output):
-    c = crochet_diff + " -s=" + crochet_diff_size  + " -ast-dump-json " + \
-        file + " 2> output/errors_AST_dump > " + output
-    exec_com(c)
-    
-
 def ASTscript(file1, file2, output, only_matches=False):
+    extra_arg = ""
+    if file1[-2:] == ".h":
+        extra_arg = " --"
     c = crochet_diff + " -s=" + crochet_diff_size  + " -dump-matches " + \
-        file1 + " " + file2 + " 2> output/errors_clang_diff "
+        file1 + " " + file2 + extra_arg + " 2> output/errors_clang_diff "
     if only_matches:
         c += "| grep '^Match ' "
     c += " > " + output
@@ -816,13 +767,13 @@ def get_instructions():
             line = script_AB.readline().strip()
     return instruction_AB, inserted_B, match_BA
     
-def gen_temp_json(vec_f_a, vec_f_b, vec_f_c):
-    Print.blue("Generating JSON temp files for each pertinent function...")
+def gen_temp_json(file_a, file_b, file_c):
+    Print.blue("Generating JSON temp files for each pertinent file...")
     ASTlists = dict()
     try:
-        gen_json(vec_f_a, Pa.name, ASTlists)
-        gen_json(vec_f_b, Pb.name, ASTlists)
-        gen_json(vec_f_c, Pc.name, ASTlists)
+        gen_json(file_a, Pa.name, ASTlists)
+        gen_json(file_b, Pb.name, ASTlists)
+        gen_json(file_c, Pc.name, ASTlists)
     except Exception as e:
         err_exit(e, "Error parsing with crochet-diff. Did you bear make?")
     return ASTlists
@@ -1195,8 +1146,50 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
             except Exception as e:
                 err_exit(e, "Something went wrong with INSERT.")
     return instruction_CD
-    
-def transplantation(to_patch):
+
+
+def Htransplantation(to_patch):
+    for (file_a, file_c, var_map) in to_patch:
+        file_b = file_a.replace(Pa.path, Pb.path)
+        if not os.path.isfile(file_b):
+            err_exit("Error: File not found.", file_b)
+            
+        # Generate edit scritps for diff and matching
+        gen_edit_script(file_a, file_b, "diff_script_AB")
+        gen_edit_script(file_a, file_c, "diff_script_AC")
+        
+        Print.blue("Generating final edit script for " + file_c.split("/")[-1])
+        # Write patch properly
+        instruction_AB, inserted_B, match_BA = get_instructions()
+        # Generate AST as json files
+        ASTlists = gen_temp_json(file_a, file_b, file_c)
+        # Simplify instructions to a smaller representative sequence of them
+        modified_AB = simplify_patch(instruction_AB, match_BA, ASTlists)
+        #Sort in reverse order and depending on instruction for application
+        modified_AB.sort(key=cmp_to_key(order_comp))
+        # Delete overlapping DELETE operations
+        modified_AB = remove_overlapping_delete(modified_AB)
+        # Adjusting position for MOVE and INSERT operations
+        modified_AB = adjust_pos(modified_AB)
+        # Printing modified simplified script
+        Print.green("Modified simplified script:")
+        for j in [" - ".join([str(k) for k in i]) for i in modified_AB]:
+            Print.green("\t" + j)
+        # We rewrite the instruction as a script (str) instead of nodes
+        instruction_AB = rewrite_as_script(modified_AB)
+        # We get the matching nodes from Pa to Pc into a dict
+        match_AC = retrieve_matches()
+        # Transform instructions into ones pertinent to Pc nodes
+        instruction_CD = transform_script(instruction_AB, inserted_B, ASTlists,
+                                          match_AC, match_BA)
+        # Write patch script properly and print in on console
+        Print.white("Proposed patch from Pc to Pd")
+        for i in instruction_CD:
+            patch_instruction(i)
+        # Apply the patch (it runs with the script)
+        patch(file_a, file_b, file_c)
+  
+def Ctransplantation(to_patch):
     for (vec_f_a, vec_f_c, var_map) in to_patch:
         try:
             vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
@@ -1212,16 +1205,15 @@ def transplantation(to_patch):
             err_exit(e, vec_f_b_file, vec_f_a, Pa.path, Pb.path,
                      vec_f_a.function)
         
-        
         # Generate edit scritps for diff and matching
         gen_edit_script(vec_f_a.file, vec_f_b.file, "diff_script_AB")
         gen_edit_script(vec_f_a.file, vec_f_c.file, "diff_script_AC")
                       
         Print.blue("Generating final edit script for " + Pc.name)
-        # Write patch preperly
+        # Write patch properly
         instruction_AB, inserted_B, match_BA = get_instructions()
         # Generate AST as json files
-        ASTlists = gen_temp_json(vec_f_a, vec_f_b, vec_f_c)
+        ASTlists = gen_temp_json(vec_f_a.file, vec_f_b.file, vec_f_c.file)
         # Simplify instructions to a smaller representative sequence of them
         modified_AB = simplify_patch(instruction_AB, match_BA, ASTlists)
         #Sort in reverse order and depending on instruction for application
@@ -1255,8 +1247,8 @@ def patch(file_a, file_b, file_c):
     # Check for an edit script
     if not (os.path.isfile("output/script")):
         err_exit("No script was generated. Exiting with error.")
-        
-    output_file = "output/" + str(n_changes) + "_temp.c"
+    
+    output_file = "output/" + str(n_changes) + "_temp." + file_c[-1]
     c = ""
     # We add file_c into our dict (changes) to be able to backup and copy it
     if file_c not in changes.keys():
@@ -1293,6 +1285,7 @@ def patch(file_a, file_b, file_c):
     
     
 def restore_files():
+    global changes
     Print.yellow("Restoring files...")
     for file in changes.keys():
         backup_file = changes[file]
@@ -1361,11 +1354,13 @@ def run_crochet():
     safe_exec(gen_ASTs, "vector generation for functions in Pc")
 
     # Pairwise vector comparison for matching
-    Cpatch = safe_exec(compare_C, "pairwise vector comparison for matching")
     Hpatch = safe_exec(compare_H, "pairwise vector comparison for matching")
+    Cpatch = safe_exec(compare_C, "pairwise vector comparison for matching")
+    
     
     # Using all previous structures to transplant patch
-    safe_exec(transplantation, "patch transplantation", Cpatch)
+    safe_exec(Htransplantation, "patch transplantation", Hpatch)
+    safe_exec(Ctransplantation, "patch transplantation", Cpatch)
     
     # Verification by compiling and re-running crash
     safe_exec(verification, "program verification")

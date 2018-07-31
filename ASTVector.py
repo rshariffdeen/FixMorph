@@ -8,7 +8,7 @@ class ASTVector:
     
     deckard_path = "tools/Deckard/src/main/cvecgen_fail "
     deckard_path_2 = "tools/Deckard/src/main/cvecgen "
-    deckard_vecs = dict()
+    #deckard_vecs = dict()
     vid = 0
     
     def __init__(self, proj, file, function, start, end, Deckard=True):
@@ -17,54 +17,67 @@ class ASTVector:
         self.function = function
         self.start = start
         self.end = end
-        self.length = int(end) - int(start)
         self.variables = []
-        self.vector_path = self.file + "." + self.function + ".vec"
+        if self.function != None:
+            self.vector_path = self.file + "." + self.function + ".vec"
+        else:
+            self.vector_path = self.file + ".vec"
         self.vector = None
         if Deckard:
             self.vector = self.gen_Deckard_vec()
-        if proj.name not in ASTVector.deckard_vecs.keys():
-            ASTVector.deckard_vecs[proj.name] = list()
-        ASTVector.deckard_vecs[proj.name].append(self.vector)
+        #if proj.name not in ASTVector.deckard_vecs.keys():
+        #    ASTVector.deckard_vecs[proj.name] = list()
+        #ASTVector.deckard_vecs[proj.name].append(self.vector)
         self.id = ASTVector.vid
         ASTVector.vid += 1
         
     def gen_Deckard_vec(self):
-        current = "\t" + self.function + " " + str(self.start) + "-" + \
-                    str(self.end)
-        Print.grey(current, False)
-        start = self.start
-        end = self.end
-        with open(self.file, 'r', errors='replace') as file:
-            ls = file.readlines()
-            max_line = len(ls)
-            if int(end) > max_line:
-                # TODO: This shouldn't happen!
-                Print.red(current)
-                err_exit("Deckard fail. The following file was not generated:",
-                         self.vector_path)
-                return None
-        self.start = start
-        self.end = end
-        
-        c = "echo " + self.vector_path + "\n >>  output/errors; "
-        c += ASTVector.deckard_path + " --start-line-number " + \
-            str(self.start) + " --end-line-number " + str(self.end) + " " + \
-            self.file + " -o " + self.vector_path + " 2> output/errors"
+        if self.function == None:
+            c = "echo " + self.vector_path + " >> output/errors; " + \
+                ASTVector.deckard_path + " " + self.file + " -o " + \
+                self.vector_path + " 2> output/errors"
+        else:
+            current = "\t" + self.function + " " + str(self.start) + "-" + \
+                        str(self.end)
+            Print.grey(current, False)
+            start = self.start
+            end = self.end
+            with open(self.file, 'r', errors='replace') as file:
+                ls = file.readlines()
+                max_line = len(ls)
+                if int(end) > max_line:
+                    # TODO: This shouldn't happen!
+                    Print.red(current)
+                    err_exit("Deckard fail. The following file not generated:",
+                             self.vector_path)
+                    return None
+            self.start = start
+            self.end = end
+            
+            c = "echo " + self.vector_path + "\n >>  output/errors; "
+            c += ASTVector.deckard_path + " --start-line-number " + \
+                str(self.start) + " --end-line-number " + str(self.end) + \
+                " " + self.file + " -o " + self.vector_path + \
+                " 2> output/errors"
             
         try:
-            exec_com(c, True)
+            exec_com(c, False)
         except Exception as e:
             err_exit(e, "Error with Deckard vector generation. Exiting...")
     
         if not os.path.isfile(self.vector_path):
-            c1 = "echo " + self.vector_path + "\n >>  output/errors; "
-            c1 += ASTVector.deckard_path_2 + " --start-line-number " + \
-                 str(self.start) + " --end-line-number " + str(self.end) + \
-                 " " + self.file + " -o " + self.vector_path + \
-                 " 2> output/errors"
+            if self.function == None:
+                c1  = "echo " + self.vector_path + " >> output/errors; " + \
+                ASTVector.deckard_path_2 + " " + self.file + " -o " + \
+                self.vector_path + " 2> output/errors"
+            else:
+                c1 = "echo " + self.vector_path + "\n >>  output/errors; "
+                c1 += ASTVector.deckard_path_2 + " --start-line-number " + \
+                     str(self.start) + " --end-line-number " + \
+                     str(self.end) + " " + self.file + " -o " + \
+                     self.vector_path + " 2> output/errors"
             try:
-                exec_com(c1, True)
+                exec_com(c1, False)
             except Exception as e:
                 err_exit(e, "Error with Deckard vector generation. Exiting...")
         
