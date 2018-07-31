@@ -1168,7 +1168,7 @@ def Htransplantation(to_patch):
         #Sort in reverse order and depending on instruction for application
         modified_AB.sort(key=cmp_to_key(order_comp))
         # Delete overlapping DELETE operations
-        modified_AB = remove_overlapping_delete(modified_AB)
+        #modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
         modified_AB = adjust_pos(modified_AB)
         # Printing modified simplified script
@@ -1219,7 +1219,7 @@ def Ctransplantation(to_patch):
         #Sort in reverse order and depending on instruction for application
         modified_AB.sort(key=cmp_to_key(order_comp))
         # Delete overlapping DELETE operations
-        modified_AB = remove_overlapping_delete(modified_AB)
+        #modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
         modified_AB = adjust_pos(modified_AB)
         # Printing modified simplified script
