@@ -1183,7 +1183,7 @@ def Htransplantation(to_patch):
         instruction_CD = transform_script(instruction_AB, inserted_B, ASTlists,
                                           match_AC, match_BA)
         # Write patch script properly and print in on console
-        Print.white("Proposed patch from Pc to Pd")
+        Print.green("Proposed patch from Pc to Pd")
         for i in instruction_CD:
             patch_instruction(i)
         # Apply the patch (it runs with the script)
@@ -1234,7 +1234,7 @@ def Ctransplantation(to_patch):
         instruction_CD = transform_script(instruction_AB, inserted_B, ASTlists,
                                           match_AC, match_BA)
         # Write patch script properly and print in on console
-        Print.white("Proposed patch from Pc to Pd")
+        Print.green("Proposed patch from Pc to Pd")
         for i in instruction_CD:
             patch_instruction(i)
         # Apply the patch (it runs with the script)
@@ -1259,29 +1259,39 @@ def patch(file_a, file_b, file_c):
     # We apply the patch using the script and crochet-patch
     c += crochet_patch + " -s=" + crochet_patch_size + \
          " -script=output/script -source=" + file_a + \
-         " -destination=" + file_b + " -target=" + file_c + \
-         " 2> output/errors > " + output_file + "; "
+         " -destination=" + file_b + " -target=" + file_c
+    if file_c[-1] == "h":
+        c += " --"
+    c += " 2> output/errors > " + output_file + "; "
     c += "cp " + output_file + " " + file_c
     exec_com(c)
     # We fix basic syntax errors that could have been introduced by the patch
-    c2 = clang_check + "-fixit " + file_c + " 2> output/syntax_errors"
+    c2 = clang_check + "-fixit " + file_c
+    if file_c[-1] == "h":
+        c2 += " --"
+    c2 += " 2> output/syntax_errors"
     exec_com(c2)
     # We check that everything went fine, otherwise, we restore everything
     try:
         c3 = clang_check + file_c
+        if file_c[-1] == "h":
+            c3 += " --"
         exec_com(c3)
     except Exception as e:
         Print.red("Clang-check could not repair syntax errors.")
         restore_files()
         err_exit(e, "Crochet failed.")
     # We format the file to be with proper spacing (needed?)
-    c3 = clang_format + file_c + " > " + output_file + "; "
-    c3 += "cp " + output_file + " " + file_c + ";"
-    exec_com(c3)
+    c4 = clang_format + file_c
+    if file_c[-1] == "h":
+        c4 += " --"
+    c4 += " > " + output_file + "; "
+    c4 += "cp " + output_file + " " + file_c + ";"
+    exec_com(c4)
     
     # We rename the script so that it won't be there for other files
-    c4 = "mv output/script output/" + str(n_changes) + "_script"
-    exec_com(c4)
+    c5 = "mv output/script output/" + str(n_changes) + "_script"
+    exec_com(c5)
     
     
 def restore_files():

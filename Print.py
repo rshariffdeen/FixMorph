@@ -64,14 +64,14 @@ def white(message):
       
       
 def start():
-    cyan("\n\n" + "#"*150 + "\n\n\tStarting Crochet...\n\n" + "#"*150)
+    cyan("\n\n" + "#"*150 + "\n\n\tStarting CacaoTree...\n\n" + "#"*150)
     cyan("_"*150 + "\n\n" +
     '''
     Crochet was developed by researchers at NUS Tsunami Team:
     
     \tRidwan Shariffdeen (rshariffdeen@gmail.com)
         
-    \tPedro Bahamondes (pibahamondes@uc.cl)
+    \tPedro Bahamondes (pibahamondesw@gmail.com)
         
     \tShin Hwei Tan (shinhwei0131@gmail.com)
     
@@ -83,8 +83,14 @@ def start():
     
     Acknowledgements:
     
-    \tThis software uses Deckard (at tools/Deckard).
-    \tSee https://github.com/skyhover/Deckard/ for more info.
+    \tThis software uses the following software developped by third parties:
+    
+    \t\tDeckard (at tools/Deckard). See https://github.com/skyhover/Deckard/
+    \t\tfor more info.
+    
+    \t\tClang (at tools/bin) and some subprojects.
+    
+    \t\tClang-diff, a tool based on Gumtree diff
     '''
     +"\n" + "_"*150 + "\n")
     
