@@ -1156,7 +1156,7 @@ def Htransplantation(to_patch):
             
         # Generate edit scritps for diff and matching
         gen_edit_script(file_a, file_b, "diff_script_AB")
-        gen_edit_script(file_a, file_c, "diff_script_AB")
+        gen_edit_script(file_a, file_c, "diff_script_AC")
         
         Print.blue("Generating final edit script for " + file_c.split("/")[-1])
         # Write patch properly
