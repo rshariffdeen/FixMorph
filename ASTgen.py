@@ -29,7 +29,7 @@ def ASTdump(file, output, h_file=False):
     if file[-1] == "h":
         c += " --"
     c += " 2> output/errors_AST_dump > " + output
-    a = exec_com(c, True)
+    a = exec_com(c, False)
     Print.yellow(a[0])
 
 def gen_json(filepath, h_file=False):
@@ -59,8 +59,6 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
     dict_file = dict()
     try:
         ast = gen_json(filepath, h_file)
-        if h_file:
-            print(filepath)
     except:
         Print.yellow("Skipping... Failed for file:\n\t" + filepath)
         return function_lines, dict_file
@@ -70,7 +68,7 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
     file = filepath.split("/")[-1]
     
     if Deckard:
-        Print.grey("Generating vectors for " + filepath.split("/")[-1])
+        Print.grey("Generating vectors for " + file)
         
     if h_file:
         if Deckard:

@@ -9,6 +9,8 @@ class Project:
     def __init__(self, path, name):
         if not (os.path.isdir(path)):
             err_exit(name + " is not an appropriate directory path.", path)
+        if path[-1] != "/":
+            path += "/"
         self.path = path
         self.name = name
         self.funcs = dict()
@@ -39,4 +41,4 @@ class Project:
     def clean(self):
         # Remove *.crochetAST, *.AST and *.vec files from directory
         Print.blue("Cleaning " + self.name + "...")
-        clean_ASTs(self.path + "/")
+        clean_ASTs(self.path)
