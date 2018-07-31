@@ -25,6 +25,7 @@ clang_format = "clang-format -style=LLVM "
 interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
+UPDATEMOVE = "UpdateMove"
 UPDATE = "Update"
 MOVE = "Move"
 INSERT = "Insert"
@@ -34,7 +35,7 @@ TO = " to "
 AT = " at "
 INTO = " into "
 AND = "and"
-order = [UPDATE, DELETE, MOVE, INSERT]
+order = [UPDATE, UPDATEMOVE, DELETE, MOVE, INSERT]
 
 changes = dict()
 n_changes = 0
@@ -599,40 +600,40 @@ def ASTscript(file1, file2, output, only_matches=False):
     
 
 def inst_comp(i):
-    return min(order.index(i), 2)
+    return order.index(i)
     
     
 def order_comp(inst1, inst2):
     
-    if inst1[0] in order[0:2]:
-        l1 = inst1[1]
-    elif inst1[0] in order[2:4]:
-        l1 = inst1[2]
+    # if inst1[0] in order[0:3]:
+    #     l1 = inst1[1]
+    # elif inst1[0] in order[3:5]:
+    #     l1 = inst1[2]
         
-    if inst2[0] in order[0:2]:
-        l2 = inst2[1]
-    elif inst2[0] in order[2:4]:
-        l2 = inst2[2]
+    # if inst2[0] in order[0:3]:
+    #     l2 = inst2[1]
+    # elif inst2[0] in order[3:5]:
+    #     l2 = inst2[2]
         
-    line1 = int(l1.line)
-    line2 = int(l2.line)
-    if line1 != line2:
-        return line2 - line1
+    # line1 = int(l1.line)
+    # line2 = int(l2.line)
+    # if line1 != line2:
+    #     return line2 - line1
     
-    line1 = int(l1.line_end)
-    line2 = int(l2.line_end)
-    if line1 != line2:
-        return line2 - line1
+    # line1 = int(l1.line_end)
+    # line2 = int(l2.line_end)
+    # if line1 != line2:
+    #     return line2 - line1
     
-    col1 = int(l1.col)
-    col2 = int(l2.col)
-    if col1 != col2:
-        return col2 - col1
+    # col1 = int(l1.col)
+    # col2 = int(l2.col)
+    # if col1 != col2:
+    #     return col2 - col1
         
-    col1 = int(l1.col_end)
-    col2 = int(l2.col_end)
-    if col1 != col2:
-        return col2 - col1
+    # col1 = int(l1.col_end)
+    # col2 = int(l2.col_end)
+    # if col1 != col2:
+    #     return col2 - col1
     
     return inst_comp(inst1[0]) - inst_comp(inst2[0])
     
@@ -713,10 +714,9 @@ def get_instructions():
             # Special case: Update and Move nodeA into nodeB2
             if len(line) > 3 and line[0] == UPDATE and line[1] == AND and \
                line[2] == MOVE:
-                instruction = line[2]
+                instruction = UPDATEMOVE
                 content = " ".join(line[3:])
-                nodeA, nodeB = clean_parse(content, INTO)
-                instruction_AB.append((UPDATE, match_BA[nodeA], nodeA))
+                
             else:
                 instruction = line[0]
                 content = " ".join(line[1:])
@@ -752,6 +752,16 @@ def get_instructions():
                     instruction_AB.append((instruction, nodeA, nodeB, pos))
                 except Exception as e:
                     err_exit(e, "Something went wrong in MOVE.")
+            # Update nodeA into matching node in B and move into nodeB at pos
+            elif instruction == UPDATEMOVE:
+                try:
+                    nodeA, nodeB = clean_parse(content, INTO)
+                    nodeB_at = nodeB.split(AT)
+                    nodeB = AT.join(nodeB_at[:-1])
+                    pos = nodeB_at[-1]
+                    instruction_AB.append((instruction, nodeA, nodeB, pos))
+                except Exception as e:
+                    err_exit(e, "Something went wrong in MOVE.")        
             # Insert nodeB1 into nodeB2 at pos
             elif instruction == INSERT:
                 try:
@@ -819,6 +829,28 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                                  "could not be matched. " + \
                                  "Skipping MOVE instruction...")
                     Print.yellow(i)
+        elif inst == UPDATEMOVE:
+            nodeB1 = id_from_string(i[1])
+            nodeB1 = ASTlists[Pb.name][nodeB1]
+            nodeB2 = id_from_string(i[2])
+            nodeB2 = ASTlists[Pb.name][nodeB2]
+            pos = i[3]
+            Print.white("\t" + UPDATEMOVE + " - " + str(nodeB1) + " - " + \
+                        str(nodeB2) + " - " + str(pos))
+            inserted.append(nodeB1)
+            if nodeB2 not in inserted:
+                modified_AB.append((UPDATEMOVE, nodeB1, nodeB2, pos))
+            else:
+                if i[1] in match_BA.keys():
+                    nodeA = match_BA[i[1]]
+                    nodeA = id_from_string(nodeA)
+                    nodeA = ASTlists[Pa.name][nodeA]
+                    modified_AB.append((DELETE, nodeA))
+                else:
+                    Print.yellow("Warning: node " + str(nodeB1) + \
+                                 "could not be matched. " + \
+                                 "Skipping MOVE instruction...")
+                    Print.yellow(i)            
         elif inst == INSERT:
             nodeB1 = id_from_string(i[1])
             nodeB1 = ASTlists[Pb.name][nodeB1]
@@ -854,7 +886,7 @@ def adjust_pos(modified_AB):
     i = 0
     while i < len(modified_AB) - 1:
         inst1 = modified_AB[i][0]
-        if inst1 == INSERT or inst1 == MOVE:
+        if inst1 == INSERT or inst1 == MOVE or inst1 == UPDATEMOVE:
             node_into_1 = modified_AB[i][2]
             k = i+1
             for j in range(i+1, len(modified_AB)):
@@ -905,6 +937,11 @@ def rewrite_as_script(modified_AB):
             nodeB2 = i[2].simple_print()
             pos = int(i[3])
             instruction_AB.append((MOVE, nodeB1, nodeB2, pos))
+        elif inst == UPDATEMOVE:
+            nodeB1 = i[1].simple_print()
+            nodeB2 = i[2].simple_print()
+            pos = int(i[3])
+            instruction_AB.append((UPDATEMOVE, nodeB1, nodeB2, pos))    
     return instruction_AB
     
 def retrieve_matches():
@@ -951,6 +988,7 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                                  "not found. Skipping UPDATE instruction.")
             except Exception as e:
                 err_exit(e, "Something went wrong with UPDATE.")
+
         # Delete nodeA -> Delete nodeC
         elif instruction == DELETE:
             try:
@@ -1068,6 +1106,106 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
             except Exception as e:
                 err_exit(e, "Something went wrong with MOVE.")
         
+        # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
+        elif instruction == UPDATEMOVE:
+            try:
+                nodeB1 = i[1]
+                nodeB2 = i[2]
+                pos = int(i[3])
+                nodeC1 = "?"
+                nodeC2 = "?"
+                if nodeB1 in match_BA.keys():
+                    nodeA1 = match_BA[nodeB1]
+                    if nodeA1 in match_AC.keys():
+                        nodeC1 = match_AC[nodeA1]
+                        nodeC1 = id_from_string(nodeC1)
+                        nodeC1 = ASTlists[Pc.name][nodeC1]
+                    else:
+                        # TODO: Manage case in which nodeA1 is unmatched
+                        Print.yellow("Node in Pa not found in Pc: (1)")
+                        Print.yellow(nodeA1)
+                elif nodeB1 in inserted_B:
+                    if nodeB1 in match_BD.keys():
+                        nodeC1 = match_BD[nodeB1]
+                    else:
+                        # TODO: Manage case for node not found
+                        Print.yellow("Node to be moved was not found. (2)")
+                        Print.yellow(nodeB1)
+                if nodeB2 in match_BA.keys():
+                    nodeA2 = match_BA[nodeB2]
+                    if nodeA2 in match_AC.keys():
+                        nodeC2 = match_AC[nodeA2]
+                        nodeC2 = id_from_string(nodeC2)
+                        nodeC2 = ASTlists[Pc.name][nodeC2]
+                    else:
+                        # TODO: Manage case for unmatched nodeA2
+                        Print.yellow("Node in Pa not found in Pc: (1)")
+                        Print.yellow(nodeA2)
+                elif nodeB2 in inserted_B:
+                    if nodeB2 in match_BD.keys():
+                        nodeC2 = match_BD[nodeB2]
+                    else:
+                        # TODO: Manage case for node not found
+                        Print.yellow("Node to be moved was not found. (2)")
+                        Print.yellow(nodeB2)
+                try:
+                    true_B2 = id_from_string(nodeB2)
+                    true_B2 = ASTlists[Pb.name][true_B2]
+                    if pos != 0:
+                        nodeB2_l = true_B2.children[pos-1]
+                        nodeB2_l = nodeB2_l.simple_print()
+                        if nodeB2_l in match_BA.keys():
+                            nodeA2_l = match_BA[nodeB2_l]
+                            if nodeA2_l in match_AC.keys():
+                                nodeC2_l = match_AC[nodeA2_l]
+                                nodeC2_l = id_from_string(nodeC2_l)
+                                nodeC2_l = ASTlists[Pc.name][nodeC2_l]
+                                if nodeC2_l in nodeC2.children:
+                                    pos = nodeC2.children.index(nodeC2_l)
+                                    pos += 1
+                                else:
+                                    Print.yellow("Node not in children.")
+                                    Print.yellow(nodeC2_l)
+                                    Print.yellow([i.simple_print() for i in
+                                                  nodeC2.children])
+                            else:
+                                Print.yellow("Failed at locating match" + \
+                                             " for " + nodeA2_l)
+                                Print.yellow("Trying to get pos anyway.")
+                                # This is more likely to be correct
+                                nodeA2_l = id_from_string(nodeA2_l)
+                                nodeA2_l = ASTlists[Pa.name][nodeA2_l]
+                                parent = nodeA2_l.parent
+                                if parent != None:
+                                    pos = parent.children.index(nodeA2_l)
+                                    pos += 1
+                        else:
+                            Print.yellow("Failed at match for child.")
+                except Exception as e:
+                    err_exit(e, "Failed at locating pos.")
+                
+                if type(nodeC1) == ASTparser.AST:
+                    if nodeC1.line == None:
+                        nodeC1.line = nodeC1.parent.line
+                    if type(nodeC2) == ASTparser.AST:
+                        if nodeC2.line == None:
+                            nodeC2.line = nodeD.parent.line
+                        if nodeC2 in inserted_D:
+                            instruction_CD.append((DELETE, nodeC1))
+                        else:
+                            instruction_CD.append((UPDATEMOVE, nodeC1, nodeC2,
+                                                   pos))
+                        inserted_D.append(nodeC1)
+                        
+                    else:
+                        Print.yellow("Could not find match for node. " + \
+                                     "Ignoring UPDATEMOVE operation. (D)")
+                else:
+                    Print.yellow("Could not find match for node. " + \
+                                 "Ignoring UPDATEMOVE operation. (C)")
+            except Exception as e:
+                err_exit(e, "Something went wrong with UPDATEMOVE.")
+
         # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
         elif instruction == INSERT:
             try:
@@ -1170,7 +1308,7 @@ def Htransplantation(to_patch):
         # Delete overlapping DELETE operations
         #modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
-        modified_AB = adjust_pos(modified_AB)
+        #modified_AB = adjust_pos(modified_AB)
         # Printing modified simplified script
         Print.green("Modified simplified script:")
         for j in [" - ".join([str(k) for k in i]) for i in modified_AB]:
@@ -1221,7 +1359,7 @@ def Ctransplantation(to_patch):
         # Delete overlapping DELETE operations
         #modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
-        modified_AB = adjust_pos(modified_AB)
+        # modified_AB = adjust_pos(modified_AB)
         # Printing modified simplified script
         Print.green("Modified simplified script:")
         for j in [" - ".join([str(k) for k in i]) for i in modified_AB]:
