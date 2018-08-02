@@ -769,9 +769,10 @@ std::string Node::getValue() const {
     return getStmtValue(S);
   if (auto *D = ASTNode.get<Decl>())
     return getDeclValue(D);
+  if (auto *T = ASTNode.get<TypeLoc>())
+    return getTypeValue(T);
   if (auto *Init = ASTNode.get<CXXCtorInitializer>())
     return getInitializerValue(Init, Tree.TypePP);
-
   return "";
 
   llvm_unreachable("Fatal: unhandled AST node: \n" );
@@ -779,6 +780,12 @@ std::string Node::getValue() const {
 }
 
 std::string Node::getMacroValue() const {
+  return Lexer::getSourceText(getSourceRange(), Tree.AST.getSourceManager(),
+                                Tree.AST.getLangOpts());
+  
+}
+
+std::string Node::getTypeValue(const TypeLoc *D) const {
   return Lexer::getSourceText(getSourceRange(), Tree.AST.getSourceManager(),
                                 Tree.AST.getLangOpts());
   
