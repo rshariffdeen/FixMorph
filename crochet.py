@@ -213,7 +213,6 @@ def compare_H():
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
         dist = dict()
         
-        
         for j in vecs_C:
             d = ASTVector.ASTVector.dist(i[1], best[1])
             dist[j[0]] = d
@@ -242,15 +241,15 @@ def compare_H():
             Print.blue("\tPossible match for " + file_a + " in Pa:")
             Print.blue("\t\tFile: " + file_c + " in Pc")
             Print.blue("\t\tDistance: " + d_c + "\n")
-            Print.blue("\tVariable mapping from " + file_a + " to " + \
+            Print.blue("\tDeclaration mapping from " + file_a + " to " + \
                        file_c + ":")
             try:
-                var_map, match, edit = detect_matching(file_a, file_c)
+                var_map, match, edit = detect_matching_declarations(file_a, file_c)
                 var_maps.append(var_map)
                 match_score.append((match-edit)/(match+edit))
                 matches.append(match)
             except Exception as e:
-                err_exit(e, "Unexpected error while matching variables.")
+                err_exit(e, "Unexpected error while matching declarations.")
             with open('output/var-map', 'r', errors='replace') as mapped:
                 mapping = mapped.readline().strip()
                 while mapping:
@@ -425,7 +424,7 @@ def simple_crochet_diff(source_a, source_b):
 def id_from_string(simplestring):
     return int(simplestring.split("(")[-1][:-1])
     
-def detect_matching(file_a, file_c):
+def detect_matching_declarations(file_a, file_c):
     
     try:
         simple_crochet_diff(Pa.path + file_a, Pc.path + file_c)
@@ -438,15 +437,17 @@ def detect_matching(file_a, file_c):
         with open("output/ast-map", "r", errors="replace") as ast_map_file:
             map_lines = ast_map_file.readlines()
     except Exception as e:
-        err_exit(e, "Unexpected error parsing ast-map in detect_matching")
+        err_exit(e, "Unexpected error parsing ast-map in detect_matching declarations")
     
     matches = 0
     edits = 0
     for line in map_lines:
         line = line.strip()
         if len(line) > 6 and line[:5] == "Match":
-            matches += 1
             line = clean_parse(line[6:], TO)
+            if "Decl" not in line[0]:
+                continue
+            matches += 1
             ast_map[line[0]] = line[1]
         else:
             edits += 1
@@ -1443,7 +1444,10 @@ def restore_files():
         exec_com(c)
     Print.yellow("Files restored")
     
-    
+def show_patch():
+    Print.yellow("Original Patch")
+    Print.yellow("Generated Patch")
+
 def verification():
     if crash != None:
         try:
@@ -1464,6 +1468,8 @@ def verification():
             err_exit("Crochet failed at patching. Project still crashed" + \
                      "after changes. Exiting.")
     # TODO: Remove this part when we don't care anymore
+
+    show_patch()
     restore_files()
             
             
