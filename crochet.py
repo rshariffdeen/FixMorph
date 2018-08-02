@@ -466,12 +466,13 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
         err_exit(e, "Error at generate_ast_map.")
     
     function_a = Pa.funcs[Pa.path + file_a][f_a]
-    variable_list_a = function_a.variables
+    variable_list_a = function_a.variables.copy()
+
     while '' in variable_list_a:
         variable_list_a.remove('')
     
     a_names = [i.split(" ")[-1] for i in variable_list_a]
-        
+
     function_c = Pc.funcs[Pc.path + file_c][f_c]
     variable_list_c = function_c.variables
     while '' in variable_list_c:
@@ -483,10 +484,11 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     ast_A = ASTparser.AST_from_file(json_file_A)
     json_file_C = Pc.path + file_c + ".AST"
     ast_C = ASTparser.AST_from_file(json_file_C)
-    
+
     ast_map = dict()
     try:
         with open("output/ast-map", "r", errors='replace') as ast_map_file:
+
             map_line = ast_map_file.readline().strip()
             while map_line:
                 nodeA, nodeC = clean_parse(map_line, TO)
@@ -507,6 +509,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
                 map_line = ast_map_file.readline().strip()
     except Exception as e:
         err_exit(e, "Unexpected error while parsing ast-map")
+        
 
     UNKNOWN = "#UNKNOWN#"
     variable_mapping = dict()
@@ -538,9 +541,8 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     with open("output/var-map", "w", errors='replace') as var_map_file:
         for var_a in variable_mapping.keys():
             var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
-    
-    return variable_mapping
 
+    return variable_mapping
 
 def ASTdump(file, output):
     extra_arg = ""
