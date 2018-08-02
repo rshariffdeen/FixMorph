@@ -368,7 +368,7 @@ def compare_C():
         best_count = count_unknown[0]
         best = candidates[0]
         best_d = candidates_d[0]
-        best_prop = 1
+        best_prop = count_unknown[0]/count_vars[0]
         var_map = var_maps[0]
         for k in range(1, len(count_unknown)):
             if count_vars[k] > 0:
