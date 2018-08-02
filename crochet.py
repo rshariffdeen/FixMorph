@@ -207,7 +207,7 @@ def compare_H():
     
     factor = 2
     
-    Print.blue("Variable mapping for *.h files")
+    Print.blue("Declaration mapping for *.h files")
     for i in vecs_A:
         best = vecs_C[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
@@ -229,7 +229,7 @@ def compare_H():
                     candidates.append(j)
                     candidates_d.append(d)
         
-        var_maps = list()
+        decl_maps = list()
         match_score = list()
         matches = list()
         
@@ -244,8 +244,8 @@ def compare_H():
             Print.blue("\tDeclaration mapping from " + file_a + " to " + \
                        file_c + ":")
             try:
-                var_map, match, edit = detect_matching_declarations(file_a, file_c)
-                var_maps.append(var_map)
+                decl_map, match, edit = detect_matching_declarations(file_a, file_c)
+                decl_maps.append(decl_map)
                 match_score.append((match-edit)/(match+edit))
                 matches.append(match)
             except Exception as e:
@@ -261,18 +261,21 @@ def compare_H():
         best_d = candidates_d[0]
         best_match = matches[0]
         best_index = [k]
-        var_map = var_maps[0]
+
         for k in range(1, len(candidates)):
             score = match_score[k]
             d = candidates_d[k]
             match = matches[k]
             if score > best_score:
+                best_score = score
                 best_index = [k]
             elif score == best_score:
                 if d < best_d:
+                    best_d = d
                     best_index = [k]
                 elif d == best_d:
                     if match > best_match:
+                        best_match = match
                         best_index = [k]
                     else:
                         best_index.append(k)
@@ -283,14 +286,15 @@ def compare_H():
         for index in best_index:
             file_c = candidates[index][0][:-4].replace(Pc.path, "")
             d_c = str(candidates_d[index])
-            var_map = var_maps[index]
+            decl_map = decl_maps[index]
             Print.green("\t\tMatch for " + file_a + " in Pa:")
             Print.blue("\t\tFile: " + file_c + " in Pc.")
             Print.blue("\t\tDistance: " + d_c + ".\n")
-            Print.green((Pa.path + file_a, Pc.path + file_c, var_map))
-            to_patch.append((Pa.path + file_a, Pc.path + file_c, var_map))
+            #Print.green((Pa.path + file_a, Pc.path + file_c, var_map))
+            to_patch.append((Pa.path + file_a, Pc.path + file_c, decl_map))
     return to_patch
-    
+
+
 def compare_C():
     global Pa, Pc
     c_ext = "*\.c\.*\.vec"
@@ -423,7 +427,8 @@ def simple_crochet_diff(source_a, source_b):
 
 def id_from_string(simplestring):
     return int(simplestring.split("(")[-1][:-1])
-    
+
+
 def detect_matching_declarations(file_a, file_c):
     
     try:
