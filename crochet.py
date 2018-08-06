@@ -1553,12 +1553,11 @@ def run_patchweave():
     Cpatch = safe_exec(compare_C, "pairwise vector comparison for matching")
     function_identification_duration = str(function_identification_start_time - time.time())
 
-
-    transplanation_start_time = time.time()
+    transplantation_start_time = time.time()
     # Using all previous structures to transplant patch
     safe_exec(Htransplantation, "patch transplantation", Hpatch)
     safe_exec(Ctransplantation, "patch transplantation", Cpatch)
-    transplanation_duration = str(time.time() - transplanation_start_time)
+    transplantation_duration = str(time.time() - transplantation_start_time)
 
     # Verification by compiling and re-running crash
     safe_exec(verification, "program verification")
@@ -1568,7 +1567,7 @@ def run_patchweave():
     
     # Final running time and exit message
     runtime = str(time.time() - start)
-    Print.exit_msg(runtime, initialization_duration, function_identification_duration, transplanation_duration)
+    Print.exit_msg(runtime, initialization_duration, function_identification_duration, transplantation_duration)
     
     
 if __name__=="__main__":
