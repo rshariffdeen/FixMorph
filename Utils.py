@@ -7,7 +7,7 @@ import Print
 
 ''' Executing commands '''
 
-def exec_com(c, verbose=True):
+def exec_com(c, verbose=False):
     # Print executed command and execute it in console
     if verbose:    
         Print.grey(c)
@@ -53,12 +53,12 @@ def find_files(src_path, extension, output):
 
 ''' Put irrelevant extensions and files in src_path line by line in output'''
 
-def get_extensions(src_path, output):
+def get_extensions(src_path, output_file_name):
     extensions = set()
     c = "find " + src_path + " -type f -not -name '*\.c' -not -name '*\.h'" + \
-        " > " + output
+        " > " + output_file_name
     exec_com(c, False)
-    with open(output, 'r') as f:
+    with open(output_file_name, 'r') as f:
         a = f.readline().strip()
         while(a):
             a = a.split("/")[-1]

@@ -3,101 +3,37 @@
 
 
 import os
-import sys
 import time
 from Utils import exec_com, err_exit, find_files, clean, get_extensions
-import Project
 import Print
+import Common
 import ASTVector
 import ASTgen
 import ASTparser
 
-
-Pa = None
-Pb = None
-Pc = None
-crash = None
-
-
-CONF_FILE_NAME = "crochet.conf"
-PATCH_COMMAND = "crochet-patch"
-PATCH_SIZE = "1000"
-DIFF_SIZE = "crochet-diff "
-DIFF_COMMAND = "1000"
-SYNTAX_CHECK_COMMAND = "clang-check "
-STYLE_FORMAT_COMMAND = "clang-format -style=LLVM "
-
-
-interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
-               "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
-
-UPDATEMOVE = "UpdateMove"
-UPDATE = "Update"
-MOVE = "Move"
-INSERT = "Insert"
-DELETE = "Delete"
-MATCH = "Match"
-TO = " to "
-AT = " at "
-INTO = " into "
-AND = "and"
-order = [UPDATE, UPDATEMOVE, DELETE, MOVE, INSERT]
-
-changes = dict()
-n_changes = 0
-
-
-def initialize():
-    global Pa, Pb, Pc, crash, CONF_FILE_NAME
-
-    if len(sys.argv) > 1:
-        CONF_FILE_NAME = sys.argv[1]
-
-    with open(CONF_FILE_NAME, 'r', errors='replace') as conf_file:
-        args = [i.strip() for i in conf_file.readlines()]
-
-    if len(args) < 3:
-        err_exit("Insufficient arguments: Pa, Pb, and Pc source paths required.")
-
-    Pa = Project.Project(args[0], "Pa")
-    Pb = Project.Project(args[1], "Pb")
-    Pc = Project.Project(args[2], "Pc")
-
-    if len(args) >= 4:
-        if os.path.isfile(args[3]):
-            if len(args[3]) >= 4 and args[3][:-3] == ".sh":
-                crash = args[3]
-            else:
-                Print.yellow("Script must be path to a shell (.sh) file. Running anyway.")
-        else:
-            Print.yellow("No script for crash provided. Running anyway.")
-    else:
-            Print.yellow("No script for crash provided. Running anyway.")
-    clean()
+excluded_extensions_pa = "output/excluded-extensions-pa"
+excluded_extensions_pb = "output/excluded-extensions-pb"
+excluded_extensions = 'output/excluded-extensions'
 
 
 def find_diff_files():
-    global Pa, Pb
-    extensions = get_extensions(Pa.path, "output/files1")
-    extensions = extensions.union(get_extensions(Pb.path, "output/files2"))
-    excluded = 'output/excluded'
-    with open(excluded, 'w', errors='replace') as exclusions:
+    extensions = get_extensions(Common.Pa.path, excluded_extensions_pa)
+    extensions = extensions.union(get_extensions(Common.Pb.path, excluded_extensions_pb))
+    with open(excluded_extensions, 'w', errors='replace') as exclusions:
         for pattern in extensions:
             exclusions.write(pattern + "\n")
     # TODO: Include cases where a file is added or removed
-    c = "diff -ENZBbwqr " + Pa.path + " " + Pb.path + " -X " + excluded + \
-        "> output/diff; "
+    c = "diff -ENZBbwqr " + Common.Pa.path + " " + Common.Pb.path + " -X " + excluded_extensions + "> output/diff; "
     c += "cat output/diff | grep -P '\.c and ' > output/diff_C; "
     c += "cat output/diff | grep -P '\.h and ' > output/diff_H; "
     exec_com(c, False)
 
-    
-def gen_diff():
-    global Pa, Pb
+
+def generate_diff():
     # .h and .c files
     Print.blue("Finding differing files...")
     find_diff_files()
-    
+
     # H files
     with open('output/diff_H', 'r', errors='replace') as diff:
         diff_line = diff.readline().strip()
@@ -107,12 +43,10 @@ def gen_diff():
             file_b = diff_line[3]
             ASTgen.llvm_format(file_a)
             ASTgen.llvm_format(file_b)
-            ASTgen.parseAST(file_a, Pa, Deckard=True, h_file=True)
-            Print.rose("\t\tFile successfully found: " + \
-                       file_a.split("/")[-1] + " from " + Pa.name + " to " + \
-                       Pb.name)
+            ASTgen.parseAST(file_a, Pa, use_deckard=True, is_header=True)
+            Print.rose("\t\tFile successfully found: " + file_a.split("/")[-1] + " from " + Common.Pa.name + " to " + Common.Pb.name)
             diff_line = diff.readline().strip()
-            
+
     # C files
     Print.blue("Starting fine-grained diff...\n")
     with open('output/diff_C', 'r', errors='replace') as diff:
@@ -123,9 +57,9 @@ def gen_diff():
             file_b = diff_line[3]
             ASTgen.llvm_format(file_a)
             ASTgen.llvm_format(file_b)
-            c = "diff -ENBZbwr " + file_a + " " + file_b + " > output/C_diff"
-            exec_com(c, False)
-            pertinent_lines = []
+            diff_command = "diff -ENBZbwr " + file_a + " " + file_b + " > output/C_diff"
+            exec_com(diff_command)
+            pertinent_lines_a = []
             pertinent_lines_b = []
             with open('output/C_diff', 'r', errors='replace') as file_diff:
                 file_line = file_diff.readline().strip()
@@ -150,15 +84,15 @@ def gen_diff():
                         start_b = int(b[0])
                         end_b = int(b[-1])
                         # Pertinent lines in file_a
-                        pertinent_lines.append((start_a, end_a))
+                        pertinent_lines_a.append((start_a, end_a))
                         pertinent_lines_b.append((start_b, end_b))
                     file_line = file_diff.readline().strip()
             try:
-                ASTgen.find_affected_funcs(Pa, file_a, pertinent_lines)
-                ASTgen.find_affected_funcs(Pb, file_b, pertinent_lines_b)
+                ASTgen.find_affected_funcs(Common.Pa, file_a, pertinent_lines_a)
+                ASTgen.find_affected_funcs(Common.Pb, file_b, pertinent_lines_b)
             except Exception as e:
                 err_exit(e, "Failed at finding affected functions.")
-                        
+
             diff_line = diff.readline().strip()
 
 
@@ -172,20 +106,19 @@ def gen_ASTs_ext(ext, output, is_h=False):
         while file:
             # Parses it to get useful information and generate vectors
             try:
-                ASTgen.parseAST(file, Pc, Deckard=True, h_file=is_h)
+                ASTgen.parseAST(file, Pc, use_deckard=True, is_header=is_h)
             except Exception as e:
                 err_exit(e, "Unexpected error in parseAST with file:", file)
             file = files.readline().strip()
-    
-    
+
+
 def gen_ASTs():
     # Generates an AST file for each .h file
     gen_ASTs_ext("*\.h", "output/Hfiles", is_h=True)
     # Generates an AST file for each .c file
     gen_ASTs_ext("*\.c", "output/Cfiles", is_h=False)
-    
 
-    
+
 def get_vector_list(proj, ext):
     if "c" in ext:
         rxt = "C"
@@ -193,7 +126,7 @@ def get_vector_list(proj, ext):
         rxt = "h"
     Print.blue("Getting vectors for " + rxt + " files in " + proj.name + "...")
     filepath = "output/vectors_" + rxt + "_" + proj.name
-    find_files(proj.path, ext,  filepath)
+    find_files(proj.path, ext, filepath)
     with open(filepath, "r", errors='replace') as file:
         files = [vec.strip() for vec in file.readlines()]
     vecs = []
@@ -203,7 +136,7 @@ def get_vector_list(proj, ext):
             if fl:
                 v = [int(s) for s in vec.readline().strip().split(" ")]
                 v = ASTVector.ASTVector.normed(v)
-                vecs.append((files[i],v))
+                vecs.append((files[i], v))
     return vecs
 
 
@@ -215,36 +148,36 @@ def compare_H():
     if len(vecs_A) == 0:
         return to_patch
     vecs_C = get_vector_list(Pc, h_ext)
-    
+
     factor = 2
-    
+
     Print.blue("Declaration mapping for *.h files")
     for i in vecs_A:
         best = vecs_C[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
         dist = dict()
-        
+
         for j in vecs_C:
             d = ASTVector.ASTVector.dist(i[1], best[1])
             dist[j[0]] = d
             if d < best_d:
                 best = j
                 best_d = d
-        
+
         candidates = [best]
         candidates_d = [best_d]
         for j in vecs_C:
             if j != best:
                 d = dist[j[0]]
-                if d <= factor*best_d:
+                if d <= factor * best_d:
                     candidates.append(j)
                     candidates_d.append(d)
-        
+
         decl_maps = list()
         match_score = list()
         matches = list()
-        
-        file_a = i[0].replace(Pa.path, "")[:-4]
+
+        file_a = i[0].replace(Common.Pa.path, "")[:-4]
         for k in range(len(candidates)):
             candidate = candidates[k]
             file_c = candidate[0].replace(Pc.path, "")[:-4]
@@ -257,7 +190,7 @@ def compare_H():
             try:
                 decl_map, match, edit = detect_matching_declarations(file_a, file_c)
                 decl_maps.append(decl_map)
-                match_score.append((match-edit)/(match+edit))
+                match_score.append((match - edit) / (match + edit))
                 matches.append(match)
             except Exception as e:
                 err_exit(e, "Unexpected error while matching declarations.")
@@ -266,7 +199,7 @@ def compare_H():
                 while mapping:
                     Print.grey("\t\t" + mapping)
                     mapping = mapped.readline().strip()
-        
+
         best_score = match_score[0]
         best = candidates[0]
         best_d = candidates_d[0]
@@ -301,8 +234,8 @@ def compare_H():
             Print.green("\t\tMatch for " + file_a + " in Pa:")
             Print.blue("\t\tFile: " + file_c + " in Pc.")
             Print.blue("\t\tDistance: " + d_c + ".\n")
-            #Print.green((Pa.path + file_a, Pc.path + file_c, var_map))
-            to_patch.append((Pa.path + file_a, Pc.path + file_c, decl_map))
+            # Print.green((Common.Pa.path + file_a, Pc.path + file_c, var_map))
+            to_patch.append((Common.Pa.path + file_a, Pc.path + file_c, decl_map))
     return to_patch
 
 
@@ -311,45 +244,45 @@ def compare_C():
     c_ext = "*\.c\.*\.vec"
     vector_list_A = get_vector_list(Pa, c_ext)
     vector_list_C = get_vector_list(Pc, c_ext)
-    
+
     Print.blue("Variable mapping...\n")
     to_patch = []
-    
+
     UNKNOWN = "#UNKNOWN#"
     factor = 2
-    
+
     for i in vector_list_A:
         best = vector_list_C[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
         dist = dict()
-        
+
         # Get best match candidate
         for j in vector_list_C:
-            d = ASTVector.ASTVector.dist(i[1],j[1])
+            d = ASTVector.ASTVector.dist(i[1], j[1])
             dist[j[0]] = d
             if d < best_d:
                 best = j
                 best_d = d
-        
+
         # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
         candidates = [best]
         candidates_d = [best_d]
         for j in vector_list_C:
             if j != best:
                 d = dist[j[0]]
-                if d <= factor*best_d:
+                if d <= factor * best_d:
                     candidates.append(j)
                     candidates_d.append(d)
-                
-        count_unknown = [0]*len(candidates)
-        count_vars = [0]*len(candidates)
+
+        count_unknown = [0] * len(candidates)
+        count_vars = [0] * len(candidates)
         var_maps = []
-        
+
         # We go up to -4 to remove the ".vec" part [filepath.function.vec]
-        fa = i[0].replace(Pa.path, "")[:-4].split(".")
+        fa = i[0].replace(Common.Pa.path, "")[:-4].split(".")
         f_a = fa[-1]
         file_a = ".".join(fa[:-1])
-        
+
         # TODO: Correct once I have appropriate only function comparison
         for k in range(len(candidates)):
             candidate = candidates[k]
@@ -375,11 +308,11 @@ def compare_C():
                         count_unknown[k] += 1
                     count_vars[k] += 1
                     mapping = mapped.readline().strip()
-        
+
         best_count = count_unknown[0]
         best = candidates[0]
         best_d = candidates_d[0]
-        best_prop = count_unknown[0]/count_vars[0]
+        best_prop = count_unknown[0] / count_vars[0]
         var_map = var_maps[0]
         for k in range(1, len(count_unknown)):
             if count_vars[k] > 0:
@@ -387,10 +320,10 @@ def compare_C():
                     best_count = count_unknown[k]
                     best = candidates[k]
                     best_d = candidates_d[k]
-                    best_prop = count_unknown[k]/count_vars[k]
+                    best_prop = count_unknown[k] / count_vars[k]
                     var_map = var_maps[k]
                 elif count_unknown[k] == best_count:
-                    prop = count_unknown[k]/count_vars[k]
+                    prop = count_unknown[k] / count_vars[k]
                     if prop < best_prop:
                         best = candidates[k]
                         best_d = candidates_d[k]
@@ -401,7 +334,7 @@ def compare_C():
                             best = candidates[k]
                             best_d = candidates_d[k]
                             var_map = var_maps[k]
-        
+
         fc = best[0].replace(Pc.path, "")[:-4].split(".")
         f_c = fc[-1]
         file_c = ".".join(fc[:-1])
@@ -409,12 +342,12 @@ def compare_C():
         Print.green("\t\tBest match for " + f_a + " in $Pa/" + file_a + ":")
         Print.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
         Print.blue("\t\tDistance: " + d_c + "\n")
-                
-        to_patch.append((Pa.funcs[Pa.path + file_a][f_a],
+
+        to_patch.append((Common.Pa.funcs[Common.Pa.path + file_a][f_a],
                          Pc.funcs[Pc.path + file_c][f_c], var_map))
     return to_patch
-    
-    
+
+
 def generate_ast_map(source_a, source_b):
     c = DIFF_SIZE + "-dump-matches " + source_a + " " + source_b
     if source_a[-1] == "h":
@@ -425,7 +358,8 @@ def generate_ast_map(source_a, source_b):
         exec_com(c, True)
     except Exception as e:
         err_exit(e, "Unexpected error in generate_ast_map.")
-        
+
+
 def simple_crochet_diff(source_a, source_b):
     c = DIFF_SIZE + "-dump-matches " + source_a + " " + source_b
     if source_a[-1] == "h":
@@ -436,30 +370,33 @@ def simple_crochet_diff(source_a, source_b):
     except Exception as e:
         err_exit(e, "Unexpected error in simple_crochet_diff.")
 
-def id_from_string(simplestring):    
+
+def id_from_string(simplestring):
     return int(simplestring.split("(")[-1][:-1])
 
-def getId(NodeRef): 
+
+def getId(NodeRef):
     return int(NodeRef.split("(")[-1][:-1])
+
 
 def getType(NodeRef):
     return NodeRef.split("(")[0]
 
+
 def detect_matching_declarations(file_a, file_c):
-    
     try:
-        simple_crochet_diff(Pa.path + file_a, Pc.path + file_c)
+        simple_crochet_diff(Common.Pa.path + file_a, Pc.path + file_c)
     except Exception as e:
         err_exit(e, "Error at generate_ast_map.")
-        
+
     ast_map = dict()
-    
+
     try:
         with open("output/ast-map", "r", errors="replace") as ast_map_file:
             map_lines = ast_map_file.readlines()
     except Exception as e:
         err_exit(e, "Unexpected error parsing ast-map in detect_matching declarations")
-    
+
     matches = 0
     edits = 0
     for line in map_lines:
@@ -476,33 +413,32 @@ def detect_matching_declarations(file_a, file_c):
     with open("output/var-map", "w", errors='replace') as var_map_file:
         for var_a in ast_map.keys():
             var_map_file.write(var_a + " -> " + ast_map[var_a] + "\n")
-    
+
     return ast_map, matches, edits
-            
+
 
 def detect_matching_variables(f_a, file_a, f_c, file_c):
-    
     try:
-        generate_ast_map(Pa.path + file_a, Pc.path + file_c)
+        generate_ast_map(Common.Pa.path + file_a, Pc.path + file_c)
     except Exception as e:
         err_exit(e, "Error at generate_ast_map.")
-    
-    function_a = Pa.funcs[Pa.path + file_a][f_a]
+
+    function_a = Common.Pa.funcs[Common.Pa.path + file_a][f_a]
     variable_list_a = function_a.variables.copy()
 
     while '' in variable_list_a:
         variable_list_a.remove('')
-    
+
     a_names = [i.split(" ")[-1] for i in variable_list_a]
 
     function_c = Pc.funcs[Pc.path + file_c][f_c]
     variable_list_c = function_c.variables
     while '' in variable_list_c:
         variable_list_c.remove('')
-    
-    #Print.white(variable_list_c)
-    
-    json_file_A = Pa.path + file_a + ".AST"
+
+    # Print.white(variable_list_c)
+
+    json_file_A = Common.Pa.path + file_a + ".AST"
     ast_A = ASTparser.AST_from_file(json_file_A)
     json_file_C = Pc.path + file_c + ".AST"
     ast_C = ASTparser.AST_from_file(json_file_C)
@@ -514,13 +450,13 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
             map_line = ast_map_file.readline().strip()
             while map_line:
                 nodeA, nodeC = clean_parse(map_line, TO)
-                
+
                 var_a = id_from_string(nodeA)
-                var_a = ast_A[var_a].value_calc(Pa.path + file_a)
-                
+                var_a = ast_A[var_a].value_calc(Common.Pa.path + file_a)
+
                 var_c = id_from_string(nodeC)
                 var_c = ast_C[var_c].value_calc(Pc.path + file_c)
-                
+
                 if var_a in a_names:
                     if var_a not in ast_map.keys():
                         ast_map[var_a] = dict()
@@ -531,7 +467,6 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
                 map_line = ast_map_file.readline().strip()
     except Exception as e:
         err_exit(e, "Unexpected error while parsing ast-map")
-        
 
     UNKNOWN = "#UNKNOWN#"
     variable_mapping = dict()
@@ -566,6 +501,7 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
 
     return variable_mapping
 
+
 def ASTdump(file, output):
     extra_arg = ""
     if file[-1] == "h":
@@ -573,15 +509,15 @@ def ASTdump(file, output):
     c = DIFF_SIZE + " -s=" + DIFF_COMMAND + " -ast-dump-json " + \
         file + extra_arg + " 2> output/errors_AST_dump > " + output
     exec_com(c)
-           
+
 
 def gen_json(file, name, ASTlists):
     Print.blue("\t\tClang AST parse " + file + " in " + name + "...")
     json_file = "output/json_" + name
     ASTdump(file, json_file)
     ASTlists[name] = ASTparser.AST_from_file(json_file)
-    
-    
+
+
 def clean_parse(content, separator):
     if content.count(separator) == 1:
         return content.split(separator)
@@ -589,7 +525,7 @@ def clean_parse(content, separator):
     while i < len(content):
         if content[i] == "\"":
             i += 1
-            while i < len(content)-1:
+            while i < len(content) - 1:
                 if content[i] == "\\":
                     i += 2
                 elif content[i] == "\"":
@@ -605,11 +541,11 @@ def clean_parse(content, separator):
         i += 1
     # If all the above fails (it shouldn't), hope for some luck:
     nodes = content.split(separator)
-    half = len(nodes)//2
+    half = len(nodes) // 2
     node1 = separator.join(nodes[:half])
     node2 = separator.join(nodes[half:])
     return [node1, node2]
-    
+
 
 def ASTscript(file1, file2, output, only_matches=False):
     extra_arg = ""
@@ -621,93 +557,100 @@ def ASTscript(file1, file2, output, only_matches=False):
         c += "| grep '^Match ' "
     c += " > " + output
     exec_com(c, True)
-    
+
 
 def inst_comp(i):
     return order.index(i)
-    
-    
+
+
 def order_comp(inst1, inst2):
-    
     # if inst1[0] in order[0:3]:
     #     l1 = inst1[1]
     # elif inst1[0] in order[3:5]:
     #     l1 = inst1[2]
-        
+
     # if inst2[0] in order[0:3]:
     #     l2 = inst2[1]
     # elif inst2[0] in order[3:5]:
     #     l2 = inst2[2]
-        
+
     # line1 = int(l1.line)
     # line2 = int(l2.line)
     # if line1 != line2:
     #     return line2 - line1
-    
+
     # line1 = int(l1.line_end)
     # line2 = int(l2.line_end)
     # if line1 != line2:
     #     return line2 - line1
-    
+
     # col1 = int(l1.col)
     # col2 = int(l2.col)
     # if col1 != col2:
     #     return col2 - col1
-        
+
     # col1 = int(l1.col_end)
     # col2 = int(l2.col_end)
     # if col1 != col2:
     #     return col2 - col1
-    
+
     return inst_comp(inst1[0]) - inst_comp(inst2[0])
-    
+
 
 def cmp_to_key(mycmp):
     'Convert a cmp= function into a key= function'
+
     class K(object):
         def __init__(self, obj, *args):
             self.obj = obj
+
         def __lt__(self, other):
             return mycmp(self.obj, other.obj) < 0
+
         def __gt__(self, other):
             return mycmp(self.obj, other.obj) > 0
+
         def __eq__(self, other):
             return mycmp(self.obj, other.obj) == 0
+
         def __le__(self, other):
-            return mycmp(self.obj, other.obj) <= 0  
+            return mycmp(self.obj, other.obj) <= 0
+
         def __ge__(self, other):
             return mycmp(self.obj, other.obj) >= 0
+
         def __ne__(self, other):
             return mycmp(self.obj, other.obj) != 0
+
     return K
-    
-    
+
+
 def patch_instruction(inst):
-    
     instruction = inst[0]
     c = ""
-    
+
     if instruction == UPDATE:
         nodeC = inst[1]
         nodeD = inst[2]
         c = UPDATE + " " + nodeC.simple_print() + TO + nodeD.simple_print()
-            
+
     elif instruction == DELETE:
         nodeC = inst[1]
         c = DELETE + " " + nodeC.simple_print()
-        
+
     elif instruction == MOVE:
         nodeD1 = inst[1].simple_print()
         nodeD2 = inst[2].simple_print()
         pos = str(inst[3])
         c = MOVE + " " + nodeD1 + INTO + nodeD2 + AT + pos
-    
+
     elif instruction == INSERT:
         nodeB = inst[1].simple_print()
         nodeC = inst[2].simple_print()
         pos = str(inst[3])
         c = INSERT + " " + nodeB + INTO + nodeC + AT + pos
-        
+
+    c = "\t\t" + c
     Print.green(c)
     script_path = "output/script"
     if not (os.path.isfile(script_path)):
@@ -726,7 +669,8 @@ def gen_edit_script(file_a, file_b, output):
         ASTscript(file_a, file_b, "output/" + output)
     except Exception as e:
         err_exit(e, "Unexpected fail at generating edit script: " + output)
-        
+
+
 def get_instructions():
     instruction_AB = list()
     inserted_B = list()
@@ -737,10 +681,10 @@ def get_instructions():
             line = line.split(" ")
             # Special case: Update and Move nodeA into nodeB2
             if len(line) > 3 and line[0] == UPDATE and line[1] == AND and \
-               line[2] == MOVE:
+                    line[2] == MOVE:
                 instruction = UPDATEMOVE
                 content = " ".join(line[3:])
-                
+
             else:
                 instruction = line[0]
                 content = " ".join(line[1:])
@@ -785,8 +729,8 @@ def get_instructions():
                     pos = nodeB_at[-1]
                     instruction_AB.append((instruction, nodeA, nodeB, pos))
                 except Exception as e:
-                    err_exit(e, "Something went wrong in MOVE.")        
-            # Insert nodeB1 into nodeB2 at pos
+                    err_exit(e, "Something went wrong in MOVE.")
+                    # Insert nodeB1 into nodeB2 at pos
             elif instruction == INSERT:
                 try:
                     nodeB1, nodeB2 = clean_parse(content, INTO)
@@ -794,48 +738,50 @@ def get_instructions():
                     nodeB2 = AT.join(nodeB2_at[:-1])
                     pos = nodeB2_at[-1]
                     instruction_AB.append((instruction, nodeB1, nodeB2,
-                                          pos))
+                                           pos))
                     inserted_B.append(nodeB1)
                 except Exception as e:
                     err_exit(e, "Something went wrong in INSERT.")
             line = script_AB.readline().strip()
     return instruction_AB, inserted_B, match_BA
-    
+
+
 def gen_temp_json(file_a, file_b, file_c):
     Print.blue("Generating JSON temp files for each pertinent file...")
     ASTlists = dict()
     try:
-        gen_json(file_a, Pa.name, ASTlists)
-        gen_json(file_b, Pb.name, ASTlists)
+        gen_json(file_a, Common.Pa.name, ASTlists)
+        gen_json(file_b, Common.Pb.name, ASTlists)
         gen_json(file_c, Pc.name, ASTlists)
     except Exception as e:
         err_exit(e, "Error parsing with crochet-diff. Did you bear make?")
     return ASTlists
-    
+
+
 def simplify_patch(instruction_AB, match_BA, ASTlists):
     modified_AB = []
     inserted = []
-    Print.white("Original patch from Pa to Pb")
+    Print.white("Original script from Pa to Pb")
     for i in instruction_AB:
         inst = i[0]
         if inst == DELETE:
             nodeA = id_from_string(i[1])
-            nodeA = ASTlists[Pa.name][nodeA]
+            nodeA = ASTlists[Common.Pa.name][nodeA]
             Print.white("\t" + DELETE + " - " + str(nodeA))
             modified_AB.append((DELETE, nodeA))
         elif inst == UPDATE:
             nodeA = id_from_string(i[1])
-            nodeA = ASTlists[Pa.name][nodeA]
+            nodeA = ASTlists[Common.Pa.name][nodeA]
             nodeB = id_from_string(i[2])
-            nodeB = ASTlists[Pb.name][nodeB]
+            nodeB = ASTlists[Common.Pb.name][nodeB]
             Print.white("\t" + UPDATE + " - " + str(nodeA) + " - " + \
                         str(nodeB))
             modified_AB.append((UPDATE, nodeA, nodeB))
         elif inst == MOVE:
             nodeB1 = id_from_string(i[1])
-            nodeB1 = ASTlists[Pb.name][nodeB1]
+            nodeB1 = ASTlists[Common.Pb.name][nodeB1]
             nodeB2 = id_from_string(i[2])
-            nodeB2 = ASTlists[Pb.name][nodeB2]
+            nodeB2 = ASTlists[Common.Pb.name][nodeB2]
             pos = i[3]
             Print.white("\t" + MOVE + " - " + str(nodeB1) + " - " + \
                         str(nodeB2) + " - " + str(pos))
@@ -846,7 +792,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if i[1] in match_BA.keys():
                     nodeA = match_BA[i[1]]
                     nodeA = id_from_string(nodeA)
-                    nodeA = ASTlists[Pa.name][nodeA]
+                    nodeA = ASTlists[Common.Pa.name][nodeA]
                     modified_AB.append((DELETE, nodeA))
                 else:
                     Print.yellow("Warning: node " + str(nodeB1) + \
@@ -855,9 +801,9 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     Print.yellow(i)
         elif inst == UPDATEMOVE:
             nodeB1 = id_from_string(i[1])
-            nodeB1 = ASTlists[Pb.name][nodeB1]
+            nodeB1 = ASTlists[Common.Pb.name][nodeB1]
             nodeB2 = id_from_string(i[2])
-            nodeB2 = ASTlists[Pb.name][nodeB2]
+            nodeB2 = ASTlists[Common.Pb.name][nodeB2]
             pos = i[3]
             Print.white("\t" + UPDATEMOVE + " - " + str(nodeB1) + " - " + \
                         str(nodeB2) + " - " + str(pos))
@@ -868,18 +814,18 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if i[1] in match_BA.keys():
                     nodeA = match_BA[i[1]]
                     nodeA = id_from_string(nodeA)
-                    nodeA = ASTlists[Pa.name][nodeA]
+                    nodeA = ASTlists[Common.Pa.name][nodeA]
                     modified_AB.append((DELETE, nodeA))
                 else:
                     Print.yellow("Warning: node " + str(nodeB1) + \
                                  "could not be matched. " + \
                                  "Skipping MOVE instruction...")
-                    Print.yellow(i)            
+                    Print.yellow(i)
         elif inst == INSERT:
             nodeB1 = id_from_string(i[1])
-            nodeB1 = ASTlists[Pb.name][nodeB1]
+            nodeB1 = ASTlists[Common.Pb.name][nodeB1]
             nodeB2 = id_from_string(i[2])
-            nodeB2 = ASTlists[Pb.name][nodeB2]
+            nodeB2 = ASTlists[Common.Pb.name][nodeB2]
             pos = i[3]
             Print.white("\t" + INSERT + " - " + str(nodeB1) + " - " + \
                         str(nodeB2) + " - " + str(pos))
@@ -887,14 +833,15 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             if nodeB2 not in inserted:
                 modified_AB.append((INSERT, nodeB1, nodeB2, pos))
     return modified_AB
-    
+
+
 def remove_overlapping_delete(modified_AB):
     reduced_AB = set()
     n_i = len(modified_AB)
     for i in range(n_i):
         inst1 = modified_AB[i]
         if inst1[0] == DELETE:
-            for j in range(i+1, n_i):
+            for j in range(i + 1, n_i):
                 inst2 = modified_AB[j]
                 if inst2[0] == DELETE:
                     node1 = inst1[1]
@@ -905,15 +852,16 @@ def remove_overlapping_delete(modified_AB):
                         reduced_AB.add(i)
     modified_AB = [modified_AB[i] for i in range(n_i) if i not in reduced_AB]
     return modified_AB
-    
+
+
 def adjust_pos(modified_AB):
     i = 0
     while i < len(modified_AB) - 1:
         inst1 = modified_AB[i][0]
         if inst1 == INSERT or inst1 == MOVE or inst1 == UPDATEMOVE:
             node_into_1 = modified_AB[i][2]
-            k = i+1
-            for j in range(i+1, len(modified_AB)):
+            k = i + 1
+            for j in range(i + 1, len(modified_AB)):
                 k = j
                 inst2 = modified_AB[j][0]
                 if inst2 != INSERT and inst2 != MOVE:
@@ -923,7 +871,7 @@ def adjust_pos(modified_AB):
                 if node_into_1 != node_into_2:
                     k -= 1
                     break
-                pos_at_1 = int(modified_AB[j-1][3])
+                pos_at_1 = int(modified_AB[j - 1][3])
                 pos_at_2 = int(modified_AB[j][3])
                 if pos_at_1 < pos_at_2 - 1:
                     k -= 1
@@ -939,7 +887,8 @@ def adjust_pos(modified_AB):
         else:
             i += 1
     return modified_AB
-    
+
+
 def rewrite_as_script(modified_AB):
     instruction_AB = []
     for i in modified_AB:
@@ -965,47 +914,50 @@ def rewrite_as_script(modified_AB):
             nodeB1 = i[1].simple_print()
             nodeB2 = i[2].simple_print()
             pos = int(i[3])
-            instruction_AB.append((UPDATEMOVE, nodeB1, nodeB2, pos))    
+            instruction_AB.append((UPDATEMOVE, nodeB1, nodeB2, pos))
     return instruction_AB
-    
-def retrieve_matches():
-    match_AC = dict()
-    with open('output/diff_script_AC', 'r', errors='replace') as script_AC:
-        line = script_AC.readline().strip()
+
+
+def get_mapping():
+    node_map = dict()
+    map_file_name = "output/diff_script_AC"
+    with open(map_file_name, 'r', errors='replace') as ast_map:
+        line = ast_map.readline().strip()
         while line:
             line = line.split(" ")
-            instruction = line[0]
+            operation = line[0]
             content = " ".join(line[1:])
-            if instruction == MATCH:
+            if operation == MATCH:
                 try:
-                    nodeA, nodeC = clean_parse(content, TO)
-                    match_AC[nodeA] = nodeC
-                except Exception as e:
-                    err_exit(e, "Something went wrong in MATCH (AC).",
-                             line, instruction, content)
-            line = script_AC.readline().strip()
-    return match_AC
+                    node_a, node_c = clean_parse(content, TO)
+                    node_map[node_a] = node_c
+                except Exception as exception:
+                    err_exit(e, "Something went wrong in MATCH (AC)", line, operation, content)
+            line = ast_map.readline().strip()
+    return node_map
 
-#node is from the patched program
-def findCandidateNode(nodeRef, ASTlists):
-    nodeId = getId(nodeRef)
-    nodeType = getType(nodeRef)
-    node = ASTlists[Pc.name][nodeId]
+
+# node list is from the patched program
+def get_candidate_node_list(node_ref, json_ast_dump):
+    candidate_node_list = list()
+    node_id = getId(node_ref)
+    node_type = getType(node_ref)
+    node = json_ast_dump[Pc.name][node_id]
     print(Pc.name)
     print(node)
-    function_c = Pc.funcs[Pc.path + file_c][f_c]
-   
+
     if nodeA in match_AC.keys():
         nodeC = match_AC[nodeA]
         nodeC = id_from_string(nodeC)
         nodeC = ASTlists[Pc.name][nodeC]
-        
 
-    
+    return candidate_node_list
+
+
 def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
     instruction_CD = list()
     inserted_D = list()
-    match_BD = dict()        
+    match_BD = dict()
     for i in instruction_AB:
         instruction = i[0]
         # Update nodeA to nodeB (value) -> Update nodeC to nodeD (value)
@@ -1015,14 +967,14 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                 nodeB = i[2]
                 nodeC = "?"
                 nodeD = id_from_string(nodeB)
-                nodeD = ASTlists[Pb.name][nodeD]
-                nodeC = findCandidateNode(nodeA, ASTlists)
+                nodeD = ASTlists[Common.Pb.name][nodeD]
+                nodeC = get_candidate_node_list(nodeA, ASTlists)
                 if nodeC == null:
-                    Print.yellow("Warning: Match for " + str(nodeA) +  "not found. Skipping UPDATE instruction.")
+                    Print.yellow("Warning: Match for " + str(nodeA) + "not found. Skipping UPDATE instruction.")
                 else:
                     nodeC.line = nodeC.parent.line
-                    instruction_CD.append((UPDATE, nodeC, nodeD))  
-                
+                    instruction_CD.append((UPDATE, nodeC, nodeD))
+
             except Exception as e:
                 err_exit(e, "Something went wrong with UPDATE.")
 
@@ -1087,9 +1039,9 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                         Print.yellow(nodeB2)
                 try:
                     true_B2 = id_from_string(nodeB2)
-                    true_B2 = ASTlists[Pb.name][true_B2]
+                    true_B2 = ASTlists[Common.Pb.name][true_B2]
                     if pos != 0:
-                        nodeB2_l = true_B2.children[pos-1]
+                        nodeB2_l = true_B2.children[pos - 1]
                         nodeB2_l = nodeB2_l.simple_print()
                         if nodeB2_l in match_BA.keys():
                             nodeA2_l = match_BA[nodeB2_l]
@@ -1111,7 +1063,7 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                                 Print.yellow("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = ASTlists[Pa.name][nodeA2_l]
+                                nodeA2_l = ASTlists[Common.Pa.name][nodeA2_l]
                                 parent = nodeA2_l.parent
                                 if parent != None:
                                     pos = parent.children.index(nodeA2_l)
@@ -1120,7 +1072,7 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                             Print.yellow("Failed at match for child.")
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
-                
+
                 if type(nodeC1) == ASTparser.AST:
                     if nodeC1.line == None:
                         nodeC1.line = nodeC1.parent.line
@@ -1133,7 +1085,7 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                             instruction_CD.append((MOVE, nodeC1, nodeC2,
                                                    pos))
                         inserted_D.append(nodeC1)
-                        
+
                     else:
                         Print.yellow("Could not find match for node. " + \
                                      "Ignoring MOVE operation. (D)")
@@ -1142,10 +1094,10 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                                  "Ignoring MOVE operation. (C)")
             except Exception as e:
                 err_exit(e, "Something went wrong with MOVE.")
-        
+
         # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
         elif instruction == UPDATEMOVE:
-            
+
             try:
                 nodeB1 = i[1]
                 nodeB2 = i[2]
@@ -1188,9 +1140,9 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                         Print.yellow(nodeB2)
                 try:
                     true_B2 = id_from_string(nodeB2)
-                    true_B2 = ASTlists[Pb.name][true_B2]
+                    true_B2 = ASTlists[Common.Pb.name][true_B2]
                     if pos != 0:
-                        nodeB2_l = true_B2.children[pos-1]
+                        nodeB2_l = true_B2.children[pos - 1]
                         nodeB2_l = nodeB2_l.simple_print()
                         if nodeB2_l in match_BA.keys():
                             nodeA2_l = match_BA[nodeB2_l]
@@ -1212,7 +1164,7 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                                 Print.yellow("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = ASTlists[Pa.name][nodeA2_l]
+                                nodeA2_l = ASTlists[Common.Pa.name][nodeA2_l]
                                 parent = nodeA2_l.parent
                                 if parent != None:
                                     pos = parent.children.index(nodeA2_l)
@@ -1221,7 +1173,7 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                             Print.yellow("Failed at match for child.")
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
-                
+
                 if type(nodeC1) == ASTparser.AST:
                     if nodeC1.line == None:
                         nodeC1.line = nodeC1.parent.line
@@ -1234,7 +1186,7 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                             instruction_CD.append((UPDATEMOVE, nodeC1, nodeC2,
                                                    pos))
                         inserted_D.append(nodeC1)
-                        
+
                     else:
                         Print.yellow("Could not find match for node. " + \
                                      "Ignoring UPDATEMOVE operation. (D)")
@@ -1251,9 +1203,9 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                 nodeB2 = i[2]
                 pos = int(i[3])
                 nodeD1 = id_from_string(nodeB1)
-                nodeD1 = ASTlists[Pb.name][nodeD1]
+                nodeD1 = ASTlists[Common.Pb.name][nodeD1]
                 nodeD2 = id_from_string(nodeB2)
-                nodeD2 = ASTlists[Pb.name][nodeD2]
+                nodeD2 = ASTlists[Common.Pb.name][nodeD2]
                 # TODO: Is this correct?
                 if nodeD2.line != None:
                     nodeD1.line = nodeD2.line
@@ -1270,12 +1222,12 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                 else:
                     Print.yellow("Warning: node for insertion not" + \
                                  " found. Skipping INSERT operation.")
-                
+
                 try:
                     true_B2 = id_from_string(nodeB2)
-                    true_B2 = ASTlists[Pb.name][true_B2]
+                    true_B2 = ASTlists[Common.Pb.name][true_B2]
                     if pos != 0:
-                        nodeB2_l = true_B2.children[pos-1]
+                        nodeB2_l = true_B2.children[pos - 1]
                         nodeB2_l = nodeB2_l.simple_print()
                         if nodeB2_l in match_BA.keys():
                             nodeA2_l = match_BA[nodeB2_l]
@@ -1297,12 +1249,12 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                                 Print.yellow("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = ASTlists[Pa.name][nodeA2_l]
+                                nodeA2_l = ASTlists[Common.Pa.name][nodeA2_l]
                                 parent = nodeA2_l.parent
                                 if parent != None:
                                     pos = parent.children.index(nodeA2_l)
                                     pos += 1
-                                
+
                         else:
                             Print.yellow("Failed at match for child.")
                 except Exception as e:
@@ -1326,14 +1278,14 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
 
 def transplant_h_files(to_patch):
     for (file_a, file_c, var_map) in to_patch:
-        file_b = file_a.replace(Pa.path, Pb.path)
+        file_b = file_a.replace(Common.Pa.path, Common.Pb.path)
         if not os.path.isfile(file_b):
             err_exit("Error: File not found.", file_b)
-            
+
         # Generate edit scripts for diff and matching
         gen_edit_script(file_a, file_b, "diff_script_AB")
         gen_edit_script(file_a, file_c, "diff_script_AC")
-        
+
         Print.blue("Generating final edit script for " + file_c.split("/")[-1])
         # Write patch properly
         original_script, inserted_node_list, map_ab = get_instructions()
@@ -1348,17 +1300,17 @@ def transplant_h_files(to_patch):
         # Adjusting position for MOVE and INSERT operations
         # modified_AB = adjust_pos(modified_AB)
         # Printing modified simplified script
-        Print.green("Modified simplified script:")
+        Print.green("\tModified Script:")
         for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
             Print.green("\t" + j)
         # We rewrite the instruction as a script (str) instead of nodes
         original_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        map_ac = retrieve_matches()
+        map_ac = get_mapping()
         # Transform instructions into ones pertinent to Pc nodes
         translated_script = transform_script(original_script, inserted_node_list, json_ast_dump, map_ac, map_ab)
         # Write patch script properly and print in on console
-        Print.green("Proposed patch from Pc to Pd")
+        Print.green("\tTranslated script from Pc to Pd")
         for i in translated_script:
             patch_instruction(i)
         # Apply the patch (it runs with the script)
@@ -1368,20 +1320,21 @@ def transplant_h_files(to_patch):
 def transplant_c_files(to_patch):
     for (vec_f_a, vec_f_c, var_map) in to_patch:
         try:
-            vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
-            if vec_f_b_file not in Pb.funcs.keys():
+            vec_f_b_file = vec_f_a.file.replace(Common.Pa.path, Common.Pb.path)
+            if vec_f_b_file not in Common.Pb.funcs.keys():
                 err_exit("Error: File not found among affected.", vec_f_b_file)
-            if vec_f_a.function in Pb.funcs[vec_f_b_file].keys():
-                vec_f_b = Pb.funcs[vec_f_b_file][vec_f_a.function]
+            if vec_f_a.function in Common.Pb.funcs[vec_f_b_file].keys():
+                vec_f_b = Common.Pb.funcs[vec_f_b_file][vec_f_a.function]
             else:
-                err_exit("Error: Function not found among affected.", vec_f_a.function, vec_f_b_file, Pb.funcs[vec_f_b_file].keys())
+                err_exit("Error: Function not found among affected.", vec_f_a.function, vec_f_b_file,
+                         Common.Pb.funcs[vec_f_b_file].keys())
         except Exception as e:
-            err_exit(e, vec_f_b_file, vec_f_a, Pa.path, Pb.path, vec_f_a.function)
-        
+            err_exit(e, vec_f_b_file, vec_f_a, Common.Pa.path, Common.Pb.path, vec_f_a.function)
+
         # Generate edit scripts for diff and matching
         gen_edit_script(vec_f_a.file, vec_f_b.file, "diff_script_AB")
         gen_edit_script(vec_f_a.file, vec_f_c.file, "diff_script_AC")
-                      
+
         Print.blue("Generating final edit script for " + Pc.name)
         # Write patch properly
         original_script, inserted_node_list, map_ab = get_instructions()
@@ -1402,11 +1355,11 @@ def transplant_c_files(to_patch):
         # We rewrite the instruction as a script (str) instead of nodes
         original_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        map_ac = retrieve_matches()
+        map_ac = get_mapping()
         # Transform instructions into ones pertinent to Pc nodes
         translated_script = transform_script(original_script, inserted_node_list, json_ast_dump, map_ac, map_ab)
         # Write patch script properly and print in on console
-        Print.green("Proposed patch from Pc to Pd")
+        Print.green("\tTranslated script from Pc to Pd")
         for i in translated_script:
             patch_instruction(i)
         # Apply the patch (it runs with the script)
@@ -1420,7 +1373,7 @@ def patch(file_a, file_b, file_c):
     # Check for an edit script
     if not (os.path.isfile("output/script")):
         err_exit("No script was generated. Exiting with error.")
-    
+
     output_file = "output/" + str(n_changes) + "_temp." + file_c[-1]
     c = ""
     # We add file_c into our dict (changes) to be able to backup and copy it
@@ -1461,12 +1414,13 @@ def patch(file_a, file_b, file_c):
     c4 += " > " + output_file + "; "
     c4 += "cp " + output_file + " " + file_c + ";"
     exec_com(c4)
-    
+
     # We rename the script so that it won't be there for other files
     c5 = "mv output/script output/" + str(n_changes) + "_script"
+    show_patch(file_a, file_b, file_c, output_file, str(n_changes))
     exec_com(c5)
-    
-    
+
+
 def restore_files():
     global changes
     Print.yellow("Restoring files...")
@@ -1477,10 +1431,26 @@ def restore_files():
     Print.yellow("Files restored")
 
 
-def show_patch():
+def show_patch(file_a, file_b, file_c, file_d, index):
     Print.yellow("Original Patch")
+    original_patch_file_name = "output/" + index + "-original-patch"
+    generated_patch_file_name = "output/" + index + "-generated-patch"
+    diff_command = "diff -ENZBbwr " + file_a + " " + file_b + " > " + original_patch_file_name
+    exec_com(diff_command)
+    with open(original_patch_file_name, 'r', errors='replace') as diff:
+        diff_line = diff.readline().strip()
+        while diff_line:
+            Print.white("\t" + diff_line)
+            diff_line = diff.readline().strip()
 
     Print.yellow("Generated Patch")
+    diff_command = "diff -ENZBbwr " + file_c + " " + file_d + " > " + generated_patch_file_name
+    exec_com(diff_command)
+    with open(generated_patch_file_name, 'r', errors='replace') as diff:
+        diff_line = diff.readline().strip()
+        while diff_line:
+            Print.green("\t" + diff_line)
+            diff_line = diff.readline().strip()
 
 
 def verification():
@@ -1504,13 +1474,12 @@ def verification():
                      "after changes. Exiting.")
     # TODO: Remove this part when we don't care anymore
 
-    show_patch()
     restore_files()
 
 
 def safe_exec(function_def, title, *args):
     start_time = time.time()
-    Print.title("Starting " + title + "...")
+    Print.sub_title("Starting " + title + "...")
     description = title[0].lower() + title[1:]
     try:
         if not args:
@@ -1522,50 +1491,16 @@ def safe_exec(function_def, title, *args):
     except Exception as exception:
         duration = str(time.time() - start_time)
         Print.red("Crash during " + description + ", after " + duration + " seconds.")
-        err_exit(e, "Unexpected error during " + description + ".")
+        err_exit(exception, "Unexpected error during " + description + ".")
     return result
-              
-              
-def run_patchweave():
-    global Pa, Pb, Pc
 
-    Print.start()
-    start_time = time.time()
-    
-    # Prepare projects directories by getting paths and cleaning residual files
-    initialization_start_time = time.time()
-    safe_exec(initialize, "projects initialization and cleaning")
-    initialization_duration = str(time.time() - initialization_start_time)
 
-    function_identification_start_time = time.time()
-    # Generates vectors for pertinent functions (modified from Pa to Pb)
-    safe_exec(gen_diff, "search for affected functions and vector generation")
+def detect():
+    Print.title("Locating vulnerable functions")
+    safe_exec(generate_diff, "search for affected functions and vector generation")
     # Generates vectors for all functions in Pc
     safe_exec(gen_ASTs, "vector generation for functions in Pc")
     # Pairwise vector comparison for matching
     patch_for_header_files = safe_exec(compare_H, "pairwise vector comparison for matching")
     patch_for_c_files = safe_exec(compare_C, "pairwise vector comparison for matching")
-    function_identification_duration = str(function_identification_start_time - time.time())
 
-    transplantation_start_time = time.time()
-    # Using all previous structures to transplant patch
-    safe_exec(transplant_h_files, "patch transplantation", patch_for_header_files)
-    safe_exec(transplant_c_files, "patch transplantation", patch_for_c_files)
-    transplantation_duration = str(time.time() - transplantation_start_time)
-
-    # Verification by compiling and re-running crash
-    safe_exec(verification, "program verification")
-    
-    # Final clean
-    Print.title("Cleaning residual files generated by Crochet...")
-    
-    # Final running time and exit message
-    run_time = str(time.time() - start_time)
-    Print.exit_msg(run_time, initialization_duration, function_identification_duration, transplantation_duration)
-    
-    
-if __name__ == "__main__":
-    try:
-        run_patchweave()
-    except KeyboardInterrupt as e:
-        err_exit("Program Interrupted by User")

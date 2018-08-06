@@ -64,7 +64,7 @@ def white(message):
       
       
 def start():
-    cyan("\n\n" + "#"*150 + "\n\n\tStarting CacaoTree...\n\n" + "#"*150)
+    cyan("\n\n" + "#"*150 + "\n\n\tStarting PatchWeave...\n\n" + "#"*150)
     cyan("_"*150 + "\n\n" +
     '''
     Crochet was developed by researchers at NUS Tsunami Team:
@@ -93,13 +93,21 @@ def start():
     \t\tClang-diff, a tool based on Gumtree diff
     '''
     +"\n" + "_"*150 + "\n")
-    
-def exit_msg(runtime):
-    rose("Crochet finished successfully after " + runtime + "seconds.\n")
+
+
+def exit_msg(runtime, initialization_duration, clone_detection_duration, transplantation_duration):
+    green("Time duration for:\n")
+    yellow("Initialization: " + initialization_duration)
+    yellow("Clone Detection: " + clone_detection_duration)
+    yellow("Transplantation: " + transplantation_duration)
+    rose("PatchWeave finished successfully after " + runtime + "seconds.\n")
 
       
 def title(title):
     green("_"*150 + "\n\n\t" + title + "\n" + "_"*150+"\n")
+
+def sub_title(sub_title):
+    green("\n\t" + sub_title + "\n\t" + "-"*140+"\n")
     
 def conditional(message, *args):
     if debug:

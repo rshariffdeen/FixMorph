@@ -13,7 +13,7 @@ class Project:
             path += "/"
         self.path = path
         self.name = name
-        self.funcs = dict()
+        self.functions = dict()
         self.structs = dict()
         self.clean()
         try:

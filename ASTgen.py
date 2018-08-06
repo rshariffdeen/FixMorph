@@ -46,33 +46,34 @@ def llvm_format(file):
     except Exception as e:
         Print.yellow(e)
         Print.yellow("Error in llvm_format with file:")
-        Print.tellow(file)
+        Print.yellow(file)
         Print.yellow("Restoring and skipping")
         c = "cp output/last.c " + file
         exec_com(c, False)
 
-def parseAST(filepath, proj, Deckard=True, h_file=False):
-    llvm_format(filepath)
+
+def parseAST(file_path, project, use_deckard=True, is_header=False):
+    llvm_format(file_path)
     # Save functions here
     function_lines = list()
     # Save variables for each function d[function] = "typevar namevar; ...;"
     dict_file = dict()
     try:
-        ast = gen_json(filepath, h_file)
-    except:
-        Print.yellow("Skipping... Failed for file:\n\t" + filepath)
+        ast = gen_json(file_path, is_header)
+    except Exception as exception:
+        Print.yellow("Failed parsing AST for file:\n\t" + file_path)
         return function_lines, dict_file
 
     start = 0
     end = 0
-    file = filepath.split("/")[-1]
+    file = file_path.split("/")[-1]
     
-    if Deckard:
+    if use_deckard:
         Print.grey("Generating vectors for " + file)
         
-    if h_file:
-        if Deckard:
-            ASTVector.ASTVector(proj, filepath, None, None, None, Deckard=True)
+    if is_header:
+        if use_deckard:
+            ASTVector.ASTVector(project, file_path, None, None, None, Deckard=True)
     else:
         function_nodes = []
         root = ast[0]
@@ -86,7 +87,7 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
                 start = int(node.line)
                 end = int(node.line_end)
                 function_lines.append((f, start, end))
-                gen_vec(proj, proj.funcs, filepath, f, start, end, Deckard)
+                gen_vec(project, project.functions, file_path, f, start, end, use_deckard)
                 structural_nodes = []
                 for interesting_type in interesting:
                     node.get_nodes("type", interesting_type, structural_nodes)
@@ -100,8 +101,8 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
                     dict_file[f] = dict_file[f] + line
                     set_struct_nodes.add(struct_node.value)
 
-        if Deckard:
-            get_vars(proj, filepath, dict_file)
+        if use_deckard:
+            get_vars(project, file_path, dict_file)
    
     return function_lines, dict_file
 
@@ -109,34 +110,33 @@ def parseAST(filepath, proj, Deckard=True, h_file=False):
 def get_vars(proj, file, dict_file):
     for func in dict_file.keys():
         for line in dict_file[func].split(";"):
-            if file in proj.funcs.keys():
-                if func in proj.funcs[file].keys():
-                    proj.funcs[file][func].variables.append(line)
+            if file in proj.functions.keys():
+                if func in proj.functions[file].keys():
+                    proj.functions[file][func].variables.append(line)
                         
 
 def intersect(start, end, start2, end2):
     return not (end2 < start or start2 > end)
     
                         
-def find_affected_funcs(proj, file, pertinent_lines):
-    Print.blue("\tProject " + proj.name + "...")
+def find_affected_funcs(project, source_file, pertinent_lines):
+    Print.blue("\tProject " + project.name + "...")
     try:
-        function_lines, dict_file = parseAST(file, proj, False)
+        function_list, definition_list = parseAST(source_file, project, False)
     except Exception as e:
         err_exit(e, "Error in parseAST.")
+
     for start2, end2 in pertinent_lines:
-        for f, start, end in function_lines:
+        for f, start, end in function_list:
             if intersect(start, end, start2, end2):
-                if file not in proj.funcs.keys():
-                    proj.funcs[file] = dict()
-                if f not in proj.funcs[file]:
-                    proj.funcs[file][f] = ASTVector.ASTVector(proj, file, f,
-                                                              start, end, True)
+                if source_file not in project.functions.keys():
+                    project.functions[source_file] = dict()
+                if f not in project.functions[source_file]:
+                    project.functions[source_file][f] = ASTVector.ASTVector(project, source_file, f, start, end, True)
                     Print.rose("\t\tFunction successfully found: " + f + \
-                               " in " + file.replace(proj.path, 
-                                                     proj.name + "/"))
-                    Print.grey("\t\t\t" + f + " " + str(start) + "-" + \
-                               str(end), False)
+                               " in " + source_file.replace(project.path,
+                                                            project.name + "/"))
+                    Print.grey("\t\t\t" + f + " " + str(start) + "-" + str(end), False)
                 break
-    get_vars(proj, file, dict_file)
-    return function_lines, dict_file
+    get_vars(project, source_file, definition_list)
+    return function_list, definition_list
