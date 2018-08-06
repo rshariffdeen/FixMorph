@@ -1530,7 +1530,7 @@ def safe_exec(function, title, *args):
     return a
               
               
-def run_crochet():
+def run_patchweave():
     global Pa, Pb, Pc
     # Little crochet introduction
     Print.start()
@@ -1539,23 +1539,27 @@ def run_crochet():
     start = time.time()
     
     # Prepare projects directories by getting paths and cleaning residual files
+    initialization_start_time = time.time()
     safe_exec(initialize, "projects initialization and cleaning")
-    
+    initialization_duration = str(time.time() - initialization_start_time)
+
+    function_identification_start_time = time.time()
     # Generates vectors for pertinent functions (modified from Pa to Pb)
     safe_exec(gen_diff, "search for affected functions and vector generation")
-              
     # Generates vectors for all functions in Pc
     safe_exec(gen_ASTs, "vector generation for functions in Pc")
-
     # Pairwise vector comparison for matching
     Hpatch = safe_exec(compare_H, "pairwise vector comparison for matching")
     Cpatch = safe_exec(compare_C, "pairwise vector comparison for matching")
-    
-    
+    function_identification_duration = str(function_identification_start_time - time.time())
+
+
+    transplanation_start_time = time.time()
     # Using all previous structures to transplant patch
     safe_exec(Htransplantation, "patch transplantation", Hpatch)
     safe_exec(Ctransplantation, "patch transplantation", Cpatch)
-    
+    transplanation_duration = str(time.time() - transplanation_start_time)
+
     # Verification by compiling and re-running crash
     safe_exec(verification, "program verification")
     
@@ -1564,11 +1568,11 @@ def run_crochet():
     
     # Final running time and exit message
     runtime = str(time.time() - start)
-    Print.exit_msg(runtime)
+    Print.exit_msg(runtime, initialization_duration, function_identification_duration, transplanation_duration)
     
     
 if __name__=="__main__":
     try:
-        run_crochet()
+        run_patchweave()
     except KeyboardInterrupt as e:
         err_exit("Program Interrupted by User")
