@@ -3,6 +3,7 @@
 
 
 import os
+import sys
 import time
 from Utils import exec_com, err_exit, find_files, clean, get_extensions
 import Project
@@ -16,12 +17,17 @@ Pa = None
 Pb = None
 Pc = None
 crash = None
-crochet_patch_size = "10000"
-crochet_patch = "crochet-patch"
-crochet_diff_size = "10000"
-crochet_diff = "crochet-diff "
-clang_check = "clang-check "
-clang_format = "clang-format -style=LLVM "
+
+
+CONF_FILE_NAME = "crochet.conf"
+PATCH_COMMAND = "crochet-patch"
+PATCH_SIZE = "1000"
+DIFF_SIZE = "crochet-diff "
+DIFF_COMMAND = "1000"
+SYNTAX_CHECK_COMMAND = "clang-check "
+STYLE_FORMAT_COMMAND = "clang-format -style=LLVM "
+
+
 interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
@@ -42,22 +48,27 @@ n_changes = 0
 
 
 def initialize():
-    global Pa, Pb, Pc, crash
-    with open('crochet.conf', 'r', errors='replace') as file:
-        args = [i.strip() for i in file.readlines()]
-    if (len(args) < 3):
-        err_exit("Insufficient arguments: Pa, Pb, and Pc source paths " + \
-                 "required.")
+    global Pa, Pb, Pc, crash, CONF_FILE_NAME
+
+    if len(sys.argv) > 1:
+        CONF_FILE_NAME = sys.argv[1]
+
+    with open(CONF_FILE_NAME, 'r', errors='replace') as conf_file:
+        args = [i.strip() for i in conf_file.readlines()]
+
+    if len(args) < 3:
+        err_exit("Insufficient arguments: Pa, Pb, and Pc source paths required.")
+
     Pa = Project.Project(args[0], "Pa")
     Pb = Project.Project(args[1], "Pb")
     Pc = Project.Project(args[2], "Pc")
+
     if len(args) >= 4:
         if os.path.isfile(args[3]):
             if len(args[3]) >= 4 and args[3][:-3] == ".sh":
                 crash = args[3]
             else:
-                Print.yellow("Script must be path to a shell (.sh) file." + \
-                             "Running anyway.")
+                Print.yellow("Script must be path to a shell (.sh) file. Running anyway.")
         else:
             Print.yellow("No script for crash provided. Running anyway.")
     else:
@@ -405,7 +416,7 @@ def compare_C():
     
     
 def generate_ast_map(source_a, source_b):
-    c = crochet_diff + "-dump-matches " + source_a + " " + source_b
+    c = DIFF_SIZE + "-dump-matches " + source_a + " " + source_b
     if source_a[-1] == "h":
         c += " --"
     c += " 2>> output/errors_clang_diff"
@@ -416,7 +427,7 @@ def generate_ast_map(source_a, source_b):
         err_exit(e, "Unexpected error in generate_ast_map.")
         
 def simple_crochet_diff(source_a, source_b):
-    c = crochet_diff + "-dump-matches " + source_a + " " + source_b
+    c = DIFF_SIZE + "-dump-matches " + source_a + " " + source_b
     if source_a[-1] == "h":
         c += " --"
     c += " 2>> output/errors_clang_diff > output/ast-map"
@@ -425,9 +436,14 @@ def simple_crochet_diff(source_a, source_b):
     except Exception as e:
         err_exit(e, "Unexpected error in simple_crochet_diff.")
 
-def id_from_string(simplestring):
+def id_from_string(simplestring):    
     return int(simplestring.split("(")[-1][:-1])
 
+def getId(NodeRef): 
+    return int(NodeRef.split("(")[-1][:-1])
+
+def getType(NodeRef):
+    return NodeRef.split("(")[0]
 
 def detect_matching_declarations(file_a, file_c):
     
@@ -554,7 +570,7 @@ def ASTdump(file, output):
     extra_arg = ""
     if file[-1] == "h":
         extra_arg = " --"
-    c = crochet_diff + " -s=" + crochet_diff_size  + " -ast-dump-json " + \
+    c = DIFF_SIZE + " -s=" + DIFF_COMMAND + " -ast-dump-json " + \
         file + extra_arg + " 2> output/errors_AST_dump > " + output
     exec_com(c)
            
@@ -599,7 +615,7 @@ def ASTscript(file1, file2, output, only_matches=False):
     extra_arg = ""
     if file1[-2:] == ".h":
         extra_arg = " --"
-    c = crochet_diff + " -s=" + crochet_diff_size  + " -dump-matches " + \
+    c = DIFF_SIZE + " -s=" + DIFF_COMMAND + " -dump-matches " + \
         file1 + " " + file2 + extra_arg + " 2> output/errors_clang_diff "
     if only_matches:
         c += "| grep '^Match ' "
@@ -969,6 +985,22 @@ def retrieve_matches():
                              line, instruction, content)
             line = script_AC.readline().strip()
     return match_AC
+
+#node is from the patched program
+def findCandidateNode(nodeRef, ASTlists):
+    nodeId = getId(nodeRef)
+    nodeType = getType(nodeRef)
+    node = ASTlists[Pc.name][nodeId]
+    print(Pc.name)
+    print(node)
+    function_c = Pc.funcs[Pc.path + file_c][f_c]
+   
+    if nodeA in match_AC.keys():
+        nodeC = match_AC[nodeA]
+        nodeC = id_from_string(nodeC)
+        nodeC = ASTlists[Pc.name][nodeC]
+        
+
     
 def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
     instruction_CD = list()
@@ -984,16 +1016,13 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
                 nodeC = "?"
                 nodeD = id_from_string(nodeB)
                 nodeD = ASTlists[Pb.name][nodeD]
-                if nodeA in match_AC.keys():
-                    nodeC = match_AC[nodeA]
-                    nodeC = id_from_string(nodeC)
-                    nodeC = ASTlists[Pc.name][nodeC]
-                    if nodeC.line == None:
-                        nodeC.line = nodeC.parent.line
-                    instruction_CD.append((UPDATE, nodeC, nodeD))
+                nodeC = findCandidateNode(nodeA, ASTlists)
+                if nodeC == null:
+                    Print.yellow("Warning: Match for " + str(nodeA) +  "not found. Skipping UPDATE instruction.")
                 else:
-                    Print.yellow("Warning: Match for " + str(nodeA) + \
-                                 "not found. Skipping UPDATE instruction.")
+                    nodeC.line = nodeC.parent.line
+                    instruction_CD.append((UPDATE, nodeC, nodeD))  
+                
             except Exception as e:
                 err_exit(e, "Something went wrong with UPDATE.")
 
@@ -1116,6 +1145,7 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
         
         # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
         elif instruction == UPDATEMOVE:
+            
             try:
                 nodeB1 = i[1]
                 nodeB2 = i[2]
@@ -1403,7 +1433,7 @@ def patch(file_a, file_b, file_c):
         changes[file_c] = backup_file
         c += "cp " + file_c + " Backup_Folder/" + backup_file + "; "
     # We apply the patch using the script and crochet-patch
-    c += crochet_patch + " -s=" + crochet_patch_size + \
+    c += PATCH_COMMAND + " -s=" + PATCH_SIZE + \
          " -script=output/script -source=" + file_a + \
          " -destination=" + file_b + " -target=" + file_c
     if file_c[-1] == "h":
@@ -1412,14 +1442,14 @@ def patch(file_a, file_b, file_c):
     c += "cp " + output_file + " " + file_c
     exec_com(c)
     # We fix basic syntax errors that could have been introduced by the patch
-    c2 = clang_check + "-fixit " + file_c
+    c2 = SYNTAX_CHECK_COMMAND + "-fixit " + file_c
     if file_c[-1] == "h":
         c2 += " --"
     c2 += " 2> output/syntax_errors"
     exec_com(c2)
     # We check that everything went fine, otherwise, we restore everything
     try:
-        c3 = clang_check + file_c
+        c3 = SYNTAX_CHECK_COMMAND + file_c
         if file_c[-1] == "h":
             c3 += " --"
         exec_com(c3)
@@ -1428,7 +1458,7 @@ def patch(file_a, file_b, file_c):
         restore_files()
         err_exit(e, "Crochet failed.")
     # We format the file to be with proper spacing (needed?)
-    c4 = clang_format + file_c
+    c4 = STYLE_FORMAT_COMMAND + file_c
     if file_c[-1] == "h":
         c4 += " --"
     c4 += " > " + output_file + "; "
@@ -1448,10 +1478,14 @@ def restore_files():
         c = "cp Backup_Folder/" + backup_file + " " + file
         exec_com(c)
     Print.yellow("Files restored")
-    
+
+
 def show_patch():
     Print.yellow("Original Patch")
+
     Print.yellow("Generated Patch")
+
+
 
 def verification():
     if crash != None:
@@ -1476,8 +1510,7 @@ def verification():
 
     show_patch()
     restore_files()
-            
-            
+
 
 def safe_exec(function, title, *args):
     start = time.time()
