@@ -37,7 +37,7 @@ class ASTVector:
                 ASTVector.deckard_path + " " + self.file + " -o " + \
                 self.vector_path + " 2> output/errors"
         else:
-            current = "\t" + self.function + " " + str(self.start) + "-" + \
+            current = "\t\t" + self.function + " " + str(self.start) + "-" + \
                         str(self.end)
             Print.grey(current, False)
             start = self.start
@@ -47,7 +47,7 @@ class ASTVector:
                 max_line = len(ls)
                 if int(end) > max_line:
                     # TODO: This shouldn't happen!
-                    Print.red(current)
+                    Print.error(current)
                     err_exit("Deckard fail. The following file not generated:",
                              self.vector_path)
                     return None
@@ -82,8 +82,8 @@ class ASTVector:
                 err_exit(e, "Error with Deckard vector generation. Exiting...")
         
         if not os.path.isfile(self.vector_path):
-            Print.yellow("Deckard fail. The vector file was not generated:")
-            Print.yellow(self.vector_path + "\n")
+            Print.warning("Deckard fail. The vector file was not generated:")
+            Print.warning(self.vector_path + "\n")
             with open('output/reproduce_errors', 'a') as file:
                     file.write(c + "\n" + c1 + "\n")
             return None

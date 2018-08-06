@@ -15,6 +15,7 @@ debug = False
 
 ''' Functions to print (colors, title, presentation of the program...)'''
 
+
 def color(message, color, jumpline=True):
     with open("output/crochet_log", 'a') as out_file:
         r = "\033[K" + color + str(message) + '\x1b[0m'
@@ -35,15 +36,15 @@ def grey(message, jumpline=True):
     color(message, GREY, jumpline)
    
    
-def red(message):
+def error(message):
     color(message, RED)
 
 
-def green(message):
+def success(message):
     color(message, GREEN)
 
 
-def yellow(message):
+def warning(message):
     color(message, YELLOW)
 
 
@@ -64,10 +65,10 @@ def white(message):
       
       
 def start():
-    cyan("\n\n" + "#"*150 + "\n\n\tStarting PatchWeave...\n\n" + "#"*150)
-    cyan("_"*150 + "\n\n" +
+    cyan("\n\n" + "#"*100 + "\n\n\tStarting PatchWeave...\n\n" + "#"*100)
+    cyan("="*100 + "\n\n" +
     '''
-    Crochet was developed by researchers at NUS Tsunami Team:
+    PatchWeave was developed by researchers at NUS Tsunami Team:
     
     \tRidwan Shariffdeen (rshariffdeen@gmail.com)
         
@@ -92,23 +93,26 @@ def start():
     
     \t\tClang-diff, a tool based on Gumtree diff
     '''
-    +"\n" + "_"*150 + "\n")
+    +"\n" + "="*100 + "\n")
 
 
-def exit_msg(runtime, initialization_duration, clone_detection_duration, transplantation_duration):
-    green("Time duration for:\n")
-    yellow("Initialization: " + initialization_duration)
-    yellow("Clone Detection: " + clone_detection_duration)
-    yellow("Transplantation: " + transplantation_duration)
-    rose("PatchWeave finished successfully after " + runtime + "seconds.\n")
+def exit_msg(runtime, initialization_duration, clone_detection_duration, script_generation_duration, transplantation_duration):
+    success("Time duration for:\n")
+    warning("Initialization: " + initialization_duration)
+    warning("Clone Detection: " + clone_detection_duration)
+    warning("Script Generation: " + script_generation_duration)
+    warning("Transplantation: " + transplantation_duration)
+    success("PatchWeave finished successfully after " + runtime + "seconds.\n")
 
       
 def title(title):
-    green("_"*150 + "\n\n\t" + title + "\n" + "_"*150+"\n")
+    cyan("_"*100 + "\n\n\t" + title + "\n" + "_"*100+"\n")
+
 
 def sub_title(sub_title):
-    green("\n\t" + sub_title + "\n\t" + "-"*140+"\n")
-    
+    cyan("\n\t" + sub_title + "\n\t" + "-"*90+"\n")
+
+
 def conditional(message, *args):
     if debug:
         for i in args:

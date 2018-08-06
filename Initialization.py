@@ -31,9 +31,9 @@ def initialize():
             if len(args[3]) >= 4 and args[3][:-3] == ".sh":
                 crash = args[3]
             else:
-                Print.yellow("Script must be path to a shell (.sh) file. Running anyway.")
+                Print.warning("Script must be path to a shell (.sh) file. Running anyway.")
         else:
-            Print.yellow("No script for crash provided. Running anyway.")
+            Print.warning("No script for crash provided. Running anyway.")
     else:
-        Print.yellow("No script for crash provided. Running anyway.")
+        Print.warning("No script for crash provided. Running anyway.")
     clean()

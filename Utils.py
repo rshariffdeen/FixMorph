@@ -19,13 +19,15 @@ def exec_com(c, verbose=False):
 
 ''' Error management '''
 
+
 def err_exit(*args):
     print("\n")
     for i in args:
-        Print.red(i)
+        Print.error(i)
     raise Exception("Error. Exiting...")
     
 ''' Cleaning Residual files '''
+
 
 def clean_ASTs(src_path):
     # Erase *.crochetAST, *.AST and *.vec files
@@ -44,7 +46,8 @@ def clean():
         
     
 ''' Finding files with specific extension'''
-    
+
+
 def find_files(src_path, extension, output):
     # Save paths to all files in src_path with extension extension to output
     c = "find " + src_path + " -name '" + extension + "' > " + output
@@ -52,6 +55,7 @@ def find_files(src_path, extension, output):
 
 
 ''' Put irrelevant extensions and files in src_path line by line in output'''
+
 
 def get_extensions(src_path, output_file_name):
     extensions = set()
