@@ -309,8 +309,8 @@ def compare_H():
 def compare_C():
     global Pa, Pc
     c_ext = "*\.c\.*\.vec"
-    vecs_A = get_vector_list(Pa, c_ext)
-    vecs_C = get_vector_list(Pc, c_ext)
+    vector_list_A = get_vector_list(Pa, c_ext)
+    vector_list_C = get_vector_list(Pc, c_ext)
     
     Print.blue("Variable mapping...\n")
     to_patch = []
@@ -318,13 +318,13 @@ def compare_C():
     UNKNOWN = "#UNKNOWN#"
     factor = 2
     
-    for i in vecs_A:
-        best = vecs_C[0]
+    for i in vector_list_A:
+        best = vector_list_C[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
         dist = dict()
         
         # Get best match candidate
-        for j in vecs_C:
+        for j in vector_list_C:
             d = ASTVector.ASTVector.dist(i[1],j[1])
             dist[j[0]] = d
             if d < best_d:
@@ -334,7 +334,7 @@ def compare_C():
         # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
         candidates = [best]
         candidates_d = [best_d]
-        for j in vecs_C:
+        for j in vector_list_C:
             if j != best:
                 d = dist[j[0]]
                 if d <= factor*best_d:
@@ -1324,48 +1324,48 @@ def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
     return instruction_CD
 
 
-def Htransplantation(to_patch):
+def transplant_h_files(to_patch):
     for (file_a, file_c, var_map) in to_patch:
         file_b = file_a.replace(Pa.path, Pb.path)
         if not os.path.isfile(file_b):
             err_exit("Error: File not found.", file_b)
             
-        # Generate edit scritps for diff and matching
+        # Generate edit scripts for diff and matching
         gen_edit_script(file_a, file_b, "diff_script_AB")
         gen_edit_script(file_a, file_c, "diff_script_AC")
         
         Print.blue("Generating final edit script for " + file_c.split("/")[-1])
         # Write patch properly
-        instruction_AB, inserted_B, match_BA = get_instructions()
+        original_script, inserted_node_list, map_ab = get_instructions()
         # Generate AST as json files
-        ASTlists = gen_temp_json(file_a, file_b, file_c)
+        json_ast_dump = gen_temp_json(file_a, file_b, file_c)
         # Simplify instructions to a smaller representative sequence of them
-        modified_AB = simplify_patch(instruction_AB, match_BA, ASTlists)
-        #Sort in reverse order and depending on instruction for application
-        modified_AB.sort(key=cmp_to_key(order_comp))
+        modified_script = simplify_patch(original_script, map_ab, json_ast_dump)
+        # Sort in reverse order and depending on instruction for application
+        modified_script.sort(key=cmp_to_key(order_comp))
         # Delete overlapping DELETE operations
-        #modified_AB = remove_overlapping_delete(modified_AB)
+        # modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
-        #modified_AB = adjust_pos(modified_AB)
+        # modified_AB = adjust_pos(modified_AB)
         # Printing modified simplified script
         Print.green("Modified simplified script:")
-        for j in [" - ".join([str(k) for k in i]) for i in modified_AB]:
+        for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
             Print.green("\t" + j)
         # We rewrite the instruction as a script (str) instead of nodes
-        instruction_AB = rewrite_as_script(modified_AB)
+        original_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        match_AC = retrieve_matches()
+        map_ac = retrieve_matches()
         # Transform instructions into ones pertinent to Pc nodes
-        instruction_CD = transform_script(instruction_AB, inserted_B, ASTlists,
-                                          match_AC, match_BA)
+        translated_script = transform_script(original_script, inserted_node_list, json_ast_dump, map_ac, map_ab)
         # Write patch script properly and print in on console
         Print.green("Proposed patch from Pc to Pd")
-        for i in instruction_CD:
+        for i in translated_script:
             patch_instruction(i)
         # Apply the patch (it runs with the script)
         patch(file_a, file_b, file_c)
-  
-def Ctransplantation(to_patch):
+
+
+def transplant_c_files(to_patch):
     for (vec_f_a, vec_f_c, var_map) in to_patch:
         try:
             vec_f_b_file = vec_f_a.file.replace(Pa.path, Pb.path)
@@ -1374,48 +1374,45 @@ def Ctransplantation(to_patch):
             if vec_f_a.function in Pb.funcs[vec_f_b_file].keys():
                 vec_f_b = Pb.funcs[vec_f_b_file][vec_f_a.function]
             else:
-                err_exit("Error: Function not found among affected.",
-                         vec_f_a.function, vec_f_b_file,
-                         Pb.funcs[vec_f_b_file].keys())
+                err_exit("Error: Function not found among affected.", vec_f_a.function, vec_f_b_file, Pb.funcs[vec_f_b_file].keys())
         except Exception as e:
-            err_exit(e, vec_f_b_file, vec_f_a, Pa.path, Pb.path,
-                     vec_f_a.function)
+            err_exit(e, vec_f_b_file, vec_f_a, Pa.path, Pb.path, vec_f_a.function)
         
-        # Generate edit scritps for diff and matching
+        # Generate edit scripts for diff and matching
         gen_edit_script(vec_f_a.file, vec_f_b.file, "diff_script_AB")
         gen_edit_script(vec_f_a.file, vec_f_c.file, "diff_script_AC")
                       
         Print.blue("Generating final edit script for " + Pc.name)
         # Write patch properly
-        instruction_AB, inserted_B, match_BA = get_instructions()
+        original_script, inserted_node_list, map_ab = get_instructions()
         # Generate AST as json files
-        ASTlists = gen_temp_json(vec_f_a.file, vec_f_b.file, vec_f_c.file)
+        json_ast_dump = gen_temp_json(vec_f_a.file, vec_f_b.file, vec_f_c.file)
         # Simplify instructions to a smaller representative sequence of them
-        modified_AB = simplify_patch(instruction_AB, match_BA, ASTlists)
-        #Sort in reverse order and depending on instruction for application
-        modified_AB.sort(key=cmp_to_key(order_comp))
+        modified_script = simplify_patch(original_script, map_ab, json_ast_dump)
+        # Sort in reverse order and depending on instruction for application
+        modified_script.sort(key=cmp_to_key(order_comp))
         # Delete overlapping DELETE operations
-        #modified_AB = remove_overlapping_delete(modified_AB)
+        # modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
         # modified_AB = adjust_pos(modified_AB)
         # Printing modified simplified script
         Print.green("Modified simplified script:")
-        for j in [" - ".join([str(k) for k in i]) for i in modified_AB]:
+        for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
             Print.green("\t" + j)
         # We rewrite the instruction as a script (str) instead of nodes
-        instruction_AB = rewrite_as_script(modified_AB)
+        original_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        match_AC = retrieve_matches()
+        map_ac = retrieve_matches()
         # Transform instructions into ones pertinent to Pc nodes
-        instruction_CD = transform_script(instruction_AB, inserted_B, ASTlists,
-                                          match_AC, match_BA)
+        translated_script = transform_script(original_script, inserted_node_list, json_ast_dump, map_ac, map_ab)
         # Write patch script properly and print in on console
         Print.green("Proposed patch from Pc to Pd")
-        for i in instruction_CD:
+        for i in translated_script:
             patch_instruction(i)
         # Apply the patch (it runs with the script)
         patch(vec_f_a.file, vec_f_b.file, vec_f_c.file)
-        
+
+
 def patch(file_a, file_b, file_c):
     global changes, n_changes
     # This is to have an id of the file we're patching
@@ -1486,7 +1483,6 @@ def show_patch():
     Print.yellow("Generated Patch")
 
 
-
 def verification():
     if crash != None:
         try:
@@ -1553,8 +1549,8 @@ def run_patchweave():
 
     transplantation_start_time = time.time()
     # Using all previous structures to transplant patch
-    safe_exec(Htransplantation, "patch transplantation", patch_for_header_files)
-    safe_exec(Ctransplantation, "patch transplantation", patch_for_c_files)
+    safe_exec(transplant_h_files, "patch transplantation", patch_for_header_files)
+    safe_exec(transplant_c_files, "patch transplantation", patch_for_c_files)
     transplantation_duration = str(time.time() - transplantation_start_time)
 
     # Verification by compiling and re-running crash
