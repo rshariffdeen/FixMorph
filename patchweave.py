@@ -1512,22 +1512,22 @@ def verification():
     restore_files()
 
 
-def safe_exec(function, title, *args):
-    start = time.time()
+def safe_exec(function_def, title, *args):
+    start_time = time.time()
     Print.title("Starting " + title + "...")
-    descr = title[0].lower() + title[1:]
+    description = title[0].lower() + title[1:]
     try:
         if not args:
-            a = function()
+            result = function_def()
         else:
-            a = function(*args)
-        runtime = str(time.time() - start)
-        Print.rose("Successful " + descr + ", after " + runtime + " seconds.")
-    except Exception as e:
-        runtime = str(time.time() - start)
-        Print.red("Crash during " + descr + ", after " + runtime + " seconds.")
-        err_exit(e, "Unexpected error during " + descr + ".")
-    return a
+            result = function_def(*args)
+        duration = str(time.time() - start_time)
+        Print.rose("Successful " + description + ", after " + duration + " seconds.")
+    except Exception as exception:
+        duration = str(time.time() - start_time)
+        Print.red("Crash during " + description + ", after " + duration + " seconds.")
+        err_exit(e, "Unexpected error during " + description + ".")
+    return result
               
               
 def run_patchweave():
