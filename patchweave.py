@@ -1568,7 +1568,7 @@ def run_patchweave():
     Print.exit_msg(run_time, initialization_duration, function_identification_duration, transplantation_duration)
     
     
-if __name__=="__main__":
+if __name__ == "__main__":
     try:
         run_patchweave()
     except KeyboardInterrupt as e:
