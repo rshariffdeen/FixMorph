@@ -18,7 +18,7 @@ class AST:
     
     nodes = []
     attr_names = ['id', 'identifier', 'line', 'line_end', 'col', 'col_end',
-                  'begin', 'end', 'value', 'type', 'file']
+                  'begin', 'end', 'value', 'type', 'file', 'parent_id']
     
     def __init__(self, dict_ast, char=""):
         AST.nodes.append(self)
@@ -32,6 +32,7 @@ class AST:
         self.type = None
         self.file = None
         self.char = char + "  "
+        self.parent_id = None
         self.children = []
         if 'id' in dict_ast.keys():
             self.id = dict_ast['id']
@@ -55,6 +56,8 @@ class AST:
             self.type = dict_ast['type']
         if 'file' in dict_ast.keys():
             self.file = dict_ast['file']
+        if 'parent' in dict_ast.keys():
+            self.parent_id = dict_ast['parent']
         if 'children' in dict_ast.keys():
             for i in dict_ast['children']:
                 child = AST(i, char + "    ")
@@ -64,7 +67,7 @@ class AST:
     def treeString(self):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
                       self.col, self.col_end, self.begin, self.end, self.value,
-                      self.type, self.file]
+                      self.type, self.file, self.parent_id]
         s = self.char[:-2] + "{\n"
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:
@@ -85,7 +88,7 @@ class AST:
     def __str__(self):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
                       self.col, self.col_end, self.begin, self.end, self.value,
-                      self.type, self.file]
+                      self.type, self.file, self.parent_id]
         s = ""
         for i in range(len(self.attrs)):
             if self.attrs[i] != None:
@@ -103,7 +106,7 @@ class AST:
     def get_nodes(self, attribute, value, nodes):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
                       self.col, self.col_end, self.begin, self.end, self.value,
-                      self.type, self.file]
+                      self.type, self.file, self.parent_id]
         if attribute not in AST.attr_names:
             return 0
         index = AST.attr_names.index(attribute)
