@@ -3,20 +3,13 @@
 
 
 import os
-import sys
 import time
 import Common
-import Initialization
-import Detection
 from Utils import exec_com, err_exit, find_files, clean, get_extensions
 import Project
 import Print
-import ASTVector
-import ASTgen
 import ASTparser
 
-changes = dict()
-n_changes = 0
 
 
 def id_from_string(simplestring):
@@ -425,352 +418,14 @@ def get_mapping():
                     node_a, node_c = clean_parse(content, Common.TO)
                     node_map[node_a] = node_c
                 except Exception as exception:
-                    err_exit(e, "Something went wrong in MATCH (AC)", line, operation, content)
+                    err_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
             line = ast_map.readline().strip()
     return node_map
 
 
-# node list is from the patched program
-def get_candidate_node_list(node_ref, json_ast_dump):
-    candidate_node_list = list()
-    node_id = getId(node_ref)
-    node_type = getType(node_ref)
-    node = json_ast_dump[Pc.name][node_id]
-    print(Pc.name)
-    print(node)
-
-    if nodeA in match_AC.keys():
-        nodeC = match_AC[nodeA]
-        nodeC = id_from_string(nodeC)
-        nodeC = ASTlists[Pc.name][nodeC]
-
-    return candidate_node_list
-
-
-def transform_script(instruction_AB, inserted_B, ASTlists, match_AC, match_BA):
-    instruction_CD = list()
-    inserted_D = list()
-    match_BD = dict()
-    for i in instruction_AB:
-        instruction = i[0]
-        # Update nodeA to nodeB (value) -> Update nodeC to nodeD (value)
-        if instruction == UPDATE:
-            try:
-                nodeA = i[1]
-                nodeB = i[2]
-                nodeC = "?"
-                nodeD = id_from_string(nodeB)
-                nodeD = ASTlists[Common.Pb.name][nodeD]
-                nodeC = get_candidate_node_list(nodeA, ASTlists)
-                if nodeC == null:
-                    Print.warning("Warning: Match for " + str(nodeA) + "not found. Skipping UPDATE instruction.")
-                else:
-                    nodeC.line = nodeC.parent.line
-                    instruction_CD.append((UPDATE, nodeC, nodeD))
-
-            except Exception as e:
-                err_exit(e, "Something went wrong with UPDATE.")
-
-        # Delete nodeA -> Delete nodeC
-        elif instruction == DELETE:
-            try:
-                nodeA = i[1]
-                nodeC = "?"
-                if nodeA in match_AC.keys():
-                    nodeC = match_AC[nodeA]
-                    nodeC = id_from_string(nodeC)
-                    nodeC = ASTlists[Pc.name][nodeC]
-                    if nodeC.line == None:
-                        nodeC.line = nodeC.parent.line
-                    instruction_CD.append((DELETE, nodeC))
-                else:
-                    Print.warning("Warning: Match for " + str(nodeA) + \
-                                  "not found. Skipping DELETE instruction.")
-            except Exception as e:
-                err_exit(e, "Something went wrong with DELETE.")
-        # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
-        elif instruction == MOVE:
-            try:
-                nodeB1 = i[1]
-                nodeB2 = i[2]
-                pos = int(i[3])
-                nodeC1 = "?"
-                nodeC2 = "?"
-                if nodeB1 in match_BA.keys():
-                    nodeA1 = match_BA[nodeB1]
-                    if nodeA1 in match_AC.keys():
-                        nodeC1 = match_AC[nodeA1]
-                        nodeC1 = id_from_string(nodeC1)
-                        nodeC1 = ASTlists[Pc.name][nodeC1]
-                    else:
-                        # TODO: Manage case in which nodeA1 is unmatched
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA1)
-                elif nodeB1 in inserted_B:
-                    if nodeB1 in match_BD.keys():
-                        nodeC1 = match_BD[nodeB1]
-                    else:
-                        # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB1)
-                if nodeB2 in match_BA.keys():
-                    nodeA2 = match_BA[nodeB2]
-                    if nodeA2 in match_AC.keys():
-                        nodeC2 = match_AC[nodeA2]
-                        nodeC2 = id_from_string(nodeC2)
-                        nodeC2 = ASTlists[Pc.name][nodeC2]
-                    else:
-                        # TODO: Manage case for unmatched nodeA2
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA2)
-                elif nodeB2 in inserted_B:
-                    if nodeB2 in match_BD.keys():
-                        nodeC2 = match_BD[nodeB2]
-                    else:
-                        # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB2)
-                try:
-                    true_B2 = id_from_string(nodeB2)
-                    true_B2 = ASTlists[Common.Pb.name][true_B2]
-                    if pos != 0:
-                        nodeB2_l = true_B2.children[pos - 1]
-                        nodeB2_l = nodeB2_l.simple_print()
-                        if nodeB2_l in match_BA.keys():
-                            nodeA2_l = match_BA[nodeB2_l]
-                            if nodeA2_l in match_AC.keys():
-                                nodeC2_l = match_AC[nodeA2_l]
-                                nodeC2_l = id_from_string(nodeC2_l)
-                                nodeC2_l = ASTlists[Pc.name][nodeC2_l]
-                                if nodeC2_l in nodeC2.children:
-                                    pos = nodeC2.children.index(nodeC2_l)
-                                    pos += 1
-                                else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(nodeC2_l)
-                                    Print.warning([i.simple_print() for i in
-                                                   nodeC2.children])
-                            else:
-                                Print.warning("Failed at locating match" + \
-                                              " for " + nodeA2_l)
-                                Print.warning("Trying to get pos anyway.")
-                                # This is more likely to be correct
-                                nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = ASTlists[Common.Pa.name][nodeA2_l]
-                                parent = nodeA2_l.parent
-                                if parent != None:
-                                    pos = parent.children.index(nodeA2_l)
-                                    pos += 1
-                        else:
-                            Print.warning("Failed at match for child.")
-                except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
-
-                if type(nodeC1) == ASTparser.AST:
-                    if nodeC1.line == None:
-                        nodeC1.line = nodeC1.parent.line
-                    if type(nodeC2) == ASTparser.AST:
-                        if nodeC2.line == None:
-                            nodeC2.line = nodeD.parent.line
-                        if nodeC2 in inserted_D:
-                            instruction_CD.append((DELETE, nodeC1))
-                        else:
-                            instruction_CD.append((MOVE, nodeC1, nodeC2,
-                                                   pos))
-                        inserted_D.append(nodeC1)
-
-                    else:
-                        Print.warning("Could not find match for node. " + \
-                                      "Ignoring MOVE operation. (D)")
-                else:
-                    Print.warning("Could not find match for node. " + \
-                                  "Ignoring MOVE operation. (C)")
-            except Exception as e:
-                err_exit(e, "Something went wrong with MOVE.")
-
-        # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
-        elif instruction == UPDATEMOVE:
-
-            try:
-                nodeB1 = i[1]
-                nodeB2 = i[2]
-                pos = int(i[3])
-                nodeC1 = "?"
-                nodeC2 = "?"
-                if nodeB1 in match_BA.keys():
-                    nodeA1 = match_BA[nodeB1]
-                    if nodeA1 in match_AC.keys():
-                        nodeC1 = match_AC[nodeA1]
-                        nodeC1 = id_from_string(nodeC1)
-                        nodeC1 = ASTlists[Pc.name][nodeC1]
-                    else:
-                        # TODO: Manage case in which nodeA1 is unmatched
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA1)
-                elif nodeB1 in inserted_B:
-                    if nodeB1 in match_BD.keys():
-                        nodeC1 = match_BD[nodeB1]
-                    else:
-                        # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB1)
-                if nodeB2 in match_BA.keys():
-                    nodeA2 = match_BA[nodeB2]
-                    if nodeA2 in match_AC.keys():
-                        nodeC2 = match_AC[nodeA2]
-                        nodeC2 = id_from_string(nodeC2)
-                        nodeC2 = ASTlists[Pc.name][nodeC2]
-                    else:
-                        # TODO: Manage case for unmatched nodeA2
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA2)
-                elif nodeB2 in inserted_B:
-                    if nodeB2 in match_BD.keys():
-                        nodeC2 = match_BD[nodeB2]
-                    else:
-                        # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB2)
-                try:
-                    true_B2 = id_from_string(nodeB2)
-                    true_B2 = ASTlists[Common.Pb.name][true_B2]
-                    if pos != 0:
-                        nodeB2_l = true_B2.children[pos - 1]
-                        nodeB2_l = nodeB2_l.simple_print()
-                        if nodeB2_l in match_BA.keys():
-                            nodeA2_l = match_BA[nodeB2_l]
-                            if nodeA2_l in match_AC.keys():
-                                nodeC2_l = match_AC[nodeA2_l]
-                                nodeC2_l = id_from_string(nodeC2_l)
-                                nodeC2_l = ASTlists[Pc.name][nodeC2_l]
-                                if nodeC2_l in nodeC2.children:
-                                    pos = nodeC2.children.index(nodeC2_l)
-                                    pos += 1
-                                else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(nodeC2_l)
-                                    Print.warning([i.simple_print() for i in
-                                                   nodeC2.children])
-                            else:
-                                Print.warning("Failed at locating match" + \
-                                              " for " + nodeA2_l)
-                                Print.warning("Trying to get pos anyway.")
-                                # This is more likely to be correct
-                                nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = ASTlists[Common.Pa.name][nodeA2_l]
-                                parent = nodeA2_l.parent
-                                if parent != None:
-                                    pos = parent.children.index(nodeA2_l)
-                                    pos += 1
-                        else:
-                            Print.warning("Failed at match for child.")
-                except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
-
-                if type(nodeC1) == ASTparser.AST:
-                    if nodeC1.line == None:
-                        nodeC1.line = nodeC1.parent.line
-                    if type(nodeC2) == ASTparser.AST:
-                        if nodeC2.line == None:
-                            nodeC2.line = nodeD.parent.line
-                        if nodeC2 in inserted_D:
-                            instruction_CD.append((DELETE, nodeC1))
-                        else:
-                            instruction_CD.append((UPDATEMOVE, nodeC1, nodeC2,
-                                                   pos))
-                        inserted_D.append(nodeC1)
-
-                    else:
-                        Print.warning("Could not find match for node. " + \
-                                      "Ignoring UPDATEMOVE operation. (D)")
-                else:
-                    Print.warning("Could not find match for node. " + \
-                                  "Ignoring UPDATEMOVE operation. (C)")
-            except Exception as e:
-                err_exit(e, "Something went wrong with UPDATEMOVE.")
-
-        # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
-        elif instruction == INSERT:
-            try:
-                nodeB1 = i[1]
-                nodeB2 = i[2]
-                pos = int(i[3])
-                nodeD1 = id_from_string(nodeB1)
-                nodeD1 = ASTlists[Common.Pb.name][nodeD1]
-                nodeD2 = id_from_string(nodeB2)
-                nodeD2 = ASTlists[Common.Pb.name][nodeD2]
-                # TODO: Is this correct?
-                if nodeD2.line != None:
-                    nodeD1.line = nodeD2.line
-                else:
-                    nodeD1.line = nodeD2.parent.line
-                if nodeB2 in match_BA.keys():
-                    nodeA2 = match_BA[nodeB2]
-                    if nodeA2 in match_AC.keys():
-                        nodeD2 = match_AC[nodeA2]
-                        nodeD2 = id_from_string(nodeD2)
-                        nodeD2 = ASTlists[Pc.name][nodeD2]
-                elif nodeB2 in match_BD.keys():
-                    nodeD2 = match_BD[nodeB2]
-                else:
-                    Print.warning("Warning: node for insertion not" + \
-                                  " found. Skipping INSERT operation.")
-
-                try:
-                    true_B2 = id_from_string(nodeB2)
-                    true_B2 = ASTlists[Common.Pb.name][true_B2]
-                    if pos != 0:
-                        nodeB2_l = true_B2.children[pos - 1]
-                        nodeB2_l = nodeB2_l.simple_print()
-                        if nodeB2_l in match_BA.keys():
-                            nodeA2_l = match_BA[nodeB2_l]
-                            if nodeA2_l in match_AC.keys():
-                                nodeD2_l = match_AC[nodeA2_l]
-                                nodeD2_l = id_from_string(nodeD2_l)
-                                nodeD2_l = ASTlists[Pc.name][nodeD2_l]
-                                if nodeD2_l in nodeD2.children:
-                                    pos = nodeD2.children.index(nodeD2_l)
-                                    pos += 1
-                                else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(nodeD2_l)
-                                    Print.warning([i.simple_print() for i in
-                                                   nodeD2.children])
-                            else:
-                                Print.warning("Failed at locating match" + \
-                                              " for " + nodeA2_l)
-                                Print.warning("Trying to get pos anyway.")
-                                # This is more likely to be correct
-                                nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = ASTlists[Common.Pa.name][nodeA2_l]
-                                parent = nodeA2_l.parent
-                                if parent != None:
-                                    pos = parent.children.index(nodeA2_l)
-                                    pos += 1
-
-                        else:
-                            Print.warning("Failed at match for child.")
-                except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
-                if type(nodeD1) == ASTparser.AST:
-                    match_BD[nodeB1] = nodeD1
-                    inserted_D.append(nodeD1)
-                    nodeD1.children = []
-                    if nodeD1.line == None:
-                        nodeD1.line = nodeD1.parent.line
-                    if type(nodeD2) == ASTparser.AST:
-                        if nodeD2.line == None:
-                            nodeD2.line = nodeD2.parent.line
-                        if nodeD2 not in inserted_D:
-                            instruction_CD.append((INSERT, nodeD1, nodeD2,
-                                                   pos))
-            except Exception as e:
-                err_exit(e, "Something went wrong with INSERT.")
-    return instruction_CD
-
-
-def generate_script_for_header_files(to_patch):
-    for (file_a, file_c, var_map) in to_patch:
+def generate_script_for_header_files(files_list_to_patch):
+    generated_script_list = dict()
+    for (file_a, file_c, var_map) in files_list_to_patch:
         file_b = file_a.replace(Common.Pa.path, Common.Pb.path)
         if not os.path.isfile(file_b):
             err_exit("Error: File not found.", file_b)
@@ -800,10 +455,14 @@ def generate_script_for_header_files(to_patch):
         original_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
         map_ac = get_mapping()
+        generated_data = (original_script, inserted_node_list, json_ast_dump, map_ab, map_ac)
+        generated_script_list[(file_a, file_b, file_c)] = generated_data
+    Common.generated_script_for_header_files = generated_script_list
 
 
-def generate_script_for_c_files(to_patch):
-    for (vec_f_a, vec_f_c, var_map) in to_patch:
+def generate_script_for_c_files(file_list_to_patch):
+    generated_script_list = dict()
+    for (vec_f_a, vec_f_c, var_map) in file_list_to_patch:
         try:
             vec_f_b_file = vec_f_a.file.replace(Common.Pa.path, Common.Pb.path)
             if vec_f_b_file not in Common.Pb.functions.keys():
@@ -841,65 +500,13 @@ def generate_script_for_c_files(to_patch):
         original_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
         map_ac = get_mapping()
+        generated_data = (original_script, inserted_node_list, json_ast_dump, map_ab, map_ac)
+        generated_script_list[(vec_f_a, vec_f_b, vec_f_c)] = generated_data
+    Common.generated_script_for_c_files = generated_script_list
 
-
-def patch(file_a, file_b, file_c):
-    global changes, n_changes
-    # This is to have an id of the file we're patching
-    n_changes += 1
-    # Check for an edit script
-    if not (os.path.isfile("output/script")):
-        err_exit("No script was generated. Exiting with error.")
-
-    output_file = "output/" + str(n_changes) + "_temp." + file_c[-1]
-    c = ""
-    # We add file_c into our dict (changes) to be able to backup and copy it
-    if file_c not in changes.keys():
-        filename = file_c.split("/")[-1]
-        backup_file = str(n_changes) + "_" + filename
-        changes[file_c] = backup_file
-        c += "cp " + file_c + " Backup_Folder/" + backup_file + "; "
-    # We apply the patch using the script and crochet-patch
-    c += Common.PATCH_COMMAND + " -s=" + Common.PATCH_SIZE + \
-         " -script=output/script -source=" + file_a + \
-         " -destination=" + file_b + " -target=" + file_c
-    if file_c[-1] == "h":
-        c += " --"
-    c += " 2> output/errors > " + output_file + "; "
-    c += "cp " + output_file + " " + file_c
-    exec_com(c)
-    # We fix basic syntax errors that could have been introduced by the patch
-    c2 = Common.SYNTAX_CHECK_COMMAND + "-fixit " + file_c
-    if file_c[-1] == "h":
-        c2 += " --"
-    c2 += " 2> output/syntax_errors"
-    exec_com(c2)
-    # We check that everything went fine, otherwise, we restore everything
-    try:
-        c3 = Common.Common.SYNTAX_CHECK_COMMAND + file_c
-        if file_c[-1] == "h":
-            c3 += " --"
-        exec_com(c3)
-    except Exception as e:
-        Print.error("Clang-check could not repair syntax errors.")
-        restore_files()
-        err_exit(e, "Crochet failed.")
-    # We format the file to be with proper spacing (needed?)
-    c4 = Common.STYLE_FORMAT_COMMAND + file_c
-    if file_c[-1] == "h":
-        c4 += " --"
-    c4 += " > " + output_file + "; "
-    c4 += "cp " + output_file + " " + file_c + ";"
-    exec_com(c4)
-
-    # We rename the script so that it won't be there for other files
-    c5 = "mv output/script output/" + str(n_changes) + "_script"
-    show_patch(file_a, file_b, file_c, output_file, str(n_changes))
-    exec_com(c5)
 
 
 def restore_files():
-    global changes
     Print.warning("Restoring files...")
     for file in changes.keys():
         backup_file = changes[file]
