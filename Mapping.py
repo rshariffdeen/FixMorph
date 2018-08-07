@@ -1,37 +1,24 @@
-import os
-import sys
-import time
+
 import Common
-import Initialization
-import Detection
-from Utils import exec_com, err_exit, find_files, clean, get_extensions
-import Project
+from Utils import exec_com, err_exit
 import Print
-import ASTVector
-import ASTgen
-import ASTparser
 
 
-def ASTscript(file1, file2, output, only_matches=False):
-    extra_arg = ""
-    if file1[-2:] == ".h":
-        extra_arg = " --"
-    c = Common.DIFF_COMMAND + " -s=" + Common.DIFF_SIZE + " -dump-matches " + \
-        file1 + " " + file2 + extra_arg + " 2> output/errors_clang_diff "
-    if only_matches:
-        c += "| grep '^Match ' "
-    c += " > " + output
-    exec_com(c, True)
-
-
-def generate_edit_script(file_a, file_b, output_file):
+def generate_map(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
-    Print.blue("Generating edit script: " + name_a + Common.TO + name_b + "...")
+    Print.blue("Generating mapping: " + name_a + Common.TO + name_b + "...")
     try:
-        ASTscript(file_a, file_b, output_file)
+        extra_arg = ""
+        if file_a[-2:] == ".h":
+            extra_arg = " --"
+        command = Common.DIFF_COMMAND + " -s=" + Common.DIFF_SIZE + " -dump-matches " + \
+            file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
+        command += "| grep '^Match ' "
+        command += " > " + output_file
+        exec_com(command, False)
     except Exception as e:
-        err_exit(e, "Unexpected fail at generating edit script: " + output_file)
+        err_exit(e, "Unexpected fail at generating map: " + output_file)
 
 
 def clean_parse(content, separator):
@@ -81,19 +68,24 @@ def get_mapping(map_file_name):
     return node_map
 
 
-def map():
+def generate():
     Print.title("Variable Mapping")
     Print.sub_title("Variable mapping for header files")
-
-    for file_list, generated_data in Common.generated_script_for_header_files.items():
-        map_file_name = "output/diff_script_AC"
-        generate_edit_script(file_list[0], file_list[2], map_file_name)
-        map_ac = get_mapping(map_file_name)
-        generated_data.insert(map_ac)
+    if len(Common.generated_script_for_header_files) == 0:
+        Print.blue("\t -nothing-to-do")
+    else:
+        for file_list, generated_data in Common.generated_script_for_header_files.items():
+            map_file_name = "output/diff_script_AC"
+            generate_map(file_list[0], file_list[2], map_file_name)
+            variable_map = get_mapping(map_file_name)
+            Common.variable_map[file_list] = variable_map
 
     Print.sub_title("Variable mapping for C files")
-    for file_list, generated_data in Common.generated_script_for_c_files.items():
-        map_file_name = "output/diff_script_AC"
-        generate_edit_script(file_list[0], file_list[2], map_file_name)
-        map_ac = get_mapping(map_file_name)
-        generated_data.insert(map_ac)
+    if len(Common.generated_script_for_c_files) == 0:
+        Print.blue("\t -nothing-to-do")
+    else:
+        for file_list, generated_data in Common.generated_script_for_c_files.items():
+            map_file_name = "output/diff_script_AC"
+            generate_map(file_list[0], file_list[2], map_file_name)
+            variable_map = get_mapping(map_file_name)
+            Common.variable_map[file_list] = variable_map

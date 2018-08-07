@@ -37,3 +37,4 @@ generated_script_for_header_files = dict()
 generated_script_for_c_files = dict()
 
 translated_script_for_files = dict()
+variable_map = dict()

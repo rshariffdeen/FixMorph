@@ -33,7 +33,7 @@ def apply_patch(file_a, file_b, file_c, instruction_list):
         c += " --"
     c += " 2> output/errors > " + output_file + "; "
     c += "cp " + output_file + " " + file_c
-    Print.grey(c)
+    #Print.grey(c)
     exec_com(c)
     # We fix basic syntax errors that could have been introduced by the patch
     c2 = Common.SYNTAX_CHECK_COMMAND + "-fixit " + file_c
@@ -43,7 +43,7 @@ def apply_patch(file_a, file_b, file_c, instruction_list):
     exec_com(c2)
     # We check that everything went fine, otherwise, we restore everything
     try:
-        c3 = Common.SYNTAX_CHECK_COMMAND + file_c
+        c3 = Common.SYNTAX_CHECK_COMMAND + file_c + " 2>output/syntax-errors"
         if file_c[-1] == "h":
             c3 += " --"
         exec_com(c3)
@@ -56,9 +56,10 @@ def apply_patch(file_a, file_b, file_c, instruction_list):
     if file_c[-1] == "h":
         c4 += " --"
     c4 += " > " + output_file + "; "
-    c4 += "cp " + output_file + " " + file_c + ";"
     exec_com(c4)
     show_patch(file_a, file_b, file_c, output_file, str(file_index))
+    c5 = "cp " + output_file + " " + file_c + ";"
+    exec_com(c5)
     Print.success("\n\tSuccessful transformation")
 
 
@@ -73,7 +74,7 @@ def restore_files():
 
 
 def show_patch(file_a, file_b, file_c, file_d, index):
-    Print.warning("Original Patch")
+    Print.rose("Original Patch")
     original_patch_file_name = "output/" + index + "-original-patch"
     generated_patch_file_name = "output/" + index + "-generated-patch"
     diff_command = "diff -ENZBbwr " + file_a + " " + file_b + " > " + original_patch_file_name
@@ -84,13 +85,13 @@ def show_patch(file_a, file_b, file_c, file_d, index):
             Print.white("\t" + diff_line)
             diff_line = diff.readline().strip()
 
-    Print.warning("Generated Patch")
+    Print.rose("Generated Patch")
     diff_command = "diff -ENZBbwr " + file_c + " " + file_d + " > " + generated_patch_file_name
     exec_com(diff_command)
     with open(generated_patch_file_name, 'r', errors='replace') as diff:
         diff_line = diff.readline().strip()
         while diff_line:
-            Print.success("\t" + diff_line)
+            Print.white("\t" + diff_line)
             diff_line = diff.readline().strip()
 
 
@@ -117,11 +118,11 @@ def weave():
     Print.title("Applying transformation")
     for file_list, generated_data in Common.translated_script_for_files.items():
         Print.sub_title("Transforming file " + file_list[2])
-        Print.blue("Original AST script")
+        Print.rose("Original AST script")
         original_script = generated_data[1]
-        for i in original_script:
-            Print.white(original_script[i])
-        Print.blue("Generated AST script")
+        for instruction in original_script:
+            Print.white(instruction)
+        Print.rose("Generated AST script")
         translated_script = generated_data[0]
         for instruction in translated_script:
             Print.white(instruction)

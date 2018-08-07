@@ -354,21 +354,19 @@ def clone_detection_for_c_files():
 
 
 def generate_ast_map(source_a, source_b):
-    c = Common.DIFF_COMMAND + "-dump-matches " + source_a + " " + source_b
+    command = Common.DIFF_COMMAND + "-dump-matches " + source_a + " " + source_b
     if source_a[-1] == "h":
-        c += " --"
-    c += " 2>> output/errors_clang_diff"
-    c += "| grep -P '^Match ' | grep -P '^Match ' > output/ast-map"
+        command += " --"
+    command += " 2>> output/errors_clang_diff"
+    command += "| grep -P '^Match ' | grep -P '^Match ' > output/ast-map"
     try:
-        exec_com(c, True)
-    except Exception as e:
-        err_exit(e, "Unexpected error in generate_ast_map.")
+        exec_com(command, False)
+    except Exception as exception:
+        err_exit(exception, "Unexpected error in generate_ast_map.")
 
 
 def id_from_string(simplestring):
     return int(simplestring.split("(")[-1][:-1])
-
-
 
 
 def detect_matching_declarations(file_a, file_c):

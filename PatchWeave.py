@@ -32,7 +32,7 @@ def run_patchweave():
     patch_extraction_duration = str(time.time() - patch_extraction_start_time)
 
     mapping_start_time = time.time()
-    Mapping.map()
+    Mapping.generate()
     mapping_duration = str(time.time() - mapping_start_time)
 
     translation_start_time = time.time()

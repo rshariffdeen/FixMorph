@@ -5,27 +5,8 @@
 import os
 import time
 import Common
-from Utils import exec_com, err_exit, find_files, clean, get_extensions
-import Project
+from Utils import exec_com, err_exit
 import Print
-import ASTparser
-
-
-
-def id_from_string(simplestring):
-    return int(simplestring.split("(")[-1][:-1])
-
-
-def getId(NodeRef):
-    return int(NodeRef.split("(")[-1][:-1])
-
-
-def getType(NodeRef):
-    return NodeRef.split("(")[0]
-
-
-
-
 
 
 def clean_parse(content, separator):
@@ -57,24 +38,18 @@ def clean_parse(content, separator):
     return [node1, node2]
 
 
-def ASTscript(file1, file2, output, only_matches=False):
-    extra_arg = ""
-    if file1[-2:] == ".h":
-        extra_arg = " --"
-    c = Common.DIFF_COMMAND + " -s=" + Common.DIFF_SIZE + " -dump-matches " + \
-        file1 + " " + file2 + extra_arg + " 2> output/errors_clang_diff "
-    if only_matches:
-        c += "| grep '^Match ' "
-    c += " > " + output
-    exec_com(c, True)
-
-
 def generate_edit_script(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
     Print.blue("Generating edit script: " + name_a + Common.TO + name_b + "...")
     try:
-        ASTscript(file_a, file_b, output_file)
+        extra_arg = ""
+        if file_a[-2:] == ".h":
+            extra_arg = " --"
+        command = Common.DIFF_COMMAND + " -s=" + Common.DIFF_SIZE + " -dump-matches " + \
+            file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
+        command += " > " + output_file
+        exec_com(command, True)
     except Exception as e:
         err_exit(e, "Unexpected fail at generating edit script: " + output_file)
 
@@ -152,62 +127,6 @@ def get_instruction_list(script_file_name):
                     err_exit(e, "Something went wrong in INSERT.")
             line = script.readline().strip()
     return instruction_list, inserted_node_list, map_ab
-
-
-
-
-def remove_overlapping_delete(modified_AB):
-    reduced_AB = set()
-    n_i = len(modified_AB)
-    for i in range(n_i):
-        inst1 = modified_AB[i]
-        if inst1[0] == Common.DELETE:
-            for j in range(i + 1, n_i):
-                inst2 = modified_AB[j]
-                if inst2[0] == Common.DELETE:
-                    node1 = inst1[1]
-                    node2 = inst2[1]
-                    if node1.contains(node2):
-                        reduced_AB.add(j)
-                    elif node2.contains(node1):
-                        reduced_AB.add(i)
-    modified_AB = [modified_AB[i] for i in range(n_i) if i not in reduced_AB]
-    return modified_AB
-
-
-def adjust_pos(modified_AB):
-    i = 0
-    while i < len(modified_AB) - 1:
-        inst1 = modified_AB[i][0]
-        if inst1 == Common.INSERT or inst1 == Common.MOVE or inst1 == Common.UPDATEMOVE:
-            node_into_1 = modified_AB[i][2]
-            k = i + 1
-            for j in range(i + 1, len(modified_AB)):
-                k = j
-                inst2 = modified_AB[j][0]
-                if inst2 != Common.INSERT and inst2 != Common.MOVE:
-                    k -= 1
-                    break
-                node_into_2 = modified_AB[j][2]
-                if node_into_1 != node_into_2:
-                    k -= 1
-                    break
-                pos_at_1 = int(modified_AB[j - 1][3])
-                pos_at_2 = int(modified_AB[j][3])
-                if pos_at_1 < pos_at_2 - 1:
-                    k -= 1
-                    break
-            k += 1
-            for l in range(i, k):
-                inst = modified_AB[l][0]
-                node1 = modified_AB[l][1]
-                node2 = modified_AB[l][2]
-                pos = int(modified_AB[i][3])
-                modified_AB[l] = (inst, node1, node2, pos)
-            i = k
-        else:
-            i += 1
-    return modified_AB
 
 
 def generate_script_for_header_files(files_list_to_patch):

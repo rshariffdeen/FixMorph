@@ -439,21 +439,20 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
 def simplify_patch(instruction_AB, match_BA, ASTlists):
     modified_AB = []
     inserted = []
-    Print.white("Original script from Pa to Pb")
+    # Print.white("Original script from Pa to Pb")
     for i in instruction_AB:
         inst = i[0]
         if inst == Common.DELETE:
             nodeA = id_from_string(i[1])
             nodeA = ASTlists[Common.Pa.name][nodeA]
-            Print.white("\t" + Common.DELETE + " - " + str(nodeA))
+            # Print.white("\t" + Common.DELETE + " - " + str(nodeA))
             modified_AB.append((Common.DELETE, nodeA))
         elif inst == Common.UPDATE:
             nodeA = id_from_string(i[1])
             nodeA = ASTlists[Common.Pa.name][nodeA]
             nodeB = id_from_string(i[2])
             nodeB = ASTlists[Common.Pb.name][nodeB]
-            Print.white("\t" + Common.UPDATE + " - " + str(nodeA) + " - " + \
-                        str(nodeB))
+            # Print.white("\t" + Common.UPDATE + " - " + str(nodeA) + " - " + str(nodeB))
             modified_AB.append((Common.UPDATE, nodeA, nodeB))
         elif inst == Common.MOVE:
             nodeB1 = id_from_string(i[1])
@@ -461,8 +460,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeB2 = id_from_string(i[2])
             nodeB2 = ASTlists[Common.Pb.name][nodeB2]
             pos = i[3]
-            Print.white("\t" + Common.MOVE + " - " + str(nodeB1) + " - " + \
-                        str(nodeB2) + " - " + str(pos))
+            # Print.white("\t" + Common.MOVE + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Common.MOVE, nodeB1, nodeB2, pos))
@@ -483,8 +481,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeB2 = id_from_string(i[2])
             nodeB2 = ASTlists[Common.Pb.name][nodeB2]
             pos = i[3]
-            Print.white("\t" + Common.UPDATEMOVE + " - " + str(nodeB1) + " - " + \
-                        str(nodeB2) + " - " + str(pos))
+            # Print.white("\t" + Common.UPDATEMOVE + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Common.UPDATEMOVE, nodeB1, nodeB2, pos))
@@ -505,12 +502,67 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeB2 = id_from_string(i[2])
             nodeB2 = ASTlists[Common.Pb.name][nodeB2]
             pos = i[3]
-            Print.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + \
-                        str(nodeB2) + " - " + str(pos))
+            # Print.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Common.INSERT, nodeB1, nodeB2, pos))
     return modified_AB
+
+
+def remove_overlapping_delete(modified_AB):
+    reduced_AB = set()
+    n_i = len(modified_AB)
+    for i in range(n_i):
+        inst1 = modified_AB[i]
+        if inst1[0] == Common.DELETE:
+            for j in range(i + 1, n_i):
+                inst2 = modified_AB[j]
+                if inst2[0] == Common.DELETE:
+                    node1 = inst1[1]
+                    node2 = inst2[1]
+                    if node1.contains(node2):
+                        reduced_AB.add(j)
+                    elif node2.contains(node1):
+                        reduced_AB.add(i)
+    modified_AB = [modified_AB[i] for i in range(n_i) if i not in reduced_AB]
+    return modified_AB
+
+
+
+def adjust_pos(modified_AB):
+    i = 0
+    while i < len(modified_AB) - 1:
+        inst1 = modified_AB[i][0]
+        if inst1 == Common.INSERT or inst1 == Common.MOVE or inst1 == Common.UPDATEMOVE:
+            node_into_1 = modified_AB[i][2]
+            k = i + 1
+            for j in range(i + 1, len(modified_AB)):
+                k = j
+                inst2 = modified_AB[j][0]
+                if inst2 != Common.INSERT and inst2 != Common.MOVE:
+                    k -= 1
+                    break
+                node_into_2 = modified_AB[j][2]
+                if node_into_1 != node_into_2:
+                    k -= 1
+                    break
+                pos_at_1 = int(modified_AB[j - 1][3])
+                pos_at_2 = int(modified_AB[j][3])
+                if pos_at_1 < pos_at_2 - 1:
+                    k -= 1
+                    break
+            k += 1
+            for l in range(i, k):
+                inst = modified_AB[l][0]
+                node1 = modified_AB[l][1]
+                node2 = modified_AB[l][2]
+                pos = int(modified_AB[i][3])
+                modified_AB[l] = (inst, node1, node2, pos)
+            i = k
+        else:
+            i += 1
+    return modified_AB
+
 
 def rewrite_as_script(modified_AB):
     instruction_AB = []
@@ -594,9 +646,13 @@ def translate():
     for file_list, generated_data in Common.generated_script_for_header_files.items():
         # Generate AST as json files
         json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
+
         original_script = list()
-        # for instruction in generated_data[0]:
-        #     original_script.append(get_instruction(instruction))
+        for instruction in generated_data[0]:
+            instruction_line = ""
+            for token in instruction:
+                instruction_line += token + " "
+            original_script.append(instruction_line)
         # Simplify instructions to a smaller representative sequence of them
         modified_script = simplify_patch(generated_data[0], generated_data[2], json_ast_dump)
         # Sort in reverse order and depending on instruction for application
@@ -612,14 +668,21 @@ def translate():
         # We rewrite the instruction as a script (str) instead of nodes
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        translated_script = transform_script(modified_script, generated_data[1], json_ast_dump, generated_data[2], generated_data[3])
+        variable_map = Common.variable_map[file_list]
+        translated_script = transform_script(modified_script, generated_data[1], json_ast_dump, generated_data[2], variable_map)
         translated_script_list[file_list] = (translated_script, original_script)
 
     Print.sub_title("Translating scripts for C files")
     for file_list, generated_data in Common.generated_script_for_c_files.items():
-        # Generate AST as json files
         json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
+
         original_script = list()
+        for instruction in generated_data[0]:
+            instruction_line = ""
+            for token in instruction:
+                instruction_line += token + " "
+            original_script.append(instruction_line)
+
         # for instruction in generated_data[0]:
         #     original_script.append(get_instruction(instruction))
         # Simplify instructions to a smaller representative sequence of them
@@ -631,14 +694,14 @@ def translate():
         # Adjusting position for MOVE and INSERT operations
         # modified_AB = adjust_pos(modified_AB)
         # Printing modified simplified script
-        Print.success("\tModified Script:")
-        for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
-            Print.success("\t" + j)
+        # Print.success("\tModified Script:")
+        # for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
+        #     Print.success("\t" + j)
         # We rewrite the instruction as a script (str) instead of nodes
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        translated_script = transform_script(modified_script, generated_data[1], json_ast_dump, generated_data[2],
-                                             generated_data[3])
+        variable_map = Common.variable_map[file_list]
+        translated_script = transform_script(modified_script, generated_data[1], json_ast_dump, generated_data[2], variable_map)
         translated_script_list[file_list] = (translated_script, original_script)
 
     Common.translated_script_for_files = translated_script_list
