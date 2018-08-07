@@ -58,7 +58,7 @@ def apply_patch(file_a, file_b, file_c, instruction_list):
         c4 += " --"
     c4 += " > " + output_file + "; "
     exec_com(c4)
-    show_patch(file_a, file_b, file_c, output_file, str(file_index))
+    show_patch(file_a, file_b, "Backup_Folder/" + backup_file, output_file, str(file_index))
     c5 = "cp " + output_file + " " + file_c + ";"
     exec_com(c5)
     Print.success("\n\tSuccessful transformation")
