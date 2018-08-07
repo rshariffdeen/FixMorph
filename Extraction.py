@@ -49,7 +49,7 @@ def generate_edit_script(file_a, file_b, output_file):
         command = Common.DIFF_COMMAND + " -s=" + Common.DIFF_SIZE + " -dump-matches " + \
             file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += " > " + output_file
-        exec_com(command, True)
+        exec_com(command, False)
     except Exception as e:
         err_exit(e, "Unexpected fail at generating edit script: " + output_file)
 

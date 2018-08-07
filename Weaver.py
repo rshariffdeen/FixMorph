@@ -12,6 +12,7 @@ def apply_patch(file_a, file_b, file_c, instruction_list):
 
     # Check for an edit script
     script_file_name = "output/" + str(file_index) + "_script"
+    syntax_error_file_name = "output/" + str(file_index) + "_syntax_errors"
     with open(script_file_name, 'w', errors='replace') as script_file:
         for instruction in instruction_list:
             script_file.write(instruction + "\n")
@@ -39,11 +40,11 @@ def apply_patch(file_a, file_b, file_c, instruction_list):
     c2 = Common.SYNTAX_CHECK_COMMAND + "-fixit " + file_c
     if file_c[-1] == "h":
         c2 += " --"
-    c2 += " 2> output/syntax_errors"
+    c2 += " 2>" + syntax_error_file_name
     exec_com(c2)
     # We check that everything went fine, otherwise, we restore everything
     try:
-        c3 = Common.SYNTAX_CHECK_COMMAND + file_c + " 2>output/syntax-errors"
+        c3 = Common.SYNTAX_CHECK_COMMAND + file_c + " 2>" + syntax_error_file_name
         if file_c[-1] == "h":
             c3 += " --"
         exec_com(c3)
