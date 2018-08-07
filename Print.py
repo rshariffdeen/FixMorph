@@ -103,7 +103,7 @@ def exit_msg(runtime, initialization_duration, clone_detection_duration, script_
     warning("Script Generation: " + script_generation_duration)
     warning("Translation: " + translation_duration)
     warning("Transplantation: " + transplantation_duration)
-    success("PatchWeave finished successfully after " + runtime + "seconds.\n")
+    success("\nPatchWeave finished successfully after " + runtime + " seconds\n")
 
       
 def title(title):

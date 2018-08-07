@@ -147,6 +147,7 @@ def clone_detection_header_files():
     candidate_list = []
     vector_list_a = get_vector_list(Common.Pa, extension)
     if len(vector_list_a) == 0:
+        Print.blue(" - nothing to do -")
         return candidate_list
     vector_list_c = get_vector_list(Common.Pc, extension)
     factor = 2
@@ -228,36 +229,40 @@ def clone_detection_header_files():
         m = min(1, M)
         Print.success("\t" + str(M) + " match" + "es" * m + " for " + file_a)
         for index in best_index:
-            file_c = candidates[index][0][:-4].replace(Pc.path, "")
+            file_c = candidates[index][0][:-4].replace(Common.Pc.path, "")
             d_c = str(candidates_d[index])
             decl_map = decl_maps[index]
             Print.success("\t\tMatch for " + file_a + " in Pa:")
             Print.blue("\t\tFile: " + file_c + " in Pc.")
             Print.blue("\t\tDistance: " + d_c + ".\n")
             # Print.green((Common.Pa.path + file_a, Pc.path + file_c, var_map))
-            candidate_list.append((Common.Pa.path + file_a, Pc.path + file_c, decl_map))
+            candidate_list.append((Common.Pa.path + file_a, Common.Pc.path + file_c, decl_map))
     return candidate_list
 
 
 def clone_detection_for_c_files():
 
     c_ext = "*\.c\.*\.vec"
-    vector_list_A = get_vector_list(Common.Pa, c_ext)
-    vector_list_C = get_vector_list(Common.Pc, c_ext)
+    candidate_list = []
+    vector_list_a = get_vector_list(Common.Pa, c_ext)
+    if len(vector_list_a) == 0:
+        Print.blue("\t - nothing to do -")
+        return candidate_list
 
+    vector_list_c = get_vector_list(Common.Pc, c_ext)
     Print.blue("Variable mapping...\n")
-    to_patch = []
+
 
     UNKNOWN = "#UNKNOWN#"
     factor = 2
 
-    for i in vector_list_A:
-        best = vector_list_C[0]
+    for i in vector_list_a:
+        best = vector_list_c[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
         dist = dict()
 
         # Get best match candidate
-        for j in vector_list_C:
+        for j in vector_list_c:
             d = ASTVector.ASTVector.dist(i[1], j[1])
             dist[j[0]] = d
             if d < best_d:
@@ -267,7 +272,7 @@ def clone_detection_for_c_files():
         # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
         candidates = [best]
         candidates_d = [best_d]
-        for j in vector_list_C:
+        for j in vector_list_c:
             if j != best:
                 d = dist[j[0]]
                 if d <= factor * best_d:
@@ -343,9 +348,9 @@ def clone_detection_for_c_files():
         Print.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
         Print.blue("\t\tDistance: " + d_c + "\n")
 
-        to_patch.append((Common.Pa.functions[Common.Pa.path + file_a][f_a],
+        candidate_list.append((Common.Pa.functions[Common.Pa.path + file_a][f_a],
                          Common.Pc.functions[Common.Pc.path + file_c][f_c], var_map))
-    return to_patch
+    return candidate_list
 
 
 def generate_ast_map(source_a, source_b):

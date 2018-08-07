@@ -3,24 +3,14 @@
 
 
 import time
-import Common
 import Initialization
 import Detection
 import Extraction
+import Mapping
 import Translation
 import Weaver
-from Utils import exec_com, err_exit
+from Utils import err_exit
 import Print
-
-
-def restore_files():
-    global changes
-    Print.warning("Restoring files...")
-    for file in changes.keys():
-        backup_file = changes[file]
-        c = "cp Backup_Folder/" + backup_file + " " + file
-        exec_com(c)
-    Print.warning("Files restored")
 
 
 def run_patchweave():
@@ -40,6 +30,10 @@ def run_patchweave():
     patch_extraction_start_time = time.time()
     Extraction.extract()
     patch_extraction_duration = str(time.time() - patch_extraction_start_time)
+
+    mapping_start_time = time.time()
+    Mapping.map()
+    mapping_duration = str(time.time() - mapping_start_time)
 
     translation_start_time = time.time()
     Translation.translate()
