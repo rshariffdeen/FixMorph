@@ -655,7 +655,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         nodeC1.line = nodeC1.parent.line
                     if type(nodeC2) == ASTparser.AST:
                         if nodeC2.line == None:
-                            nodeC2.line = nodeD.parent.line
+                            nodeC2.line = nodeC2.parent.line
                         if nodeC2 in inserted_D:
                             instruction = get_instruction((Common.DELETE, nodeC1))
                             translated_instruction_list.append(instruction)
