@@ -757,12 +757,14 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         nodeC1.line = nodeC1.parent.line
                     if type(nodeC2) == ASTparser.AST:
                         if nodeC2.line == None:
-                            nodeC2.line = nodeD.parent.line
+                            nodeC2.line = nodeC2.parent.line
                         if nodeC2 in inserted_D:
-                            translated_instruction_list.append((Common.DELETE, nodeC1))
+                            instruction = get_instruction((Common.DELETE, nodeC1))
+                            translated_instruction_list.append(instruction)
                         else:
-                            translated_instruction_list.append((Common.UPDATEMOVE, nodeC1, nodeC2,
-                                                                pos))
+                            instruction = get_instruction((Common.UPDATEMOVE, nodeC1, nodeC2, pos))
+                            translated_instruction_list.append(instruction)
+
                         inserted_D.append(nodeC1)
 
                     else:
