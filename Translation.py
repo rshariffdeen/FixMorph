@@ -854,7 +854,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
             except Exception as e:
                 err_exit(e, "Something went wrong with INSERT.")
 
-        return translated_instruction_list
+    return translated_instruction_list
 
 
 def simplify_patch(instruction_AB, match_BA, ASTlists):
@@ -1095,7 +1095,7 @@ def translate():
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
         variable_map = Common.variable_map[file_list]
-        translated_script = transform_script(modified_script, generated_data[1], json_ast_dump, generated_data[2],
+        translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump, generated_data[2],
                                              variable_map)
         translated_script_list[file_list] = (translated_script, original_script)
 
