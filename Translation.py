@@ -140,9 +140,6 @@ def match_nodes(node_b, node_c):
 
 
 def match_children(node_b, node_c, json_ast_dump):
-
-
-
     if node_b.parent_id is None and node_c.parent_id is None:
         return True
     elif node_b.parent_id is not None and node_c.parent_id is not None:
@@ -157,7 +154,6 @@ def match_children(node_b, node_c, json_ast_dump):
 
 
 def match_path(node_b, node_c, json_ast_dump):
-
     if node_b.parent_id is None and node_c.parent_id is None:
         return True
     elif node_b.parent_id is not None and node_c.parent_id is not None:
@@ -172,7 +168,6 @@ def match_path(node_b, node_c, json_ast_dump):
 
 
 def get_candidate_node_list(node_ref, json_ast_dump):
-
     candidate_node_list = list()
     node_id = get_id(node_ref)
     node_b = json_ast_dump[Common.Pb.name][node_id]
@@ -542,13 +537,19 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 nodeC = "?"
                 nodeD = id_from_string(nodeB)
                 nodeD = json_ast_dump[Common.Pb.name][nodeD]
-                nodeC = get_candidate_node_list(nodeA, json_ast_dump)
-                if nodeC == null:
-                    Print.warning("Warning: Match for " + str(nodeA) + "not found. Skipping UPDATE instruction.")
-                else:
-                    nodeC.line = nodeC.parent.line
+
+                if nodeA in map_ac.keys():
+                    nodeC = map_ac[nodeA]
+                    nodeC = id_from_string(nodeC)
+                    nodeC = json_ast_dump[Common.Pc.name][nodeC]
+
+                    if nodeC.line == None:
+                        nodeC.line = nodeC.parent.line
                     instruction = get_instruction((Common.UPDATE, nodeC, nodeD))
                     translated_instruction_list.append(instruction)
+
+                else:
+                    Print.warning("Warning: Match for " + str(nodeA) + "not found. Skipping UPDATE instruction.")
 
             except Exception as e:
                 err_exit(e, "Something went wrong with UPDATE.")
@@ -571,7 +572,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                   "not found. Skipping DELETE instruction.")
             except Exception as e:
                 err_exit(e, "Something went wrong with DELETE.")
-        # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
+            # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
         elif operation == Common.MOVE:
             try:
                 nodeB1 = i[1]
@@ -672,7 +673,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
             except Exception as e:
                 err_exit(e, "Something went wrong with MOVE.")
 
-        # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
+            # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
         elif operation == Common.UPDATEMOVE:
 
             try:
@@ -851,7 +852,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
             except Exception as e:
                 err_exit(e, "Something went wrong with INSERT.")
 
-    return translated_instruction_list
+        return translated_instruction_list
 
 
 def simplify_patch(instruction_AB, match_BA, ASTlists):
@@ -1125,7 +1126,8 @@ def translate():
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
         variable_map = Common.variable_map[file_list]
-        translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump, generated_data[2], variable_map)
+        translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
+                                                     generated_data[2], variable_map)
         translated_script_list[file_list] = (translated_script, original_script)
 
     Common.translated_script_for_files = translated_script_list
