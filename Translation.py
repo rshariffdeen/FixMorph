@@ -12,9 +12,17 @@ import ASTgen
 import ASTparser
 
 
-
 def id_from_string(simplestring):
     return int(simplestring.split("(")[-1][:-1])
+
+
+def get_id(node_ref):
+    return int(node_ref.split("(")[-1][:-1])
+
+
+def get_type(node_ref):
+    return node_ref.split("(")[0]
+
 
 def inst_comp(i):
     return Common.order.index(i)
@@ -103,7 +111,6 @@ def ASTdump(file, output):
     exec_com(c)
 
 
-
 def gen_json(file, name, ASTlists):
     Print.blue("\t\tClang AST parse " + file + " in " + name + "...")
     json_file = "output/json_" + name
@@ -111,7 +118,417 @@ def gen_json(file, name, ASTlists):
     ASTlists[name] = ASTparser.AST_from_file(json_file)
 
 
+def match_nodes(node_b, node_c):
+    check_operator_type_list = ["BinaryOperator", "UnaryOperator"]
+
+    if node_b.type != node_c.type:
+        return False
+    else:
+        if node_b.type in check_operator_type_list:
+            if node_b.value != node_c.value:
+                return False
+            else:
+                return True
+        elif "Decl" in node_b.type or "Expr" in node_b.type or node_b.type == "Macro":
+            if node_b.value != node_c.value:
+                return False
+            else:
+                return True
+        else:
+            return True
+    return False
+
+
+def match_children(node_b, node_c, json_ast_dump):
+
+
+
+    if node_b.parent_id is None and node_c.parent_id is None:
+        return True
+    elif node_b.parent_id is not None and node_c.parent_id is not None:
+        parent_b = json_ast_dump[Common.Pb.name][node_b.parent_id]
+        parent_c = json_ast_dump[Common.Pc.name][node_c.parent_id]
+        if match_nodes(parent_b, parent_c):
+            return match_path(parent_b, parent_c, json_ast_dump)
+        else:
+            return False
+    else:
+        return False
+
+
+def match_path(node_b, node_c, json_ast_dump):
+
+    if node_b.parent_id is None and node_c.parent_id is None:
+        return True
+    elif node_b.parent_id is not None and node_c.parent_id is not None:
+        parent_b = json_ast_dump[Common.Pb.name][node_b.parent_id]
+        parent_c = json_ast_dump[Common.Pc.name][node_c.parent_id]
+        if match_nodes(parent_b, parent_c):
+            return match_path(parent_b, parent_c, json_ast_dump)
+        else:
+            return False
+    else:
+        return False
+
+
+def get_candidate_node_list(node_ref, json_ast_dump):
+
+    candidate_node_list = list()
+    node_id = get_id(node_ref)
+    node_b = json_ast_dump[Common.Pb.name][node_id]
+    print(node_b)
+
+    for node_c in json_ast_dump[Common.Pc.name]:
+        if match_nodes(node_b, node_c):
+            if match_path(node_b, node_c, json_ast_dump):
+                if node_c not in candidate_node_list:
+                    candidate_node_list.append(node_c)
+
+    for node in candidate_node_list:
+        print("Node: " + str(node.id))
+        parent_id = node.parent_id
+        while parent_id is not None:
+            parent = json_ast_dump[Common.Pc.name][parent_id]
+            print(str(parent.id) + " - " + parent.type)
+            parent_id = parent.parent_id
+
+    return candidate_node_list
+
+
 def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab, map_ac):
+    translated_instruction_list = list()
+    inserted_D = list()
+    match_BD = dict()
+    for i in modified_script:
+        operation = i[0]
+        # Update nodeA to nodeB (value) -> Update nodeC to nodeD (value)
+        if operation == Common.UPDATE:
+            try:
+                nodeA = i[1]
+                nodeB = i[2]
+                nodeC = "?"
+                nodeD = id_from_string(nodeB)
+                nodeD = json_ast_dump[Common.Pb.name][nodeD]
+                candidate_list = get_candidate_node_list(nodeA, json_ast_dump)
+                if len(candidate_list) != 0:
+                    for nodeC in candidate_list:
+                        if nodeC.line == None:
+                            nodeC.line = nodeC.parent.line
+                        instruction = get_instruction((Common.UPDATE, nodeC, nodeD))
+                        translated_instruction_list.append(instruction)
+                else:
+                    Print.warning("Warning: Match for " + str(nodeA) + "not found. Skipping UPDATE instruction.")
+            except Exception as e:
+                err_exit(e, "Something went wrong with UPDATE.")
+
+        # Delete nodeA -> Delete nodeC
+        elif operation == Common.DELETE:
+            try:
+                nodeA = i[1]
+                nodeC = "?"
+                if nodeA in map_ac.keys():
+                    nodeC = map_ac[nodeA]
+                    nodeC = id_from_string(nodeC)
+                    candidate_list = get_candidate_node_list(nodeA, json_ast_dump)
+                    if len(candidate_list) != 0:
+                        for nodeC in candidate_list:
+                            if nodeC.line == None:
+                                nodeC.line = nodeC.parent.line
+                            instruction = get_instruction((Common.DELETE, nodeC))
+                            translated_instruction_list.append(instruction)
+                    else:
+                        Print.warning("Warning: Match for " + str(nodeA) + "not found. Skipping UPDATE instruction.")
+
+                else:
+                    Print.warning("Warning: Match for " + str(nodeA) + \
+                                  "not found. Skipping DELETE instruction.")
+            except Exception as e:
+                err_exit(e, "Something went wrong with DELETE.")
+        # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
+        elif operation == Common.MOVE:
+            try:
+                nodeB1 = i[1]
+                nodeB2 = i[2]
+                pos = int(i[3])
+                nodeC1 = "?"
+                nodeC2 = "?"
+                if nodeB1 in map_ab.keys():
+                    nodeA1 = map_ab[nodeB1]
+                    if nodeA1 in map_ac.keys():
+                        nodeC1 = map_ac[nodeA1]
+                        nodeC1 = id_from_string(nodeC1)
+                        nodeC1 = json_ast_dump[Common.Pc.name][nodeC1]
+                    else:
+                        # TODO: Manage case in which nodeA1 is unmatched
+                        Print.warning("Node in Pa not found in Pc: (1)")
+                        Print.warning(nodeA1)
+                elif nodeB1 in inserted_node_list:
+                    if nodeB1 in match_BD.keys():
+                        nodeC1 = match_BD[nodeB1]
+                    else:
+                        # TODO: Manage case for node not found
+                        Print.warning("Node to be moved was not found. (2)")
+                        Print.warning(nodeB1)
+                if nodeB2 in map_ab.keys():
+                    nodeA2 = map_ab[nodeB2]
+                    if nodeA2 in map_ac.keys():
+                        nodeC2 = map_ac[nodeA2]
+                        nodeC2 = id_from_string(nodeC2)
+                        nodeC2 = json_ast_dump[Common.Pc.name][nodeC2]
+                    else:
+                        # TODO: Manage case for unmatched nodeA2
+                        Print.warning("Node in Pa not found in Pc: (1)")
+                        Print.warning(nodeA2)
+                elif nodeB2 in inserted_node_list:
+                    if nodeB2 in match_BD.keys():
+                        nodeC2 = match_BD[nodeB2]
+                    else:
+                        # TODO: Manage case for node not found
+                        Print.warning("Node to be moved was not found. (2)")
+                        Print.warning(nodeB2)
+                try:
+                    true_B2 = id_from_string(nodeB2)
+                    true_B2 = json_ast_dump[Common.Pb.name][true_B2]
+                    if pos != 0:
+                        nodeB2_l = true_B2.children[pos - 1]
+                        nodeB2_l = nodeB2_l.simple_print()
+                        if nodeB2_l in map_ab.keys():
+                            nodeA2_l = map_ab[nodeB2_l]
+                            if nodeA2_l in map_ac.keys():
+                                nodeC2_l = map_ac[nodeA2_l]
+                                nodeC2_l = id_from_string(nodeC2_l)
+                                nodeC2_l = json_ast_dump[Common.Pc.name][nodeC2_l]
+                                if nodeC2_l in nodeC2.children:
+                                    pos = nodeC2.children.index(nodeC2_l)
+                                    pos += 1
+                                else:
+                                    Print.warning("Node not in children.")
+                                    Print.warning(nodeC2_l)
+                                    Print.warning([i.simple_print() for i in
+                                                   nodeC2.children])
+                            else:
+                                Print.warning("Failed at locating match" + \
+                                              " for " + nodeA2_l)
+                                Print.warning("Trying to get pos anyway.")
+                                # This is more likely to be correct
+                                nodeA2_l = id_from_string(nodeA2_l)
+                                nodeA2_l = json_ast_dump[Common.Pa.name][nodeA2_l]
+                                parent = nodeA2_l.parent
+                                if parent != None:
+                                    pos = parent.children.index(nodeA2_l)
+                                    pos += 1
+                        else:
+                            Print.warning("Failed at match for child.")
+                except Exception as e:
+                    err_exit(e, "Failed at locating pos.")
+
+                if type(nodeC1) == ASTparser.AST:
+                    if nodeC1.line == None:
+                        nodeC1.line = nodeC1.parent.line
+                    if type(nodeC2) == ASTparser.AST:
+                        if nodeC2.line == None:
+                            nodeC2.line = nodeD.parent.line
+                        if nodeC2 in inserted_D:
+                            instruction = get_instruction((Common.DELETE, nodeC1))
+                            translated_instruction_list.append(instruction)
+                        else:
+                            instruction = get_instruction((Common.MOVE, nodeC1, nodeC2, pos))
+                            translated_instruction_list.append(instruction)
+                        inserted_D.append(nodeC1)
+
+                    else:
+                        Print.warning("Could not find match for node. " + \
+                                      "Ignoring MOVE operation. (D)")
+                else:
+                    Print.warning("Could not find match for node. " + \
+                                  "Ignoring MOVE operation. (C)")
+            except Exception as e:
+                err_exit(e, "Something went wrong with MOVE.")
+
+        # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
+        elif operation == Common.UPDATEMOVE:
+
+            try:
+                nodeB1 = i[1]
+                nodeB2 = i[2]
+                pos = int(i[3])
+                nodeC1 = "?"
+                nodeC2 = "?"
+                if nodeB1 in map_ab.keys():
+                    nodeA1 = map_ab[nodeB1]
+                    if nodeA1 in map_ac.keys():
+                        nodeC1 = map_ac[nodeA1]
+                        nodeC1 = id_from_string(nodeC1)
+                        nodeC1 = json_ast_dump[Common.Pc.name][nodeC1]
+                    else:
+                        # TODO: Manage case in which nodeA1 is unmatched
+                        Print.warning("Node in Pa not found in Pc: (1)")
+                        Print.warning(nodeA1)
+                elif nodeB1 in inserted_node_list:
+                    if nodeB1 in match_BD.keys():
+                        nodeC1 = match_BD[nodeB1]
+                    else:
+                        # TODO: Manage case for node not found
+                        Print.warning("Node to be moved was not found. (2)")
+                        Print.warning(nodeB1)
+                if nodeB2 in map_ab.keys():
+                    nodeA2 = map_ab[nodeB2]
+                    if nodeA2 in map_ac.keys():
+                        nodeC2 = map_ac[nodeA2]
+                        nodeC2 = id_from_string(nodeC2)
+                        nodeC2 = json_ast_dump[Common.Pc.name][nodeC2]
+                    else:
+                        # TODO: Manage case for unmatched nodeA2
+                        Print.warning("Node in Pa not found in Pc: (1)")
+                        Print.warning(nodeA2)
+                elif nodeB2 in inserted_node_list:
+                    if nodeB2 in match_BD.keys():
+                        nodeC2 = match_BD[nodeB2]
+                    else:
+                        # TODO: Manage case for node not found
+                        Print.warning("Node to be moved was not found. (2)")
+                        Print.warning(nodeB2)
+                try:
+                    true_B2 = id_from_string(nodeB2)
+                    true_B2 = json_ast_dump[Common.Pb.name][true_B2]
+                    if pos != 0:
+                        nodeB2_l = true_B2.children[pos - 1]
+                        nodeB2_l = nodeB2_l.simple_print()
+                        if nodeB2_l in map_ab.keys():
+                            nodeA2_l = map_ab[nodeB2_l]
+                            if nodeA2_l in map_ac.keys():
+                                nodeC2_l = map_ac[nodeA2_l]
+                                nodeC2_l = id_from_string(nodeC2_l)
+                                nodeC2_l = json_ast_dump[Common.Pc.name][nodeC2_l]
+                                if nodeC2_l in nodeC2.children:
+                                    pos = nodeC2.children.index(nodeC2_l)
+                                    pos += 1
+                                else:
+                                    Print.warning("Node not in children.")
+                                    Print.warning(nodeC2_l)
+                                    Print.warning([i.simple_print() for i in
+                                                   nodeC2.children])
+                            else:
+                                Print.warning("Failed at locating match" + \
+                                              " for " + nodeA2_l)
+                                Print.warning("Trying to get pos anyway.")
+                                # This is more likely to be correct
+                                nodeA2_l = id_from_string(nodeA2_l)
+                                nodeA2_l = json_ast_dump[Common.Pa.name][nodeA2_l]
+                                parent = nodeA2_l.parent
+                                if parent != None:
+                                    pos = parent.children.index(nodeA2_l)
+                                    pos += 1
+                        else:
+                            Print.warning("Failed at match for child.")
+                except Exception as e:
+                    err_exit(e, "Failed at locating pos.")
+
+                if type(nodeC1) == ASTparser.AST:
+                    if nodeC1.line == None:
+                        nodeC1.line = nodeC1.parent.line
+                    if type(nodeC2) == ASTparser.AST:
+                        if nodeC2.line == None:
+                            nodeC2.line = nodeD.parent.line
+                        if nodeC2 in inserted_D:
+                            instruction = get_instruction((Common.DELETE, nodeC1))
+                            translated_instruction_list.append(instruction)
+                        else:
+                            instruction = get_instruction((Common.UPDATEMOVE, nodeC1, nodeC2, pos))
+                            translated_instruction_list.append(instruction)
+                        inserted_D.append(nodeC1)
+
+                    else:
+                        Print.warning("Could not find match for node. " + \
+                                      "Ignoring UPDATEMOVE operation. (D)")
+                else:
+                    Print.warning("Could not find match for node. " + \
+                                  "Ignoring UPDATEMOVE operation. (C)")
+            except Exception as e:
+                err_exit(e, "Something went wrong with UPDATEMOVE.")
+
+        # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
+        elif operation == Common.INSERT:
+            try:
+                nodeB1 = i[1]
+                nodeB2 = i[2]
+                pos = int(i[3])
+                nodeD1 = id_from_string(nodeB1)
+                nodeD1 = json_ast_dump[Common.Pb.name][nodeD1]
+                nodeD2 = id_from_string(nodeB2)
+                nodeD2 = json_ast_dump[Common.Pb.name][nodeD2]
+                # TODO: Is this correct?
+                if nodeD2.line != None:
+                    nodeD1.line = nodeD2.line
+                else:
+                    nodeD1.line = nodeD2.parent.line
+                if nodeB2 in map_ab.keys():
+                    nodeA2 = map_ab[nodeB2]
+                    if nodeA2 in map_ac.keys():
+                        nodeD2 = map_ac[nodeA2]
+                        nodeD2 = id_from_string(nodeD2)
+                        nodeD2 = json_ast_dump[Common.Pc.name][nodeD2]
+                elif nodeB2 in match_BD.keys():
+                    nodeD2 = match_BD[nodeB2]
+                else:
+                    Print.warning("Warning: node for insertion not" + \
+                                  " found. Skipping INSERT operation.")
+
+                try:
+                    true_B2 = id_from_string(nodeB2)
+                    true_B2 = json_ast_dump[Common.Pb.name][true_B2]
+                    if pos != 0:
+                        nodeB2_l = true_B2.children[pos - 1]
+                        nodeB2_l = nodeB2_l.simple_print()
+                        if nodeB2_l in map_ab.keys():
+                            nodeA2_l = map_ab[nodeB2_l]
+                            if nodeA2_l in map_ac.keys():
+                                nodeD2_l = map_ac[nodeA2_l]
+                                nodeD2_l = id_from_string(nodeD2_l)
+                                nodeD2_l = json_ast_dump[Common.Pc.name][nodeD2_l]
+                                if nodeD2_l in nodeD2.children:
+                                    pos = nodeD2.children.index(nodeD2_l)
+                                    pos += 1
+                                else:
+                                    Print.warning("Node not in children.")
+                                    Print.warning(nodeD2_l)
+                                    Print.warning([i.simple_print() for i in
+                                                   nodeD2.children])
+                            else:
+                                Print.warning("Failed at locating match" + \
+                                              " for " + nodeA2_l)
+                                Print.warning("Trying to get pos anyway.")
+                                # This is more likely to be correct
+                                nodeA2_l = id_from_string(nodeA2_l)
+                                nodeA2_l = json_ast_dump[Common.Pa.name][nodeA2_l]
+                                parent = nodeA2_l.parent
+                                if parent != None:
+                                    pos = parent.children.index(nodeA2_l)
+                                    pos += 1
+
+                        else:
+                            Print.warning("Failed at match for child.")
+                except Exception as e:
+                    err_exit(e, "Failed at locating pos.")
+                if type(nodeD1) == ASTparser.AST:
+                    match_BD[nodeB1] = nodeD1
+                    inserted_D.append(nodeD1)
+                    nodeD1.children = []
+                    if nodeD1.line == None:
+                        nodeD1.line = nodeD1.parent.line
+                    if type(nodeD2) == ASTparser.AST:
+                        if nodeD2.line == None:
+                            nodeD2.line = nodeD2.parent.line
+                        if nodeD2 not in inserted_D:
+                            instruction = get_instruction((Common.INSERT, nodeD1, nodeD2, pos))
+                            translated_instruction_list.append(instruction)
+            except Exception as e:
+                err_exit(e, "Something went wrong with INSERT.")
+
+    return translated_instruction_list
+
+
+def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump, map_ab, map_ac):
     translated_instruction_list = list()
     inserted_D = list()
     match_BD = dict()
@@ -344,7 +761,7 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                             translated_instruction_list.append((Common.DELETE, nodeC1))
                         else:
                             translated_instruction_list.append((Common.UPDATEMOVE, nodeC1, nodeC2,
-                                                   pos))
+                                                                pos))
                         inserted_D.append(nodeC1)
 
                     else:
@@ -435,6 +852,7 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                 err_exit(e, "Something went wrong with INSERT.")
 
     return translated_instruction_list
+
 
 def simplify_patch(instruction_AB, match_BA, ASTlists):
     modified_AB = []
@@ -528,7 +946,6 @@ def remove_overlapping_delete(modified_AB):
     return modified_AB
 
 
-
 def adjust_pos(modified_AB):
     i = 0
     while i < len(modified_AB) - 1:
@@ -618,6 +1035,12 @@ def get_instruction(instruction_data):
         pos = str(instruction_data[3])
         instruction = Common.INSERT + " " + nodeB + Common.INTO + nodeC + Common.AT + pos
 
+    elif operation == Common.UPDATEMOVE:
+        nodeD1 = instruction_data[1].simple_print()
+        nodeD2 = instruction_data[2].simple_print()
+        pos = str(instruction_data[3])
+        instruction = Common.UPDATEMOVE + " " + nodeD1 + Common.INTO + nodeD2 + Common.AT + pos
+
     return instruction
 
 
@@ -669,7 +1092,8 @@ def translate():
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
         variable_map = Common.variable_map[file_list]
-        translated_script = transform_script(modified_script, generated_data[1], json_ast_dump, generated_data[2], variable_map)
+        translated_script = transform_script(modified_script, generated_data[1], json_ast_dump, generated_data[2],
+                                             variable_map)
         translated_script_list[file_list] = (translated_script, original_script)
 
     Print.sub_title("Translating scripts for C files")
@@ -701,7 +1125,7 @@ def translate():
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
         variable_map = Common.variable_map[file_list]
-        translated_script = transform_script(modified_script, generated_data[1], json_ast_dump, generated_data[2], variable_map)
+        translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump, generated_data[2], variable_map)
         translated_script_list[file_list] = (translated_script, original_script)
 
     Common.translated_script_for_files = translated_script_list
