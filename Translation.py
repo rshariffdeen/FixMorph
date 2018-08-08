@@ -525,31 +525,31 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
 
 def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump, map_ab, map_ac):
     translated_instruction_list = list()
-    inserted_D = list()
-    match_BD = dict()
-    for i in modified_script:
-        operation = i[0]
+    inserted_node_list_d = list()
+    map_bd = dict()
+    for instruction in modified_script:
+        operation = instruction[0]
         # Update nodeA to nodeB (value) -> Update nodeC to nodeD (value)
         if operation == Common.UPDATE:
             try:
-                nodeA = i[1]
-                nodeB = i[2]
-                nodeC = "?"
-                nodeD = id_from_string(nodeB)
-                nodeD = json_ast_dump[Common.Pb.name][nodeD]
+                txt_target_node_a = instruction[1]
+                txt_update_node = instruction[2]
+                target_node = "?"
+                update_node_id = id_from_string(txt_update_node)
+                update_node = json_ast_dump[Common.Pb.name][update_node_id]
 
-                if nodeA in map_ac.keys():
-                    nodeC = map_ac[nodeA]
-                    nodeC = id_from_string(nodeC)
-                    nodeC = json_ast_dump[Common.Pc.name][nodeC]
+                if txt_target_node_a in map_ac.keys():
+                    txt_target_node = map_ac[txt_target_node_a]
+                    target_node_id = id_from_string(txt_target_node)
+                    target_node = json_ast_dump[Common.Pc.name][target_node_id]
 
-                    if nodeC.line == None:
-                        nodeC.line = nodeC.parent.line
-                    instruction = get_instruction((Common.UPDATE, nodeC, nodeD))
+                    if target_node.line is None:
+                        target_node.line = target_node.parent.line
+                    instruction = get_instruction((Common.UPDATE, target_node, update_node))
                     translated_instruction_list.append(instruction)
 
                 else:
-                    Print.warning("Warning: Match for " + str(nodeA) + "not found. Skipping UPDATE instruction.")
+                    Print.warning("Warning: Match for " + str(txt_target_node_a) + "not found. Skipping UPDATE instruction.")
 
             except Exception as e:
                 err_exit(e, "Something went wrong with UPDATE.")
@@ -557,112 +557,112 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
         # Delete nodeA -> Delete nodeC
         elif operation == Common.DELETE:
             try:
-                nodeA = i[1]
-                nodeC = "?"
-                if nodeA in map_ac.keys():
-                    nodeC = map_ac[nodeA]
-                    nodeC = id_from_string(nodeC)
-                    nodeC = json_ast_dump[Common.Pc.name][nodeC]
-                    if nodeC.line == None:
-                        nodeC.line = nodeC.parent.line
-                    instruction = get_instruction((Common.DELETE, nodeC))
+                txt_delete_node_a = instruction[1]
+                delete_node = "?"
+                if txt_delete_node_a in map_ac.keys():
+                    txt_delete_node = map_ac[txt_delete_node_a]
+                    delete_node_id = id_from_string(txt_delete_node)
+                    delete_node = json_ast_dump[Common.Pc.name][delete_node_id]
+                    if delete_node.line is None:
+                        delete_node.line = delete_node.parent.line
+                    instruction = get_instruction((Common.DELETE, delete_node))
                     translated_instruction_list.append(instruction)
                 else:
-                    Print.warning("Warning: Match for " + str(nodeA) + \
+                    Print.warning("Warning: Match for " + str(txt_delete_node_a) + \
                                   "not found. Skipping DELETE instruction.")
             except Exception as e:
                 err_exit(e, "Something went wrong with DELETE.")
             # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
         elif operation == Common.MOVE:
             try:
-                nodeB1 = i[1]
-                nodeB2 = i[2]
-                pos = int(i[3])
-                nodeC1 = "?"
-                nodeC2 = "?"
-                if nodeB1 in map_ab.keys():
-                    nodeA1 = map_ab[nodeB1]
-                    if nodeA1 in map_ac.keys():
-                        nodeC1 = map_ac[nodeA1]
-                        nodeC1 = id_from_string(nodeC1)
-                        nodeC1 = json_ast_dump[Common.Pc.name][nodeC1]
+                txt_move_node_b = instruction[1]
+                txt_target_node_b = instruction[2]
+                offset = int(instruction[3])
+                move_node = "?"
+                target_node = "?"
+                if txt_move_node_b in map_ab.keys():
+                    txt_move_node_a = map_ab[txt_move_node_b]
+                    if txt_move_node_a in map_ac.keys():
+                        txt_move_node = map_ac[txt_move_node_a]
+                        mode_node_id = id_from_string(txt_move_node)
+                        move_node = json_ast_dump[Common.Pc.name][mode_node_id]
                     else:
-                        # TODO: Manage case in which nodeA1 is unmatched
+                        # TODO: Manage case in which txt_move_node_a is unmatched
                         Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA1)
-                elif nodeB1 in inserted_node_list:
-                    if nodeB1 in match_BD.keys():
-                        nodeC1 = match_BD[nodeB1]
+                        Print.warning(txt_move_node_a)
+                elif txt_move_node_b in inserted_node_list:
+                    if txt_move_node_b in map_bd.keys():
+                        move_node = map_bd[txt_move_node_b]
                     else:
                         # TODO: Manage case for node not found
                         Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB1)
-                if nodeB2 in map_ab.keys():
-                    nodeA2 = map_ab[nodeB2]
-                    if nodeA2 in map_ac.keys():
-                        nodeC2 = map_ac[nodeA2]
-                        nodeC2 = id_from_string(nodeC2)
-                        nodeC2 = json_ast_dump[Common.Pc.name][nodeC2]
+                        Print.warning(txt_move_node_b)
+                if txt_target_node_b in map_ab.keys():
+                    txt_target_node_a = map_ab[txt_target_node_b]
+                    if txt_target_node_a in map_ac.keys():
+                        txt_target_node = map_ac[txt_target_node_a]
+                        target_node_id = id_from_string(txt_target_node)
+                        target_node = json_ast_dump[Common.Pc.name][target_node_id]
                     else:
                         # TODO: Manage case for unmatched nodeA2
                         Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA2)
-                elif nodeB2 in inserted_node_list:
-                    if nodeB2 in match_BD.keys():
-                        nodeC2 = match_BD[nodeB2]
+                        Print.warning(txt_target_node_a)
+                elif txt_target_node_b in inserted_node_list:
+                    if txt_target_node_b in map_bd.keys():
+                        target_node = map_bd[txt_target_node_b]
                     else:
                         # TODO: Manage case for node not found
                         Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB2)
+                        Print.warning(txt_target_node_b)
                 try:
-                    true_B2 = id_from_string(nodeB2)
-                    true_B2 = json_ast_dump[Common.Pb.name][true_B2]
-                    if pos != 0:
-                        nodeB2_l = true_B2.children[pos - 1]
-                        nodeB2_l = nodeB2_l.simple_print()
-                        if nodeB2_l in map_ab.keys():
-                            nodeA2_l = map_ab[nodeB2_l]
-                            if nodeA2_l in map_ac.keys():
-                                nodeC2_l = map_ac[nodeA2_l]
-                                nodeC2_l = id_from_string(nodeC2_l)
-                                nodeC2_l = json_ast_dump[Common.Pc.name][nodeC2_l]
-                                if nodeC2_l in nodeC2.children:
-                                    pos = nodeC2.children.index(nodeC2_l)
-                                    pos += 1
+                    target_node_b_id = id_from_string(txt_target_node_b)
+                    target_node_b = json_ast_dump[Common.Pb.name][target_node_b_id]
+                    if offset != 0:
+                        previous_child_node_b = target_node_b.children[offset - 1]
+                        previous_child_node_b = previous_child_node_b.simple_print()
+                        if previous_child_node_b in map_ab.keys():
+                            previous_child_node_a = map_ab[previous_child_node_b]
+                            if previous_child_node_a in map_ac.keys():
+                                previous_child_c = map_ac[previous_child_node_a]
+                                previous_child_c = id_from_string(previous_child_c)
+                                previous_child_c = json_ast_dump[Common.Pc.name][previous_child_c]
+                                if previous_child_c in target_node.children:
+                                    offset = target_node.children.index(previous_child_c)
+                                    offset += 1
                                 else:
                                     Print.warning("Node not in children.")
-                                    Print.warning(nodeC2_l)
-                                    Print.warning([i.simple_print() for i in
-                                                   nodeC2.children])
+                                    Print.warning(previous_child_c)
+                                    Print.warning([instruction.simple_print() for instruction in
+                                                   target_node.children])
                             else:
                                 Print.warning("Failed at locating match" + \
-                                              " for " + nodeA2_l)
+                                              " for " + previous_child_node_a)
                                 Print.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
-                                nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = json_ast_dump[Common.Pa.name][nodeA2_l]
-                                parent = nodeA2_l.parent
+                                previous_child_node_a = id_from_string(previous_child_node_a)
+                                previous_child_node_a = json_ast_dump[Common.Pa.name][previous_child_node_a]
+                                parent = previous_child_node_a.parent
                                 if parent != None:
-                                    pos = parent.children.index(nodeA2_l)
-                                    pos += 1
+                                    offset = parent.children.index(previous_child_node_a)
+                                    offset += 1
                         else:
                             Print.warning("Failed at match for child.")
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
 
-                if type(nodeC1) == ASTparser.AST:
-                    if nodeC1.line == None:
-                        nodeC1.line = nodeC1.parent.line
-                    if type(nodeC2) == ASTparser.AST:
-                        if nodeC2.line == None:
-                            nodeC2.line = nodeC2.parent.line
-                        if nodeC2 in inserted_D:
-                            instruction = get_instruction((Common.DELETE, nodeC1))
+                if type(move_node) == ASTparser.AST:
+                    if move_node.line is None:
+                        move_node.line = move_node.parent.line
+                    if type(target_node) == ASTparser.AST:
+                        if target_node.line is None:
+                            target_node.line = target_node.parent.line
+                        if target_node in inserted_node_list_d:
+                            instruction = get_instruction((Common.DELETE, move_node))
                             translated_instruction_list.append(instruction)
                         else:
-                            instruction = get_instruction((Common.MOVE, nodeC1, nodeC2, pos))
+                            instruction = get_instruction((Common.MOVE, move_node, target_node, offset))
                             translated_instruction_list.append(instruction)
-                        inserted_D.append(nodeC1)
+                        inserted_node_list_d.append(move_node)
 
                     else:
                         Print.warning("Could not find match for node. " + \
@@ -677,95 +677,95 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
         elif operation == Common.UPDATEMOVE:
 
             try:
-                nodeB1 = i[1]
-                nodeB2 = i[2]
-                pos = int(i[3])
-                nodeC1 = "?"
-                nodeC2 = "?"
-                if nodeB1 in map_ab.keys():
-                    nodeA1 = map_ab[nodeB1]
-                    if nodeA1 in map_ac.keys():
-                        nodeC1 = map_ac[nodeA1]
-                        nodeC1 = id_from_string(nodeC1)
-                        nodeC1 = json_ast_dump[Common.Pc.name][nodeC1]
+                txt_move_node_b = instruction[1]
+                txt_target_node_b = instruction[2]
+                offset = int(instruction[3])
+                move_node = "?"
+                target_node = "?"
+                if txt_move_node_b in map_ab.keys():
+                    txt_move_node_a = map_ab[txt_move_node_b]
+                    if txt_move_node_a in map_ac.keys():
+                        txt_move_node = map_ac[txt_move_node_a]
+                        move_node_id = id_from_string(txt_move_node)
+                        move_node = json_ast_dump[Common.Pc.name][move_node_id]
                     else:
-                        # TODO: Manage case in which nodeA1 is unmatched
+                        # TODO: Manage case in which txt_move_node_a is unmatched
                         Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA1)
-                elif nodeB1 in inserted_node_list:
-                    if nodeB1 in match_BD.keys():
-                        nodeC1 = match_BD[nodeB1]
+                        Print.warning(txt_move_node_a)
+                elif txt_move_node_b in inserted_node_list:
+                    if txt_move_node_b in map_bd.keys():
+                        move_node = map_bd[txt_move_node_b]
                     else:
                         # TODO: Manage case for node not found
                         Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB1)
-                if nodeB2 in map_ab.keys():
-                    nodeA2 = map_ab[nodeB2]
-                    if nodeA2 in map_ac.keys():
-                        nodeC2 = map_ac[nodeA2]
-                        nodeC2 = id_from_string(nodeC2)
-                        nodeC2 = json_ast_dump[Common.Pc.name][nodeC2]
+                        Print.warning(txt_move_node_b)
+                if txt_target_node_b in map_ab.keys():
+                    txt_target_node_a = map_ab[txt_target_node_b]
+                    if txt_target_node_a in map_ac.keys():
+                        txt_target_node = map_ac[txt_target_node_a]
+                        target_node_id = id_from_string(txt_target_node)
+                        target_node = json_ast_dump[Common.Pc.name][target_node_id]
                     else:
-                        # TODO: Manage case for unmatched nodeA2
+                        # TODO: Manage case for unmatched txt_target_node_a
                         Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA2)
-                elif nodeB2 in inserted_node_list:
-                    if nodeB2 in match_BD.keys():
-                        nodeC2 = match_BD[nodeB2]
+                        Print.warning(txt_target_node_a)
+                elif txt_target_node_b in inserted_node_list:
+                    if txt_target_node_b in map_bd.keys():
+                        target_node = map_bd[txt_target_node_b]
                     else:
                         # TODO: Manage case for node not found
                         Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB2)
+                        Print.warning(txt_target_node_b)
                 try:
-                    true_B2 = id_from_string(nodeB2)
-                    true_B2 = json_ast_dump[Common.Pb.name][true_B2]
-                    if pos != 0:
-                        nodeB2_l = true_B2.children[pos - 1]
-                        nodeB2_l = nodeB2_l.simple_print()
-                        if nodeB2_l in map_ab.keys():
-                            nodeA2_l = map_ab[nodeB2_l]
-                            if nodeA2_l in map_ac.keys():
-                                nodeC2_l = map_ac[nodeA2_l]
-                                nodeC2_l = id_from_string(nodeC2_l)
-                                nodeC2_l = json_ast_dump[Common.Pc.name][nodeC2_l]
-                                if nodeC2_l in nodeC2.children:
-                                    pos = nodeC2.children.index(nodeC2_l)
-                                    pos += 1
+                    target_node_b_id = id_from_string(txt_target_node_b)
+                    target_node_b = json_ast_dump[Common.Pb.name][target_node_b_id]
+                    if offset != 0:
+                        previous_child_node_b = target_node_b.children[offset - 1]
+                        previous_child_node_b = previous_child_node_b.simple_print()
+                        if previous_child_node_b in map_ab.keys():
+                            previous_child_node_a = map_ab[previous_child_node_b]
+                            if previous_child_node_a in map_ac.keys():
+                                previous_child_c = map_ac[previous_child_node_a]
+                                previous_child_c = id_from_string(previous_child_c)
+                                previous_child_c = json_ast_dump[Common.Pc.name][previous_child_c]
+                                if previous_child_c in target_node.children:
+                                    offset = target_node.children.index(previous_child_c)
+                                    offset += 1
                                 else:
                                     Print.warning("Node not in children.")
-                                    Print.warning(nodeC2_l)
-                                    Print.warning([i.simple_print() for i in
-                                                   nodeC2.children])
+                                    Print.warning(previous_child_c)
+                                    Print.warning([instruction.simple_print() for instruction in
+                                                   target_node.children])
                             else:
                                 Print.warning("Failed at locating match" + \
-                                              " for " + nodeA2_l)
+                                              " for " + previous_child_node_a)
                                 Print.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
-                                nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = json_ast_dump[Common.Pa.name][nodeA2_l]
-                                parent = nodeA2_l.parent
+                                previous_child_node_a = id_from_string(previous_child_node_a)
+                                previous_child_node_a = json_ast_dump[Common.Pa.name][previous_child_node_a]
+                                parent = previous_child_node_a.parent
                                 if parent != None:
-                                    pos = parent.children.index(nodeA2_l)
-                                    pos += 1
+                                    offset = parent.children.index(previous_child_node_a)
+                                    offset += 1
                         else:
                             Print.warning("Failed at match for child.")
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
 
-                if type(nodeC1) == ASTparser.AST:
-                    if nodeC1.line == None:
-                        nodeC1.line = nodeC1.parent.line
-                    if type(nodeC2) == ASTparser.AST:
-                        if nodeC2.line == None:
-                            nodeC2.line = nodeC2.parent.line
-                        if nodeC2 in inserted_D:
-                            instruction = get_instruction((Common.DELETE, nodeC1))
+                if type(move_node) == ASTparser.AST:
+                    if move_node.line is None:
+                        move_node.line = move_node.parent.line
+                    if type(target_node) == ASTparser.AST:
+                        if target_node.line is None:
+                            target_node.line = target_node.parent.line
+                        if target_node in inserted_node_list_d:
+                            instruction = get_instruction((Common.DELETE, move_node))
                             translated_instruction_list.append(instruction)
                         else:
-                            instruction = get_instruction((Common.UPDATEMOVE, nodeC1, nodeC2, pos))
+                            instruction = get_instruction((Common.UPDATEMOVE, move_node, target_node, offset))
                             translated_instruction_list.append(instruction)
 
-                        inserted_D.append(nodeC1)
+                        inserted_node_list_d.append(move_node)
 
                     else:
                         Print.warning("Could not find match for node. " + \
@@ -779,82 +779,96 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
         # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
         elif operation == Common.INSERT:
             try:
-                nodeB1 = i[1]
-                nodeB2 = i[2]
-                pos = int(i[3])
-                nodeD1 = id_from_string(nodeB1)
-                nodeD1 = json_ast_dump[Common.Pb.name][nodeD1]
-                nodeD2 = id_from_string(nodeB2)
-                nodeD2 = json_ast_dump[Common.Pb.name][nodeD2]
+                txt_insert_node = instruction[1]
+                txt_target_node_b = instruction[2]
+                offset = int(instruction[3])
+                insert_node_id = id_from_string(txt_insert_node)
+                insert_node = json_ast_dump[Common.Pb.name][insert_node_id]
+                target_node_b_id = id_from_string(txt_target_node_b)
+                target_node_b = json_ast_dump[Common.Pb.name][target_node_b_id]
                 # TODO: Is this correct?
-                if nodeD2.line != None:
-                    nodeD1.line = nodeD2.line
+                if target_node_b.line is not None:
+                    insert_node.line = target_node_b.line
                 else:
-                    nodeD1.line = nodeD2.parent.line
-                if nodeB2 in map_ab.keys():
-                    nodeA2 = map_ab[nodeB2]
-                    if nodeA2 in map_ac.keys():
-                        nodeD2 = map_ac[nodeA2]
-                        nodeD2 = id_from_string(nodeD2)
-                        nodeD2 = json_ast_dump[Common.Pc.name][nodeD2]
-                elif nodeB2 in match_BD.keys():
-                    nodeD2 = match_BD[nodeB2]
+                    insert_node.line = target_node_b.parent.line
+
+                if txt_target_node_b in map_ab.keys():
+                    txt_target_node_a = map_ab[txt_target_node_b]
+                    if txt_target_node_a in map_ac.keys():
+                        txt_target_node = map_ac[txt_target_node_a]
+                        target_node_id = id_from_string(txt_target_node)
+                        target_node = json_ast_dump[Common.Pc.name][target_node_id]
+                elif txt_target_node_b in map_bd.keys():
+                    target_node = map_bd[txt_target_node_b]
                 else:
                     Print.warning("Warning: node for insertion not" + \
                                   " found. Skipping INSERT operation.")
 
                 try:
-                    true_B2 = id_from_string(nodeB2)
-                    true_B2 = json_ast_dump[Common.Pb.name][true_B2]
-                    if pos != 0:
-                        nodeB2_l = true_B2.children[pos - 1]
-                        nodeB2_l = nodeB2_l.simple_print()
-                        if nodeB2_l in map_ab.keys():
-                            nodeA2_l = map_ab[nodeB2_l]
-                            if nodeA2_l in map_ac.keys():
-                                nodeD2_l = map_ac[nodeA2_l]
-                                nodeD2_l = id_from_string(nodeD2_l)
-                                nodeD2_l = json_ast_dump[Common.Pc.name][nodeD2_l]
-                                if nodeD2_l in nodeD2.children:
-                                    pos = nodeD2.children.index(nodeD2_l)
-                                    pos += 1
+                    if offset != 0:
+                        previous_child_node_b = target_node_b.children[offset - 1]
+                        previous_child_node_b = previous_child_node_b.simple_print()
+                        if previous_child_node_b in map_ab.keys():
+                            previous_child_node_a = map_ab[previous_child_node_b]
+                            if previous_child_node_a in map_ac.keys():
+                                previous_child_node_c = map_ac[previous_child_node_a]
+                                previous_child_node_c = id_from_string(previous_child_node_c)
+                                previous_child_node_c = json_ast_dump[Common.Pc.name][previous_child_node_c]
+                                if previous_child_node_c in target_node.children:
+                                    offset = target_node.children.index(previous_child_node_c)
+                                    offset += 1
                                 else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(nodeD2_l)
-                                    Print.warning([i.simple_print() for i in
-                                                   nodeD2.children])
+                                    if offset + 1 < len(target_node_b.children):
+                                        next_child_node_b = target_node_b.children[offset + 1]
+                                        next_child_node_b = next_child_node_b.simple_print()
+                                        if next_child_node_b in map_ab.keys():
+                                            next_child_node_a = map_ab[next_child_node_b]
+                                            if next_child_node_a in map_ac.keys():
+                                                next_child_node_c = map_ac[next_child_node_a]
+                                                next_child_node_c = id_from_string(next_child_node_c)
+                                                next_child_node_c = json_ast_dump[Common.Pc.name][next_child_node_c]
+                                                if next_child_node_c in target_node.children:
+                                                    offset = target_node.children.index(next_child_node_c)
+                                                    offset -= 1
+                                                else:
+                                                    Print.warning("Node not in children.")
+                                                    Print.warning(previous_child_node_c)
+                                                    Print.warning([instruction.simple_print() for instruction in
+                                                                   target_node.children])
+
                             else:
                                 Print.warning("Failed at locating match" + \
-                                              " for " + nodeA2_l)
+                                              " for " + previous_child_node_a)
                                 Print.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
-                                nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = json_ast_dump[Common.Pa.name][nodeA2_l]
-                                parent = nodeA2_l.parent
+                                previous_child_node_a = id_from_string(previous_child_node_a)
+                                previous_child_node_a = json_ast_dump[Common.Pa.name][previous_child_node_a]
+                                parent = previous_child_node_a.parent
                                 if parent != None:
-                                    pos = parent.children.index(nodeA2_l)
-                                    pos += 1
+                                    offset = parent.children.index(previous_child_node_a)
+                                    offset += 1
 
                         else:
                             Print.warning("Failed at match for child.")
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
-                if type(nodeD1) == ASTparser.AST:
-                    match_BD[nodeB1] = nodeD1
-                    inserted_D.append(nodeD1)
-                    nodeD1.children = []
-                    if nodeD1.line == None:
-                        nodeD1.line = nodeD1.parent.line
-                    if type(nodeD2) == ASTparser.AST:
-                        if nodeD2.line == None:
-                            nodeD2.line = nodeD2.parent.line
-                        if nodeD2 not in inserted_D:
-                            instruction = get_instruction((Common.INSERT, nodeD1, nodeD2, pos))
+                if type(insert_node) == ASTparser.AST:
+                    map_bd[txt_insert_node] = insert_node
+                    inserted_node_list_d.append(insert_node)
+                    insert_node.children = []
+                    if insert_node.line == None:
+                        insert_node.line = insert_node.parent.line
+                    if type(target_node) == ASTparser.AST:
+                        if target_node.line == None:
+                            target_node.line = target_node.parent.line
+                        if target_node not in inserted_node_list_d:
+                            instruction = get_instruction((Common.INSERT, insert_node, target_node, offset))
                             translated_instruction_list.append(instruction)
             except Exception as e:
                 err_exit(e, "Something went wrong with INSERT.")
 
     return translated_instruction_list
+
 
 
 def simplify_patch(instruction_AB, match_BA, ASTlists):
@@ -949,44 +963,44 @@ def remove_overlapping_delete(modified_AB):
     return modified_AB
 
 
-def adjust_pos(modified_AB):
+def adjust_pos(modified_script):
     i = 0
-    while i < len(modified_AB) - 1:
-        inst1 = modified_AB[i][0]
+    while i < len(modified_script) - 1:
+        inst1 = modified_script[i][0]
         if inst1 == Common.INSERT or inst1 == Common.MOVE or inst1 == Common.UPDATEMOVE:
-            node_into_1 = modified_AB[i][2]
+            node_into_1 = modified_script[i][2]
             k = i + 1
-            for j in range(i + 1, len(modified_AB)):
+            for j in range(i + 1, len(modified_script)):
                 k = j
-                inst2 = modified_AB[j][0]
+                inst2 = modified_script[j][0]
                 if inst2 != Common.INSERT and inst2 != Common.MOVE:
                     k -= 1
                     break
-                node_into_2 = modified_AB[j][2]
+                node_into_2 = modified_script[j][2]
                 if node_into_1 != node_into_2:
                     k -= 1
                     break
-                pos_at_1 = int(modified_AB[j - 1][3])
-                pos_at_2 = int(modified_AB[j][3])
+                pos_at_1 = int(modified_script[j - 1][3])
+                pos_at_2 = int(modified_script[j][3])
                 if pos_at_1 < pos_at_2 - 1:
                     k -= 1
                     break
             k += 1
             for l in range(i, k):
-                inst = modified_AB[l][0]
-                node1 = modified_AB[l][1]
-                node2 = modified_AB[l][2]
-                pos = int(modified_AB[i][3])
-                modified_AB[l] = (inst, node1, node2, pos)
+                inst = modified_script[l][0]
+                node1 = modified_script[l][1]
+                node2 = modified_script[l][2]
+                pos = int(modified_script[i][3])
+                modified_script[l] = (inst, node1, node2, pos)
             i = k
         else:
             i += 1
-    return modified_AB
+    return modified_script
 
 
-def rewrite_as_script(modified_AB):
+def rewrite_as_script(modified_script):
     instruction_AB = []
-    for i in modified_AB:
+    for i in modified_script:
         inst = i[0]
         if inst == Common.DELETE:
             nodeA = i[1].simple_print()
@@ -1119,7 +1133,7 @@ def translate():
         # Delete overlapping DELETE operations
         # modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
-        # modified_AB = adjust_pos(modified_AB)
+        # modified_script = adjust_pos(modified_script)
         # Printing modified simplified script
         # Print.success("\tModified Script:")
         # for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
