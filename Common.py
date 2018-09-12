@@ -27,7 +27,7 @@ TO = " to "
 AT = " at "
 INTO = " into "
 AND = "and"
-order = [UPDATE, UPDATEMOVE, DELETE, MOVE, INSERT]
+order = [UPDATE,DELETE,UPDATEMOVE, MOVE, INSERT]
 
 
 header_file_list_to_patch = []

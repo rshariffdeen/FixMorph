@@ -15,11 +15,10 @@ index = 0
 
 
 class AST:
-    
     nodes = []
     attr_names = ['id', 'identifier', 'line', 'line_end', 'col', 'col_end',
                   'begin', 'end', 'value', 'type', 'file', 'parent_id']
-    
+
     def __init__(self, dict_ast, char=""):
         AST.nodes.append(self)
         self.id = None
@@ -63,7 +62,7 @@ class AST:
                 child = AST(i, char + "    ")
                 self.children.append(child)
                 child.parent = self
-                    
+
     def treeString(self):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
                       self.col, self.col_end, self.begin, self.end, self.value,
@@ -75,7 +74,7 @@ class AST:
                 s += str(self.attrs[i]) + "\n"
         if len(self.children) > 0:
             s += self.char + "children [\n"
-            for i in range(len(self.children)-1):
+            for i in range(len(self.children) - 1):
                 s += str(self.children[i])
                 s += ",\n"
             s += str(self.children[-1]) + "\n"
@@ -84,7 +83,7 @@ class AST:
             s += self.char + "children []\n"
         s += self.char[:-2] + "}"
         return s
-        
+
     def __str__(self):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
                       self.col, self.col_end, self.begin, self.end, self.value,
@@ -97,12 +96,12 @@ class AST:
         s += str(len(self.children))
         s += "]"
         return s
-        
+
     def get_code(self, file):
         with open(file, 'r', errors='replace') as f:
             source_code = "".join(f.readlines())
         return source_code[int(self.begin):int(self.end)]
-        
+
     def get_nodes(self, attribute, value, nodes):
         self.attrs = [self.id, self.identifier, self.line, self.line_end,
                       self.col, self.col_end, self.begin, self.end, self.value,
@@ -116,7 +115,7 @@ class AST:
             if child.get_nodes(attribute, value, nodes) == 0:
                 return 0
         return 1
-        
+
     # Note: I'm assuming contention is the only way of overlapping for DELETE.
     def contains(self, other):
         if self.line < other.line and self.line_end >= other.line_end:
@@ -127,7 +126,7 @@ class AST:
             if self.col <= other.col and self.col_end >= other.col_end:
                 return True
         return False
-        
+
     def format_value(self, file):
         if "VarDecl" in self.type:
             nvalue = self.get_code(file)
@@ -136,26 +135,23 @@ class AST:
         else:
             nvalue = self.value
         return nvalue
-       
-       
+
     def info(self, file):
         if self.value:
             return self.type + ": " + self.format_value(file)
         return self.type
-         
-         
+
     def value_calc(self, file):
         if self.value:
             return self.format_value(file)
-    
+
     def simple_print(self):
         return str(self.type) + "(" + str(self.id) + ")"
-                            
-        
+
+
 def AST_from_file(file):
-    
     global ast
-    
+
     with open(file, 'r', errors='replace') as ast_file:
         ast = ast_file.readline()
     object_ast = json.loads(ast)
@@ -163,6 +159,3 @@ def AST_from_file(file):
     ast = [i for i in AST.nodes]
     AST.nodes = []
     return ast
-
-
-            
