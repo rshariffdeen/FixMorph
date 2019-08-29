@@ -43,7 +43,7 @@ def generate_diff():
             file_b = diff_line[3]
             ASTgen.llvm_format(file_a)
             ASTgen.llvm_format(file_b)
-            ASTgen.parseAST(file_a, Pa, use_deckard=True, is_header=True)
+            ASTgen.parseAST(file_a, Common.Pa, use_deckard=True, is_header=True)
             Print.success("\t\tFile successfully found: " + file_a.split("/")[-1] + " from " + Common.Pa.name + " to " + Common.Pb.name)
             diff_line = diff.readline().strip()
 
@@ -147,51 +147,49 @@ def clone_detection_header_files():
     candidate_list = []
     vector_list_a = get_vector_list(Common.Pa, extension)
     if len(vector_list_a) == 0:
+        Print.blue(" - nothing to do -")
         return candidate_list
     vector_list_c = get_vector_list(Common.Pc, extension)
     factor = 2
 
     Print.blue("Declaration mapping for *.h files")
-    for i in vector_list_a:
-        best = vector_list_c[0]
-        best_d = ASTVector.ASTVector.dist(i[1], best[1])
+    for vector_a in vector_list_a:
+        best_vector = vector_list_c[0]
+        min_distance = ASTVector.ASTVector.dist(vector_a[1], best_vector[1])
         dist = dict()
 
-        for j in vector_list_c:
-            d = ASTVector.ASTVector.dist(i[1], best[1])
-            dist[j[0]] = d
-            if d < best_d:
-                best = j
-                best_d = d
+        for vector_c in vector_list_c:
+            distance = ASTVector.ASTVector.dist(vector_a[1], vector_c[1])
+            dist[vector_c[0]] = distance
+            if distance < min_distance:
+                best_vector = vector_c
+                min_distance = distance
 
-        candidates = [best]
-        candidates_d = [best_d]
-        for j in vector_list_c:
-            if j != best:
-                d = dist[j[0]]
-                if d <= factor * best_d:
-                    candidates.append(j)
-                    candidates_d.append(d)
+        potential_list = [(best_vector, min_distance)]
+        for vector_c in vector_list_c:
+            if vector_c != best_vector:
+                distance = dist[vector_c[0]]
+                if distance <= factor * min_distance:
+                    potential_list.append((vector_c, distance))
 
-        decl_maps = list()
-        match_score = list()
-        matches = list()
+        declaration_map_list = list()
+        match_score_list = list()
+        match_count_list = list()
+        modified_header_file = vector_a[0].replace(Common.Pa.path, "")[:-4]
 
-        file_a = i[0].replace(Common.Pa.path, "")[:-4]
-        for k in range(len(candidates)):
-            candidate = candidates[k]
-            file_c = candidate[0].replace(Pc.path, "")[:-4]
-            d_c = str(candidates_d[k])
-            Print.blue("\tPossible match for " + file_a + " in Pa:")
-            Print.blue("\t\tFile: " + file_c + " in Pc")
-            Print.blue("\t\tDistance: " + d_c + "\n")
-            Print.blue("\tDeclaration mapping from " + file_a + " to " + \
-                       file_c + ":")
+        for potential_iterator in range(len(potential_list)):
+            potential_candidate = potential_list[potential_iterator][0]
+            potential_candidate_file = potential_candidate[0].replace(Common.Pc.path, "")[:-4]
+            vector_distance = str(potential_list[potential_iterator][1])
+            Print.blue("\tPossible match for " + modified_header_file + " in Pa:")
+            Print.blue("\t\tFile: " + potential_candidate_file + " in Pc")
+            Print.blue("\t\tDistance: " + vector_distance + "\n")
+            Print.blue("\tDeclaration mapping from " + modified_header_file + " to " + potential_candidate_file + ":")
             try:
-                decl_map, match, edit = detect_matching_declarations(file_a, file_c)
-                decl_maps.append(decl_map)
-                match_score.append((match - edit) / (match + edit))
-                matches.append(match)
+                declaration_map, match_count, edit_count = detect_matching_declarations(modified_header_file, potential_candidate_file)
+                declaration_map_list.append(declaration_map)
+                match_score_list.append((match_count - edit_count) / (match_count + edit_count))
+                match_count_list.append(match_count)
             except Exception as e:
                 err_exit(e, "Unexpected error while matching declarations.")
             with open('output/var-map', 'r', errors='replace') as mapped:
@@ -200,64 +198,69 @@ def clone_detection_header_files():
                     Print.grey("\t\t" + mapping)
                     mapping = mapped.readline().strip()
 
-        best_score = match_score[0]
-        best = candidates[0]
-        best_d = candidates_d[0]
-        best_match = matches[0]
-        best_index = [k]
+        best_score = match_score_list[0]
+        best_candidate = potential_list[0][0]
+        min_distance = potential_list[0][1]
+        best_match_count = match_count_list[0]
+        best_index = [0]
 
-        for k in range(1, len(candidates)):
-            score = match_score[k]
-            d = candidates_d[k]
-            match = matches[k]
+        for potential_iterator in range(1, len(potential_list)):
+            score = match_score_list[potential_iterator]
+            distance = potential_list[potential_iterator][1]
+            match_count = match_count_list[potential_iterator]
             if score > best_score:
                 best_score = score
-                best_index = [k]
+                best_index = [potential_iterator]
             elif score == best_score:
-                if d < best_d:
-                    best_d = d
-                    best_index = [k]
-                elif d == best_d:
-                    if match > best_match:
-                        best_match = match
-                        best_index = [k]
+                if distance < min_distance:
+                    min_distance = distance
+                    best_index = [potential_iterator]
+                elif distance == min_distance:
+                    if match_count > best_match_count:
+                        best_match_count = match_count
+                        best_index = [potential_iterator]
                     else:
-                        best_index.append(k)
+                        best_index.append(potential_iterator)
         # Potentially many identical matches
-        M = len(best_index)
-        m = min(1, M)
-        Print.success("\t" + str(M) + " match" + "es" * m + " for " + file_a)
+        potential_count = len(best_index)
+        m = min(1, potential_count)
+        Print.success("\t" + str(potential_count) + " match" + "es" * m + " for " + modified_header_file)
         for index in best_index:
-            file_c = candidates[index][0][:-4].replace(Pc.path, "")
-            d_c = str(candidates_d[index])
-            decl_map = decl_maps[index]
-            Print.success("\t\tMatch for " + file_a + " in Pa:")
+            file_c = potential_list[index][0][0][:-4].replace(Common.Pc.path, "")
+            d_c = str(potential_list[index][1])
+            decl_map = declaration_map_list[index]
+            Print.success("\t\tMatch for " + modified_header_file + " in Pa:")
             Print.blue("\t\tFile: " + file_c + " in Pc.")
             Print.blue("\t\tDistance: " + d_c + ".\n")
+            Print.blue("\t\tMatch Score: " + d_c + ".\n")
             # Print.green((Common.Pa.path + file_a, Pc.path + file_c, var_map))
-            candidate_list.append((Common.Pa.path + file_a, Pc.path + file_c, decl_map))
+            candidate_list.append((Common.Pa.path + modified_header_file, Common.Pc.path + file_c, decl_map))
     return candidate_list
 
 
 def clone_detection_for_c_files():
 
     c_ext = "*\.c\.*\.vec"
-    vector_list_A = get_vector_list(Common.Pa, c_ext)
-    vector_list_C = get_vector_list(Common.Pc, c_ext)
+    candidate_list = []
+    vector_list_a = get_vector_list(Common.Pa, c_ext)
+    if len(vector_list_a) == 0:
+        Print.blue("\t - nothing to do -")
+        return candidate_list
 
+    vector_list_c = get_vector_list(Common.Pc, c_ext)
     Print.blue("Variable mapping...\n")
-    to_patch = []
+
 
     UNKNOWN = "#UNKNOWN#"
     factor = 2
 
-    for i in vector_list_A:
-        best = vector_list_C[0]
+    for i in vector_list_a:
+        best = vector_list_c[0]
         best_d = ASTVector.ASTVector.dist(i[1], best[1])
         dist = dict()
 
         # Get best match candidate
-        for j in vector_list_C:
+        for j in vector_list_c:
             d = ASTVector.ASTVector.dist(i[1], j[1])
             dist[j[0]] = d
             if d < best_d:
@@ -267,7 +270,7 @@ def clone_detection_for_c_files():
         # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
         candidates = [best]
         candidates_d = [best_d]
-        for j in vector_list_C:
+        for j in vector_list_c:
             if j != best:
                 d = dist[j[0]]
                 if d <= factor * best_d:
@@ -343,27 +346,25 @@ def clone_detection_for_c_files():
         Print.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
         Print.blue("\t\tDistance: " + d_c + "\n")
 
-        to_patch.append((Common.Pa.functions[Common.Pa.path + file_a][f_a],
+        candidate_list.append((Common.Pa.functions[Common.Pa.path + file_a][f_a],
                          Common.Pc.functions[Common.Pc.path + file_c][f_c], var_map))
-    return to_patch
+    return candidate_list
 
 
 def generate_ast_map(source_a, source_b):
-    c = Common.DIFF_COMMAND + "-dump-matches " + source_a + " " + source_b
+    command = Common.DIFF_COMMAND + "-dump-matches " + source_a + " " + source_b
     if source_a[-1] == "h":
-        c += " --"
-    c += " 2>> output/errors_clang_diff"
-    c += "| grep -P '^Match ' | grep -P '^Match ' > output/ast-map"
+        command += " --"
+    command += " 2>> output/errors_clang_diff"
+    command += "| grep -P '^Match ' | grep -P '^Match ' > output/ast-map"
     try:
-        exec_com(c, True)
-    except Exception as e:
-        err_exit(e, "Unexpected error in generate_ast_map.")
+        exec_com(command, False)
+    except Exception as exception:
+        err_exit(exception, "Unexpected error in generate_ast_map.")
 
 
 def id_from_string(simplestring):
     return int(simplestring.split("(")[-1][:-1])
-
-
 
 
 def detect_matching_declarations(file_a, file_c):
@@ -380,24 +381,24 @@ def detect_matching_declarations(file_a, file_c):
     except Exception as e:
         err_exit(e, "Unexpected error parsing ast-map in detect_matching declarations")
 
-    matches = 0
-    edits = 0
+    match_count = 0
+    edit_count = 0
     for line in map_lines:
         line = line.strip()
         if len(line) > 6 and line[:5] == "Match":
             line = clean_parse(line[6:], Common.TO)
             if "Decl" not in line[0]:
                 continue
-            matches += 1
+            match_count += 1
             ast_map[line[0]] = line[1]
         else:
-            edits += 1
+            edit_count += 1
 
     with open("output/var-map", "w", errors='replace') as var_map_file:
         for var_a in ast_map.keys():
             var_map_file.write(var_a + " -> " + ast_map[var_a] + "\n")
 
-    return ast_map, matches, edits
+    return ast_map, match_count, edit_count
 
 
 def detect_matching_variables(f_a, file_a, f_c, file_c):

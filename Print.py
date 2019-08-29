@@ -96,13 +96,14 @@ def start():
     +"\n" + "="*100 + "\n")
 
 
-def exit_msg(runtime, initialization_duration, clone_detection_duration, script_generation_duration, transplantation_duration):
+def exit_msg(runtime, initialization_duration, clone_detection_duration, script_generation_duration, translation_duration, transplantation_duration):
     success("Time duration for:\n")
     warning("Initialization: " + initialization_duration)
     warning("Clone Detection: " + clone_detection_duration)
     warning("Script Generation: " + script_generation_duration)
+    warning("Translation: " + translation_duration)
     warning("Transplantation: " + transplantation_duration)
-    success("PatchWeave finished successfully after " + runtime + "seconds.\n")
+    success("\nPatchWeave finished successfully after " + runtime + " seconds\n")
 
       
 def title(title):
