@@ -2,10 +2,10 @@
 
 ''' Main vector generation functions '''
 
-from common.Utils import err_exit, exec_com
+from common.Utilities import err_exit, exec_com
 import ASTVector
 import ASTparser
-from tools import Print
+from tools import Emitter
 
 crochet_diff = "crochet-diff "
 clang_format = "clang-format -style=LLVM "
@@ -30,7 +30,7 @@ def ASTdump(file, output, h_file=False):
         c += " --"
     c += " 2> output/errors_AST_dump > " + output
     a = exec_com(c, False)
-    Print.warning(a[0])
+    Emitter.warning(a[0])
 
 def gen_json(filepath, h_file=False):
     json_file = filepath + ".AST"
@@ -44,10 +44,10 @@ def llvm_format(file):
         c = clang_format + file + "> output/temp.c; cp output/temp.c " + file
         exec_com(c, False)
     except Exception as e:
-        Print.warning(e)
-        Print.warning("Error in llvm_format with file:")
-        Print.warning(file)
-        Print.warning("Restoring and skipping")
+        Emitter.warning(e)
+        Emitter.warning("Error in llvm_format with file:")
+        Emitter.warning(file)
+        Emitter.warning("Restoring and skipping")
         c = "cp output/last.c " + file
         exec_com(c, False)
 
@@ -61,7 +61,7 @@ def parseAST(file_path, project, use_deckard=True, is_header=False):
     try:
         ast = gen_json(file_path, is_header)
     except Exception as exception:
-        Print.warning("\tFailed parsing AST for file:\n\t\t" + file_path)
+        Emitter.warning("\tFailed parsing AST for file:\n\t\t" + file_path)
         return function_lines, dict_file
 
     start = 0
@@ -69,7 +69,7 @@ def parseAST(file_path, project, use_deckard=True, is_header=False):
     file = file_path.split("/")[-1]
     
     if use_deckard:
-        Print.grey("\tGenerating vectors for " + file)
+        Emitter.grey("\tGenerating vectors for " + file)
         
     if is_header:
         if use_deckard:
@@ -120,7 +120,7 @@ def intersect(start, end, start2, end2):
     
                         
 def find_affected_funcs(project, source_file, pertinent_lines):
-    Print.blue("\tProject " + project.name + "...")
+    Emitter.blue("\tProject " + project.name + "...")
     try:
         function_list, definition_list = parseAST(source_file, project, False)
     except Exception as e:
@@ -133,10 +133,10 @@ def find_affected_funcs(project, source_file, pertinent_lines):
                     project.functions[source_file] = dict()
                 if f not in project.functions[source_file]:
                     project.functions[source_file][f] = ASTVector.ASTVector(project, source_file, f, start, end, True)
-                    Print.success("\t\tFunction successfully found: " + f + \
+                    Emitter.success("\t\tFunction successfully found: " + f + \
                                " in " + source_file.replace(project.path,
                                                             project.name + "/"))
-                    Print.grey("\t\t\t" + f + " " + str(start) + "-" + str(end), False)
+                    Emitter.grey("\t\t\t" + f + " " + str(start) + "-" + str(end), False)
                 break
     get_vars(project, source_file, definition_list)
     return function_list, definition_list

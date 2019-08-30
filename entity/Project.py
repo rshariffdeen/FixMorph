@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from common.Utils import err_exit, clean_ASTs, exec_com
-from tools import Print
+from common.Utilities import err_exit, clean_ASTs, exec_com
+from tools import Emitter
 
 
 class Project:
@@ -41,5 +41,5 @@ class Project:
         
     def clean(self):
         # Remove *.crochetAST, *.AST and *.vec files from directory
-        Print.blue("Cleaning " + self.name + "...")
+        Emitter.blue("Cleaning " + self.name + "...")
         clean_ASTs(self.path)

@@ -2,14 +2,30 @@
 
 import os
 import subprocess
-from tools import Print
+from tools import Emitter
+import Definitions
+
+
+def create_directories():
+    if not os.path.isdir(Definitions.DIRECTORY_LOG):
+        os.makedirs(Definitions.DIRECTORY_LOG)
+
+    if not os.path.isdir(Definitions.DIRECTORY_OUTPUT_BASE):
+        os.makedirs(Definitions.DIRECTORY_OUTPUT_BASE)
+
+    if not os.path.isdir(Definitions.DIRECTORY_BACKUP):
+        os.makedirs(Definitions.DIRECTORY_BACKUP)
+
+    if not os.path.isdir(Definitions.DIRECTORY_TMP):
+        os.makedirs(Definitions.DIRECTORY_TMP)
+
 
 ''' Executing commands '''
 
 def exec_com(c, verbose=False):
     # Print executed command and execute it in console
     if verbose:    
-        Print.grey(c)
+        Emitter.grey(c)
     proc = subprocess.Popen([c], stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
     # out is the output of the command, and err is the exit value
@@ -22,7 +38,7 @@ def exec_com(c, verbose=False):
 def err_exit(*args):
     print("\n")
     for i in args:
-        Print.error(i)
+        Emitter.error(i)
     raise Exception("Error. Exiting...")
     
 ''' Cleaning Residual files '''
@@ -38,7 +54,7 @@ def clean_ASTs(src_path):
     
 def clean():
     # Remove other residual files stored in ./output/
-    Print.blue("Removing other residual files...")
+    Emitter.blue("Removing other residual files...")
     if os.path.isdir("output"):
         r = "rm -rf output Backup_Folder; mkdir output Backup_Folder;"
         exec_com(r, False)
@@ -71,3 +87,5 @@ def get_extensions(src_path, output_file_name):
                 extensions.add(a)
             a = f.readline().strip()
     return extensions
+
+

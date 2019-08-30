@@ -3,9 +3,9 @@
 
 
 import time
-from common.Utils import exec_com, err_exit, find_files, get_extensions
-import Print
-from common import Common
+from common.Utilities import exec_com, err_exit, find_files, get_extensions
+import Emitter
+from common import Definitions
 from ast import ASTVector, ASTparser, ASTgen
 
 excluded_extensions_pa = "output/excluded-extensions-pa"
@@ -14,13 +14,13 @@ excluded_extensions = 'output/excluded-extensions'
 
 
 def find_diff_files():
-    extensions = get_extensions(Common.Pa.path, excluded_extensions_pa)
-    extensions = extensions.union(get_extensions(Common.Pb.path, excluded_extensions_pb))
+    extensions = get_extensions(Definitions.Pa.path, excluded_extensions_pa)
+    extensions = extensions.union(get_extensions(Definitions.Pb.path, excluded_extensions_pb))
     with open(excluded_extensions, 'w', errors='replace') as exclusions:
         for pattern in extensions:
             exclusions.write(pattern + "\n")
     # TODO: Include cases where a file is added or removed
-    c = "diff -ENZBbwqr " + Common.Pa.path + " " + Common.Pb.path + " -X " + excluded_extensions + "> output/diff; "
+    c = "diff -ENZBbwqr " + Definitions.Pa.path + " " + Definitions.Pb.path + " -X " + excluded_extensions + "> output/diff; "
     c += "cat output/diff | grep -P '\.c and ' > output/diff_C; "
     c += "cat output/diff | grep -P '\.h and ' > output/diff_H; "
     exec_com(c, False)
@@ -28,7 +28,7 @@ def find_diff_files():
 
 def generate_diff():
     # .h and .c files
-    Print.blue("Finding differing files...")
+    Emitter.blue("Finding differing files...")
     find_diff_files()
 
     # H files
@@ -40,12 +40,12 @@ def generate_diff():
             file_b = diff_line[3]
             ASTgen.llvm_format(file_a)
             ASTgen.llvm_format(file_b)
-            ASTgen.parseAST(file_a, Common.Pa, use_deckard=True, is_header=True)
-            Print.success("\t\tFile successfully found: " + file_a.split("/")[-1] + " from " + Common.Pa.name + " to " + Common.Pb.name)
+            ASTgen.parseAST(file_a, Definitions.Pa, use_deckard=True, is_header=True)
+            Emitter.success("\t\tFile successfully found: " + file_a.split("/")[-1] + " from " + Definitions.Pa.name + " to " + Definitions.Pb.name)
             diff_line = diff.readline().strip()
 
     # C files
-    Print.blue("Starting fine-grained diff...\n")
+    Emitter.blue("Starting fine-grained diff...\n")
     with open('output/diff_C', 'r', errors='replace') as diff:
         diff_line = diff.readline().strip()
         while diff_line:
@@ -85,8 +85,8 @@ def generate_diff():
                         pertinent_lines_b.append((start_b, end_b))
                     file_line = file_diff.readline().strip()
             try:
-                ASTgen.find_affected_funcs(Common.Pa, file_a, pertinent_lines_a)
-                ASTgen.find_affected_funcs(Common.Pb, file_b, pertinent_lines_b)
+                ASTgen.find_affected_funcs(Definitions.Pa, file_a, pertinent_lines_a)
+                ASTgen.find_affected_funcs(Definitions.Pb, file_b, pertinent_lines_b)
             except Exception as e:
                 err_exit(e, "Failed at finding affected functions.")
 
@@ -95,15 +95,15 @@ def generate_diff():
 
 def generate_vector_for_extension(file_extension, output, is_header=False):
 
-    Print.blue("Generate vectors for " + file_extension + " files in " + Common.Pc.name + "...")
+    Emitter.blue("Generate vectors for " + file_extension + " files in " + Definitions.Pc.name + "...")
     # Generates an AST file for each file of extension ext
-    find_files(Common.Pc.path, file_extension, output)
+    find_files(Definitions.Pc.path, file_extension, output)
     with open(output, 'r', errors='replace') as file_list:
         file_name = file_list.readline().strip()
         while file_name:
             # Parses it to get useful information and generate vectors
             try:
-                ASTgen.parseAST(file_name, Common.Pc, use_deckard=True, is_header=is_header)
+                ASTgen.parseAST(file_name, Definitions.Pc, use_deckard=True, is_header=is_header)
             except Exception as e:
                 err_exit(e, "Unexpected error in parseAST with file:", file_name)
             file_name = file_list.readline().strip()
@@ -123,7 +123,7 @@ def get_vector_list(project, extension):
     else:
         rxt = "h"
 
-    Print.blue("Getting vectors for " + rxt + " files in " + project.name + "...")
+    Emitter.blue("Getting vectors for " + rxt + " files in " + project.name + "...")
     filepath = "output/vectors_" + rxt + "_" + project.name
     find_files(project.path, extension, filepath)
     with open(filepath, "r", errors='replace') as file:
@@ -142,14 +142,14 @@ def get_vector_list(project, extension):
 def clone_detection_header_files():
     extension = "*\.h\.vec"
     candidate_list = []
-    vector_list_a = get_vector_list(Common.Pa, extension)
+    vector_list_a = get_vector_list(Definitions.Pa, extension)
     if len(vector_list_a) == 0:
-        Print.blue(" - nothing to do -")
+        Emitter.blue(" - nothing to do -")
         return candidate_list
-    vector_list_c = get_vector_list(Common.Pc, extension)
+    vector_list_c = get_vector_list(Definitions.Pc, extension)
     factor = 2
 
-    Print.blue("Declaration mapping for *.h files")
+    Emitter.blue("Declaration mapping for *.h files")
     for vector_a in vector_list_a:
         best_vector = vector_list_c[0]
         min_distance = ASTVector.ASTVector.dist(vector_a[1], best_vector[1])
@@ -172,16 +172,16 @@ def clone_detection_header_files():
         declaration_map_list = list()
         match_score_list = list()
         match_count_list = list()
-        modified_header_file = vector_a[0].replace(Common.Pa.path, "")[:-4]
+        modified_header_file = vector_a[0].replace(Definitions.Pa.path, "")[:-4]
 
         for potential_iterator in range(len(potential_list)):
             potential_candidate = potential_list[potential_iterator][0]
-            potential_candidate_file = potential_candidate[0].replace(Common.Pc.path, "")[:-4]
+            potential_candidate_file = potential_candidate[0].replace(Definitions.Pc.path, "")[:-4]
             vector_distance = str(potential_list[potential_iterator][1])
-            Print.blue("\tPossible match for " + modified_header_file + " in Pa:")
-            Print.blue("\t\tFile: " + potential_candidate_file + " in Pc")
-            Print.blue("\t\tDistance: " + vector_distance + "\n")
-            Print.blue("\tDeclaration mapping from " + modified_header_file + " to " + potential_candidate_file + ":")
+            Emitter.blue("\tPossible match for " + modified_header_file + " in Pa:")
+            Emitter.blue("\t\tFile: " + potential_candidate_file + " in Pc")
+            Emitter.blue("\t\tDistance: " + vector_distance + "\n")
+            Emitter.blue("\tDeclaration mapping from " + modified_header_file + " to " + potential_candidate_file + ":")
             try:
                 declaration_map, match_count, edit_count = detect_matching_declarations(modified_header_file, potential_candidate_file)
                 declaration_map_list.append(declaration_map)
@@ -192,7 +192,7 @@ def clone_detection_header_files():
             with open('output/var-map', 'r', errors='replace') as mapped:
                 mapping = mapped.readline().strip()
                 while mapping:
-                    Print.grey("\t\t" + mapping)
+                    Emitter.grey("\t\t" + mapping)
                     mapping = mapped.readline().strip()
 
         best_score = match_score_list[0]
@@ -221,17 +221,17 @@ def clone_detection_header_files():
         # Potentially many identical matches
         potential_count = len(best_index)
         m = min(1, potential_count)
-        Print.success("\t" + str(potential_count) + " match" + "es" * m + " for " + modified_header_file)
+        Emitter.success("\t" + str(potential_count) + " match" + "es" * m + " for " + modified_header_file)
         for index in best_index:
-            file_c = potential_list[index][0][0][:-4].replace(Common.Pc.path, "")
+            file_c = potential_list[index][0][0][:-4].replace(Definitions.Pc.path, "")
             d_c = str(potential_list[index][1])
             decl_map = declaration_map_list[index]
-            Print.success("\t\tMatch for " + modified_header_file + " in Pa:")
-            Print.blue("\t\tFile: " + file_c + " in Pc.")
-            Print.blue("\t\tDistance: " + d_c + ".\n")
-            Print.blue("\t\tMatch Score: " + d_c + ".\n")
+            Emitter.success("\t\tMatch for " + modified_header_file + " in Pa:")
+            Emitter.blue("\t\tFile: " + file_c + " in Pc.")
+            Emitter.blue("\t\tDistance: " + d_c + ".\n")
+            Emitter.blue("\t\tMatch Score: " + d_c + ".\n")
             # Print.green((Common.Pa.path + file_a, Pc.path + file_c, var_map))
-            candidate_list.append((Common.Pa.path + modified_header_file, Common.Pc.path + file_c, decl_map))
+            candidate_list.append((Definitions.Pa.path + modified_header_file, Definitions.Pc.path + file_c, decl_map))
     return candidate_list
 
 
@@ -239,13 +239,13 @@ def clone_detection_for_c_files():
 
     c_ext = "*\.c\.*\.vec"
     candidate_list = []
-    vector_list_a = get_vector_list(Common.Pa, c_ext)
+    vector_list_a = get_vector_list(Definitions.Pa, c_ext)
     if len(vector_list_a) == 0:
-        Print.blue("\t - nothing to do -")
+        Emitter.blue("\t - nothing to do -")
         return candidate_list
 
-    vector_list_c = get_vector_list(Common.Pc, c_ext)
-    Print.blue("Variable mapping...\n")
+    vector_list_c = get_vector_list(Definitions.Pc, c_ext)
+    Emitter.blue("Variable mapping...\n")
 
 
     UNKNOWN = "#UNKNOWN#"
@@ -279,22 +279,22 @@ def clone_detection_for_c_files():
         var_maps = []
 
         # We go up to -4 to remove the ".vec" part [filepath.function.vec]
-        fa = i[0].replace(Common.Pa.path, "")[:-4].split(".")
+        fa = i[0].replace(Definitions.Pa.path, "")[:-4].split(".")
         f_a = fa[-1]
         file_a = ".".join(fa[:-1])
 
         # TODO: Correct once I have appropriate only function comparison
         for k in range(len(candidates)):
             candidate = candidates[k]
-            fc = candidate[0].replace(Common.Pc.path, "")[:-4].split(".")
+            fc = candidate[0].replace(Definitions.Pc.path, "")[:-4].split(".")
             f_c = fc[-1]
             file_c = ".".join(fc[:-1])
             d_c = str(candidates_d[k])
-            Print.blue("\tPossible match for " + f_a + " in $Pa/" + file_a + \
+            Emitter.blue("\tPossible match for " + f_a + " in $Pa/" + file_a + \
                        ":")
-            Print.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
-            Print.blue("\t\tDistance: " + d_c + "\n")
-            Print.blue("\tVariable mapping from " + f_a + " to " + f_c + ":")
+            Emitter.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
+            Emitter.blue("\t\tDistance: " + d_c + "\n")
+            Emitter.blue("\tVariable mapping from " + f_a + " to " + f_c + ":")
             try:
                 var_map = detect_matching_variables(f_a, file_a, f_c, file_c)
                 var_maps.append(var_map)
@@ -303,7 +303,7 @@ def clone_detection_for_c_files():
             with open('output/var-map', 'r', errors='replace') as mapped:
                 mapping = mapped.readline().strip()
                 while mapping:
-                    Print.grey("\t\t" + mapping)
+                    Emitter.grey("\t\t" + mapping)
                     if UNKNOWN in mapping:
                         count_unknown[k] += 1
                     count_vars[k] += 1
@@ -335,21 +335,21 @@ def clone_detection_for_c_files():
                             best_d = candidates_d[k]
                             var_map = var_maps[k]
 
-        fc = best[0].replace(Common.Pc.path, "")[:-4].split(".")
+        fc = best[0].replace(Definitions.Pc.path, "")[:-4].split(".")
         f_c = fc[-1]
         file_c = ".".join(fc[:-1])
         d_c = str(best_d)
-        Print.success("\t\tBest match for " + f_a + " in $Pa/" + file_a + ":")
-        Print.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
-        Print.blue("\t\tDistance: " + d_c + "\n")
+        Emitter.success("\t\tBest match for " + f_a + " in $Pa/" + file_a + ":")
+        Emitter.blue("\t\tFunction: " + f_c + " in $Pc/" + file_c)
+        Emitter.blue("\t\tDistance: " + d_c + "\n")
 
-        candidate_list.append((Common.Pa.functions[Common.Pa.path + file_a][f_a],
-                               Common.Pc.functions[Common.Pc.path + file_c][f_c], var_map))
+        candidate_list.append((Definitions.Pa.functions[Definitions.Pa.path + file_a][f_a],
+                               Definitions.Pc.functions[Definitions.Pc.path + file_c][f_c], var_map))
     return candidate_list
 
 
 def generate_ast_map(source_a, source_b):
-    command = Common.DIFF_COMMAND + "-dump-matches " + source_a + " " + source_b
+    command = Definitions.DIFF_COMMAND + "-dump-matches " + source_a + " " + source_b
     if source_a[-1] == "h":
         command += " --"
     command += " 2>> output/errors_clang_diff"
@@ -366,7 +366,7 @@ def id_from_string(simplestring):
 
 def detect_matching_declarations(file_a, file_c):
     try:
-        generate_ast_map(Common.Pa.path + file_a, Common.Pc.path + file_c)
+        generate_ast_map(Definitions.Pa.path + file_a, Definitions.Pc.path + file_c)
     except Exception as e:
         err_exit(e, "Error at generate_ast_map.")
 
@@ -383,7 +383,7 @@ def detect_matching_declarations(file_a, file_c):
     for line in map_lines:
         line = line.strip()
         if len(line) > 6 and line[:5] == "Match":
-            line = clean_parse(line[6:], Common.TO)
+            line = clean_parse(line[6:], Definitions.TO)
             if "Decl" not in line[0]:
                 continue
             match_count += 1
@@ -400,11 +400,11 @@ def detect_matching_declarations(file_a, file_c):
 
 def detect_matching_variables(f_a, file_a, f_c, file_c):
     try:
-        generate_ast_map(Common.Pa.path + file_a, Common.Pc.path + file_c)
+        generate_ast_map(Definitions.Pa.path + file_a, Definitions.Pc.path + file_c)
     except Exception as e:
         err_exit(e, "Error at generate_ast_map.")
 
-    function_a = Common.Pa.functions[Common.Pa.path + file_a][f_a]
+    function_a = Definitions.Pa.functions[Definitions.Pa.path + file_a][f_a]
     variable_list_a = function_a.variables.copy()
 
     while '' in variable_list_a:
@@ -412,16 +412,16 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
 
     a_names = [i.split(" ")[-1] for i in variable_list_a]
 
-    function_c = Common.Pc.functions[Common.Pc.path + file_c][f_c]
+    function_c = Definitions.Pc.functions[Definitions.Pc.path + file_c][f_c]
     variable_list_c = function_c.variables
     while '' in variable_list_c:
         variable_list_c.remove('')
 
     # Print.white(variable_list_c)
 
-    json_file_A = Common.Pa.path + file_a + ".AST"
+    json_file_A = Definitions.Pa.path + file_a + ".AST"
     ast_A = ASTparser.AST_from_file(json_file_A)
-    json_file_C = Common.Pc.path + file_c + ".AST"
+    json_file_C = Definitions.Pc.path + file_c + ".AST"
     ast_C = ASTparser.AST_from_file(json_file_C)
 
     ast_map = dict()
@@ -430,13 +430,13 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
 
             map_line = ast_map_file.readline().strip()
             while map_line:
-                nodeA, nodeC = clean_parse(map_line, Common.TO)
+                nodeA, nodeC = clean_parse(map_line, Definitions.TO)
 
                 var_a = id_from_string(nodeA)
-                var_a = ast_A[var_a].value_calc(Common.Pa.path + file_a)
+                var_a = ast_A[var_a].value_calc(Definitions.Pa.path + file_a)
 
                 var_c = id_from_string(nodeC)
-                var_c = ast_C[var_c].value_calc(Common.Pc.path + file_c)
+                var_c = ast_C[var_c].value_calc(Definitions.Pc.path + file_c)
 
                 if var_a in a_names:
                     if var_a not in ast_map.keys():
@@ -514,7 +514,7 @@ def clean_parse(content, separator):
 
 def safe_exec(function_def, title, *args):
     start_time = time.time()
-    Print.sub_title("Starting " + title + "...")
+    Emitter.sub_title("Starting " + title + "...")
     description = title[0].lower() + title[1:]
     try:
         if not args:
@@ -522,20 +522,20 @@ def safe_exec(function_def, title, *args):
         else:
             result = function_def(*args)
         duration = str(time.time() - start_time)
-        Print.success("\n\tSuccessful " + description + ", after " + duration + " seconds.")
+        Emitter.success("\n\tSuccessful " + description + ", after " + duration + " seconds.")
     except Exception as exception:
         duration = str(time.time() - start_time)
-        Print.error("Crash during " + description + ", after " + duration + " seconds.")
+        Emitter.error("Crash during " + description + ", after " + duration + " seconds.")
         err_exit(exception, "Unexpected error during " + description + ".")
     return result
 
 
 def detect():
-    Print.title("Locating vulnerable functions")
+    Emitter.title("Locating vulnerable functions")
     safe_exec(generate_diff, "search for affected functions")
     # Generates vectors for all functions in Pc
     safe_exec(generate_vectors, "vector generation for all functions in Pc")
     # Pairwise vector comparison for matching
-    Common.header_file_list_to_patch = safe_exec(clone_detection_header_files, "clone detection for header files")
-    Common.c_file_list_to_patch = safe_exec(clone_detection_for_c_files, "clone detection for C files")
+    Definitions.header_file_list_to_patch = safe_exec(clone_detection_header_files, "clone detection for header files")
+    Definitions.c_file_list_to_patch = safe_exec(clone_detection_for_c_files, "clone detection for C files")
 

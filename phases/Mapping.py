@@ -1,17 +1,17 @@
-from common import Common
-from common.Utils import exec_com, err_exit
+from common import Definitions
+from common.Utilities import exec_com, err_exit
 import Print
 
 
 def generate_map(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
-    Print.blue("Generating mapping: " + name_a + Common.TO + name_b + "...")
+    Print.blue("Generating mapping: " + name_a + Definitions.TO + name_b + "...")
     try:
         extra_arg = ""
         if file_a[-2:] == ".h":
             extra_arg = " --"
-        command = Common.DIFF_COMMAND + " -s=" + Common.DIFF_SIZE + " -dump-matches " + \
+        command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches " + \
                   file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += "| grep '^Match ' "
         command += " > " + output_file
@@ -57,9 +57,9 @@ def get_mapping(map_file_name):
             line = line.split(" ")
             operation = line[0]
             content = " ".join(line[1:])
-            if operation == Common.MATCH:
+            if operation == Definitions.MATCH:
                 try:
-                    node_a, node_c = clean_parse(content, Common.TO)
+                    node_a, node_c = clean_parse(content, Definitions.TO)
                     node_map[node_a] = node_c
                 except Exception as exception:
                     err_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
@@ -70,21 +70,21 @@ def get_mapping(map_file_name):
 def generate():
     Print.title("Variable Mapping")
     Print.sub_title("Variable mapping for header files")
-    if len(Common.generated_script_for_header_files) == 0:
+    if len(Definitions.generated_script_for_header_files) == 0:
         Print.blue("\t -nothing-to-do")
     else:
-        for file_list, generated_data in Common.generated_script_for_header_files.items():
+        for file_list, generated_data in Definitions.generated_script_for_header_files.items():
             map_file_name = "output/diff_script_AC"
             generate_map(file_list[0], file_list[2], map_file_name)
             variable_map = get_mapping(map_file_name)
-            Common.variable_map[file_list] = variable_map
+            Definitions.variable_map[file_list] = variable_map
 
     Print.sub_title("Variable mapping for C files")
-    if len(Common.generated_script_for_c_files) == 0:
+    if len(Definitions.generated_script_for_c_files) == 0:
         Print.blue("\t -nothing-to-do")
     else:
-        for file_list, generated_data in Common.generated_script_for_c_files.items():
+        for file_list, generated_data in Definitions.generated_script_for_c_files.items():
             map_file_name = "output/diff_script_AC"
             generate_map(file_list[0], file_list[2], map_file_name)
             variable_map = get_mapping(map_file_name)
-            Common.variable_map[file_list] = variable_map
+            Definitions.variable_map[file_list] = variable_map

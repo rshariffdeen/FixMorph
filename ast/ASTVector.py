@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from tools import Print
-from common.Utils import exec_com, err_exit
+from tools import Emitter
+from common.Utilities import exec_com, err_exit
 import os
 
 class ASTVector:
@@ -39,7 +39,7 @@ class ASTVector:
         else:
             current = "\t\t" + self.function + " " + str(self.start) + "-" + \
                         str(self.end)
-            Print.grey(current, False)
+            Emitter.grey(current, False)
             start = self.start
             end = self.end
             with open(self.file, 'r', errors='replace') as file:
@@ -47,7 +47,7 @@ class ASTVector:
                 max_line = len(ls)
                 if int(end) > max_line:
                     # TODO: This shouldn't happen!
-                    Print.error(current)
+                    Emitter.error(current)
                     err_exit("Deckard fail. The following file not generated:",
                              self.vector_path)
                     return None
@@ -82,8 +82,8 @@ class ASTVector:
                 err_exit(e, "Error with Deckard vector generation. Exiting...")
         
         if not os.path.isfile(self.vector_path):
-            Print.warning("Deckard fail. The vector file was not generated:")
-            Print.warning(self.vector_path + "\n")
+            Emitter.warning("Deckard fail. The vector file was not generated:")
+            Emitter.warning(self.vector_path + "\n")
             with open('output/reproduce_errors', 'a') as file:
                     file.write(c + "\n" + c1 + "\n")
             return None
