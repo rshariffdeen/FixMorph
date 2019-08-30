@@ -165,7 +165,7 @@ def get_function_name_list(project, source_file, pertinent_lines):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\t" + project.path + ":")
     try:
-        function_list, definition_list = parse_ast(source_file, True)
+        function_list, definition_list = parse_ast(source_file, False)
     except Exception as e:
         error_exit(e, "Error in parse_ast.")
     for start_line, end_line in pertinent_lines:

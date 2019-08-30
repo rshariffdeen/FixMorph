@@ -84,18 +84,6 @@ STYLE_FORMAT_COMMAND = "clang-format -style=LLVM "
 interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
-UPDATEMOVE = "UpdateMove"
-UPDATE = "Update"
-MOVE = "Move"
-INSERT = "Insert"
-DELETE = "Delete"
-MATCH = "Match"
-TO = " to "
-AT = " at "
-INTO = " into "
-AND = "and"
-order = [UPDATE,DELETE,UPDATEMOVE, MOVE, INSERT]
-
 
 header_file_list_to_patch = []
 c_file_list_to_patch = []

@@ -28,6 +28,7 @@ FILE_STANDARD_MACRO_LIST = DIRECTORY_DATA + "/standard-macro-list"
 
 FILE_AST_SCRIPT = DIRECTORY_TMP + "/ast-script"
 FILE_TEMP_DIFF = DIRECTORY_TMP + "/temp_diff"
+FILE_AST_MAP = DIRECTORY_TMP + "/ast-map"
 FILE_AST_DIFF_ERROR = DIRECTORY_TMP + "/errors_ast_diff"
 FILE_PARTIAL_PATCH = DIRECTORY_TMP + "/gen-patch"
 
@@ -38,6 +39,7 @@ FILE_EXCLUDED_EXTENSIONS_B = DIRECTORY_TMP + "/excluded-extensions-b"
 FILE_DIFF_C = DIRECTORY_TMP + "/diff_C"
 FILE_DIFF_H = DIRECTORY_TMP + "/diff_H"
 FILE_DIFF_ALL = DIRECTORY_TMP + "/diff_all"
+FILE_FIND_RESULT = DIRECTORY_TMP + "/find_tmp"
 
 
 # ------------------- Configuration --------------------
@@ -98,3 +100,15 @@ STYLE_FORMAT_COMMAND = "clang-format -style=LLVM "
 
 crash_word_list = ["abort", "core dumped", "crashed", "exception"]
 error_word_list = ["runtime error", "buffer-overflow", "unsigned integer overflow"]
+
+UPDATEMOVE = "UpdateMove"
+UPDATE = "Update"
+MOVE = "Move"
+INSERT = "Insert"
+DELETE = "Delete"
+MATCH = "Match"
+TO = " to "
+AT = " at "
+INTO = " into "
+AND = "and"
+order = [UPDATE,DELETE,UPDATEMOVE, MOVE, INSERT]

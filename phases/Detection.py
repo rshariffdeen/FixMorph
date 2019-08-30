@@ -12,19 +12,17 @@ from tools import Logger, Emitter, Detector, Differ, Generator
 diff_info = dict()
 
 
-def generate_vectors_donor():
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.sub_sub_title("Generating vector files for affected functions in Donor")
-
-    Generator.generate_vectors("*\.h", Definitions.FILE_DIFF_H, Values.Project_A)
-    Generator.generate_vectors("*\.c", Definitions.FILE_DIFF_C, Values.Project_A)
-
-
 def generate_vectors_target():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Generating vector files for all functions in Target")
-    Generator.generate_vectors("*\.h", Definitions.FILE_DIFF_H, Values.Project_C)
-    Generator.generate_vectors("*\.c", Definitions.FILE_DIFF_C, Values.Project_C)
+    Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C)
+    Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C)
+
+
+def find_clones():
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.sub_sub_title("Finding clone functions in Target")
+    Detector.detect_c_files()
 
 
 def safe_exec(function_def, title, *args):
@@ -52,6 +50,7 @@ def detect():
     Emitter.title("Clone Detection")
 
     safe_exec(generate_vectors_target, "generating vectors for target")
+    safe_exec(find_clones, "finding clones in target")
 
     # safe_exec(analyse_ast_diff, "analysing ast diff")
     #

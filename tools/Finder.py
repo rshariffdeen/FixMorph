@@ -3,12 +3,34 @@
 
 
 import sys
-from ast import Generator
-from tools import Oracle, Logger, Extractor
-from common.Utilities import execute_command, error_exit
+from ast import Generator, Vector
+from tools import Oracle, Logger, Extractor, Emitter
+from common.Utilities import execute_command, error_exit, find_files
 from common import Definitions
 
 FILE_GREP_RESULT = ""
+
+
+def search_vector_list(project, extension):
+    if "c" in extension:
+        rxt = "C"
+    else:
+        rxt = "h"
+
+    Emitter.normal("\tchecking vectors for " + rxt + " files in " + project.name + "...")
+    filepath = "output/vectors_" + rxt + "_" + project.name
+    find_files(project.path, extension, filepath)
+    with open(filepath, "r", errors='replace') as file:
+        files = [vec.strip() for vec in file.readlines()]
+    vecs = []
+    for i in range(len(files)):
+        with open(files[i], 'r', errors='replace') as vec:
+            fl = vec.readline()
+            if fl:
+                v = [int(s) for s in vec.readline().strip().split(" ")]
+                v = Vector.Vector.normed(v)
+                vecs.append((files[i], v))
+    return vecs
 
 
 def search_matching_node(ast_node, search_node, var_map):
