@@ -43,9 +43,9 @@ def analyse_ast_diff():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global diff_info
     diff_info = Differ.diff_ast(diff_info,
-                                       Values.PATH_A,
-                                       Values.PATH_B,
-                                       Definitions.FILE_AST_SCRIPT)
+                                Values.PATH_A,
+                                Values.PATH_B,
+                                Definitions.FILE_AST_SCRIPT)
 
 
 def safe_exec(function_def, title, *args):

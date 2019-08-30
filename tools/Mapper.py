@@ -1,6 +1,22 @@
 from common import Definitions
 from common.Utilities import execute_command, error_exit
-import Emitter
+import Emitter, Logger
+from ast import Generator
+import sys
+
+
+def map_ast_from_source(source_a, source_b, script_file_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Generator.generate_ast_script(source_a, source_b, script_file_path, True)
+    mapping = dict()
+    with open(script_file_path, "r") as script_file:
+        script_lines = script_file.readlines()
+        for script_line in script_lines:
+            if "Match" in script_line:
+                node_id_a = int(((script_line.split(" to ")[0]).split("(")[1]).split(")")[0])
+                node_id_b = int(((script_line.split(" to ")[1]).split("(")[1]).split(")")[0])
+                mapping[node_id_b] = node_id_a
+    return mapping
 
 
 def generate_map(file_a, file_b, output_file):
@@ -15,9 +31,9 @@ def generate_map(file_a, file_b, output_file):
                   file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += "| grep '^Match ' "
         command += " > " + output_file
-        exec_com(command, False)
+        execute_command(command, False)
     except Exception as e:
-        err_exit(e, "Unexpected fail at generating map: " + output_file)
+        error_exit(e, "Unexpected fail at generating map: " + output_file)
 
 
 def clean_parse(content, separator):
@@ -62,7 +78,7 @@ def get_mapping(map_file_name):
                     node_a, node_c = clean_parse(content, Definitions.TO)
                     node_map[node_a] = node_c
                 except Exception as exception:
-                    err_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
+                    error_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
             line = ast_map.readline().strip()
     return node_map
 

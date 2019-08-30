@@ -3,7 +3,7 @@
 import time
 import datetime
 import os
-from common import Definitions, Values
+from common import Definitions
 from shutil import copyfile
 
 
