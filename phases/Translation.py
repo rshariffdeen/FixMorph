@@ -1,5 +1,5 @@
 import time
-from common import Definitions
+from common import Definitions, Values
 from common.Utilities import execute_command, error_exit
 from tools import Emitter
 from ast import Parser
@@ -84,14 +84,14 @@ def cmp_to_key(mycmp):
 
 
 def gen_temp_json(file_a, file_b, file_c):
-    Print.blue("Generating JSON temp files for each pertinent file...")
+    Emitter.normal("Generating JSON temp files for each pertinent file...")
     ASTlists = dict()
     try:
-        gen_json(file_a, Definitions.Pa.name, ASTlists)
-        gen_json(file_b, Definitions.Pb.name, ASTlists)
-        gen_json(file_c, Definitions.Pc.name, ASTlists)
+        gen_json(file_a, Values.Project_A.name, ASTlists)
+        gen_json(file_b, Values.Project_B.name, ASTlists)
+        gen_json(file_c, Values.Project_C.name, ASTlists)
     except Exception as e:
-        err_exit(e, "Error parsing with crochet-diff. Did you bear make?")
+        error_exit(e, "Error parsing with crochet-diff. Did you bear make?")
     return ASTlists
 
 
@@ -101,11 +101,11 @@ def ASTdump(file, output):
         extra_arg = " --"
     c = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -ast-dump-json " + \
         file + extra_arg + " 2> output/errors_AST_dump > " + output
-    exec_com(c)
+    execute_command(c)
 
 
 def gen_json(file, name, ASTlists):
-    Print.blue("\t\tClang AST parse " + file + " in " + name + "...")
+    Emitter.normal("\t\tClang AST parse " + file + " in " + name + "...")
     json_file = "output/json_" + name
     ASTdump(file, json_file)
     ASTlists[name] = Parser.AST_from_file(json_file)
@@ -135,8 +135,8 @@ def match_children(node_a, node_c, json_ast_dump):
     if node_a.parent_id is None and node_c.parent_id is None:
         return True
     elif node_a.parent_id is not None and node_c.parent_id is not None:
-        parent_b = json_ast_dump[Definitions.Pa.name][node_a.parent_id]
-        parent_c = json_ast_dump[Definitions.Pc.name][node_c.parent_id]
+        parent_b = json_ast_dump[Values.Project_A.name][node_a.parent_id]
+        parent_c = json_ast_dump[Values.Project_C.name][node_c.parent_id]
         if match_nodes(parent_b, parent_c):
             return match_path(parent_b, parent_c, json_ast_dump)
         else:
@@ -149,8 +149,8 @@ def match_path(node_a, node_c, json_ast_dump):
     if node_a.parent_id is None and node_c.parent_id is None:
         return True
     elif node_a.parent_id is not None and node_c.parent_id is not None:
-        parent_a = json_ast_dump[Definitions.Pa.name][node_a.parent_id]
-        parent_c = json_ast_dump[Definitions.Pc.name][node_c.parent_id]
+        parent_a = json_ast_dump[Values.Project_A.name][node_a.parent_id]
+        parent_c = json_ast_dump[Values.Project_C.name][node_c.parent_id]
         if match_nodes(parent_a, parent_c):
             return match_path(parent_a, parent_c, json_ast_dump)
         else:
@@ -162,26 +162,26 @@ def match_path(node_a, node_c, json_ast_dump):
 def get_candidate_node_list(node_ref, json_ast_dump):
     candidate_node_list = list()
     node_id = get_id(node_ref)
-    node_a = json_ast_dump[Definitions.Pa.name][node_id]
-    Print.blue(node_a)
+    node_a = json_ast_dump[Values.Project_A.name][node_id]
+    Emitter.normal(node_a)
     parent_id = node_a.parent_id
     while parent_id is not None:
-        parent = json_ast_dump[Definitions.Pa.name][parent_id]
-        Print.blue(str(parent.id) + " - " + parent.type)
+        parent = json_ast_dump[Values.Project_A.name][parent_id]
+        Emitter.normal(str(parent.id) + " - " + parent.type)
         parent_id = parent.parent_id
 
-    for node_c in json_ast_dump[Definitions.Pc.name]:
+    for node_c in json_ast_dump[Values.Project_C.name]:
         if match_nodes(node_a, node_c):
             if match_path(node_a, node_c, json_ast_dump):
                 if node_c not in candidate_node_list:
                     candidate_node_list.append(node_c)
 
     for node in candidate_node_list:
-        Print.rose("Node: " + str(node.id))
+        Emitter.rose("Node: " + str(node.id))
         parent_id = node.parent_id
         while parent_id is not None:
-            parent = json_ast_dump[Definitions.Pc.name][parent_id]
-            Print.rose(str(parent.id) + " - " + parent.type)
+            parent = json_ast_dump[Values.Project_C.name][parent_id]
+            Emitter.rose(str(parent.id) + " - " + parent.type)
             parent_id = parent.parent_id
 
     return candidate_node_list
@@ -199,11 +199,11 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                 target_node_a_txt = i[1]
                 update_node_txt = i[2]
                 update_node_id = id_from_string(update_node_txt)
-                update_node = json_ast_dump[Definitions.Pb.name][update_node_id]
+                update_node = json_ast_dump[Values.Project_B.name][update_node_id]
                 candidate_node_list = get_candidate_node_list(target_node_a_txt, json_ast_dump)
 
                 if len(candidate_node_list) == 0:
-                    Print.warning("Warning: No candidates for " + str(target_node_a_txt) + ", Skipping UPDATE")
+                    Emitter.warning("Warning: No candidates for " + str(target_node_a_txt) + ", Skipping UPDATE")
                 else:
                     for candidate_node in candidate_node_list:
                         if candidate_node.line is None:
@@ -213,54 +213,54 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                 if target_node_a_txt in map_ac.keys():
                     target_node_txt = map_ac[target_node_a_txt]
                     target_node_id = id_from_string(target_node_txt)
-                    target_node = json_ast_dump[Definitions.Pc.name][target_node_id]
+                    target_node = json_ast_dump[Values.Project_C.name][target_node_id]
                     if target_node.line is None:
                         target_node.line = target_node.parent.line
                     instruction = get_instruction((Definitions.UPDATE, target_node, update_node))
                     translated_instruction_list.append(instruction)
 
                 else:
-                    Print.warning("Warning: Match for " + str(target_node_a_txt) + "not found. Skipping UPDATE instruction.")
+                    Emitter.warning("Warning: Match for " + str(target_node_a_txt) + "not found. Skipping UPDATE instruction.")
             except Exception as e:
-                err_exit(e, "Something went wrong with UPDATE.")
+                error_exit(e, "Something went wrong with UPDATE.")
 
         # Delete nodeA -> Delete nodeC
         elif operation == Definitions.DELETE:
-            Print.blue(i)
+            Emitter.normal(i)
             try:
                 delete_node_a_txt = i[1]
                 candidate_node_list = get_candidate_node_list(delete_node_a_txt, json_ast_dump)
                 if len(candidate_node_list) == 0:
-                    Print.warning("Warning: No candidates for " + str(delete_node_a_txt) + ", Skipping DELETE")
+                    Emitter.warning("Warning: No candidates for " + str(delete_node_a_txt) + ", Skipping DELETE")
                 else:
                     for candidate_node in candidate_node_list:
                         if candidate_node.line is None:
                             candidate_node.line = candidate_node.parent.line
                         instruction = get_instruction((Definitions.DELETE, candidate_node))
-                        Print.rose(instruction)
+                        Emitter.special(instruction)
                         translated_instruction_list.append(instruction)
 
                 if delete_node_a_txt in map_ac.keys():
                     delete_node_txt = map_ac[delete_node_a_txt]
                     delete_node_id = id_from_string(delete_node_txt)
-                    delete_node = json_ast_dump[Definitions.Pc.name][delete_node_id]
+                    delete_node = json_ast_dump[Values.Project_C.name][delete_node_id]
 
                     if delete_node.line is None:
                         delete_node.line = delete_node.parent.line
                     instruction = get_instruction((Definitions.DELETE, delete_node))
-                    Print.white(instruction)
+                    Emitter.information(instruction)
                     translated_instruction_list.append(instruction)
                     parent_id = delete_node.parent_id
                     while parent_id is not None:
-                        parent = json_ast_dump[Definitions.Pc.name][parent_id]
-                        print(str(parent.id) + " - " + parent.type)
+                        parent = json_ast_dump[Values.Project_C.name][parent_id]
+                        Emitter.information(str(parent.id) + " - " + parent.type)
                         parent_id = parent.parent_id
 
                 else:
-                    Print.warning("Warning: Match for " + str(delete_node_a_txt) + "not found. Skipping DELETE instruction.")
+                    Emitter.warning("Warning: Match for " + str(delete_node_a_txt) + "not found. Skipping DELETE instruction.")
 
             except Exception as e:
-                err_exit(e, "Something went wrong with DELETE.")
+                error_exit(e, "Something went wrong with DELETE.")
 
         # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
         elif operation == Definitions.MOVE:
@@ -275,38 +275,38 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                     if nodeA1 in map_ac.keys():
                         nodeC1 = map_ac[nodeA1]
                         nodeC1 = id_from_string(nodeC1)
-                        nodeC1 = json_ast_dump[Definitions.Pc.name][nodeC1]
+                        nodeC1 = json_ast_dump[Values.Project_C.name][nodeC1]
                     else:
                         # TODO: Manage case in which nodeA1 is unmatched
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA1)
+                        Emitter.warning("Node in Pa not found in Pc: (1)")
+                        Emitter.warning(nodeA1)
                 elif nodeB1 in inserted_node_list:
                     if nodeB1 in match_BD.keys():
                         nodeC1 = match_BD[nodeB1]
                     else:
                         # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB1)
+                        Emitter.warning("Node to be moved was not found. (2)")
+                        Emitter.warning(nodeB1)
                 if nodeB2 in map_ab.keys():
                     nodeA2 = map_ab[nodeB2]
                     if nodeA2 in map_ac.keys():
                         nodeC2 = map_ac[nodeA2]
                         nodeC2 = id_from_string(nodeC2)
-                        nodeC2 = json_ast_dump[Definitions.Pc.name][nodeC2]
+                        nodeC2 = json_ast_dump[Values.Project_C.name][nodeC2]
                     else:
                         # TODO: Manage case for unmatched nodeA2
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA2)
+                        Emitter.warning("Node in Pa not found in Pc: (1)")
+                        Emitter.warning(nodeA2)
                 elif nodeB2 in inserted_node_list:
                     if nodeB2 in match_BD.keys():
                         nodeC2 = match_BD[nodeB2]
                     else:
                         # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB2)
+                        Emitter.warning("Node to be moved was not found. (2)")
+                        Emitter.warning(nodeB2)
                 try:
                     true_B2 = id_from_string(nodeB2)
-                    true_B2 = json_ast_dump[Definitions.Pb.name][true_B2]
+                    true_B2 = json_ast_dump[Values.Project_B.name][true_B2]
                     if pos != 0:
                         nodeB2_l = true_B2.children[pos - 1]
                         nodeB2_l = nodeB2_l.simple_print()
@@ -315,30 +315,30 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                             if nodeA2_l in map_ac.keys():
                                 nodeC2_l = map_ac[nodeA2_l]
                                 nodeC2_l = id_from_string(nodeC2_l)
-                                nodeC2_l = json_ast_dump[Definitions.Pc.name][nodeC2_l]
+                                nodeC2_l = json_ast_dump[Values.Project_C.name][nodeC2_l]
                                 if nodeC2_l in nodeC2.children:
                                     pos = nodeC2.children.index(nodeC2_l)
                                     pos += 1
                                 else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(nodeC2_l)
-                                    Print.warning([i.simple_print() for i in
+                                    Emitter.warning("Node not in children.")
+                                    Emitter.warning(nodeC2_l)
+                                    Emitter.warning([i.simple_print() for i in
                                                    nodeC2.children])
                             else:
-                                Print.warning("Failed at locating match" + \
+                                Emitter.warning("Failed at locating match" + \
                                               " for " + nodeA2_l)
-                                Print.warning("Trying to get pos anyway.")
+                                Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = json_ast_dump[Definitions.Pa.name][nodeA2_l]
+                                nodeA2_l = json_ast_dump[Values.Project_A.name][nodeA2_l]
                                 parent = nodeA2_l.parent
                                 if parent != None:
                                     pos = parent.children.index(nodeA2_l)
                                     pos += 1
                         else:
-                            Print.warning("Failed at match for child.")
+                            Emitter.warning("Failed at match for child.")
                 except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
+                    error_exit(e, "Failed at locating pos.")
 
                 if type(nodeC1) == Parser.AST:
                     if nodeC1.line == None:
@@ -355,13 +355,13 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                         inserted_D.append(nodeC1)
 
                     else:
-                        Print.warning("Could not find match for node. " + \
+                        Emitter.warning("Could not find match for node. " + \
                                       "Ignoring MOVE operation. (D)")
                 else:
-                    Print.warning("Could not find match for node. " + \
+                    Emitter.warning("Could not find match for node. " + \
                                   "Ignoring MOVE operation. (C)")
             except Exception as e:
-                err_exit(e, "Something went wrong with MOVE.")
+                error_exit(e, "Something went wrong with MOVE.")
 
         # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
         elif operation == Definitions.UPDATEMOVE:
@@ -377,38 +377,38 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                     if nodeA1 in map_ac.keys():
                         nodeC1 = map_ac[nodeA1]
                         nodeC1 = id_from_string(nodeC1)
-                        nodeC1 = json_ast_dump[Definitions.Pc.name][nodeC1]
+                        nodeC1 = json_ast_dump[Values.Project_C.name][nodeC1]
                     else:
                         # TODO: Manage case in which nodeA1 is unmatched
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA1)
+                        Emitter.warning("Node in Pa not found in Pc: (1)")
+                        Emitter.warning(nodeA1)
                 elif nodeB1 in inserted_node_list:
                     if nodeB1 in match_BD.keys():
                         nodeC1 = match_BD[nodeB1]
                     else:
                         # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB1)
+                        Emitter.warning("Node to be moved was not found. (2)")
+                        Emitter.warning(nodeB1)
                 if nodeB2 in map_ab.keys():
                     nodeA2 = map_ab[nodeB2]
                     if nodeA2 in map_ac.keys():
                         nodeC2 = map_ac[nodeA2]
                         nodeC2 = id_from_string(nodeC2)
-                        nodeC2 = json_ast_dump[Definitions.Pc.name][nodeC2]
+                        nodeC2 = json_ast_dump[Values.Project_C.name][nodeC2]
                     else:
                         # TODO: Manage case for unmatched nodeA2
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(nodeA2)
+                        Emitter.warning("Node in Pa not found in Pc: (1)")
+                        Emitter.warning(nodeA2)
                 elif nodeB2 in inserted_node_list:
                     if nodeB2 in match_BD.keys():
                         nodeC2 = match_BD[nodeB2]
                     else:
                         # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(nodeB2)
+                        Emitter.warning("Node to be moved was not found. (2)")
+                        Emitter.warning(nodeB2)
                 try:
                     true_B2 = id_from_string(nodeB2)
-                    true_B2 = json_ast_dump[Definitions.Pb.name][true_B2]
+                    true_B2 = json_ast_dump[Values.Project_B.name][true_B2]
                     if pos != 0:
                         nodeB2_l = true_B2.children[pos - 1]
                         nodeB2_l = nodeB2_l.simple_print()
@@ -417,30 +417,30 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                             if nodeA2_l in map_ac.keys():
                                 nodeC2_l = map_ac[nodeA2_l]
                                 nodeC2_l = id_from_string(nodeC2_l)
-                                nodeC2_l = json_ast_dump[Definitions.Pc.name][nodeC2_l]
+                                nodeC2_l = json_ast_dump[Values.Project_C.name][nodeC2_l]
                                 if nodeC2_l in nodeC2.children:
                                     pos = nodeC2.children.index(nodeC2_l)
                                     pos += 1
                                 else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(nodeC2_l)
-                                    Print.warning([i.simple_print() for i in
+                                    Emitter.warning("Node not in children.")
+                                    Emitter.warning(nodeC2_l)
+                                    Emitter.warning([i.simple_print() for i in
                                                    nodeC2.children])
                             else:
-                                Print.warning("Failed at locating match" + \
+                                Emitter.warning("Failed at locating match" + \
                                               " for " + nodeA2_l)
-                                Print.warning("Trying to get pos anyway.")
+                                Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = json_ast_dump[Definitions.Pa.name][nodeA2_l]
+                                nodeA2_l = json_ast_dump[Values.Project_A.name][nodeA2_l]
                                 parent = nodeA2_l.parent
                                 if parent != None:
                                     pos = parent.children.index(nodeA2_l)
                                     pos += 1
                         else:
-                            Print.warning("Failed at match for child.")
+                            Emitter.warning("Failed at match for child.")
                 except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
+                    error_exit(e, "Failed at locating pos.")
 
                 if type(nodeC1) == Parser.AST:
                     if nodeC1.line == None:
@@ -457,13 +457,13 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                         inserted_D.append(nodeC1)
 
                     else:
-                        Print.warning("Could not find match for node. " + \
+                        Emitter.warning("Could not find match for node. " + \
                                       "Ignoring UPDATEMOVE operation. (D)")
                 else:
-                    Print.warning("Could not find match for node. " + \
+                    Emitter.warning("Could not find match for node. " + \
                                   "Ignoring UPDATEMOVE operation. (C)")
             except Exception as e:
-                err_exit(e, "Something went wrong with UPDATEMOVE.")
+                error_exit(e, "Something went wrong with UPDATEMOVE.")
 
         # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
         elif operation == Definitions.INSERT:
@@ -472,9 +472,9 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                 nodeB2 = i[2]
                 pos = int(i[3])
                 nodeD1 = id_from_string(nodeB1)
-                nodeD1 = json_ast_dump[Definitions.Pb.name][nodeD1]
+                nodeD1 = json_ast_dump[Values.Project_B.name][nodeD1]
                 nodeD2 = id_from_string(nodeB2)
-                nodeD2 = json_ast_dump[Definitions.Pb.name][nodeD2]
+                nodeD2 = json_ast_dump[Values.Project_B.name][nodeD2]
                 # TODO: Is this correct?
                 if nodeD2.line != None:
                     nodeD1.line = nodeD2.line
@@ -485,16 +485,16 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                     if nodeA2 in map_ac.keys():
                         nodeD2 = map_ac[nodeA2]
                         nodeD2 = id_from_string(nodeD2)
-                        nodeD2 = json_ast_dump[Definitions.Pc.name][nodeD2]
+                        nodeD2 = json_ast_dump[Values.Project_C.name][nodeD2]
                 elif nodeB2 in match_BD.keys():
                     nodeD2 = match_BD[nodeB2]
                 else:
-                    Print.warning("Warning: node for insertion not" + \
+                    Emitter.warning("Warning: node for insertion not" + \
                                   " found. Skipping INSERT operation.")
 
                 try:
                     true_B2 = id_from_string(nodeB2)
-                    true_B2 = json_ast_dump[Definitions.Pb.name][true_B2]
+                    true_B2 = json_ast_dump[Values.Project_B.name][true_B2]
                     if pos != 0:
                         nodeB2_l = true_B2.children[pos - 1]
                         nodeB2_l = nodeB2_l.simple_print()
@@ -503,31 +503,31 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                             if nodeA2_l in map_ac.keys():
                                 nodeD2_l = map_ac[nodeA2_l]
                                 nodeD2_l = id_from_string(nodeD2_l)
-                                nodeD2_l = json_ast_dump[Definitions.Pc.name][nodeD2_l]
+                                nodeD2_l = json_ast_dump[Values.Project_C.name][nodeD2_l]
                                 if nodeD2_l in nodeD2.children:
                                     pos = nodeD2.children.index(nodeD2_l)
                                     pos += 1
                                 else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(nodeD2_l)
-                                    Print.warning([i.simple_print() for i in
+                                    Emitter.warning("Node not in children.")
+                                    Emitter.warning(nodeD2_l)
+                                    Emitter.warning([i.simple_print() for i in
                                                    nodeD2.children])
                             else:
-                                Print.warning("Failed at locating match" + \
+                                Emitter.warning("Failed at locating match" + \
                                               " for " + nodeA2_l)
-                                Print.warning("Trying to get pos anyway.")
+                                Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 nodeA2_l = id_from_string(nodeA2_l)
-                                nodeA2_l = json_ast_dump[Definitions.Pa.name][nodeA2_l]
+                                nodeA2_l = json_ast_dump[Values.Project_A.name][nodeA2_l]
                                 parent = nodeA2_l.parent
                                 if parent != None:
                                     pos = parent.children.index(nodeA2_l)
                                     pos += 1
 
                         else:
-                            Print.warning("Failed at match for child.")
+                            Emitter.warning("Failed at match for child.")
                 except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
+                    error_exit(e, "Failed at locating pos.")
                 if type(nodeD1) == Parser.AST:
                     match_BD[nodeB1] = nodeD1
                     inserted_D.append(nodeD1)
@@ -541,7 +541,7 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                             instruction = get_instruction((Definitions.INSERT, nodeD1, nodeD2, pos))
                             translated_instruction_list.append(instruction)
             except Exception as e:
-                err_exit(e, "Something went wrong with INSERT.")
+                error_exit(e, "Something went wrong with INSERT.")
 
     return translated_instruction_list
 
@@ -560,12 +560,12 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 txt_update_node = instruction[2]
                 target_node = "?"
                 update_node_id = id_from_string(txt_update_node)
-                update_node = json_ast_dump[Definitions.Pb.name][update_node_id]
+                update_node = json_ast_dump[Values.Project_B.name][update_node_id]
 
                 if txt_target_node_a in map_ac.keys():
                     txt_target_node = map_ac[txt_target_node_a]
                     target_node_id = id_from_string(txt_target_node)
-                    target_node = json_ast_dump[Definitions.Pc.name][target_node_id]
+                    target_node = json_ast_dump[Values.Project_C.name][target_node_id]
 
                     if target_node.line is None:
                         target_node.line = target_node.parent.line
@@ -573,10 +573,10 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     translated_instruction_list.append(instruction)
 
                 else:
-                    Print.warning("Warning: Match for " + str(txt_target_node_a) + "not found. Skipping UPDATE instruction.")
+                    Emitter.warning("Warning: Match for " + str(txt_target_node_a) + "not found. Skipping UPDATE instruction.")
 
             except Exception as e:
-                err_exit(e, "Something went wrong with UPDATE.")
+                error_exit(e, "Something went wrong with UPDATE.")
 
         # Delete nodeA -> Delete nodeC
         elif operation == Definitions.DELETE:
@@ -586,7 +586,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 if txt_delete_node_a in map_ac.keys():
                     txt_delete_node = map_ac[txt_delete_node_a]
                     delete_node_id = id_from_string(txt_delete_node)
-                    delete_node = json_ast_dump[Definitions.Pc.name][delete_node_id]
+                    delete_node = json_ast_dump[Values.Project_C.name][delete_node_id]
                     instruction = get_instruction((Definitions.DELETE, delete_node))
                     if delete_node.line is None:
                         delete_node.line = delete_node.parent.line
@@ -598,10 +598,10 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         translated_instruction_list.append(instruction)
 
                 else:
-                    Print.warning("Warning: Match for " + str(txt_delete_node_a) + \
+                    Emitter.warning("Warning: Match for " + str(txt_delete_node_a) + \
                                   "not found. Skipping DELETE instruction.")
             except Exception as e:
-                err_exit(e, "Something went wrong with DELETE.")
+                error_exit(e, "Something went wrong with DELETE.")
             # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
         elif operation == Definitions.MOVE:
             try:
@@ -615,38 +615,38 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if txt_move_node_a in map_ac.keys():
                         txt_move_node = map_ac[txt_move_node_a]
                         mode_node_id = id_from_string(txt_move_node)
-                        move_node = json_ast_dump[Definitions.Pc.name][mode_node_id]
+                        move_node = json_ast_dump[Values.Project_C.name][mode_node_id]
                     else:
                         # TODO: Manage case in which txt_move_node_a is unmatched
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(txt_move_node_a)
+                        Emitter.warning("Node in Pa not found in Pc: (1)")
+                        Emitter.warning(txt_move_node_a)
                 elif txt_move_node_b in inserted_node_list:
                     if txt_move_node_b in map_bd.keys():
                         move_node = map_bd[txt_move_node_b]
                     else:
                         # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(txt_move_node_b)
+                        Emitter.warning("Node to be moved was not found. (2)")
+                        Emitter.warning(txt_move_node_b)
                 if txt_target_node_b in map_ab.keys():
                     txt_target_node_a = map_ab[txt_target_node_b]
                     if txt_target_node_a in map_ac.keys():
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
-                        target_node = json_ast_dump[Definitions.Pc.name][target_node_id]
+                        target_node = json_ast_dump[Values.Project_C.name][target_node_id]
                     else:
                         # TODO: Manage case for unmatched nodeA2
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(txt_target_node_a)
+                        Emitter.warning("Node in Pa not found in Pc: (1)")
+                        Emitter.warning(txt_target_node_a)
                 elif txt_target_node_b in inserted_node_list:
                     if txt_target_node_b in map_bd.keys():
                         target_node = map_bd[txt_target_node_b]
                     else:
                         # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(txt_target_node_b)
+                        Emitter.warning("Node to be moved was not found. (2)")
+                        Emitter.warning(txt_target_node_b)
                 try:
                     target_node_b_id = id_from_string(txt_target_node_b)
-                    target_node_b = json_ast_dump[Definitions.Pb.name][target_node_b_id]
+                    target_node_b = json_ast_dump[Values.Project_B.name][target_node_b_id]
                     if offset != 0:
                         previous_child_node_b = target_node_b.children[offset - 1]
                         previous_child_node_b = previous_child_node_b.simple_print()
@@ -655,30 +655,30 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                             if previous_child_node_a in map_ac.keys():
                                 previous_child_c = map_ac[previous_child_node_a]
                                 previous_child_c = id_from_string(previous_child_c)
-                                previous_child_c = json_ast_dump[Definitions.Pc.name][previous_child_c]
+                                previous_child_c = json_ast_dump[Values.Project_C.name][previous_child_c]
                                 if previous_child_c in target_node.children:
                                     offset = target_node.children.index(previous_child_c)
                                     offset += 1
                                 else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(previous_child_c)
-                                    Print.warning([instruction.simple_print() for instruction in
+                                    Emitter.warning("Node not in children.")
+                                    Emitter.warning(previous_child_c)
+                                    Emitter.warning([instruction.simple_print() for instruction in
                                                    target_node.children])
                             else:
-                                Print.warning("Failed at locating match" + \
+                                Emitter.warning("Failed at locating match" + \
                                               " for " + previous_child_node_a)
-                                Print.warning("Trying to get pos anyway.")
+                                Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 previous_child_node_a = id_from_string(previous_child_node_a)
-                                previous_child_node_a = json_ast_dump[Definitions.Pa.name][previous_child_node_a]
+                                previous_child_node_a = json_ast_dump[Values.Project_A.name][previous_child_node_a]
                                 parent = previous_child_node_a.parent
                                 if parent != None:
                                     offset = parent.children.index(previous_child_node_a)
                                     offset += 1
                         else:
-                            Print.warning("Failed at match for child.")
+                            Emitter.warning("Failed at match for child.")
                 except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
+                    error_exit(e, "Failed at locating pos.")
 
                 if type(move_node) == Parser.AST:
                     if move_node.line is None:
@@ -695,13 +695,13 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         inserted_node_list_d.append(move_node)
 
                     else:
-                        Print.warning("Could not find match for node. " + \
+                        Emitter.warning("Could not find match for node. " + \
                                       "Ignoring MOVE operation. (D)")
                 else:
-                    Print.warning("Could not find match for node. " + \
+                    Emitter.warning("Could not find match for node. " + \
                                   "Ignoring MOVE operation. (C)")
             except Exception as e:
-                err_exit(e, "Something went wrong with MOVE.")
+                error_exit(e, "Something went wrong with MOVE.")
 
             # Update nodeA and move to nodeB at pos -> Move nodeC to nodeD at pos
         elif operation == Definitions.UPDATEMOVE:
@@ -717,38 +717,38 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if txt_move_node_a in map_ac.keys():
                         txt_move_node = map_ac[txt_move_node_a]
                         move_node_id = id_from_string(txt_move_node)
-                        move_node = json_ast_dump[Definitions.Pc.name][move_node_id]
+                        move_node = json_ast_dump[Values.Project_C.name][move_node_id]
                     else:
                         # TODO: Manage case in which txt_move_node_a is unmatched
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(txt_move_node_a)
+                        Emitter.warning("Node in Pa not found in Pc: (1)")
+                        Emitter.warning(txt_move_node_a)
                 elif txt_move_node_b in inserted_node_list:
                     if txt_move_node_b in map_bd.keys():
                         move_node = map_bd[txt_move_node_b]
                     else:
                         # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(txt_move_node_b)
+                        Emitter.warning("Node to be moved was not found. (2)")
+                        Emitter.warning(txt_move_node_b)
                 if txt_target_node_b in map_ab.keys():
                     txt_target_node_a = map_ab[txt_target_node_b]
                     if txt_target_node_a in map_ac.keys():
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
-                        target_node = json_ast_dump[Definitions.Pc.name][target_node_id]
+                        target_node = json_ast_dump[Values.Project_C.name][target_node_id]
                     else:
                         # TODO: Manage case for unmatched txt_target_node_a
-                        Print.warning("Node in Pa not found in Pc: (1)")
-                        Print.warning(txt_target_node_a)
+                        Emitter.warning("Node in Pa not found in Pc: (1)")
+                        Emitter.warning(txt_target_node_a)
                 elif txt_target_node_b in inserted_node_list:
                     if txt_target_node_b in map_bd.keys():
                         target_node = map_bd[txt_target_node_b]
                     else:
                         # TODO: Manage case for node not found
-                        Print.warning("Node to be moved was not found. (2)")
-                        Print.warning(txt_target_node_b)
+                        Emitter.warning("Node to be moved was not found. (2)")
+                        Emitter.warning(txt_target_node_b)
                 try:
                     target_node_b_id = id_from_string(txt_target_node_b)
-                    target_node_b = json_ast_dump[Definitions.Pb.name][target_node_b_id]
+                    target_node_b = json_ast_dump[Values.Project_B.name][target_node_b_id]
                     if offset != 0:
                         previous_child_node_b = target_node_b.children[offset - 1]
                         previous_child_node_b = previous_child_node_b.simple_print()
@@ -757,30 +757,30 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                             if previous_child_node_a in map_ac.keys():
                                 previous_child_c = map_ac[previous_child_node_a]
                                 previous_child_c = id_from_string(previous_child_c)
-                                previous_child_c = json_ast_dump[Definitions.Pc.name][previous_child_c]
+                                previous_child_c = json_ast_dump[Values.Project_C.name][previous_child_c]
                                 if previous_child_c in target_node.children:
                                     offset = target_node.children.index(previous_child_c)
                                     offset += 1
                                 else:
-                                    Print.warning("Node not in children.")
-                                    Print.warning(previous_child_c)
-                                    Print.warning([instruction.simple_print() for instruction in
+                                    Emitter.warning("Node not in children.")
+                                    Emitter.warning(previous_child_c)
+                                    Emitter.warning([instruction.simple_print() for instruction in
                                                    target_node.children])
                             else:
-                                Print.warning("Failed at locating match" + \
+                                Emitter.warning("Failed at locating match" + \
                                               " for " + previous_child_node_a)
-                                Print.warning("Trying to get pos anyway.")
+                                Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 previous_child_node_a = id_from_string(previous_child_node_a)
-                                previous_child_node_a = json_ast_dump[Definitions.Pa.name][previous_child_node_a]
+                                previous_child_node_a = json_ast_dump[Values.Project_A.name][previous_child_node_a]
                                 parent = previous_child_node_a.parent
                                 if parent != None:
                                     offset = parent.children.index(previous_child_node_a)
                                     offset += 1
                         else:
-                            Print.warning("Failed at match for child.")
+                            Emitter.warning("Failed at match for child.")
                 except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
+                    error_exit(e, "Failed at locating pos.")
 
                 if type(move_node) == Parser.AST:
                     if move_node.line is None:
@@ -798,13 +798,13 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         inserted_node_list_d.append(move_node)
 
                     else:
-                        Print.warning("Could not find match for node. " + \
+                        Emitter.warning("Could not find match for node. " + \
                                       "Ignoring UPDATEMOVE operation. (D)")
                 else:
-                    Print.warning("Could not find match for node. " + \
+                    Emitter.warning("Could not find match for node. " + \
                                   "Ignoring UPDATEMOVE operation. (C)")
             except Exception as e:
-                err_exit(e, "Something went wrong with UPDATEMOVE.")
+                error_exit(e, "Something went wrong with UPDATEMOVE.")
 
         # Insert nodeB1 to nodeB2 at pos -> Insert nodeD1 to nodeD2 at pos
         elif operation == Definitions.INSERT:
@@ -813,9 +813,9 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 txt_target_node_b = instruction[2]
                 offset = int(instruction[3])
                 insert_node_id = id_from_string(txt_insert_node)
-                insert_node = json_ast_dump[Definitions.Pb.name][insert_node_id]
+                insert_node = json_ast_dump[Values.Project_B.name][insert_node_id]
                 target_node_b_id = id_from_string(txt_target_node_b)
-                target_node_b = json_ast_dump[Definitions.Pb.name][target_node_b_id]
+                target_node_b = json_ast_dump[Values.Project_B.name][target_node_b_id]
                 # TODO: Is this correct?
                 if target_node_b.line is not None:
                     insert_node.line = target_node_b.line
@@ -827,11 +827,11 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if txt_target_node_a in map_ac.keys():
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
-                        target_node = json_ast_dump[Definitions.Pc.name][target_node_id]
+                        target_node = json_ast_dump[Values.Project_C.name][target_node_id]
                 elif txt_target_node_b in map_bd.keys():
                     target_node = map_bd[txt_target_node_b]
                 else:
-                    Print.warning("Warning: node for insertion not" + \
+                    Emitter.warning("Warning: node for insertion not" + \
                                   " found. Skipping INSERT operation.")
 
                 try:
@@ -843,7 +843,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                             if previous_child_node_a in map_ac.keys():
                                 previous_child_node_c = map_ac[previous_child_node_a]
                                 previous_child_node_c = id_from_string(previous_child_node_c)
-                                previous_child_node_c = json_ast_dump[Definitions.Pc.name][previous_child_node_c]
+                                previous_child_node_c = json_ast_dump[Values.Project_C.name][previous_child_node_c]
                                 if previous_child_node_c in target_node.children:
                                     offset = target_node.children.index(previous_child_node_c)
                                     offset += 1
@@ -856,25 +856,25 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                             if next_child_node_a in map_ac.keys():
                                                 next_child_node_c = map_ac[next_child_node_a]
                                                 next_child_node_c = id_from_string(next_child_node_c)
-                                                next_child_node_c = json_ast_dump[Definitions.Pc.name][next_child_node_c]
+                                                next_child_node_c = json_ast_dump[Values.Project_C.name][next_child_node_c]
                                                 if next_child_node_c in target_node.children:
                                                     offset = target_node.children.index(next_child_node_c)
                                                 else:
-                                                    Print.warning("Node not in children.")
-                                                    Print.warning(instruction)
-                                                    Print.warning(next_child_node_c)
-                                                    Print.warning([child.simple_print() for child in target_node.children])
+                                                    Emitter.warning("Node not in children.")
+                                                    Emitter.warning(instruction)
+                                                    Emitter.warning(next_child_node_c)
+                                                    Emitter.warning([child.simple_print() for child in target_node.children])
                                                     target_node = json_ast_dump[
-                                                        Definitions.Pc.name][next_child_node_c.parent_id]
+                                                        Values.Project_C.name][next_child_node_c.parent_id]
                                                     offset = target_node.children.index(next_child_node_c)
 
                             else:
-                                Print.warning("Failed at locating match" + \
+                                Emitter.warning("Failed at locating match" + \
                                               " for " + previous_child_node_a)
-                                Print.warning("Trying to get pos anyway.")
+                                Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 previous_child_node_a = id_from_string(previous_child_node_a)
-                                previous_child_node_a = json_ast_dump[Definitions.Pa.name][previous_child_node_a]
+                                previous_child_node_a = json_ast_dump[Values.Project_A.name][previous_child_node_a]
                                 parent = previous_child_node_a.parent
                                 if parent is not None:
                                     offset = parent.children.index(previous_child_node_a)
@@ -888,21 +888,21 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                 if next_child_node_a in map_ac.keys():
                                     next_child_node_c = map_ac[next_child_node_a]
                                     next_child_node_c = id_from_string(next_child_node_c)
-                                    next_child_node_c = json_ast_dump[Definitions.Pc.name][next_child_node_c]
+                                    next_child_node_c = json_ast_dump[Values.Project_C.name][next_child_node_c]
                                     if next_child_node_c in target_node.children:
                                         offset = target_node.children.index(next_child_node_c)
                                     else:
-                                        Print.warning("Node not in children.")
-                                        Print.warning(instruction)
-                                        Print.warning(next_child_node_c)
-                                        Print.warning([child.simple_print() for child in target_node.children])
-                                        target_node = json_ast_dump[Definitions.Pc.name][next_child_node_c.parent_id]
+                                        Emitter.warning("Node not in children.")
+                                        Emitter.warning(instruction)
+                                        Emitter.warning(next_child_node_c)
+                                        Emitter.warning([child.simple_print() for child in target_node.children])
+                                        target_node = json_ast_dump[Values.Project_C.name][next_child_node_c.parent_id]
                                         offset = target_node.children.index(next_child_node_c)
 
                         else:
-                            Print.warning("Failed at match for child.")
+                            Emitter.warning("Failed at match for child.")
                 except Exception as e:
-                    err_exit(e, "Failed at locating pos.")
+                    error_exit(e, "Failed at locating pos.")
                 if type(insert_node) == Parser.AST:
                     map_bd[txt_insert_node] = insert_node
                     inserted_node_list_d.append(insert_node)
@@ -916,7 +916,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                             instruction = get_instruction((Definitions.INSERT, insert_node, target_node, offset))
                             translated_instruction_list.append(instruction)
             except Exception as e:
-                err_exit(e, "Something went wrong with INSERT.")
+                error_exit(e, "Something went wrong with INSERT.")
 
     return translated_instruction_list
 
@@ -924,28 +924,28 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
 def simplify_patch(instruction_AB, match_BA, ASTlists):
     modified_AB = []
     inserted = []
-    # Print.white("Original script from Pa to Pb")
+    # Emitter.white("Original script from Pa to Pb")
     for i in instruction_AB:
         inst = i[0]
         if inst == Definitions.DELETE:
             nodeA = id_from_string(i[1])
-            nodeA = ASTlists[Definitions.Pa.name][nodeA]
-            # Print.white("\t" + Common.DELETE + " - " + str(nodeA))
+            nodeA = ASTlists[Values.Project_A.name][nodeA]
+            # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
             modified_AB.append((Definitions.DELETE, nodeA))
         elif inst == Definitions.UPDATE:
             nodeA = id_from_string(i[1])
-            nodeA = ASTlists[Definitions.Pa.name][nodeA]
+            nodeA = ASTlists[Values.Project_A.name][nodeA]
             nodeB = id_from_string(i[2])
-            nodeB = ASTlists[Definitions.Pb.name][nodeB]
-            # Print.white("\t" + Common.UPDATE + " - " + str(nodeA) + " - " + str(nodeB))
+            nodeB = ASTlists[Values.Project_B.name][nodeB]
+            # Emitter.white("\t" + Common.UPDATE + " - " + str(nodeA) + " - " + str(nodeB))
             modified_AB.append((Definitions.UPDATE, nodeA, nodeB))
         elif inst == Definitions.MOVE:
             nodeB1 = id_from_string(i[1])
-            nodeB1 = ASTlists[Definitions.Pb.name][nodeB1]
+            nodeB1 = ASTlists[Values.Project_B.name][nodeB1]
             nodeB2 = id_from_string(i[2])
-            nodeB2 = ASTlists[Definitions.Pb.name][nodeB2]
+            nodeB2 = ASTlists[Values.Project_B.name][nodeB2]
             pos = i[3]
-            # Print.white("\t" + Common.MOVE + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
+            # Emitter.white("\t" + Common.MOVE + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.MOVE, nodeB1, nodeB2, pos))
@@ -953,20 +953,20 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if i[1] in match_BA.keys():
                     nodeA = match_BA[i[1]]
                     nodeA = id_from_string(nodeA)
-                    nodeA = ASTlists[Definitions.Pa.name][nodeA]
+                    nodeA = ASTlists[Values.Project_A.name][nodeA]
                     modified_AB.append((Definitions.DELETE, nodeA))
                 else:
-                    Print.warning("Warning: node " + str(nodeB1) + \
+                    Emitter.warning("Warning: node " + str(nodeB1) + \
                                   "could not be matched. " + \
                                   "Skipping MOVE instruction...")
-                    Print.warning(i)
+                    Emitter.warning(i)
         elif inst == Definitions.UPDATEMOVE:
             nodeB1 = id_from_string(i[1])
-            nodeB1 = ASTlists[Definitions.Pb.name][nodeB1]
+            nodeB1 = ASTlists[Values.Project_B.name][nodeB1]
             nodeB2 = id_from_string(i[2])
-            nodeB2 = ASTlists[Definitions.Pb.name][nodeB2]
+            nodeB2 = ASTlists[Values.Project_B.name][nodeB2]
             pos = i[3]
-            # Print.white("\t" + Common.UPDATEMOVE + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
+            # Emitter.white("\t" + Common.UPDATEMOVE + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.UPDATEMOVE, nodeB1, nodeB2, pos))
@@ -974,20 +974,20 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if i[1] in match_BA.keys():
                     nodeA = match_BA[i[1]]
                     nodeA = id_from_string(nodeA)
-                    nodeA = ASTlists[Definitions.Pa.name][nodeA]
+                    nodeA = ASTlists[Values.Project_A.name][nodeA]
                     modified_AB.append((Definitions.DELETE, nodeA))
                 else:
-                    Print.warning("Warning: node " + str(nodeB1) + \
+                    Emitter.warning("Warning: node " + str(nodeB1) + \
                                   "could not be matched. " + \
                                   "Skipping MOVE instruction...")
-                    Print.warning(i)
+                    Emitter.warning(i)
         elif inst == Definitions.INSERT:
             nodeB1 = id_from_string(i[1])
-            nodeB1 = ASTlists[Definitions.Pb.name][nodeB1]
+            nodeB1 = ASTlists[Values.Project_B.name][nodeB1]
             nodeB2 = id_from_string(i[2])
-            nodeB2 = ASTlists[Definitions.Pb.name][nodeB2]
+            nodeB2 = ASTlists[Values.Project_B.name][nodeB2]
             pos = i[3]
-            # Print.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
+            # Emitter.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, pos))
@@ -1113,7 +1113,7 @@ def get_instruction(instruction_data):
 
 def safe_exec(function_def, title, *args):
     start_time = time.time()
-    Print.sub_title("Starting " + title + "...")
+    Emitter.sub_title("Starting " + title + "...")
     description = title[0].lower() + title[1:]
     try:
         if not args:
@@ -1121,19 +1121,19 @@ def safe_exec(function_def, title, *args):
         else:
             result = function_def(*args)
         duration = str(time.time() - start_time)
-        Print.success("\n\tSuccessful " + description + ", after " + duration + " seconds.")
+        Emitter.success("\n\tSuccessful " + description + ", after " + duration + " seconds.")
     except Exception as exception:
         duration = str(time.time() - start_time)
-        Print.error("Crash during " + description + ", after " + duration + " seconds.")
-        err_exit(exception, "Unexpected error during " + description + ".")
+        Emitter.error("Crash during " + description + ", after " + duration + " seconds.")
+        error_exit(exception, "Unexpected error during " + description + ".")
     return result
 
 
 def translate():
-    Print.title("Translate GumTree Script")
-    Print.sub_title("Translating scripts for header files")
+    Emitter.title("Translate GumTree Script")
+    Emitter.sub_title("Translating scripts for header files")
     translated_script_list = dict()
-    for file_list, generated_data in Definitions.generated_script_for_header_files.items():
+    for file_list, generated_data in Values.generated_script_for_header_files.items():
         # Generate AST as json files
         json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
 
@@ -1151,20 +1151,20 @@ def translate():
         # modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
         # modified_AB = adjust_pos(modified_AB)
-        # Printing modified simplified script
-        Print.success("\tModified Script:")
+        # Emittering modified simplified script
+        Emitter.success("\tModified Script:")
         for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
-            Print.success("\t" + j)
+            Emitter.success("\t" + j)
         # We rewrite the instruction as a script (str) instead of nodes
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        variable_map = Definitions.variable_map[file_list]
+        variable_map = Values.variable_map[file_list]
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump, generated_data[2],
                                              variable_map)
         translated_script_list[file_list] = (translated_script, original_script)
 
-    Print.sub_title("Translating scripts for C files")
-    for file_list, generated_data in Definitions.generated_script_for_c_files.items():
+    Emitter.sub_title("Translating scripts for C files")
+    for file_list, generated_data in Values.generated_script_for_c_files.items():
         json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
 
         original_script = list()
@@ -1184,16 +1184,16 @@ def translate():
         # modified_AB = remove_overlapping_delete(modified_AB)
         # Adjusting position for MOVE and INSERT operations
         # modified_script = adjust_pos(modified_script)
-        # Printing modified simplified script
-        # Print.success("\tModified Script:")
+        # Emittering modified simplified script
+        # Emitter.success("\tModified Script:")
         # for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
-        #     Print.success("\t" + j)
+        #     Emitter.success("\t" + j)
         # We rewrite the instruction as a script (str) instead of nodes
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        variable_map = Definitions.variable_map[file_list]
+        variable_map = Values.variable_map[file_list]
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                      generated_data[2], variable_map)
         translated_script_list[file_list] = (translated_script, original_script)
 
-    Definitions.translated_script_for_files = translated_script_list
+    Values.translated_script_for_files = translated_script_list
