@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import Oracle
+from tools import Oracle
 
 
 def compare_test_output(output_c, output_d):

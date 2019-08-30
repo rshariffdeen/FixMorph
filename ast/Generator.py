@@ -3,8 +3,7 @@
 ''' Main vector generation functions '''
 
 from common.Utilities import error_exit, execute_command, backup_file, restore_file
-import Vector
-import AST
+from ast import Vector, AST
 from tools import Logger, Emitter
 import sys
 from common import Definitions, Values

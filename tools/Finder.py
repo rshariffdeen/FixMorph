@@ -4,9 +4,7 @@
 
 import sys
 from ast import Generator
-import Oracle
-import Logger
-import Extractor
+from tools import Oracle, Logger, Extractor
 from common.Utilities import execute_command, error_exit
 from common import Definitions
 

@@ -6,14 +6,11 @@ import sys
 import os
 
 from common.Utilities import error_exit
-import Emitter
 import collections
 from common import Values
-import Logger
-import Extractor
-import Finder
-from ast import ASTGenerator
-import Oracle
+from tools import Emitter, Logger, Extractor, Finder, Oracle
+from ast import Generator
+
 
 STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *"]
 
@@ -76,7 +73,7 @@ def identify_missing_var(function_node_a, function_node_b, insert_node_b, skip_l
     ref_list = Extractor.extract_reference_node_list(insert_node_b)
     dec_list = Extractor.extract_decl_list(function_node_a)
     dec_node_list_b = Extractor.extract_decl_node_list(function_node_b)
-    ast_tree = ASTGenerator.get_ast_json(source_path_b)
+    ast_tree = Generator.get_ast_json(source_path_b)
     enum_list = Extractor.extract_enum_node_list(ast_tree)
     for ref_node in ref_list:
         node_type = str(ref_node['type'])

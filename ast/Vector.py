@@ -7,8 +7,8 @@ import os
 
 
 class Vector:
-    deckard_path = "third-party/Deckard/src/main/cvecgen_fail "
-    deckard_path_2 = "third-party/Deckard/src/main/cvecgen "
+    deckard_path = "third-party/Deckard/cvecgen_fail "
+    deckard_path_2 = "third-party/Deckard/cvecgen "
     # deckard_vecs = dict()
     vid = 0
 
@@ -93,6 +93,7 @@ class Vector:
             first = vec_file.readline()
             if first:
                 v = [int(s) for s in vec_file.readline().strip().split(" ")]
+                print(v)
                 v = Vector.normed(v)
                 return v
 

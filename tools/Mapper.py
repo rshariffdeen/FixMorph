@@ -1,6 +1,6 @@
 from common import Definitions
 from common.Utilities import execute_command, error_exit
-import Emitter, Logger
+from tools import Emitter, Logger
 from ast import Generator
 import sys
 

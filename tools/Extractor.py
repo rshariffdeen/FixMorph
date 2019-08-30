@@ -6,7 +6,7 @@ import os
 import time
 from common import Definitions
 from common.Utilities import execute_command, error_exit
-import Emitter
+from tools import Emitter
 
 
 def clean_parse(content, separator):

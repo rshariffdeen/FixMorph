@@ -4,7 +4,7 @@
 
 import time
 from common.Utilities import execute_command, error_exit, find_files, get_file_extension_list
-import Emitter
+from tools import Emitter
 from common import Definitions
 from ast import Vector, Parser, Generator
 

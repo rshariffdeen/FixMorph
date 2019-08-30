@@ -3,7 +3,7 @@
 
 
 import time
-from tools import Detector, Translation, Weaver, Emitter, Mapper, Extractor, Logger
+from tools import Emitter, Logger
 from phases import Initialization, Building, Differencing, Detection
 from common import Definitions
 from common.Utilities import error_exit, create_directories

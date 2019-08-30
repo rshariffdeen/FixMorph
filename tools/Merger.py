@@ -5,11 +5,7 @@
 import sys
 from common.Utilities import execute_command, get_file_extension_list, error_exit
 from ast import Generator, AST
-import Mapper
-import Finder
-import Logger
-import Extractor
-import Emitter
+from tools import Mapper, Finder, Logger, Extractor, Emitter
 
 
 def merge_var_info(var_expr_map, var_value_map):

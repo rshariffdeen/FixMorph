@@ -10,10 +10,7 @@ from common.Utilities import error_exit
 from six.moves import cStringIO
 from pysmt.smtlib.parser import SmtLibParser
 from pysmt.shortcuts import is_sat
-import Converter
-import Extractor
-import Finder
-import Logger
+from tools import Converter, Extractor, Finder, Logger
 
 
 def is_var_expr_equal(z3_code):

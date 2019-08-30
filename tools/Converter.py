@@ -5,7 +5,7 @@
 import sys
 import os
 from common.Utilities import error_exit, execute_command
-import Logger
+from tools import Logger
 
 
 SYMBOLIC_CONVERTER = "gen-bout"

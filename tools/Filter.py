@@ -3,12 +3,7 @@
 
 
 import sys
-import Finder
-import Emitter
-import Extractor
-import Merger
-import Logger
-import Oracle
+from tools import Finder, Emitter, Extractor, Merger, Logger, Oracle
 from common import Values
 from common.Utilities import error_exit
 import collections
