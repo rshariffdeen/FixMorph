@@ -22,7 +22,7 @@ def generate_vectors_target():
 def find_clones():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Finding clone functions in Target")
-    Detector.detect_c_files()
+    Values.c_file_list_to_patch = Detector.detect_c_files()
 
 
 def safe_exec(function_def, title, *args):

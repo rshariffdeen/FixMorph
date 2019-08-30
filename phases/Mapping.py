@@ -1,12 +1,12 @@
-from common import Definitions
-from common.Utilities import exec_com, err_exit
-import Print
+from common import Definitions, Values
+from common.Utilities import execute_command, error_exit
+from tools import Emitter
 
 
 def generate_map(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
-    Print.blue("Generating mapping: " + name_a + Definitions.TO + name_b + "...")
+    Emitter.normal("Generating mapping: " + name_a + Definitions.TO + name_b + "...")
     try:
         extra_arg = ""
         if file_a[-2:] == ".h":
@@ -15,9 +15,9 @@ def generate_map(file_a, file_b, output_file):
                   file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += "| grep '^Match ' "
         command += " > " + output_file
-        exec_com(command, False)
+        execute_command(command, False)
     except Exception as e:
-        err_exit(e, "Unexpected fail at generating map: " + output_file)
+        error_exit(e, "Unexpected fail at generating map: " + output_file)
 
 
 def clean_parse(content, separator):
@@ -51,7 +51,7 @@ def clean_parse(content, separator):
 
 def get_mapping(map_file_name):
     node_map = dict()
-    with open(map_file_name, 'r', errors='replace') as ast_map:
+    with open(map_file_name, 'r') as ast_map:
         line = ast_map.readline().strip()
         while line:
             line = line.split(" ")
@@ -62,29 +62,29 @@ def get_mapping(map_file_name):
                     node_a, node_c = clean_parse(content, Definitions.TO)
                     node_map[node_a] = node_c
                 except Exception as exception:
-                    err_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
+                    error_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
             line = ast_map.readline().strip()
     return node_map
 
 
-def generate():
-    Print.title("Variable Mapping")
-    Print.sub_title("Variable mapping for header files")
-    if len(Definitions.generated_script_for_header_files) == 0:
-        Print.blue("\t -nothing-to-do")
+def map():
+    Emitter.title("Variable Mapping")
+    Emitter.sub_title("Variable mapping for header files")
+    if len(Values.generated_script_for_header_files) == 0:
+        Emitter.normal("\t -nothing-to-do")
     else:
-        for file_list, generated_data in Definitions.generated_script_for_header_files.items():
+        for file_list, generated_data in Values.generated_script_for_header_files.items():
             map_file_name = "output/diff_script_AC"
             generate_map(file_list[0], file_list[2], map_file_name)
             variable_map = get_mapping(map_file_name)
-            Definitions.variable_map[file_list] = variable_map
+            Values.variable_map[file_list] = variable_map
 
-    Print.sub_title("Variable mapping for C files")
-    if len(Definitions.generated_script_for_c_files) == 0:
-        Print.blue("\t -nothing-to-do")
+    Emitter.sub_title("Variable mapping for C files")
+    if len(Values.generated_script_for_c_files) == 0:
+        Emitter.normal("\t -nothing-to-do")
     else:
-        for file_list, generated_data in Definitions.generated_script_for_c_files.items():
+        for file_list, generated_data in Values.generated_script_for_c_files.items():
             map_file_name = "output/diff_script_AC"
             generate_map(file_list[0], file_list[2], map_file_name)
             variable_map = get_mapping(map_file_name)
-            Definitions.variable_map[file_list] = variable_map
+            Values.variable_map[file_list] = variable_map

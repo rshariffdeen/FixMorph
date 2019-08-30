@@ -130,6 +130,7 @@ def end(time_info):
     statistics("Build Analysis: " + time_info[Definitions.KEY_DURATION_BUILD_ANALYSIS] + " seconds")
     statistics("Diff Analysis: " + time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] + " seconds")
     statistics("Clone Analysis: " + time_info[Definitions.KEY_DURATION_CLONE_ANALYSIS] + " seconds")
+    statistics("Map Generation: " + time_info[Definitions.KEY_DURATION_MAP_GENERATION] + " seconds")
     # statistics("Slicing: " + time_info[Definitions.KEY_DURATION_SLICE] + " seconds")
     # statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
     # statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")

@@ -4,7 +4,7 @@
 
 import time
 from tools import Emitter, Logger
-from phases import Initialization, Building, Differencing, Detection
+from phases import Initialization, Building, Differencing, Detection, Mapping, Extraction
 from common import Definitions
 from common.Utilities import error_exit, create_directories
 
@@ -35,11 +35,14 @@ def run():
     Detection.detect()
     time_info[Definitions.KEY_DURATION_CLONE_ANALYSIS] = str(time.time() - time_start)
 
+    time_start = time.time()
+    Extraction.extract()
+    time_info[Definitions.KEY_DURATION_EXTRACTION] = str(time.time() - time_start)
 
-    # time_now = time.time()
-    # Mapper.generate()
-    # mapping_duration = str(time.time() - time_start)
-    #
+    time_start = time.time()
+    Mapping.map()
+    time_info[Definitions.KEY_DURATION_MAP_GENERATION] = str(time.time() - time_start)
+
     # time_start = time.time()
     # Translation.translate()
     # translation_duration = str(time.time() - time_start)
