@@ -6,7 +6,7 @@ import time
 from common.Utilities import exec_com, err_exit, find_files, get_extensions
 import Print
 from common import Definitions
-from ast import ASTVector, ASTparser, ASTgen
+from ast import Vector, Parser, Generator
 
 excluded_extensions_pa = "output/excluded-extensions-pa"
 excluded_extensions_pb = "output/excluded-extensions-pb"
@@ -38,9 +38,9 @@ def generate_diff():
             diff_line = diff_line.split(" ")
             file_a = diff_line[1]
             file_b = diff_line[3]
-            ASTgen.llvm_format(file_a)
-            ASTgen.llvm_format(file_b)
-            ASTgen.parseAST(file_a, Definitions.Pa, use_deckard=True, is_header=True)
+            Generator.llvm_format(file_a)
+            Generator.llvm_format(file_b)
+            Generator.parseAST(file_a, Definitions.Pa, use_deckard=True, is_header=True)
             Print.success("\t\tFile successfully found: " + file_a.split("/")[-1] + " from " + Definitions.Pa.name + " to " + Definitions.Pb.name)
             diff_line = diff.readline().strip()
 
@@ -52,8 +52,8 @@ def generate_diff():
             diff_line = diff_line.split(" ")
             file_a = diff_line[1]
             file_b = diff_line[3]
-            ASTgen.llvm_format(file_a)
-            ASTgen.llvm_format(file_b)
+            Generator.llvm_format(file_a)
+            Generator.llvm_format(file_b)
             diff_command = "diff -ENBZbwr " + file_a + " " + file_b + " > output/C_diff"
             exec_com(diff_command)
             pertinent_lines_a = []
@@ -85,8 +85,8 @@ def generate_diff():
                         pertinent_lines_b.append((start_b, end_b))
                     file_line = file_diff.readline().strip()
             try:
-                ASTgen.find_affected_funcs(Definitions.Pa, file_a, pertinent_lines_a)
-                ASTgen.find_affected_funcs(Definitions.Pb, file_b, pertinent_lines_b)
+                Generator.find_affected_funcs(Definitions.Pa, file_a, pertinent_lines_a)
+                Generator.find_affected_funcs(Definitions.Pb, file_b, pertinent_lines_b)
             except Exception as e:
                 err_exit(e, "Failed at finding affected functions.")
 
@@ -103,7 +103,7 @@ def generate_vector_for_extension(file_extension, output, is_header=False):
         while file_name:
             # Parses it to get useful information and generate vectors
             try:
-                ASTgen.parseAST(file_name, Definitions.Pc, use_deckard=True, is_header=is_header)
+                Generator.parseAST(file_name, Definitions.Pc, use_deckard=True, is_header=is_header)
             except Exception as e:
                 err_exit(e, "Unexpected error in parseAST with file:", file_name)
             file_name = file_list.readline().strip()
@@ -134,7 +134,7 @@ def get_vector_list(project, extension):
             fl = vec.readline()
             if fl:
                 v = [int(s) for s in vec.readline().strip().split(" ")]
-                v = ASTVector.ASTVector.normed(v)
+                v = Vector.ASTVector.normed(v)
                 vecs.append((files[i], v))
     return vecs
 
@@ -152,11 +152,11 @@ def clone_detection_header_files():
     Print.blue("Declaration mapping for *.h files")
     for vector_a in vector_list_a:
         best_vector = vector_list_c[0]
-        min_distance = ASTVector.ASTVector.dist(vector_a[1], best_vector[1])
+        min_distance = Vector.ASTVector.dist(vector_a[1], best_vector[1])
         dist = dict()
 
         for vector_c in vector_list_c:
-            distance = ASTVector.ASTVector.dist(vector_a[1], vector_c[1])
+            distance = Vector.ASTVector.dist(vector_a[1], vector_c[1])
             dist[vector_c[0]] = distance
             if distance < min_distance:
                 best_vector = vector_c
@@ -253,12 +253,12 @@ def clone_detection_for_c_files():
 
     for i in vector_list_a:
         best = vector_list_c[0]
-        best_d = ASTVector.ASTVector.dist(i[1], best[1])
+        best_d = Vector.ASTVector.dist(i[1], best[1])
         dist = dict()
 
         # Get best match candidate
         for j in vector_list_c:
-            d = ASTVector.ASTVector.dist(i[1], j[1])
+            d = Vector.ASTVector.dist(i[1], j[1])
             dist[j[0]] = d
             if d < best_d:
                 best = j
@@ -420,9 +420,9 @@ def detect_matching_variables(f_a, file_a, f_c, file_c):
     # Print.white(variable_list_c)
 
     json_file_A = Definitions.Pa.path + file_a + ".AST"
-    ast_A = ASTparser.AST_from_file(json_file_A)
+    ast_A = Parser.AST_from_file(json_file_A)
     json_file_C = Definitions.Pc.path + file_c + ".AST"
-    ast_C = ASTparser.AST_from_file(json_file_C)
+    ast_C = Parser.AST_from_file(json_file_C)
 
     ast_map = dict()
     try:

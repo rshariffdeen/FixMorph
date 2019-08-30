@@ -1,8 +1,8 @@
 import time
 from common import Definitions
-from common.Utilities import exec_com, err_exit
-import Print
-from ast import ASTparser
+from common.Utilities import execute_command, error_exit
+from tools import Emitter
+from ast import Parser
 
 
 def id_from_string(simplestring):
@@ -108,7 +108,7 @@ def gen_json(file, name, ASTlists):
     Print.blue("\t\tClang AST parse " + file + " in " + name + "...")
     json_file = "output/json_" + name
     ASTdump(file, json_file)
-    ASTlists[name] = ASTparser.AST_from_file(json_file)
+    ASTlists[name] = Parser.AST_from_file(json_file)
 
 
 def match_nodes(node_a, node_c):
@@ -340,10 +340,10 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
 
-                if type(nodeC1) == ASTparser.AST:
+                if type(nodeC1) == Parser.AST:
                     if nodeC1.line == None:
                         nodeC1.line = nodeC1.parent.line
-                    if type(nodeC2) == ASTparser.AST:
+                    if type(nodeC2) == Parser.AST:
                         if nodeC2.line == None:
                             nodeC2.line = nodeD.parent.line
                         if nodeC2 in inserted_D:
@@ -442,10 +442,10 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
 
-                if type(nodeC1) == ASTparser.AST:
+                if type(nodeC1) == Parser.AST:
                     if nodeC1.line == None:
                         nodeC1.line = nodeC1.parent.line
-                    if type(nodeC2) == ASTparser.AST:
+                    if type(nodeC2) == Parser.AST:
                         if nodeC2.line == None:
                             nodeC2.line = nodeD.parent.line
                         if nodeC2 in inserted_D:
@@ -528,13 +528,13 @@ def transform_script(modified_script, inserted_node_list, json_ast_dump, map_ab,
                             Print.warning("Failed at match for child.")
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
-                if type(nodeD1) == ASTparser.AST:
+                if type(nodeD1) == Parser.AST:
                     match_BD[nodeB1] = nodeD1
                     inserted_D.append(nodeD1)
                     nodeD1.children = []
                     if nodeD1.line == None:
                         nodeD1.line = nodeD1.parent.line
-                    if type(nodeD2) == ASTparser.AST:
+                    if type(nodeD2) == Parser.AST:
                         if nodeD2.line == None:
                             nodeD2.line = nodeD2.parent.line
                         if nodeD2 not in inserted_D:
@@ -680,10 +680,10 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
 
-                if type(move_node) == ASTparser.AST:
+                if type(move_node) == Parser.AST:
                     if move_node.line is None:
                         move_node.line = move_node.parent.line
-                    if type(target_node) == ASTparser.AST:
+                    if type(target_node) == Parser.AST:
                         if target_node.line is None:
                             target_node.line = target_node.parent.line
                         if target_node in inserted_node_list_d:
@@ -782,10 +782,10 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
 
-                if type(move_node) == ASTparser.AST:
+                if type(move_node) == Parser.AST:
                     if move_node.line is None:
                         move_node.line = move_node.parent.line
-                    if type(target_node) == ASTparser.AST:
+                    if type(target_node) == Parser.AST:
                         if target_node.line is None:
                             target_node.line = target_node.parent.line
                         if target_node in inserted_node_list_d:
@@ -903,13 +903,13 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                             Print.warning("Failed at match for child.")
                 except Exception as e:
                     err_exit(e, "Failed at locating pos.")
-                if type(insert_node) == ASTparser.AST:
+                if type(insert_node) == Parser.AST:
                     map_bd[txt_insert_node] = insert_node
                     inserted_node_list_d.append(insert_node)
                     insert_node.children = []
                     if insert_node.line == None:
                         insert_node.line = insert_node.parent.line
-                    if type(target_node) == ASTparser.AST:
+                    if type(target_node) == Parser.AST:
                         if target_node.line == None:
                             target_node.line = target_node.parent.line
                         if target_node not in inserted_node_list_d:

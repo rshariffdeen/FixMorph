@@ -6,7 +6,7 @@ import time
 from tools import Detector, Translation, Weaver, Emitter, Mapper, Extractor
 from phases import Initialization
 from common import Definitions
-from common.Utilities import err_exit, create_directories
+from common.Utilities import error_exit, create_directories
 
 
 def first_run_check():

@@ -2,9 +2,9 @@
 
 ''' Main vector generation functions '''
 
-from common.Utilities import err_exit, exec_com
-import ASTVector
-import ASTparser
+from common.Utilities import error_exit, execute_command
+import Vector
+import Parser
 from tools import Emitter
 
 crochet_diff = "crochet-diff "
@@ -14,7 +14,7 @@ interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
 def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
-    v = ASTVector.ASTVector(proj, file, f_or_struct, start, end, Deckard)
+    v = Vector.ASTVector(proj, file, f_or_struct, start, end, Deckard)
     if not v.vector:
         return None
     if file in proj_attribute.keys():
@@ -35,7 +35,7 @@ def ASTdump(file, output, h_file=False):
 def gen_json(filepath, h_file=False):
     json_file = filepath + ".AST"
     ASTdump(filepath, json_file, h_file)
-    return ASTparser.AST_from_file(json_file)
+    return Parser.AST_from_file(json_file)
     
 def llvm_format(file):
     try:
@@ -73,7 +73,7 @@ def parseAST(file_path, project, use_deckard=True, is_header=False):
         
     if is_header:
         if use_deckard:
-            ASTVector.ASTVector(project, file_path, None, None, None, Deckard=True)
+            Vector.ASTVector(project, file_path, None, None, None, Deckard=True)
     else:
         function_nodes = []
         root = ast[0]
@@ -132,7 +132,7 @@ def find_affected_funcs(project, source_file, pertinent_lines):
                 if source_file not in project.functions.keys():
                     project.functions[source_file] = dict()
                 if f not in project.functions[source_file]:
-                    project.functions[source_file][f] = ASTVector.ASTVector(project, source_file, f, start, end, True)
+                    project.functions[source_file][f] = Vector.ASTVector(project, source_file, f, start, end, True)
                     Emitter.success("\t\tFunction successfully found: " + f + \
                                " in " + source_file.replace(project.path,
                                                             project.name + "/"))

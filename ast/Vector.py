@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from tools import Emitter
-from common.Utilities import exec_com, err_exit
+from common.Utilities import execute_command, error_exit
 import os
 
 class ASTVector:
