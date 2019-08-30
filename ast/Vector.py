@@ -93,7 +93,6 @@ class Vector:
             first = vec_file.readline()
             if first:
                 v = [int(s) for s in vec_file.readline().strip().split(" ")]
-                print(v)
                 v = Vector.normed(v)
                 return v
 

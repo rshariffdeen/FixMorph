@@ -34,7 +34,8 @@ excluded_extensions = 'output/excluded-extensions'
 #     # Generates an AST file for each file of extension ext
 #     find_files(Definitions.Pc.path, file_extension, output)
 #     with open(output, 'r', errors='replace') as file_list:
-#         file_name = file_list.readline().strip()
+#         file_name = file_l
+#         ist.readline().strip()
 #         while file_name:
 #             # Parses it to get useful information and generate vectors
 #             try:

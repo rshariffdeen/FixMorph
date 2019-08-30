@@ -3,9 +3,10 @@
 
 
 import sys
-from common.Utilities import execute_command, get_file_extension_list
+from common.Utilities import execute_command, get_file_extension_list, error_exit
 from ast import Generator
 from tools import Mapper, Logger, Filter, Emitter
+from common import Values
 
 
 def diff_files(output_diff_file, output_c_diff, output_h_diff,
@@ -98,6 +99,9 @@ def diff_code(diff_file_path, output_file):
                         diff_info[diff_loc] = dict()
                         diff_info[diff_loc]['operation'] = operation
 
+                        pertinent_lines_a.append((start_a, end_a))
+                        pertinent_lines_b.append((start_b, end_b))
+
                         if operation == 'insert':
                             diff_info[diff_loc]['new-lines'] = (start_b, end_b)
                             diff_info[diff_loc]['old-lines'] = (start_a, end_a)
@@ -107,6 +111,12 @@ def diff_code(diff_file_path, output_file):
                             diff_info[diff_loc]['old-lines'] = (start_a, end_a)
                             diff_info[diff_loc]['new-lines'] = (start_b, end_b)
                     file_line = temp_diff_file.readline().strip()
+
+            try:
+                Generator.get_function_name_list(Values.Project_A, file_a, pertinent_lines_a)
+                Generator.get_function_name_list(Values.Project_B, file_b, pertinent_lines_b)
+            except Exception as e:
+                error_exit(e, "Failed at finding affected functions.")
             diff_line = diff_file.readline().strip()
     return diff_info
 

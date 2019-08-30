@@ -15,14 +15,9 @@ diff_info = dict()
 def generate_vectors_donor():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Generating vector files for affected functions in Donor")
-    Differ.diff_files(Definitions.FILE_DIFF_ALL,
-                      Definitions.FILE_DIFF_C,
-                      Definitions.FILE_DIFF_H,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS_A,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS_B,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS,
-                      Values.PATH_A,
-                      Values.PATH_B)
+
+    Generator.generate_vectors("*\.h", Definitions.FILE_DIFF_H, Values.Project_A)
+    Generator.generate_vectors("*\.c", Definitions.FILE_DIFF_C, Values.Project_A)
 
 
 def generate_vectors_target():
