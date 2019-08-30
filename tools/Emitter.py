@@ -127,10 +127,10 @@ def start():
 def end(time_info):
     statistics("\nRun time statistics:\n-----------------------\n")
     statistics("Initialization: " + time_info[Definitions.KEY_DURATION_INITIALIZATION] + " seconds")
-    statistics("Diff Analysis: " + time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] + " seconds")
-    statistics("Slicing: " + time_info[Definitions.KEY_DURATION_SLICE] + " seconds")
-    statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
-    statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
+    # statistics("Diff Analysis: " + time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] + " seconds")
+    # statistics("Slicing: " + time_info[Definitions.KEY_DURATION_SLICE] + " seconds")
+    # statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
+    # statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
     success("\nCrochet finished successfully after " + time_info[Definitions.KEY_DURATION_TOTAL] + " seconds\n")
 
 
