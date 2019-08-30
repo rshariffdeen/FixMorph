@@ -4,7 +4,7 @@
 
 import time
 from tools import Detector, Translation, Weaver, Emitter, Mapper, Extractor, Logger
-from phases import Initialization, Building
+from phases import Initialization, Building, Differencing
 from common import Definitions
 from common.Utilities import error_exit, create_directories
 
@@ -27,11 +27,11 @@ def run():
     Building.build()
     time_info[Definitions.KEY_DURATION_BUILD_ANALYSIS] = str(time.time() - time_start)
 
+    time_start = time.time()
+    Differencing.diff()
+    time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] = str(time.time() - time_start)
 
-    # time_start = time.time()
-    # Detector.detect()
-    # time_info[Definitions.KEY_DURATION_BUILD_ANALYSIS] = str(time.time() - time_start)
-    #
+
     # time_start = time.time()
     # Extractor.extract()
     # patch_extraction_duration = str(time.time() - time_start)

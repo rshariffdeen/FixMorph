@@ -3,7 +3,7 @@
 
 
 import sys
-from ast import ASTGenerator
+from ast import Generator
 import Oracle
 import Logger
 import Extractor
@@ -128,7 +128,7 @@ def search_node_by_loc(ast_node, line_number):
 def find_definition_insertion_point(source_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     file_name = source_path.split("/")[-1]
-    ast_node = ASTGenerator.get_ast_json(source_path)
+    ast_node = Generator.get_ast_json(source_path)
     for child_node in ast_node['children']:
         child_node_type = child_node['type']
         if child_node_type == "FunctionDecl":

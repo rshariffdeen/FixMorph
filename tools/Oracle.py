@@ -4,7 +4,7 @@
 
 import sys
 import os
-from ast import ASTGenerator
+from ast import Generator
 from common import Definitions, Values
 from common.Utilities import error_exit
 from six.moves import cStringIO
@@ -91,7 +91,7 @@ def is_node_equal(node_a, node_b, var_map):
 
 def is_loc_in_if_cond(source_file, line_number):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    ast_tree = ASTGenerator.get_ast_json(source_file)
+    ast_tree = Generator.get_ast_json(source_file)
     ast_node = Finder.search_node_by_loc(ast_tree,
                                          int(line_number))
     if ast_node is None:
@@ -134,7 +134,7 @@ def is_node_in_function(ast_tree, ast_node):
 
 def is_function_important(source_path, function_call_node, sym_path_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    ast_tree = ASTGenerator.get_ast_json(source_path)
+    ast_tree = Generator.get_ast_json(source_path)
     function_ref_node = function_call_node
     if len(function_call_node['children']) > 0:
         function_ref_node = function_call_node['children'][0]
@@ -167,7 +167,7 @@ def is_function_important(source_path, function_call_node, sym_path_list):
 
 def is_declaration_line(source_file, line_number):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    ast_tree = ASTGenerator.get_ast_json(source_file)
+    ast_tree = Generator.get_ast_json(source_file)
     function_node = Finder.search_function_node_by_loc(ast_tree,
                                                        int(line_number),
                                                        source_file)

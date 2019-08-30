@@ -2,108 +2,130 @@
 
 ''' Main vector generation functions '''
 
-from common.Utilities import error_exit, execute_command
+from common.Utilities import error_exit, execute_command, backup_file, restore_file
 import Vector
-import Parser
-from tools import Emitter
+import AST
+from tools import Logger, Emitter
+import sys
+from common import Definitions, Values
+import json
+import os
+import io
 
-crochet_diff = "crochet-diff "
-clang_format = "clang-format -style=LLVM "
+APP_FORMAT_LLVM = "clang-format -style=LLVM "
+APP_AST_DIFF = "crochet-diff"
 
 interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
-def gen_vec(proj, proj_attribute, file, f_or_struct, start, end, Deckard=True):
-    v = Vector.ASTVector(proj, file, f_or_struct, start, end, Deckard)
+
+def generate_vector(file_path, f_or_struct, start_line, end_line, is_deckard=True):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    v = Vector.Vector(file_path, f_or_struct, start_line, end_line, is_deckard)
     if not v.vector:
         return None
-    if file in proj_attribute.keys():
-        proj_attribute[file][f_or_struct] = v
-    else:
-        proj_attribute[file] = dict()
-        proj_attribute[file][f_or_struct] = v
+    # if file_path in proj_attribute.keys():
+    #     proj_attribute[file_path][f_or_struct] = v
+    # else:
+    #     proj_attribute[file_path] = dict()
+    #     proj_attribute[file_path][f_or_struct] = v
     return v
 
-def ASTdump(file, output, h_file=False):
-    c = crochet_diff + "-ast-dump-json " + file
-    if file[-1] == "h":
-        c += " --"
-    c += " 2> output/errors_AST_dump > " + output
-    a = exec_com(c, False)
-    Emitter.warning(a[0])
 
-def gen_json(filepath, h_file=False):
-    json_file = filepath + ".AST"
-    ASTdump(filepath, json_file, h_file)
-    return Parser.AST_from_file(json_file)
-    
-def llvm_format(file):
+def ast_dump(file_path, output_path, is_header=True):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    dump_command = APP_AST_DIFF + " -ast-dump-json " + file_path
+    if file_path[-1] == "h":
+        dump_command += " --"
+    dump_command += " 2> output/errors_AST_dump > " + output_path
+    a = execute_command(dump_command)
+    Emitter.debug(a[0])
+
+
+def get_ast_json(file_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    json_file = file_path + ".AST"
+    if not os.path.exists(json_file):
+        generate_json(file_path)
+    ast_dump(file_path, json_file)
+    if os.stat(json_file).st_size == 0:
+        return None
+    with io.open(json_file, 'r', encoding='utf8', errors="ignore") as f:
+        ast_json = json.loads(f.read())
+    return ast_json['root']
+
+
+def generate_json(file_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    json_file = file_path + ".AST"
+    ast_dump(file_path, json_file)
+    return AST.load_from_file(json_file)
+
+
+def convert_to_llvm(file_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     try:
-        c = "cp " + file + " output/last.c; "
-        exec_com(c, False)
-        c = clang_format + file + "> output/temp.c; cp output/temp.c " + file
-        exec_com(c, False)
-    except Exception as e:
-        Emitter.warning(e)
-        Emitter.warning("Error in llvm_format with file:")
-        Emitter.warning(file)
-        Emitter.warning("Restoring and skipping")
-        c = "cp output/last.c " + file
-        exec_com(c, False)
+        backup_name = "last.c"
+        convert_file_path = Definitions.DIRECTORY_OUTPUT + "/temp_llvm.c"
+        backup_file(file_path, backup_name)
+        format_command = APP_FORMAT_LLVM + file_path + "> " + convert_file_path + " 2>" + Definitions.FILE_ERROR_LOG
+        replace_command = format_command + ";" + "cp " + convert_file_path + " " + file_path
+        execute_command(replace_command)
+    except Exception as exception:
+        Emitter.warning(exception)
+        Emitter.warning("error in llvm_format with file:")
+        Emitter.warning(file_path)
+        Emitter.warning("restoring and skipping")
+        restore_file(file_path, backup_name)
 
 
-def parseAST(file_path, project, use_deckard=True, is_header=False):
-    llvm_format(file_path)
+def parse_ast(file_path, use_deckard=True):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    # convert_to_llvm(file_path)
     # Save functions here
     function_lines = list()
     # Save variables for each function d[function] = "typevar namevar; ...;"
     dict_file = dict()
     try:
-        ast = gen_json(file_path, is_header)
+        ast = generate_json(file_path)
     except Exception as exception:
-        Emitter.warning("\tFailed parsing AST for file:\n\t\t" + file_path)
+        print(exception)
+        Emitter.warning("Failed parsing AST for file:\n\t" + file_path)
         return function_lines, dict_file
 
-    start = 0
-    end = 0
-    file = file_path.split("/")[-1]
-    
-    if use_deckard:
-        Emitter.grey("\tGenerating vectors for " + file)
-        
-    if is_header:
-        if use_deckard:
-            Vector.ASTVector(project, file_path, None, None, None, Deckard=True)
-    else:
-        function_nodes = []
-        root = ast[0]
-        root.get_nodes("type", "FunctionDecl", function_nodes)
-        #Print.white(function_nodes)
-        for node in function_nodes:
-            set_struct_nodes = set()
-            #Print.yellow(node.file)
-            if node.file != None and file == node.file.split("/")[-1]:
-                f = node.value.split("(")[0]
-                start = int(node.line)
-                end = int(node.line_end)
-                function_lines.append((f, start, end))
-                gen_vec(project, project.functions, file_path, f, start, end, use_deckard)
-                structural_nodes = []
-                for interesting_type in interesting:
-                    node.get_nodes("type", interesting_type, structural_nodes)
-                for struct_node in structural_nodes:
-                    var = struct_node.value.split("(")
-                    var_type = var[-1][:-1]
-                    var = var[0]
-                    line = var_type + " " + var + ";"
-                    if f not in dict_file.keys():
-                        dict_file[f] = ""
-                    dict_file[f] = dict_file[f] + line
-                    set_struct_nodes.add(struct_node.value)
+    start_line = 0
+    end_line = 0
+    file_line = file_path.split("/")[-1]
 
-        if use_deckard:
-            get_vars(project, file_path, dict_file)
-   
+    function_nodes = []
+    root = ast[0]
+    root.get_node_list("type", "FunctionDecl", function_nodes)
+    for node in function_nodes:
+        set_struct_nodes = set()
+        # Output.yellow(node.file)
+        if node.file is not None and file_line == node.file.split("/")[-1]:
+            f = node.value.split("(")[0]
+            start_line = int(node.line)
+            end_line = int(node.line_end)
+            function_lines.append((f, start_line, end_line))
+            generate_vector(file_path, f, start_line, end_line, use_deckard)
+            structural_nodes = []
+            for interesting_type in interesting:
+                node.get_node_list("type", interesting_type, structural_nodes)
+            for struct_node in structural_nodes:
+                var = struct_node.value.split("(")
+                var_type = var[-1][:-1]
+                var = var[0]
+                line = var_type + " " + var + ";"
+                if f not in dict_file.keys():
+                    dict_file[f] = ""
+                dict_file[f] = dict_file[f] + line
+                set_struct_nodes.add(struct_node.value)
+
+        # if use_deckard:
+        #     get_vars(project, file_path, dict_file)
+        #     print("")
+
     return function_lines, dict_file
 
 
@@ -113,30 +135,54 @@ def get_vars(proj, file, dict_file):
             if file in proj.functions.keys():
                 if func in proj.functions[file].keys():
                     proj.functions[file][func].variables.append(line)
-                        
 
-def intersect(start, end, start2, end2):
+
+def is_intersect(start, end, start2, end2):
     return not (end2 < start or start2 > end)
-    
-                        
-def find_affected_funcs(project, source_file, pertinent_lines):
-    Emitter.blue("\tProject " + project.name + "...")
-    try:
-        function_list, definition_list = parseAST(source_file, project, False)
-    except Exception as e:
-        err_exit(e, "Error in parseAST.")
 
-    for start2, end2 in pertinent_lines:
-        for f, start, end in function_list:
-            if intersect(start, end, start2, end2):
+
+def generate_ast_script(source_a, source_b, outfile_path, dump_matches=False):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    extra_args = " "
+    if dump_matches:
+        extra_args = " -dump-matches "
+    generate_command = APP_AST_DIFF + " -s=" + Values.AST_DIFF_SIZE + extra_args
+    generate_command += source_a + " " + source_b
+    if source_a[-1] == "h":
+        generate_command += " --"
+    generate_command += " 2> " + Definitions.FILE_AST_DIFF_ERROR
+    if dump_matches:
+        generate_command += " | grep -P '^Match ' | grep -P '^Match '"
+    generate_command += " > " + outfile_path
+
+    try:
+        # print(generate_command)
+        execute_command(generate_command, False)
+    except Exception as exception:
+        error_exit(exception, "Unexpected error in generate_ast_script.")
+
+
+def get_function_name_list(project, source_file, pertinent_lines):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.normal("\t\t" + project.path + ":")
+    try:
+        function_list, definition_list = parse_ast(source_file, False)
+    except Exception as e:
+        error_exit(e, "Error in parse_ast.")
+    for start_line, end_line in pertinent_lines:
+        for function_name, begin_line, finish_line in function_list:
+
+            if is_intersect(begin_line, finish_line, start_line, end_line):
                 if source_file not in project.functions.keys():
                     project.functions[source_file] = dict()
-                if f not in project.functions[source_file]:
-                    project.functions[source_file][f] = Vector.ASTVector(project, source_file, f, start, end, True)
-                    Emitter.success("\t\tFunction successfully found: " + f + \
-                               " in " + source_file.replace(project.path,
-                                                            project.name + "/"))
-                    Emitter.grey("\t\t\t" + f + " " + str(start) + "-" + str(end), False)
+
+                if function_name not in project.functions[source_file]:
+                    project.functions[source_file][function_name] = Vector.Vector(source_file, function_name,
+                                                                                     begin_line, finish_line, False)
+                    Emitter.normal(
+                        "\t\t\t" + function_name + " in " + source_file.replace(project.path, project.name + "/"))
+                    Emitter.normal("\t\t\t" + function_name + " " + str(begin_line) + "-" + str(finish_line), False)
                 break
-    get_vars(project, source_file, definition_list)
+
+    # get_vars(project, source_file, definition_list)
     return function_list, definition_list
