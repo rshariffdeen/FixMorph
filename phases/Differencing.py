@@ -23,6 +23,7 @@ diff_info = dict()
 def analyse_source_diff():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global diff_info
+    print(Definitions.FILE_EXCLUDED_EXTENSIONS_A)
     Differ.diff_files(Definitions.FILE_DIFF_ALL,
                       Definitions.FILE_DIFF_C,
                       Definitions.FILE_DIFF_H,

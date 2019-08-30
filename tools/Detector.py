@@ -26,71 +26,6 @@ def find_diff_files():
     exec_com(c, False)
 
 
-def generate_diff():
-    # .h and .c files
-    Emitter.blue("Finding differing files...")
-    find_diff_files()
-
-    # H files
-    with open('output/diff_H', 'r', errors='replace') as diff:
-        diff_line = diff.readline().strip()
-        while diff_line:
-            diff_line = diff_line.split(" ")
-            file_a = diff_line[1]
-            file_b = diff_line[3]
-            Generator.llvm_format(file_a)
-            Generator.llvm_format(file_b)
-            Generator.parseAST(file_a, Definitions.Pa, use_deckard=True, is_header=True)
-            Emitter.success("\t\tFile successfully found: " + file_a.split("/")[-1] + " from " + Definitions.Pa.name + " to " + Definitions.Pb.name)
-            diff_line = diff.readline().strip()
-
-    # C files
-    Emitter.blue("Starting fine-grained diff...\n")
-    with open('output/diff_C', 'r', errors='replace') as diff:
-        diff_line = diff.readline().strip()
-        while diff_line:
-            diff_line = diff_line.split(" ")
-            file_a = diff_line[1]
-            file_b = diff_line[3]
-            Generator.llvm_format(file_a)
-            Generator.llvm_format(file_b)
-            diff_command = "diff -ENBZbwr " + file_a + " " + file_b + " > output/C_diff"
-            exec_com(diff_command)
-            pertinent_lines_a = []
-            pertinent_lines_b = []
-            with open('output/C_diff', 'r', errors='replace') as file_diff:
-                file_line = file_diff.readline().strip()
-                while file_line:
-                    # We only want lines starting with a line number
-                    if 48 <= ord(file_line[0]) <= 57:
-                        # add
-                        if 'a' in file_line:
-                            l = file_line.split('a')
-                        # delete
-                        elif 'd' in file_line:
-                            l = file_line.split('d')
-                        # change (delete + add)
-                        elif 'c' in file_line:
-                            l = file_line.split('c')
-                        # range for file_a
-                        a = l[0].split(',')
-                        start_a = int(a[0])
-                        end_a = int(a[-1])
-                        # range for file_b
-                        b = l[1].split(',')
-                        start_b = int(b[0])
-                        end_b = int(b[-1])
-                        # Pertinent lines in file_a
-                        pertinent_lines_a.append((start_a, end_a))
-                        pertinent_lines_b.append((start_b, end_b))
-                    file_line = file_diff.readline().strip()
-            try:
-                Generator.find_affected_funcs(Definitions.Pa, file_a, pertinent_lines_a)
-                Generator.find_affected_funcs(Definitions.Pb, file_b, pertinent_lines_b)
-            except Exception as e:
-                err_exit(e, "Failed at finding affected functions.")
-
-            diff_line = diff.readline().strip()
 
 
 def generate_vector_for_extension(file_extension, output, is_header=False):
@@ -134,7 +69,7 @@ def get_vector_list(project, extension):
             fl = vec.readline()
             if fl:
                 v = [int(s) for s in vec.readline().strip().split(" ")]
-                v = Vector.ASTVector.normed(v)
+                v = Vector.Vector.normed(v)
                 vecs.append((files[i], v))
     return vecs
 
@@ -152,11 +87,11 @@ def clone_detection_header_files():
     Emitter.blue("Declaration mapping for *.h files")
     for vector_a in vector_list_a:
         best_vector = vector_list_c[0]
-        min_distance = Vector.ASTVector.dist(vector_a[1], best_vector[1])
+        min_distance = Vector.Vector.dist(vector_a[1], best_vector[1])
         dist = dict()
 
         for vector_c in vector_list_c:
-            distance = Vector.ASTVector.dist(vector_a[1], vector_c[1])
+            distance = Vector.Vector.dist(vector_a[1], vector_c[1])
             dist[vector_c[0]] = distance
             if distance < min_distance:
                 best_vector = vector_c
@@ -253,12 +188,12 @@ def clone_detection_for_c_files():
 
     for i in vector_list_a:
         best = vector_list_c[0]
-        best_d = Vector.ASTVector.dist(i[1], best[1])
+        best_d = Vector.Vector.dist(i[1], best[1])
         dist = dict()
 
         # Get best match candidate
         for j in vector_list_c:
-            d = Vector.ASTVector.dist(i[1], j[1])
+            d = Vector.Vector.dist(i[1], j[1])
             dist[j[0]] = d
             if d < best_d:
                 best = j
@@ -510,32 +445,3 @@ def clean_parse(content, separator):
     node1 = separator.join(nodes[:half])
     node2 = separator.join(nodes[half:])
     return [node1, node2]
-
-
-def safe_exec(function_def, title, *args):
-    start_time = time.time()
-    Emitter.sub_title("Starting " + title + "...")
-    description = title[0].lower() + title[1:]
-    try:
-        if not args:
-            result = function_def()
-        else:
-            result = function_def(*args)
-        duration = str(time.time() - start_time)
-        Emitter.success("\n\tSuccessful " + description + ", after " + duration + " seconds.")
-    except Exception as exception:
-        duration = str(time.time() - start_time)
-        Emitter.error("Crash during " + description + ", after " + duration + " seconds.")
-        err_exit(exception, "Unexpected error during " + description + ".")
-    return result
-
-
-def detect():
-    Emitter.title("Locating vulnerable functions")
-    safe_exec(generate_diff, "search for affected functions")
-    # Generates vectors for all functions in Pc
-    safe_exec(generate_vectors, "vector generation for all functions in Pc")
-    # Pairwise vector comparison for matching
-    Definitions.header_file_list_to_patch = safe_exec(clone_detection_header_files, "clone detection for header files")
-    Definitions.c_file_list_to_patch = safe_exec(clone_detection_for_c_files, "clone detection for C files")
-

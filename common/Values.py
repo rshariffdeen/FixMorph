@@ -68,9 +68,6 @@ variable_map = dict()
 
 
 
-
-
-
 Pa = None
 Pb = None
 Pc = None
