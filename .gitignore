@@ -1,4 +1,9 @@
 build
+logs/
+conf/
+backup/
+tmp/
+conf/
 cmake-build-debug
 .idea
 *.pyc
@@ -30,4 +35,3 @@ Tests.py
 ASTdiffTest.py
 empty_file.c
 test
-Backup_Folder/*

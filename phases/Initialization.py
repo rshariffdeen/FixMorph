@@ -135,7 +135,6 @@ def read_conf():
 
 
 def initialize():
-
     Emitter.title("Initializing project for Transfer")
     Emitter.sub_title("loading configuration")
     read_conf()
