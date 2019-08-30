@@ -2,8 +2,7 @@
 
 import os
 import subprocess
-import Print
-
+from tools import Print
 
 ''' Executing commands '''
 

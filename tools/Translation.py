@@ -1,15 +1,8 @@
-import os
-import sys
 import time
-import Common
-import Initialization
-import Detection
-from Utils import exec_com, err_exit, find_files, clean, get_extensions
-import Project
+from common import Common
+from common.Utils import exec_com, err_exit
 import Print
-import ASTVector
-import ASTgen
-import ASTparser
+from ast import ASTparser
 
 
 def id_from_string(simplestring):
@@ -871,7 +864,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                                     Print.warning(instruction)
                                                     Print.warning(next_child_node_c)
                                                     Print.warning([child.simple_print() for child in target_node.children])
-                                                    target_node = json_ast_dump[Common.Pc.name][next_child_node_c.parent_id]
+                                                    target_node = json_ast_dump[
+                                                        Common.Pc.name][next_child_node_c.parent_id]
                                                     offset = target_node.children.index(next_child_node_c)
 
                             else:

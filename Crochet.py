@@ -3,14 +3,8 @@
 
 
 import time
-import Initialization
-import Detection
-import Extraction
-import Mapping
-import Translation
-import Weaver
-from Utils import err_exit
-import Print
+from tools import Detection, Translation, Weaver, Print, Initialization, Mapping, Extraction
+from common.Utils import err_exit
 
 
 def run_patchweave():

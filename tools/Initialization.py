@@ -4,9 +4,9 @@
 
 import os
 import sys
-from Utils import err_exit, clean
-import Project
-import Common
+from common.Utils import err_exit, clean
+from entity import Project
+from common import Common
 import Print
 
 

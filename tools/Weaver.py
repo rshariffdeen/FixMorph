@@ -1,7 +1,6 @@
-import os
 import time
-import Common
-from Utils import exec_com, err_exit, find_files, clean, get_extensions
+from common import Common
+from common.Utils import exec_com, err_exit
 import Print
 
 file_index = 1

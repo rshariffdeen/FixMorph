@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from Utils import err_exit, clean_ASTs, exec_com
-import Print
+from common.Utils import err_exit, clean_ASTs, exec_com
+from tools import Print
+
 
 class Project:
     

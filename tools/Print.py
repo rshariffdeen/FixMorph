@@ -86,10 +86,10 @@ def start():
     
     \tThis software uses the following software developped by third parties:
     
-    \t\tDeckard (at tools/Deckard). See https://github.com/skyhover/Deckard/
+    \t\tDeckard (at third-party/Deckard). See https://github.com/skyhover/Deckard/
     \t\tfor more info.
     
-    \t\tClang (at tools/bin) and some subprojects.
+    \t\tClang (at third-party/bin) and some subprojects.
     
     \t\tClang-diff, a tool based on Gumtree diff
     '''

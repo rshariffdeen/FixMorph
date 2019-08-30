@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import Print
-from Utils import exec_com, err_exit
+from tools import Print
+from common.Utils import exec_com, err_exit
 import os
 
 class ASTVector:
     
-    deckard_path = "tools/Deckard/src/main/cvecgen_fail "
-    deckard_path_2 = "tools/Deckard/src/main/cvecgen "
+    deckard_path = "third-party/Deckard/src/main/cvecgen_fail "
+    deckard_path_2 = "third-party/Deckard/src/main/cvecgen "
     #deckard_vecs = dict()
     vid = 0
     

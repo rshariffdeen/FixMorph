@@ -2,10 +2,10 @@
 
 ''' Main vector generation functions '''
 
-from Utils import err_exit, exec_com
+from common.Utils import err_exit, exec_com
 import ASTVector
 import ASTparser
-import Print
+from tools import Print
 
 crochet_diff = "crochet-diff "
 clang_format = "clang-format -style=LLVM "

@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 
 
-import os
 import time
-from Utils import exec_com, err_exit, find_files, clean, get_extensions
+from common.Utils import exec_com, err_exit, find_files, get_extensions
 import Print
-import Common
-import ASTVector
-import ASTgen
-import ASTparser
+from common import Common
+from ast import ASTVector, ASTparser, ASTgen
 
 excluded_extensions_pa = "output/excluded-extensions-pa"
 excluded_extensions_pb = "output/excluded-extensions-pb"
@@ -347,7 +344,7 @@ def clone_detection_for_c_files():
         Print.blue("\t\tDistance: " + d_c + "\n")
 
         candidate_list.append((Common.Pa.functions[Common.Pa.path + file_a][f_a],
-                         Common.Pc.functions[Common.Pc.path + file_c][f_c], var_map))
+                               Common.Pc.functions[Common.Pc.path + file_c][f_c], var_map))
     return candidate_list
 
 

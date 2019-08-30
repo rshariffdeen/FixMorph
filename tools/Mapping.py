@@ -1,6 +1,5 @@
-
-import Common
-from Utils import exec_com, err_exit
+from common import Common
+from common.Utils import exec_com, err_exit
 import Print
 
 
@@ -13,7 +12,7 @@ def generate_map(file_a, file_b, output_file):
         if file_a[-2:] == ".h":
             extra_arg = " --"
         command = Common.DIFF_COMMAND + " -s=" + Common.DIFF_SIZE + " -dump-matches " + \
-            file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
+                  file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += "| grep '^Match ' "
         command += " > " + output_file
         exec_com(command, False)
