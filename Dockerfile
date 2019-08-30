@@ -61,7 +61,7 @@ RUN cd /radamsa; git checkout 30770f6e; make; make install
 
 RUN git config --global user.email "rshariffdeen@gmail.com"
 RUN git config --global user.name "Ridwan"
-RUN git clone https://github.com/rshariffdeen/Crochet.git /crochet
+ADD $PWD /crochet
 
 
 # Tidy up the container
