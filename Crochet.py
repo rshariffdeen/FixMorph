@@ -4,7 +4,7 @@
 
 import time
 from tools import Detector, Translation, Weaver, Emitter, Mapper, Extractor, Logger
-from phases import Initialization
+from phases import Initialization, Building
 from common import Definitions
 from common.Utilities import error_exit, create_directories
 
@@ -22,6 +22,11 @@ def run():
     time_start = time.time()
     Initialization.initialize()
     time_info[Definitions.KEY_DURATION_INITIALIZATION] = str(time.time() - time_start)
+
+    time_start = time.time()
+    Building.build()
+    time_info[Definitions.KEY_DURATION_BUILD_ANALYSIS] = str(time.time() - time_start)
+
 
     # time_start = time.time()
     # Detector.detect()

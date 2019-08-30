@@ -66,7 +66,7 @@ def end(time_duration):
     output("[END] Crochet ended at " + str(datetime.datetime.now()) + "\n\n")
     output("\nTime duration\n----------------------\n\n")
     output("Initialization: " + time_duration[Definitions.KEY_DURATION_INITIALIZATION] + " seconds")
-    # output("Build: " + time_duration[Definitions.KEY_DURATION_BUILD_ANALYSIS] + " seconds")
+    output("Build: " + time_duration[Definitions.KEY_DURATION_BUILD_ANALYSIS] + " seconds")
     # output("Diff Analysis: " + time_duration[Definitions.KEY_DURATION_DIFF_ANALYSIS] + " seconds")
     # output("Clone Analysis: " + time_duration[Definitions.KEY_DURATION_CLONE_ANALYSIS] + " seconds")
     # output("Slicing: " + time_duration[Definitions.KEY_DURATION_SLICE] + " seconds")
