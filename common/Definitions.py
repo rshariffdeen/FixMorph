@@ -93,7 +93,7 @@ ARG_ONLY_VERIFY = "--only-verify"
 TOOL_VECGEN = "third-party/deckard/cvecgen_fail "
 TOOL_VECGEN_ORIG = "third-party/deckard/cvecgen "
 
-PATCH_COMMAND = "patchweave-patch"
+PATCH_COMMAND = "crochet-patch"
 PATCH_SIZE = "1000"
 DIFF_COMMAND = "crochet-diff "
 DIFF_SIZE = "1000"
