@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     ninja \
     perl \
     python3 \
-    python-pip \
+    python3-pip \
     software-properties-common \
     subversion \
     unzip \
@@ -44,7 +44,7 @@ RUN mkdir /bear; git clone https://github.com/rizsotto/Bear.git /bear/source;
 RUN cd /bear/source; git checkout 2.2.1
 RUN mkdir /bear/build; cd /bear/build; cmake ../source; make -j32; make install
 
-RUN /usr/bin/pip install --upgrade pip && python3 -m pip install \
+RUN /usr/bin/pip3 install --upgrade pip && pip3 install \
     pysmt \
     six \
     wllvm
