@@ -1,0 +1,305 @@
+[K	
+
+####################################################################################################
+
+	Crochet - Horizontal Code Edit Transfer
+
+####################################################################################################
+[K
+====================================================================================================
+
+	Initializing project for Transfer
+====================================================================================================
+
+[K
+	loading configuration
+	__________________________________________________________________________________________
+
+[K	reading configuration values
+[K
+	set environment
+	__________________________________________________________________________________________
+
+[K	setting environment values
+[K
+====================================================================================================
+
+	Building Projects
+====================================================================================================
+
+[K
+	building binaries
+	__________________________________________________________________________________________
+
+[K
+		restoring projects
+		------------------------------------------------------------------------------------------
+
+[K		/crochet/example/sel-sort/PA/
+[K		/crochet/example/sel-sort/PB/
+[K		/crochet/example/sel-sort/PC/
+[K		/crochet/example/sel-sort/PC-patch/
+[K
+		cleaning projects
+		------------------------------------------------------------------------------------------
+
+[K		/crochet/example/sel-sort/PA/
+[K		/crochet/example/sel-sort/PB/
+[K		/crochet/example/sel-sort/PC/
+[K		/crochet/example/sel-sort/PC-patch/
+[K
+		configuring projects
+		------------------------------------------------------------------------------------------
+
+[K		/crochet/example/sel-sort/PA/
+[K		/crochet/example/sel-sort/PB/
+[K		/crochet/example/sel-sort/PC/
+[K		/crochet/example/sel-sort/PC-patch/
+[K
+		building projects
+		------------------------------------------------------------------------------------------
+
+[K		/crochet/example/sel-sort/PA/
+[K		/crochet/example/sel-sort/PB/
+[K		/crochet/example/sel-sort/PC/
+[K		/crochet/example/sel-sort/PC-patch/
+[K
+	Successful building binaries, after 0.5302081108093262 seconds.
+[K
+====================================================================================================
+
+	Analysing Changes
+====================================================================================================
+
+[K
+	analysing source diff
+	__________________________________________________________________________________________
+
+[K		finding changed files...
+[K
+		analysing header files
+		------------------------------------------------------------------------------------------
+
+[K			extracting changed header files...
+[K			header files:
+[K				-none-
+[K
+		analysing C/CPP source files
+		------------------------------------------------------------------------------------------
+
+[K			extracting changed c/cpp files...
+[K			source files:
+[K				/crochet/example/sel-sort/PA/sort.c
+[K
+		analysing changed code segments
+		------------------------------------------------------------------------------------------
+
+[K			collecting diff info...
+[K			/crochet/example/sel-sort/PA/:
+[K				selectionSort in Pa/sort.c
+[K				selectionSort 10-31[K[K			/crochet/example/sel-sort/PB/:
+[K				selectionSort in Pb/sort.c
+[K				selectionSort 10-31[K[K
+	Successful analysing source diff, after 0.12824511528015137 seconds.
+[K
+	analysing ast diff
+	__________________________________________________________________________________________
+
+[K
+		/crochet/example/sel-sort/PA/sort.c
+		------------------------------------------------------------------------------------------
+
+[K		generating AST script
+[K		line number:16
+[K			filtering AST script by merging and grouping
+[K			merging AST script
+[K		line number:14
+[K			filtering AST script by merging and grouping
+[K			merging AST script
+[K		line number:19
+[K			filtering AST script by merging and grouping
+[K			merging AST script
+[K
+	Successful analysing ast diff, after 0.19109439849853516 seconds.
+[K
+====================================================================================================
+
+	Clone Detection
+====================================================================================================
+
+[K
+	generating vectors for target
+	__________________________________________________________________________________________
+
+[K
+		Generating vector files for all functions in Target
+		------------------------------------------------------------------------------------------
+
+[K			generating vectors for *\.h files in Pc...
+[K			generating vectors for *\.c files in Pc...
+[K
+	Successful generating vectors for target, after 0.06723904609680176 seconds.
+[K
+	finding clones in target
+	__________________________________________________________________________________________
+
+[K
+		Finding clone functions in Target
+		------------------------------------------------------------------------------------------
+
+[K		checking vectors for C files in Pa...
+[K		checking vectors for C files in Pc...
+[K		Variable mapping...
+
+[K		Possible match for selectionSort in $Pa/sort.c:
+[K			Function: sort in $Pc/selection-sort.c
+[K			Distance: 0.0009818665012108936
+
+[K		Variable mapping from selectionSort to sort:
+[K			i ->  a
+[K			int min -> minimu minimum
+[K			struct Book * list -> struct Author * author_list
+[K			po pos -> positio position
+[K			n -> int length
+[K			int n -> int length
+[K			int j ->  b
+[K			int pos -> positio position
+[K			lis list -> struct Author * author_list
+[K			struct Book temp -> selecte selected
+[K			int i ->  a
+[K			mi min -> minimu minimum
+[K			j ->  b
+[K			tem temp -> selecte selected
+[K		Best match for selectionSort in $Pa/sort.c:
+[K			Function: sort in $Pc/selection-sort.c
+[K			Distance: 0.0009818665012108936
+
+[K
+	Successful finding clones in target, after 0.08164572715759277 seconds.
+[K
+====================================================================================================
+
+	Generating GumTree script for patch
+====================================================================================================
+
+[K
+	Starting generating script for header files...
+	__________________________________________________________________________________________
+
+[K
+	Successful generating script for header files, after 0.0001926422119140625 seconds.
+[K
+	Starting generating script for C files...
+	__________________________________________________________________________________________
+
+[K	Generating edit script: sort.c to sort.c...
+[K
+	Successful generating script for C files, after 0.08223676681518555 seconds.
+[K
+====================================================================================================
+
+	Variable Mapping
+====================================================================================================
+
+[K
+	Variable mapping for header files
+	__________________________________________________________________________________________
+
+[K		 -nothing-to-do
+[K
+	Variable mapping for C files
+	__________________________________________________________________________________________
+
+[K	Generating mapping: sort.c to selection-sort.c...
+[K
+====================================================================================================
+
+	Translate GumTree Script
+====================================================================================================
+
+[K
+	Translating scripts for header files
+	__________________________________________________________________________________________
+
+[K
+	Translating scripts for C files
+	__________________________________________________________________________________________
+
+[K	Generating JSON temp files for each pertinent file...
+[K			Clang AST parse /crochet/example/sel-sort/PA/sort.c in Pa...
+[K			Clang AST parse /crochet/example/sel-sort/PB/sort.c in Pb...
+[K			Clang AST parse /crochet/example/sel-sort/PC/selection-sort.c in Pc...
+[K
+====================================================================================================
+
+	Applying transformation
+====================================================================================================
+
+[K
+	Transforming file /crochet/example/sel-sort/PC/selection-sort.c
+	__________________________________________________________________________________________
+
+[K	Original AST script
+[K			AST Script:
+[K				 Insert DeclStmt(39) CompoundStmt(22) 3
+[K				 Insert VarDecl(40) DeclStmt(39) 0
+[K				 Insert TypeLoc(41) VarDecl(40) 0
+[K				 Insert FloatingLiteral(42) VarDecl(40) 1
+[K				 Update MemberExpr(46) MemberExpr(50)
+[K				 Update MemberExpr(67) MemberExpr(71)
+[K				 Update MemberExpr(75) MemberExpr(79)
+[K	Generated AST script
+[K			AST Script:
+[K				 Update MemberExpr(50) to MemberExpr(50)
+[K				 Update MemberExpr(71) to MemberExpr(71)
+[K				 Update MemberExpr(79) to MemberExpr(79)
+[K				 Insert DeclStmt(39) into CompoundStmt(22) at 3
+[K	Original Patch
+[K		14c14
+[K		<
+[K		---
+[K		>   float new = 0.0;
+[K		16c16
+[K		<     min = list[i].rank;
+[K		---
+[K		>     min = list[i].book_id;
+[K		19,20c19,20
+[K		<       if (list[j].rank < min) {
+[K		<         min = list[j].rank;
+[K		---
+[K		>       if (list[j].book_id < min) {
+[K		>         min = list[j].book_id;
+[K	Generated Patch
+[K		15a16,17
+[K		>  float new = 0.0;
+[K		>
+[K		17c19
+[K		<     minimum = author_list[a].rank;
+[K		---
+[K		>     minimum = author_list[a].user_id;
+[K		20,21c22,23
+[K		<       if (author_list[b].rank < minimum) {
+[K		<         minimum = author_list[b].rank;
+[K		---
+[K		>       if (author_list[b].user_id < minimum) {
+[K		>         minimum = author_list[b].user_id;
+[K
+	Successful transformation
+[K
+====================================================================================================
+
+	Cleaning residual files generated by Crochet...
+====================================================================================================
+
+[K	
+Run time statistics:
+-----------------------
+
+[K	Initialization: 0.014067411422729492 seconds
+[K	Build Analysis: 0.5310065746307373 seconds
+[K	Diff Analysis: 0.320265531539917 seconds
+[K	Clone Analysis: 0.08297848701477051 seconds
+[K	Map Generation: 0.08612990379333496 seconds
+[K
+Crochet finished successfully after 1.5263543128967285 seconds
+
