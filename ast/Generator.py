@@ -95,7 +95,7 @@ def parse_ast(file_path, use_deckard=True):
         ast = generate_json(file_path)
     except Exception as exception:
         # print(exception)
-        Emitter.warning("Failed parsing AST for file:\n\t" + file_path)
+        Emitter.warning("\t\t\tFailed parsing AST for file:\n\t\t\t" + file_path)
         return function_lines, dict_file
 
     start_line = 0
