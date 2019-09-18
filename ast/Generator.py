@@ -17,6 +17,8 @@ APP_AST_DIFF = "crochet-diff"
 interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
+skip_name_list = ["test", "tests", 'thirdparty', 'cmake', 'CMakeFiles']
+
 
 def generate_vector(file_path, f_or_struct, start_line, end_line, is_deckard=True):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
@@ -37,8 +39,9 @@ def ast_dump(file_path, output_path, is_header=True):
     if file_path[-1] == "h":
         dump_command += " --"
     dump_command += " 2> output/errors_AST_dump > " + output_path
-    a = execute_command(dump_command)
-    Emitter.debug(a[0])
+    return_code = execute_command(dump_command)
+    Emitter.debug("return code:" + str(return_code))
+    return return_code
 
 
 def get_ast_json(file_path):
@@ -85,10 +88,13 @@ def parse_ast(file_path, use_deckard=True):
     function_lines = list()
     # Save variables for each function d[function] = "typevar namevar; ...;"
     dict_file = dict()
+
+    if any(skip_word in str(file_path).lower() for skip_word in skip_name_list):
+        return function_lines, dict_file
     try:
         ast = generate_json(file_path)
     except Exception as exception:
-        print(exception)
+        # print(exception)
         Emitter.warning("Failed parsing AST for file:\n\t" + file_path)
         return function_lines, dict_file
 

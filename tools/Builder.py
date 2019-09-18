@@ -221,11 +221,11 @@ def build_normal():
     clean_all()
     CC = "clang"
     CXX = "clang++"
-    CXX_FLAGS = "'-g -O0 -static'"
-    C_FLAGS = "'-g -O0 -static'"
+    CXX_FLAGS = "'-g -O0'"
+    C_FLAGS = "'-g -O0'"
     config_all()
-    CXX_FLAGS = "'-g -O0 -static -DNDEBUG '"
-    C_FLAGS = "'-g -O0 -static -DNDEBUG '"
+    CXX_FLAGS = "'-g -O0 -DNDEBUG '"
+    C_FLAGS = "'-g -O0 -DNDEBUG '"
     build_all()
 
 

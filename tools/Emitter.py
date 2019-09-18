@@ -68,7 +68,7 @@ def information(message, jump_line=True):
 
 
 def statistics(message):
-    write(message, GREY)
+    write(message, WHITE)
     Logger.output(message)
 
 
