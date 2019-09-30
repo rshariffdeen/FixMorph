@@ -4,7 +4,7 @@
 
 import time
 from tools import Emitter, Logger
-from phases import Initialization, Building, Differencing, Detection, Mapping, Extraction, Translation, Weaving
+from phases import Initialization, Building, Differencing, Detection, Mapping, Extraction, Translation, Weaving, Verify
 from common import Definitions
 from common.Utilities import error_exit, create_directories
 
@@ -50,7 +50,11 @@ def run():
     time_start = time.time()
     Weaving.weave()
     time_info[Definitions.KEY_DURATION_TRANSPLANTATION] = str(time.time() - time_start)
-    
+
+    time_check = time.time()
+    Verify.verify()
+    time_info[Definitions.KEY_DURATION_VERIFICATION] = str(time.time() - time_check)
+
     # Final running time and exit message
     time_info[Definitions.KEY_DURATION_TOTAL] = str(time.time() - start_time)
     Emitter.end(time_info)
