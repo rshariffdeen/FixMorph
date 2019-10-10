@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zlib1g-dev \
     wget \
-    pkg-config
+    pkg-config \
+    mercurial
 
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"
