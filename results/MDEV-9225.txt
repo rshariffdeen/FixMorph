@@ -1,0 +1,154 @@
+[K	
+
+####################################################################################################
+
+	Crochet - Horizontal Code Edit Transfer
+
+####################################################################################################
+[K
+====================================================================================================
+
+	Initializing project for Transfer
+====================================================================================================
+
+[K
+	loading configuration
+	__________________________________________________________________________________________
+
+[K	reading configuration values
+[K
+	set environment
+	__________________________________________________________________________________________
+
+[K	setting environment values
+[K
+====================================================================================================
+
+	Building Projects
+====================================================================================================
+
+[K
+	building binaries
+	__________________________________________________________________________________________
+
+[K
+		restoring projects
+		------------------------------------------------------------------------------------------
+
+[K		/mariadb/MDEV-9225/mariadb-5.5.48/
+[K		/mariadb/MDEV-9225/mariadb-5.5.49/
+[K		/mariadb/MDEV-9225/oracle_mysql-5.5/
+[K		/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
+[K
+		cleaning projects
+		------------------------------------------------------------------------------------------
+
+[K		/mariadb/MDEV-9225/mariadb-5.5.48/
+[K		/mariadb/MDEV-9225/mariadb-5.5.49/
+[K		/mariadb/MDEV-9225/oracle_mysql-5.5/
+[K		/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
+[K
+		configuring projects
+		------------------------------------------------------------------------------------------
+
+[K		/mariadb/MDEV-9225/mariadb-5.5.48/
+[K		/mariadb/MDEV-9225/mariadb-5.5.49/
+[K		/mariadb/MDEV-9225/oracle_mysql-5.5/
+[K		/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
+[K
+		building projects
+		------------------------------------------------------------------------------------------
+
+[K		/mariadb/MDEV-9225/mariadb-5.5.48/
+[K		/mariadb/MDEV-9225/mariadb-5.5.49/
+[K		/mariadb/MDEV-9225/oracle_mysql-5.5/
+[K		/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
+[K
+	Successful building binaries, after 2327.8358619213104 seconds.
+[K
+====================================================================================================
+
+	Analysing Changes
+====================================================================================================
+
+[K
+	analysing source diff
+	__________________________________________________________________________________________
+
+[K		finding changed files...
+[K
+		analysing header files
+		------------------------------------------------------------------------------------------
+
+[K			extracting changed header files...
+[K			header files:
+[K				/mariadb/MDEV-9225/mariadb-5.5.48/sql/sql_yacc.h
+[K
+		analysing C/CPP source files
+		------------------------------------------------------------------------------------------
+
+[K			extracting changed c/cpp files...
+[K			source files:
+[K				/mariadb/MDEV-9225/mariadb-5.5.48/client/mysql_upgrade.c
+[K
+		analysing changed code segments
+		------------------------------------------------------------------------------------------
+
+[K			collecting diff info...
+[K			/mariadb/MDEV-9225/mariadb-5.5.48/:
+[K				free_used_memory in Pa/client/mysql_upgrade.c
+[K				free_used_memory 182-191[K[K			/mariadb/MDEV-9225/mariadb-5.5.49/:
+[K				free_used_memory in Pb/client/mysql_upgrade.c
+[K				free_used_memory 182-192[K[K
+	Successful analysing source diff, after 2.1940362453460693 seconds.
+[K
+	analysing ast diff
+	__________________________________________________________________________________________
+
+[K
+		/mariadb/MDEV-9225/mariadb-5.5.48/client/mysql_upgrade.c
+		------------------------------------------------------------------------------------------
+
+[K		generating AST script
+[K		line number:184
+[K			filtering AST script by merging and grouping
+[K			merging AST script
+[K
+	Successful analysing ast diff, after 5.133488893508911 seconds.
+[K
+====================================================================================================
+
+	Clone Detection
+====================================================================================================
+
+[K
+	generating vectors for target
+	__________________________________________________________________________________________
+
+[K
+		Generating vector files for all functions in Target
+		------------------------------------------------------------------------------------------
+
+[K			generating vectors for *\.c files in Pc...
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/regex/engine.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/regex/debug.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/regex/split.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/regex/regexp.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/regex/main.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/libmysql/conf_to_src.c
+
+
+[K	'ascii' codec can't decode byte 0xad in position 3535: ordinal not in range(128)
+[K	Unexpected error in parseAST with file:
+[K	/mariadb/MDEV-9225/oracle_mysql-5.5/storage/innobase/os/os0file.c
+[K	Crash during generating vectors for target, after 165.60104608535767 seconds.
+
+
+[K	Error. Exiting...
+[K	Unexpected error during generating vectors for target.
