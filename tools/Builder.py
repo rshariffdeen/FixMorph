@@ -297,8 +297,8 @@ def build_verify():
     Emitter.sub_sub_title("building projects")
     CC = "clang-7"
     CXX = "clang++-7"
-    CXX_FLAGS = "'-g -O0 -static -DNDEBUG'"
-    C_FLAGS = "'-g -O0 -static -DNDEBUG'"
+    CXX_FLAGS = "'-g -O0 -static -fPIC -DNDEBUG'"
+    C_FLAGS = "'-g -O0 -static -fPIC -DNDEBUG'"
     Emitter.normal("\t\t" + Values.Project_D.path)
     clean_project(Values.Project_D.path)
     clean_project(Values.Project_C.path)
