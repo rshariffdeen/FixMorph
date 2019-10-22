@@ -83,6 +83,8 @@ def get_instruction_list(script_file_name):
             elif instruction == Definitions.UPDATE:
                 try:
                     nodeA, nodeB = clean_parse(content, Definitions.TO)
+                    if "TypeLoc" in nodeA:
+                        continue
                     instruction_list.append((instruction, nodeA, nodeB))
                 except Exception as e:
                     error_exit(e, "Something went wrong in UPDATE.")
