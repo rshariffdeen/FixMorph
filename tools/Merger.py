@@ -223,6 +223,8 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             # print(script_line)
             # update_line = str(script_line).replace("Update", "Replace").replace(" to ", " with ")
             # print(update_line)
+            if "TypeLoc" in script_line:
+                continue
             merged_ast_script.append(script_line)
 
     second_merged_ast_script = list()
