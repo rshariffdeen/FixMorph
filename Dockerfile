@@ -12,19 +12,19 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
     libgoogle-perftools-dev \
     libncurses5-dev \
+    mercurial \
     minisat \
     nano \
     ninja \
     perl \
+    pkg-config \
     python3 \
     python3-pip \
     software-properties-common \
     subversion \
     unzip \
     zlib1g-dev \
-    wget \
-    pkg-config \
-    mercurial
+    wget
 
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"
