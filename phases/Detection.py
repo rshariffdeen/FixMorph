@@ -9,9 +9,6 @@ from ast import Vector, Parser
 from tools import Logger, Emitter, Detector, Differ, Generator
 
 
-diff_info = dict()
-
-
 def generate_vectors_target():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Generating vector files for all functions in Target")

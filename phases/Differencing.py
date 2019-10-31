@@ -81,3 +81,5 @@ def diff():
     if not Values.SKIP_ANALYSE:
         safe_exec(analyse_source_diff, "analysing source diff")
         safe_exec(analyse_ast_diff, "analysing ast diff")
+    Values.diff_info = diff_info
+
