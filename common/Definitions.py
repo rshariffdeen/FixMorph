@@ -88,6 +88,7 @@ ARG_SKIP_VERIFY = "--skip-verify"
 ARG_SKIP_RESTORE = "--skip-restore"
 ARG_ONLY_VERIFY = "--only-verify"
 ARG_SKIP_BUILD = "--skip-build"
+ARG_SKIP_VEC_GEN = "--skip-vec-gen"
 
 
 # ----------------- TOOLS --------------------------------

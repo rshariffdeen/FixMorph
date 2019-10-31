@@ -82,8 +82,11 @@ def read_conf():
                 Values.SKIP_WEAVE = True
                 Values.SKIP_ANALYSE = True
                 Values.SKIP_SLICE = True
+                Values.SKIP_BUILD = True
             elif Definitions.ARG_SKIP_BUILD in arg:
                 Values.SKIP_BUILD = True
+            elif Definitions.ARG_SKIP_BUILD in arg:
+                Values.SKIP_VEC_GEN = True
             elif "Crochet.py" in arg:
                 continue
             else:

@@ -45,6 +45,9 @@ def safe_exec(function_def, title, *args):
 def detect():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Clone Detection")
-
-    safe_exec(generate_target_vectors, "generating vectors for target")
-    safe_exec(find_clones, "finding clones in target")
+    if not Values.SKIP_DETECTION:
+        if not Values.SKIP_VEC_GEN:
+            safe_exec(generate_target_vectors, "generating vectors for target")
+        safe_exec(find_clones, "finding clones in target")
+    else:
+        Emitter.special("\n\t-skipping this phase-")

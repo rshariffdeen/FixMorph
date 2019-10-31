@@ -34,5 +34,5 @@ def build():
     if not Values.SKIP_BUILD:
         safe_exec(Builder.build_normal, "building binaries")
     else:
-        Emitter.special("\n\tskipping this phase")
+        Emitter.special("\n\t-skipping this phase-")
 
