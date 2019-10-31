@@ -171,14 +171,15 @@ from ast import Vector, Parser, Generator
 
 
 def detect_c_files():
-    c_extension = "*\.c\.*\.vec"
+    extension = "*\.c\.*\.vec"
     candidate_list = []
-    vector_list_a = Finder.search_vector_list(Values.Project_A, c_extension)
+    vector_list_a = Finder.search_vector_list(Values.Project_A, extension)
+
     if len(vector_list_a) == 0:
         Emitter.normal("\t - nothing to do -")
         return candidate_list
 
-    vector_list_c = Finder.search_vector_list(Values.Project_C, c_extension)
+    vector_list_c = Finder.search_vector_list(Values.Project_C, extension)
     Emitter.normal("\tVariable mapping...\n")
 
     UNKNOWN = "#UNKNOWN#"
@@ -223,8 +224,7 @@ def detect_c_files():
             f_c = fc[-1]
             file_c = ".".join(fc[:-1])
             d_c = str(candidates_d[k])
-            Emitter.normal("\tPossible match for " + f_a + " in $Pa/" + file_a + \
-                       ":")
+            Emitter.normal("\tPossible match for " + f_a + " in $Pa/" + file_a + ":")
             Emitter.normal("\t\tFunction: " + f_c + " in $Pc/" + file_c)
             Emitter.normal("\t\tDistance: " + d_c + "\n")
             Emitter.normal("\tVariable mapping from " + f_a + " to " + f_c + ":")
@@ -279,8 +279,6 @@ def detect_c_files():
         candidate_list.append((Values.Project_A.functions[Values.Project_A.path + file_a][f_a],
                                Values.Project_C.functions[Values.Project_C.path + file_c][f_c], var_map))
     return candidate_list
-
-
 
 
 def id_from_string(simplestring):

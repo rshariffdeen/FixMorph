@@ -18,7 +18,7 @@ def load_standard_list():
 
 
 def set_env_value():
-    Emitter.normal("setting environment values")
+    Emitter.normal("\tsetting environment values")
     os.environ["PYTHONPATH"] = "/home/rshariffdeen/workspace/z3/build/python"
     execute_command("export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python")
 
@@ -59,7 +59,7 @@ def create_fuzz_dir():
 
 
 def read_conf():
-    Emitter.normal("reading configuration values")
+    Emitter.normal("\treading configuration values")
     if len(sys.argv) > 1:
         for arg in sys.argv:
             if Definitions.ARG_DEBUG in arg:
@@ -82,6 +82,8 @@ def read_conf():
                 Values.SKIP_WEAVE = True
                 Values.SKIP_ANALYSE = True
                 Values.SKIP_SLICE = True
+            elif Definitions.ARG_SKIP_BUILD in arg:
+                Values.SKIP_BUILD = True
             elif "Crochet.py" in arg:
                 continue
             else:

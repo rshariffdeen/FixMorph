@@ -9,7 +9,7 @@ from ast import Vector, Parser
 from tools import Logger, Emitter, Detector, Differ, Generator
 
 
-def generate_vectors_target():
+def generate_target_vectors():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Generating vector files for all functions in Target")
     # Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C)
@@ -46,18 +46,5 @@ def detect():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Clone Detection")
 
-    safe_exec(generate_vectors_target, "generating vectors for target")
+    safe_exec(generate_target_vectors, "generating vectors for target")
     safe_exec(find_clones, "finding clones in target")
-
-    # safe_exec(analyse_ast_diff, "analysing ast diff")
-    #
-    #
-    #
-    #
-    # safe_exec(generate_diff, "search for affected functions")
-    # # Generates vectors for all functions in Pc
-    # safe_exec(generate_vectors, "vector generation for all functions in Pc")
-    # # Pairwise vector comparison for matching
-    # Definitions.header_file_list_to_patch = safe_exec(clone_detection_header_files, "clone detection for header files")
-    # Definitions.c_file_list_to_patch = safe_exec(clone_detection_for_c_files, "clone detection for C files")
-    #
