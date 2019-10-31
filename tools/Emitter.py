@@ -145,3 +145,5 @@ def help():
     print("\t" + Definitions.ARG_SKIP_WEAVE + "\t| " + "disable transplant")
     print("\t" + Definitions.ARG_SKIP_SLICE + "\t| " + "disable slicing")
     print("\t" + Definitions.ARG_SKIP_ANALYSE + "\t| " + "disable analysis")
+    print("\t" + Definitions.ARG_SKIP_BUILD + "\t| " + "disable build")
+    print("\t" + Definitions.ARG_SKIP_VEC_GEN + "\t| " + "disable vector generation")
