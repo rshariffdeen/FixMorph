@@ -169,7 +169,6 @@ def generate_ast_script(source_a, source_b, outfile_path, dump_matches=False):
 
 def generate_function_list(project, source_file):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\t" + project.path + ":")
     function_list = dict()
     definition_list = dict()
     try:
