@@ -142,7 +142,7 @@ def find_clone():
         file_a = ".".join(fa[:-1])
         Emitter.normal("\t\tFinding match for " + f_a + " in $Pa/" + file_a + ":")
 
-        best_func_name = ''
+        best_candidate = ''
         best_count = 0
         best_distance = 0
         best_prop = 0
@@ -200,11 +200,11 @@ def find_clone():
                         best_distance = candidate_distance[candidate]
                         var_map = var_map_list[candidate]
 
-        Emitter.success("\t\t\tFunction: " + best_candidate + " in $Pc/" + candidate_location[best_candidate])
+        Emitter.success("\t\t\tFunction: " + best_candidate + " in $Pc/" + str(candidate_location[best_candidate]))
         Emitter.success("\t\t\tDistance: " + str(best_distance) + "\n")
 
         clone_list.append((Values.Project_A.function_list[Values.Project_A.path + file_a][f_a],
-                               Values.Project_C.function_list[Values.Project_C.path + file_c][f_c], var_map))
+                               Values.Project_C.function_list[Values.Project_C.path + candidate_location[best_candidate]][best_candidate], var_map))
 
     return clone_list
 
