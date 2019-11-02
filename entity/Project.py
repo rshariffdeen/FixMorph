@@ -15,5 +15,5 @@ class Project:
             path += "/"
         self.path = path
         self.name = name
-        self.functions = dict()
-        self.structs = dict()
+        self.function_list = dict()
+        self.struct_list = dict()

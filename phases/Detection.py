@@ -19,7 +19,8 @@ def generate_target_vectors():
 def find_clones():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Finding clone functions in Target")
-    Values.c_file_list_to_patch = Detector.detect_c_files()
+    # Values.c_file_list_to_patch = Detector.detect_c_files()
+    Detector.find_clone()
 
 
 def safe_exec(function_def, title, *args):

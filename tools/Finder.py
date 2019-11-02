@@ -11,6 +11,19 @@ from common import Definitions
 FILE_GREP_RESULT = ""
 
 
+def search_vector(file_path):
+    with open(file_path, 'r', errors='replace') as vec_file:
+            content = vec_file.readline()
+            if content:
+                vector = [int(s) for s in vec_file.readline().strip().split(" ")]
+                vector = Vector.Vector.normed(vector)
+                return vector
+            else:
+                Emitter.information("Vector file is empty")
+    Emitter.information("Vector file not found")
+    return None
+
+
 def search_vector_list(project, extension):
     if "c" in extension:
         rxt = "C"
@@ -24,12 +37,7 @@ def search_vector_list(project, extension):
         files = [vec.strip() for vec in file.readlines()]
     vecs = []
     for i in range(len(files)):
-        with open(files[i], 'r', errors='replace') as vec:
-            fl = vec.readline()
-            if fl:
-                v = [int(s) for s in vec.readline().strip().split(" ")]
-                v = Vector.Vector.normed(v)
-                vecs.append((files[i], v))
+        vecs.append((files[i], search_vector(files[i])))
     return vecs
 
 
