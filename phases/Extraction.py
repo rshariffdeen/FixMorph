@@ -9,35 +9,6 @@ from common.Utilities import execute_command, error_exit
 from tools import Emitter
 
 
-def clean_parse(content, separator):
-    if content.count(separator) == 1:
-        return content.split(separator)
-    i = 0
-    while i < len(content):
-        if content[i] == "\"":
-            i += 1
-            while i < len(content) - 1:
-                if content[i] == "\\":
-                    i += 2
-                elif content[i] == "\"":
-                    i += 1
-                    break
-                else:
-                    i += 1
-            prefix = content[:i]
-            rest = content[i:].split(separator)
-            node1 = prefix + rest[0]
-            node2 = separator.join(rest[1:])
-            return [node1, node2]
-        i += 1
-    # If all the above fails (it shouldn't), hope for some luck:
-    nodes = content.split(separator)
-    half = len(nodes) // 2
-    node1 = separator.join(nodes[:half])
-    node2 = separator.join(nodes[half:])
-    return [node1, node2]
-
-
 def generate_edit_script(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
@@ -52,83 +23,6 @@ def generate_edit_script(file_a, file_b, output_file):
         execute_command(command, False)
     except Exception as e:
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
-
-
-def get_instruction_list(script_file_name):
-    instruction_list = list()
-    inserted_node_list = list()
-    map_ab = dict()
-    with open(script_file_name, 'r') as script:
-        line = script.readline().strip()
-        while line:
-            line = line.split(" ")
-            # Special case: Update and Move nodeA into nodeB2
-            if len(line) > 3 and line[0] == Definitions.UPDATE and line[1] == Definitions.AND and \
-                    line[2] == Definitions.MOVE:
-                instruction = Definitions.UPDATEMOVE
-                content = " ".join(line[3:])
-
-            else:
-                instruction = line[0]
-                content = " ".join(line[1:])
-            # Match nodeA to nodeB
-            if instruction == Definitions.MATCH:
-                try:
-                    nodeA, nodeB = clean_parse(content, Definitions.TO)
-                    map_ab[nodeB] = nodeA
-                except Exception as e:
-                    error_exit(e, "Something went wrong in MATCH (AB).",
-                             line, instruction, content)
-            # Update nodeA to nodeB (only care about value)
-            elif instruction == Definitions.UPDATE:
-                try:
-                    nodeA, nodeB = clean_parse(content, Definitions.TO)
-                    if "TypeLoc" in nodeA:
-                        continue
-                    instruction_list.append((instruction, nodeA, nodeB))
-                except Exception as e:
-                    error_exit(e, "Something went wrong in UPDATE.")
-            # Delete nodeA
-            elif instruction == Definitions.DELETE:
-                try:
-                    nodeA = content
-                    instruction_list.append((instruction, nodeA))
-                except Exception as e:
-                    error_exit(e, "Something went wrong in DELETE.")
-            # Move nodeA into nodeB at pos
-            elif instruction == Definitions.MOVE:
-                try:
-                    nodeA, nodeB = clean_parse(content, Definitions.INTO)
-                    nodeB_at = nodeB.split(Definitions.AT)
-                    nodeB = Definitions.AT.join(nodeB_at[:-1])
-                    pos = nodeB_at[-1]
-                    instruction_list.append((instruction, nodeA, nodeB, pos))
-                except Exception as e:
-                    error_exit(e, "Something went wrong in MOVE.")
-            # Update nodeA into matching node in B and move into nodeB at pos
-            elif instruction == Definitions.UPDATEMOVE:
-                try:
-                    nodeA, nodeB = clean_parse(content, Definitions.INTO)
-                    nodeB_at = nodeB.split(Definitions.AT)
-                    nodeB = Definitions.AT.join(nodeB_at[:-1])
-                    pos = nodeB_at[-1]
-                    instruction_list.append((instruction, nodeA, nodeB, pos))
-                except Exception as e:
-                    error_exit(e, "Something went wrong in MOVE.")
-                    # Insert nodeB1 into nodeB2 at pos
-            elif instruction == Definitions.INSERT:
-                try:
-                    nodeB1, nodeB2 = clean_parse(content, Definitions.INTO)
-                    nodeB2_at = nodeB2.split(Definitions.AT)
-                    nodeB2 = Definitions.AT.join(nodeB2_at[:-1])
-                    pos = nodeB2_at[-1]
-                    instruction_list.append((instruction, nodeB1, nodeB2,
-                                           pos))
-                    inserted_node_list.append(nodeB1)
-                except Exception as e:
-                    error_exit(e, "Something went wrong in INSERT.")
-            line = script.readline().strip()
-    return instruction_list, inserted_node_list, map_ab
 
 
 def generate_script_for_header_files(files_list_to_patch):
@@ -195,6 +89,7 @@ def safe_exec(function_def, title, *args):
 def extract():
     Emitter.title("Generating GumTree script for patch")
     # Using all previous structures to transplant patch
+
     safe_exec(generate_script_for_header_files, "generating script for header files", Values.header_file_list_to_patch)
     safe_exec(generate_script_for_c_files, "generating script for C files", Values.c_file_list_to_patch)
 
