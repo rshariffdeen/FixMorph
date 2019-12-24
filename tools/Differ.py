@@ -113,8 +113,8 @@ def diff_code(diff_file_path, output_file):
                     file_line = temp_diff_file.readline().strip()
 
             try:
-                Generator.get_function_name_list(Values.Project_A, file_a, pertinent_lines_a)
-                Generator.get_function_name_list(Values.Project_B, file_b, pertinent_lines_b)
+                Generator.get_function_list_for_line_range(Values.Project_A, file_a, pertinent_lines_a)
+                Generator.get_function_list_for_line_range(Values.Project_B, file_b, pertinent_lines_b)
             except Exception as e:
                 error_exit(e, "Failed at finding affected functions.")
             diff_line = diff_file.readline().strip()

@@ -132,3 +132,31 @@ def get_code(source_path, line_number):
     return None
 
 
+def clean_parse(content, separator):
+    if content.count(separator) == 1:
+        return content.split(separator)
+    i = 0
+    while i < len(content):
+        if content[i] == "\"":
+            i += 1
+            while i < len(content) - 1:
+                if content[i] == "\\":
+                    i += 2
+                elif content[i] == "\"":
+                    i += 1
+                    break
+                else:
+                    i += 1
+            prefix = content[:i]
+            rest = content[i:].split(separator)
+            node1 = prefix + rest[0]
+            node2 = separator.join(rest[1:])
+            return [node1, node2]
+        i += 1
+    # If all the above fails (it shouldn't), hope for some luck:
+    nodes = content.split(separator)
+    half = len(nodes) // 2
+    node1 = separator.join(nodes[:half])
+    node2 = separator.join(nodes[half:])
+    return [node1, node2]
+

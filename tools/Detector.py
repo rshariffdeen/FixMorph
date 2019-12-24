@@ -9,6 +9,205 @@ from common import Definitions, Values
 from ast import Vector, Parser, Generator
 
 
+def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
+    try:
+        Generator.generate_ast_script(Values.Project_A.path + file_a, Values.Project_C.path + file_c, Definitions.FILE_AST_MAP, True)
+        # generate_ast_map(Definitions.Pa.path + file_a, Definitions.Pc.path + file_c)
+    except Exception as e:
+        error_exit(e, "Error at generate_ast_map.")
+
+    function_a = Values.Project_A.function_list[Values.Project_A.path + file_a][func_name_a]
+    variable_list_a = function_a.variables.copy()
+
+    while '' in variable_list_a:
+        variable_list_a.remove('')
+
+    variable_list_a = [i.split(" ")[-1] for i in variable_list_a]
+
+    # print(Values.Project_C.functions[Values.Project_C.path + file_c])
+    Generator.generate_function_list(Values.Project_C, Values.Project_C.path + file_c)
+
+    function_c = Values.Project_C.function_list[Values.Project_C.path + file_c][func_name_c]
+    variable_list_c = function_c.variables
+    while '' in variable_list_c:
+        variable_list_c.remove('')
+    json_file_a = Values.Project_A.path + file_a + ".AST"
+    ast_a = Parser.AST_from_file(json_file_a)
+    json_file_c = Values.Project_C.path + file_c + ".AST"
+    ast_c = Parser.AST_from_file(json_file_c)
+    ast_map = dict()
+
+    try:
+        with open(Definitions.FILE_AST_MAP, "r",) as ast_map_file:
+            map_line = ast_map_file.readline().strip()
+            while map_line:
+                node_a, node_c = clean_parse(map_line, Definitions.TO)
+                var_a = id_from_string(node_a)
+                var_a = ast_a[var_a].value_calc(Values.Project_A.path + file_a)
+
+                var_c = id_from_string(node_c)
+                var_c = ast_c[var_c].value_calc(Values.Project_C.path + file_c)
+
+                if var_a in variable_list_a:
+                    if var_a not in ast_map.keys():
+                        ast_map[var_a] = dict()
+                    if var_c in ast_map[var_a].keys():
+                        ast_map[var_a][var_c] += 1
+                    else:
+                        ast_map[var_a][var_c] = 1
+                map_line = ast_map_file.readline().strip()
+    except Exception as e:
+        error_exit(e, "Unexpected error while parsing ast-map")
+
+    UNKNOWN = "#UNKNOWN#"
+    variable_mapping = dict()
+    try:
+        while variable_list_a:
+            var_a = variable_list_a.pop()
+            if var_a not in variable_mapping.keys():
+                a_name = var_a.split(" ")[-1]
+                if a_name in ast_map.keys():
+                    max_match = -1
+                    best_match = None
+                    for var_c in ast_map[a_name].keys():
+                        if max_match == -1:
+                            max_match = ast_map[a_name][var_c]
+                            best_match = var_c
+                        elif ast_map[a_name][var_c] > max_match:
+                            max_match = ast_map[a_name][var_c]
+                            best_match = var_c
+                    if best_match:
+                        for var_c in variable_list_c:
+                            c_name = var_c.split(" ")[-1]
+                            if c_name == best_match:
+                                variable_mapping[var_a] = var_c
+                if var_a not in variable_mapping.keys():
+                    variable_mapping[var_a] = UNKNOWN
+    except Exception as e:
+        error_exit(e, "Unexpected error while mapping vars.")
+
+    with open("output/var-map", "w") as var_map_file:
+        for var_a in variable_mapping.keys():
+            var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
+
+    return variable_mapping
+
+
+def find_clone():
+    extension = "*\.c\.*\.vec"
+    clone_list = []
+    vector_list_a = Finder.search_vector_list(Values.Project_A, extension)
+    vector_list_c = Finder.search_vector_list(Values.Project_C, extension)
+    factor = 2
+    UNKNOWN = "#UNKNOWN#"
+    Emitter.normal("\tfinding clones for edited functions:\n")
+    for vector in vector_list_a:
+        # Assume vector already created
+        file_path = vector[0]
+        vector_a = vector[1]
+        best_match = vector_list_c[0]
+        best_distance = Vector.Vector.dist(vector_a, best_match[1])
+        distance_matrix = dict()
+        count_unknown = dict()
+        count_vars = dict()
+        var_map_list = dict()
+
+        # Get best match candidate
+        for j in vector_list_c:
+            vector_c = j[1]
+            if vector_c is not None:
+                distance = Vector.Vector.dist(vector_a, j[1])
+                distance_matrix[j[0]] = distance
+                if distance < best_distance:
+                    best_match = j
+                    best_distance = distance
+
+        # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
+        candidate_list = [best_match]
+        candidate_distance = dict()
+        candidate_location = dict()
+
+        # Collect all vectors within range best_distance - 2 x best_distance
+        for j in vector_list_c:
+            vector_c = j[1]
+            if vector_c is not None:
+                if j != best_match:
+                    distance = distance_matrix[j[0]]
+                    if distance <= factor * best_distance:
+                        candidate_list.append(j)
+
+        # We go up to -4 to remove the ".vec" part [filepath.function.vec]
+        fa = file_path.replace(Values.Project_A.path, "")[:-4].split(".")
+        f_a = fa[-1]
+        file_a = ".".join(fa[:-1])
+        Emitter.normal("\t\tFinding match for " + f_a + " in $Pa/" + file_a + ":")
+
+        best_candidate = ''
+        best_count = 0
+        best_distance = 0
+        best_prop = 0
+        var_map = ''
+
+        # TODO: Correct once I have appropriate only function comparison
+        for candidate in candidate_list:
+            fc = candidate[0].replace(Values.Project_C.path, "")[:-4].split(".")
+            f_c = fc[-1]
+            candidate_distance[f_c] = distance_matrix[candidate[0]]
+            file_c = ".".join(fc[:-1])
+            candidate_location[f_c] = file_c
+            d_c = str(distance_matrix[candidate[0]])
+            Emitter.information("\tPossible match for " + f_a + " in $Pa/" + file_a + ":")
+            Emitter.information("\t\tFunction: " + f_c + " in $Pc/" + file_c)
+            Emitter.information("\t\tDistance: " + d_c + "\n")
+            Emitter.information("\tVariable mapping from " + f_a + " to " + f_c + ":")
+            count_unknown[f_c] = 0
+            count_vars[f_c] = 0
+            try:
+                var_map_list[f_c] = detect_matching_variables(f_a, file_a, f_c, file_c)
+            except Exception as e:
+                error_exit(e, "Unexpected error while matching variables.")
+            with open('output/var-map', 'r', errors='replace') as mapped:
+                mapping = mapped.readline().strip()
+                while mapping:
+                    Emitter.information("\t\t" + mapping)
+                    if UNKNOWN in mapping:
+                        count_unknown[f_c] += 1
+                    count_vars[f_c] += 1
+                    mapping = mapped.readline().strip()
+            best_func_name = f_c
+            best_count = count_unknown[best_func_name]
+            best_distance = candidate_distance[best_func_name]
+            best_prop = count_unknown[best_func_name] / count_vars[best_func_name]
+            var_map = var_map_list[best_func_name]
+
+        for candidate in candidate_distance:
+            if count_unknown[candidate] < best_count:
+                best_count = count_unknown[candidate]
+                best_candidate = candidate
+                best_distance = candidate_distance[candidate]
+                best_prop = count_unknown[candidate] / count_vars[candidate]
+                var_map = var_map_list[candidate]
+            elif count_unknown[candidate] == best_count:
+                prop = count_unknown[candidate] / count_vars[candidate]
+                if prop < best_prop:
+                    best_candidate = candidate
+                    best_distance = candidate_distance[candidate]
+                    best_prop = prop
+                    var_map = var_map_list[candidate]
+                elif prop == best_prop:
+                    if candidate_distance[candidate] <= best_distance:
+                        best_candidate = candidate
+                        best_distance = candidate_distance[candidate]
+                        var_map = var_map_list[candidate]
+
+        Emitter.success("\t\t\tFunction: " + best_candidate + " in $Pc/" + str(candidate_location[best_candidate]))
+        Emitter.success("\t\t\tDistance: " + str(best_distance) + "\n")
+
+        clone_list.append((Values.Project_A.function_list[Values.Project_A.path + file_a][f_a],
+                               Values.Project_C.function_list[Values.Project_C.path + candidate_location[best_candidate]][best_candidate], var_map))
+
+    return clone_list
+
 #
 # def find_diff_files():
 #     extensions = get_extensions(Definitions.Pa.path, excluded_extensions_pa)
@@ -169,118 +368,118 @@ from ast import Vector, Parser, Generator
 #
 #
 
-
-def detect_c_files():
-    c_extension = "*\.c\.*\.vec"
-    candidate_list = []
-    vector_list_a = Finder.search_vector_list(Values.Project_A, c_extension)
-    if len(vector_list_a) == 0:
-        Emitter.normal("\t - nothing to do -")
-        return candidate_list
-
-    vector_list_c = Finder.search_vector_list(Values.Project_C, c_extension)
-    Emitter.normal("\tVariable mapping...\n")
-
-    UNKNOWN = "#UNKNOWN#"
-    factor = 2
-
-    for i in vector_list_a:
-        best = vector_list_c[0]
-        best_d = Vector.Vector.dist(i[1], best[1])
-        dist = dict()
-
-        # Get best match candidate
-        for j in vector_list_c:
-            d = Vector.Vector.dist(i[1], j[1])
-            dist[j[0]] = d
-            if d < best_d:
-                best = j
-                best_d = d
-
-        # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
-        candidates = [best]
-        candidates_d = [best_d]
-        for j in vector_list_c:
-            if j != best:
-                d = dist[j[0]]
-                if d <= factor * best_d:
-                    candidates.append(j)
-                    candidates_d.append(d)
-
-        count_unknown = [0] * len(candidates)
-        count_vars = [0] * len(candidates)
-        var_maps = []
-
-        # We go up to -4 to remove the ".vec" part [filepath.function.vec]
-        fa = i[0].replace(Values.Project_A.path, "")[:-4].split(".")
-        f_a = fa[-1]
-        file_a = ".".join(fa[:-1])
-
-        # TODO: Correct once I have appropriate only function comparison
-        for k in range(len(candidates)):
-            candidate = candidates[k]
-            fc = candidate[0].replace(Values.Project_C.path, "")[:-4].split(".")
-            f_c = fc[-1]
-            file_c = ".".join(fc[:-1])
-            d_c = str(candidates_d[k])
-            Emitter.normal("\tPossible match for " + f_a + " in $Pa/" + file_a + \
-                       ":")
-            Emitter.normal("\t\tFunction: " + f_c + " in $Pc/" + file_c)
-            Emitter.normal("\t\tDistance: " + d_c + "\n")
-            Emitter.normal("\tVariable mapping from " + f_a + " to " + f_c + ":")
-            try:
-                var_map = detect_matching_variables(f_a, file_a, f_c, file_c)
-                var_maps.append(var_map)
-            except Exception as e:
-                error_exit(e, "Unexpected error while matching variables.")
-            with open('output/var-map', 'r', errors='replace') as mapped:
-                mapping = mapped.readline().strip()
-                while mapping:
-                    Emitter.special("\t\t" + mapping)
-                    if UNKNOWN in mapping:
-                        count_unknown[k] += 1
-                    count_vars[k] += 1
-                    mapping = mapped.readline().strip()
-
-        best_count = count_unknown[0]
-        best = candidates[0]
-        best_d = candidates_d[0]
-        best_prop = count_unknown[0] / count_vars[0]
-        var_map = var_maps[0]
-        for k in range(1, len(count_unknown)):
-            if count_vars[k] > 0:
-                if count_unknown[k] < best_count:
-                    best_count = count_unknown[k]
-                    best = candidates[k]
-                    best_d = candidates_d[k]
-                    best_prop = count_unknown[k] / count_vars[k]
-                    var_map = var_maps[k]
-                elif count_unknown[k] == best_count:
-                    prop = count_unknown[k] / count_vars[k]
-                    if prop < best_prop:
-                        best = candidates[k]
-                        best_d = candidates_d[k]
-                        best_prop = prop
-                        var_map = var_maps[k]
-                    elif prop == best_prop:
-                        if candidates_d[k] <= best_d:
-                            best = candidates[k]
-                            best_d = candidates_d[k]
-                            var_map = var_maps[k]
-
-        fc = best[0].replace(Values.Project_C.path, "")[:-4].split(".")
-        f_c = fc[-1]
-        file_c = ".".join(fc[:-1])
-        d_c = str(best_d)
-        Emitter.success("\t\tBest match for " + f_a + " in $Pa/" + file_a + ":")
-        Emitter.normal("\t\tFunction: " + f_c + " in $Pc/" + file_c)
-        Emitter.normal("\t\tDistance: " + d_c + "\n")
-
-        candidate_list.append((Values.Project_A.functions[Values.Project_A.path + file_a][f_a],
-                               Values.Project_C.functions[Values.Project_C.path + file_c][f_c], var_map))
-    return candidate_list
-
-
+#
+# def detect_c_files():
+#     extension = "*\.c\.*\.vec"
+#     candidate_list = []
+#     vector_list_a = Finder.search_vector_list(Values.Project_A, extension)
+#     print(vector_list_a)
+#     exit()
+#
+#     if len(vector_list_a) == 0:
+#         Emitter.normal("\t - nothing to do -")
+#         return candidate_list
+#
+#     vector_list_c = Finder.search_vector_list(Values.Project_C, extension)
+#     Emitter.normal("\tVariable mapping...\n")
+#
+#     UNKNOWN = "#UNKNOWN#"
+#     factor = 2
+#
+#     for i in vector_list_a:
+#         best = vector_list_c[0]
+#         best_d = Vector.Vector.dist(i[1], best[1])
+#         dist = dict()
+#
+#         # Get best match candidate
+#         for j in vector_list_c:
+#             d = Vector.Vector.dist(i[1], j[1])
+#             dist[j[0]] = d
+#             if d < best_d:
+#                 best = j
+#                 best_d = d
+#
+#         # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
+#         candidates = [best]
+#         candidates_d = [best_d]
+#         for j in vector_list_c:
+#             if j != best:
+#                 d = dist[j[0]]
+#                 if d <= factor * best_d:
+#                     candidates.append(j)
+#                     candidates_d.append(d)
+#
+#         count_unknown = [0] * len(candidates)
+#         count_vars = [0] * len(candidates)
+#         var_maps = []
+#
+#         # We go up to -4 to remove the ".vec" part [filepath.function.vec]
+#         fa = i[0].replace(Values.Project_A.path, "")[:-4].split(".")
+#         f_a = fa[-1]
+#         file_a = ".".join(fa[:-1])
+#
+#         # TODO: Correct once I have appropriate only function comparison
+#         for k in range(len(candidates)):
+#             candidate = candidates[k]
+#             fc = candidate[0].replace(Values.Project_C.path, "")[:-4].split(".")
+#             f_c = fc[-1]
+#             file_c = ".".join(fc[:-1])
+#             d_c = str(candidates_d[k])
+#             Emitter.normal("\tPossible match for " + f_a + " in $Pa/" + file_a + ":")
+#             Emitter.normal("\t\tFunction: " + f_c + " in $Pc/" + file_c)
+#             Emitter.normal("\t\tDistance: " + d_c + "\n")
+#             Emitter.normal("\tVariable mapping from " + f_a + " to " + f_c + ":")
+#             try:
+#                 var_map = detect_matching_variables(f_a, file_a, f_c, file_c)
+#                 var_maps.append(var_map)
+#             except Exception as e:
+#                 error_exit(e, "Unexpected error while matching variables.")
+#             with open('output/var-map', 'r', errors='replace') as mapped:
+#                 mapping = mapped.readline().strip()
+#                 while mapping:
+#                     Emitter.special("\t\t" + mapping)
+#                     if UNKNOWN in mapping:
+#                         count_unknown[k] += 1
+#                     count_vars[k] += 1
+#                     mapping = mapped.readline().strip()
+#
+#         best_count = count_unknown[0]
+#         best = candidates[0]
+#         best_d = candidates_d[0]
+#         best_prop = count_unknown[0] / count_vars[0]
+#         var_map = var_maps[0]
+#         for k in range(1, len(count_unknown)):
+#             if count_vars[k] > 0:
+#                 if count_unknown[k] < best_count:
+#                     best_count = count_unknown[k]
+#                     best = candidates[k]
+#                     best_d = candidates_d[k]
+#                     best_prop = count_unknown[k] / count_vars[k]
+#                     var_map = var_maps[k]
+#                 elif count_unknown[k] == best_count:
+#                     prop = count_unknown[k] / count_vars[k]
+#                     if prop < best_prop:
+#                         best = candidates[k]
+#                         best_d = candidates_d[k]
+#                         best_prop = prop
+#                         var_map = var_maps[k]
+#                     elif prop == best_prop:
+#                         if candidates_d[k] <= best_d:
+#                             best = candidates[k]
+#                             best_d = candidates_d[k]
+#                             var_map = var_maps[k]
+#
+#         fc = best[0].replace(Values.Project_C.path, "")[:-4].split(".")
+#         f_c = fc[-1]
+#         file_c = ".".join(fc[:-1])
+#         d_c = str(best_d)
+#         Emitter.success("\t\tBest match for " + f_a + " in $Pa/" + file_a + ":")
+#         Emitter.normal("\t\tFunction: " + f_c + " in $Pc/" + file_c)
+#         Emitter.normal("\t\tDistance: " + d_c + "\n")
+#
+#         candidate_list.append((Values.Project_A.function_list[Values.Project_A.path + file_a][f_a],
+#                                Values.Project_C.function_list[Values.Project_C.path + file_c][f_c], var_map))
+#     return candidate_list
 
 
 def id_from_string(simplestring):
@@ -321,96 +520,6 @@ def id_from_string(simplestring):
 #     return ast_map, match_count, edit_count
 #
 #
-
-
-def detect_matching_variables(f_a, file_a, f_c, file_c):
-    try:
-        Generator.generate_ast_script(Values.Project_A.path + file_a, Values.Project_C.path + file_c, Definitions.FILE_AST_MAP, True)
-        # generate_ast_map(Definitions.Pa.path + file_a, Definitions.Pc.path + file_c)
-    except Exception as e:
-        error_exit(e, "Error at generate_ast_map.")
-
-    function_a = Values.Project_A.functions[Values.Project_A.path + file_a][f_a]
-    variable_list_a = function_a.variables.copy()
-    # print(variable_list_a)
-
-    while '' in variable_list_a:
-        variable_list_a.remove('')
-
-    a_names = [i.split(" ")[-1] for i in variable_list_a]
-    # print(a_names)
-
-    # print(Values.Project_C.functions[Values.Project_C.path + file_c])
-    function_c = Values.Project_C.functions[Values.Project_C.path + file_c][f_c]
-    # print(function_c)
-    variable_list_c = function_c.variables
-    while '' in variable_list_c:
-        variable_list_c.remove('')
-
-    # print(variable_list_c)
-
-    json_file_A = Values.Project_A.path + file_a + ".AST"
-    ast_A = Parser.AST_from_file(json_file_A)
-    json_file_C = Values.Project_C.path + file_c + ".AST"
-    ast_C = Parser.AST_from_file(json_file_C)
-
-    ast_map = dict()
-    try:
-        with open(Definitions.FILE_AST_MAP, "r",) as ast_map_file:
-            map_line = ast_map_file.readline().strip()
-            # print(map_line)
-            while map_line:
-                nodeA, nodeC = clean_parse(map_line, Definitions.TO)
-
-                var_a = id_from_string(nodeA)
-                var_a = ast_A[var_a].value_calc(Values.Project_A.path + file_a)
-
-                var_c = id_from_string(nodeC)
-                var_c = ast_C[var_c].value_calc(Values.Project_C.path + file_c)
-
-                if var_a in a_names:
-                    if var_a not in ast_map.keys():
-                        ast_map[var_a] = dict()
-                    if var_c in ast_map[var_a].keys():
-                        ast_map[var_a][var_c] += 1
-                    else:
-                        ast_map[var_a][var_c] = 1
-                map_line = ast_map_file.readline().strip()
-    except Exception as e:
-        error_exit(e, "Unexpected error while parsing ast-map")
-
-    UNKNOWN = "#UNKNOWN#"
-    variable_mapping = dict()
-    try:
-        while variable_list_a:
-            var_a = variable_list_a.pop()
-            if var_a not in variable_mapping.keys():
-                a_name = var_a.split(" ")[-1]
-                if a_name in ast_map.keys():
-                    max_match = -1
-                    best_match = None
-                    for var_c in ast_map[a_name].keys():
-                        if max_match == -1:
-                            max_match = ast_map[a_name][var_c]
-                            best_match = var_c
-                        elif ast_map[a_name][var_c] > max_match:
-                            max_match = ast_map[a_name][var_c]
-                            best_match = var_c
-                    if best_match:
-                        for var_c in variable_list_c:
-                            c_name = var_c.split(" ")[-1]
-                            if c_name == best_match:
-                                variable_mapping[var_a] = var_c
-                if var_a not in variable_mapping.keys():
-                    variable_mapping[var_a] = UNKNOWN
-    except Exception as e:
-        error_exit(e, "Unexpected error while mapping vars.")
-
-    with open("output/var-map", "w") as var_map_file:
-        for var_a in variable_mapping.keys():
-            var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
-
-    return variable_mapping
 
 
 def clean_parse(content, separator):
