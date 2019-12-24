@@ -4,6 +4,7 @@ from tools import Logger, Emitter
 import sys
 from common.Utilities import execute_command, error_exit
 import os
+import codecs
 
 
 class Vector:
@@ -44,7 +45,7 @@ class Vector:
             Emitter.information("generating vector for " + str(current))
             start_line = self.start_line
             end_line = self.end_line
-            with open(self.file_path, 'r') as source_file:
+            with codecs.open(self.file_path, 'r', encoding='utf-8') as source_file:
                 ls = source_file.readlines()
                 max_line = len(ls)
                 if int(end_line) > max_line:
