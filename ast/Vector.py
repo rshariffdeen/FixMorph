@@ -45,7 +45,7 @@ class Vector:
             Emitter.information("generating vector for " + str(current))
             start_line = self.start_line
             end_line = self.end_line
-            with codecs.open(self.file_path, 'r', encoding='utf-8') as source_file:
+            with codecs.open(self.file_path, 'r', encoding='utf-8', errors='ignore') as source_file:
                 ls = source_file.readlines()
                 max_line = len(ls)
                 if int(end_line) > max_line:
