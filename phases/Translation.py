@@ -1135,7 +1135,7 @@ def load_values():
         map_info = dict()
         map_list = Reader.read_json(Definitions.FILE_MAP_INFO)
         for (file_path_info, node_map) in map_list:
-            map_info[file_path_info] = node_map
+            map_info[(file_path_info[0], file_path_info[1])] = node_map
         Values.variable_map = map_info
 
     # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
