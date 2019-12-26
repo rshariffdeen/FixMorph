@@ -6,7 +6,10 @@ import os
 import time
 from common import Definitions, Values
 from common.Utilities import execute_command, error_exit
-from tools import Emitter, Collector
+from tools import Emitter, Collector, Reader, Writer
+from ast import Vector
+
+generated_script_list = dict()
 
 
 def generate_edit_script(file_a, file_b, output_file):
@@ -25,25 +28,25 @@ def generate_edit_script(file_a, file_b, output_file):
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
 
 
-def generate_script_for_header_files(files_list_to_patch):
-    generated_script_list = dict()
-    script_file_ab = "output/diff_script_AB"
-    for (file_a, file_c, var_map) in files_list_to_patch:
-        file_b = file_a.replace(Values.Project_A.path, Values.Project_B.path)
-        if not os.path.isfile(file_b):
-            error_exit("Error: File not found.", file_b)
-        # Generate edit scripts for diff and matching
-        generate_edit_script(file_a, file_b, script_file_ab)
-        original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
-
-        generated_data = (original_script, inserted_node_list, map_ab)
-        generated_script_list[(file_a, file_b, file_c)] = generated_data
-    Values.generated_script_for_header_files = generated_script_list
+# def generate_script_for_header_files(files_list_to_patch):
+#     generated_script_list = dict()
+#     script_file_ab = "output/diff_script_AB"
+#     for (file_a, file_c, var_map) in files_list_to_patch:
+#         file_b = file_a.replace(Values.Project_A.path, Values.Project_B.path)
+#         if not os.path.isfile(file_b):
+#             error_exit("Error: File not found.", file_b)
+#         # Generate edit scripts for diff and matching
+#         generate_edit_script(file_a, file_b, script_file_ab)
+#         original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
+#
+#         generated_data = (original_script, inserted_node_list, map_ab)
+#         generated_script_list[(file_a, file_b, file_c)] = generated_data
+#     Values.generated_script_for_header_files = generated_script_list
 
 
 def generate_script_for_c_files(file_list_to_patch):
-    generated_script_list = dict()
-    script_file_ab = "output/diff_script_AB"
+    global generated_script_list
+    script_file_ab = Definitions.DIRECTORY_TMP + "/diff_script_AB"
     for (vec_f_a, vec_f_c, var_map) in file_list_to_patch:
         try:
             # print(vec_f_a.file_path)
@@ -65,7 +68,6 @@ def generate_script_for_c_files(file_list_to_patch):
 
         generated_data = (original_script, inserted_node_list, map_ab)
         generated_script_list[(vec_f_a.file_path, vec_f_b.file_path, vec_f_c.file_path)] = generated_data
-    Values.generated_script_for_c_files = generated_script_list
 
 
 def safe_exec(function_def, title, *args):
@@ -86,10 +88,31 @@ def safe_exec(function_def, title, *args):
     return result
 
 
+def load_values():
+    if not Values.c_file_list_to_patch:
+        clone_list = list()
+        clone_info = Reader.read_json(Definitions.FILE_CLONE_INFO)
+        for (vec_a_info, vec_c_info, var_map) in clone_info:
+            vec_a = Vector.Vector(vec_a_info[0], vec_a_info[1], vec_a_info[2], vec_a_info[3], True)
+            vec_c = Vector.Vector(vec_c_info[0], vec_c_info[1], vec_c_info[2], vec_c_info[3], True)
+            clone_list.append((vec_a, vec_c, var_map))
+        Values.c_file_list_to_patch = clone_list
+
+    Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+
+
+def save_values():
+    Writer.write_as_json(generated_script_list, Definitions.FILE_SCRIPT_INFO)
+    Values.generated_script_for_c_files = generated_script_list
+
+
 def extract():
     Emitter.title("Generating GumTree script for patch")
     # Using all previous structures to transplant patch
+    load_values()
+    if not Values.SKIP_EXTRACTION:
+        # safe_exec(generate_script_for_header_files, "generating script for header files", Values.header_file_list_to_patch)
+        safe_exec(generate_script_for_c_files, "generating script for C files", Values.c_file_list_to_patch)
+        save_values()
 
-    safe_exec(generate_script_for_header_files, "generating script for header files", Values.header_file_list_to_patch)
-    safe_exec(generate_script_for_c_files, "generating script for C files", Values.c_file_list_to_patch)
 
