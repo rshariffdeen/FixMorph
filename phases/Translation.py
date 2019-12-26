@@ -1133,7 +1133,7 @@ def load_values():
     load_state()
     if not Values.variable_map:
         map_info = dict()
-        map_list = Reader.read_json(Definitions.FILE_CLONE_INFO)
+        map_list = Reader.read_json(Definitions.FILE_MAP_INFO)
         for (file_path_info, node_map) in map_list:
             map_info[file_path_info] = node_map
         Values.variable_map = map_info
