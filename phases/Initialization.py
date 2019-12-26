@@ -27,6 +27,8 @@ def load_values():
     Values.Project_A = Project.Project(Values.PATH_A, "Pa")
     Values.Project_B = Project.Project(Values.PATH_B, "Pb")
     Values.Project_C = Project.Project(Values.PATH_C, "Pc")
+    if str(Values.PATH_C)[-1] == "/":
+        Values.PATH_C = Values.PATH_C[:-1]
     Values.Project_D = Project.Project(Values.PATH_C + "-patch", "Pd")
     load_standard_list()
 
