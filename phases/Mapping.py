@@ -79,7 +79,7 @@ def load_values():
 
 
 def save_values():
-    Writer.write_as_json(Values.variable_map, Definitions.FILE_MAP_INFO)
+    Writer.write_map_info(Values.variable_map, Definitions.FILE_MAP_INFO)
 
 
 def map():
