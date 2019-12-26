@@ -115,5 +115,6 @@ def extract():
         # safe_exec(generate_script_for_header_files, "generating script for header files", Values.header_file_list_to_patch)
         safe_exec(generate_script_for_c_files, "generating script for C files", Values.c_file_list_to_patch)
         save_values()
-
+    else:
+        Emitter.special("\n\t-skipping this phase-")
 

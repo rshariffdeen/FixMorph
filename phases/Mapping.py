@@ -69,7 +69,7 @@ def get_mapping(map_file_name):
 
 def load_values():
     if not Values.generated_script_for_c_files:
-        script_info = list()
+        script_info = dict()
         script_list = Reader.read_json(Definitions.FILE_SCRIPT_INFO)
         for (vec_path_info, vec_info) in script_list:
             script_info[vec_path_info] = vec_info
@@ -109,3 +109,5 @@ def map():
                 variable_map = get_mapping(map_file_name)
                 Values.variable_map[file_list] = variable_map
         save_values()
+    else:
+        Emitter.special("\n\t-skipping this phase-")
