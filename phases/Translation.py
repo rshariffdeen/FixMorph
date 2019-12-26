@@ -1,7 +1,7 @@
 import time
 from common import Definitions, Values
-from common.Utilities import execute_command, error_exit
-from tools import Emitter
+from common.Utilities import execute_command, error_exit, save_current_state, load_state
+from tools import Emitter, Reader, Writer
 from ast import Parser
 
 
@@ -1129,71 +1129,95 @@ def safe_exec(function_def, title, *args):
     return result
 
 
+def load_values():
+    load_state()
+    if not Values.variable_map:
+        map_info = dict()
+        map_list = Reader.read_json(Definitions.FILE_CLONE_INFO)
+        for (file_path_info, node_map) in map_list:
+            map_info[file_path_info] = node_map
+        Values.variable_map = map_info
+
+    # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+
+
+def save_values():
+    # Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
+    # Values.generated_script_for_c_files = generated_script_list
+    save_current_state()
+
+
 def translate():
     Emitter.title("Translate GumTree Script")
-    Emitter.sub_title("Translating scripts for header files")
-    translated_script_list = dict()
-    for file_list, generated_data in Values.generated_script_for_header_files.items():
-        # Generate AST as json files
-        json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
+    load_values()
+    if not Values.SKIP_MAPPING:
+        translated_script_list = dict()
+        # Emitter.sub_title("Translating scripts for header files")
+        # for file_list, generated_data in Values.generated_script_for_header_files.items():
+        #     # Generate AST as json files
+        #     json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
+        #
+        #     original_script = list()
+        #     for instruction in generated_data[0]:
+        #         instruction_line = ""
+        #         for token in instruction:
+        #             instruction_line += token + " "
+        #         original_script.append(instruction_line)
+        #     # Simplify instructions to a smaller representative sequence of them
+        #     modified_script = simplify_patch(generated_data[0], generated_data[2], json_ast_dump)
+        #     # Sort in reverse order and depending on instruction for application
+        #     modified_script.sort(key=cmp_to_key(order_comp))
+        #     # Delete overlapping DELETE operations
+        #     # modified_AB = remove_overlapping_delete(modified_AB)
+        #     # Adjusting position for MOVE and INSERT operations
+        #     # modified_AB = adjust_pos(modified_AB)
+        #     # Emittering modified simplified script
+        #     Emitter.success("\tModified Script:")
+        #     for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
+        #         Emitter.success("\t" + j)
+        #     # We rewrite the instruction as a script (str) instead of nodes
+        #     modified_script = rewrite_as_script(modified_script)
+        #     # We get the matching nodes from Pa to Pc into a dict
+        #     variable_map = Values.variable_map[file_list]
+        #     translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump, generated_data[2],
+        #                                          variable_map)
+        #     translated_script_list[file_list] = (translated_script, original_script)
+        #
+        Emitter.sub_title("Translating scripts for C files")
+        for file_list, generated_data in Values.generated_script_for_c_files.items():
+            json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
 
-        original_script = list()
-        for instruction in generated_data[0]:
-            instruction_line = ""
-            for token in instruction:
-                instruction_line += token + " "
-            original_script.append(instruction_line)
-        # Simplify instructions to a smaller representative sequence of them
-        modified_script = simplify_patch(generated_data[0], generated_data[2], json_ast_dump)
-        # Sort in reverse order and depending on instruction for application
-        modified_script.sort(key=cmp_to_key(order_comp))
-        # Delete overlapping DELETE operations
-        # modified_AB = remove_overlapping_delete(modified_AB)
-        # Adjusting position for MOVE and INSERT operations
-        # modified_AB = adjust_pos(modified_AB)
-        # Emittering modified simplified script
-        Emitter.success("\tModified Script:")
-        for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
-            Emitter.success("\t" + j)
-        # We rewrite the instruction as a script (str) instead of nodes
-        modified_script = rewrite_as_script(modified_script)
-        # We get the matching nodes from Pa to Pc into a dict
-        variable_map = Values.variable_map[file_list]
-        translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump, generated_data[2],
-                                             variable_map)
-        translated_script_list[file_list] = (translated_script, original_script)
+            original_script = list()
+            for instruction in generated_data[0]:
+                instruction_line = ""
+                for token in instruction:
+                    instruction_line += token + " "
+                original_script.append(instruction_line)
 
-    Emitter.sub_title("Translating scripts for C files")
-    for file_list, generated_data in Values.generated_script_for_c_files.items():
-        json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
+            # for instruction in generated_data[0]:
+            #     original_script.append(get_instruction(instruction))
+            # Simplify instructions to a smaller representative sequence of them
+            modified_script = simplify_patch(generated_data[0], generated_data[2], json_ast_dump)
+            # Sort in reverse order and depending on instruction for application
+            modified_script.sort(key=cmp_to_key(order_comp))
+            # Delete overlapping DELETE operations
+            # modified_AB = remove_overlapping_delete(modified_AB)
+            # Adjusting position for MOVE and INSERT operations
+            # modified_script = adjust_pos(modified_script)
+            # Emittering modified simplified script
+            # Emitter.success("\tModified Script:")
+            # for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
+            #     Emitter.success("\t" + j)
+            # We rewrite the instruction as a script (str) instead of nodes
+            modified_script = rewrite_as_script(modified_script)
+            # We get the matching nodes from Pa to Pc into a dict
+            variable_map = Values.variable_map[file_list]
+            translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
+                                                         generated_data[2], variable_map)
+            translated_script_list[file_list] = (translated_script, original_script)
 
-        original_script = list()
-        for instruction in generated_data[0]:
-            instruction_line = ""
-            for token in instruction:
-                instruction_line += token + " "
-            original_script.append(instruction_line)
+        Values.translated_script_for_files = translated_script_list
+        save_values()
+    else:
+        Emitter.special("\n\t-skipping this phase-")
 
-        # for instruction in generated_data[0]:
-        #     original_script.append(get_instruction(instruction))
-        # Simplify instructions to a smaller representative sequence of them
-        modified_script = simplify_patch(generated_data[0], generated_data[2], json_ast_dump)
-        # Sort in reverse order and depending on instruction for application
-        modified_script.sort(key=cmp_to_key(order_comp))
-        # Delete overlapping DELETE operations
-        # modified_AB = remove_overlapping_delete(modified_AB)
-        # Adjusting position for MOVE and INSERT operations
-        # modified_script = adjust_pos(modified_script)
-        # Emittering modified simplified script
-        # Emitter.success("\tModified Script:")
-        # for j in [" - ".join([str(k) for k in i]) for i in modified_script]:
-        #     Emitter.success("\t" + j)
-        # We rewrite the instruction as a script (str) instead of nodes
-        modified_script = rewrite_as_script(modified_script)
-        # We get the matching nodes from Pa to Pc into a dict
-        variable_map = Values.variable_map[file_list]
-        translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
-                                                     generated_data[2], variable_map)
-        translated_script_list[file_list] = (translated_script, original_script)
-
-    Values.translated_script_for_files = translated_script_list
