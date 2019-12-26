@@ -10,6 +10,7 @@ from tools import Logger, Emitter, Detector, Writer, Generator, Reader
 
 clone_list = dict()
 
+
 def generate_target_vectors():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Generating vector files for all functions in Target")
