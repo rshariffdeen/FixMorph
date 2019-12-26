@@ -47,9 +47,9 @@ def write_clone_list(clone_list, output_file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     data_list = list()
     for (vec_a, vec_c, var_map) in clone_list:
-        vec_a_path = vec_a.file_path
-        vec_c_path = vec_c.file_path
-        data_list.append((vec_a_path, vec_c_path, var_map))
+        vec_a_info = (vec_a.file_path, vec_a.function_name, vec_a.start_line, vec_a.end_line)
+        vec_c_info = (vec_c.file_path, vec_c.function_name, vec_c.start_line, vec_c.end_line)
+        data_list.append((vec_a_info, vec_c_info, var_map))
 
     content = json.dumps(data_list)
     with open(output_file_path, 'w') as out_file:
