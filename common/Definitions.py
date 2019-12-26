@@ -95,6 +95,8 @@ ARG_SKIP_RESTORE = "--skip-restore"
 ARG_ONLY_VERIFY = "--only-verify"
 ARG_SKIP_BUILD = "--skip-build"
 ARG_SKIP_VEC_GEN = "--skip-vec-gen"
+ARG_SKIP_DETECTION = "--skip-detection"
+ARG_SKIP_EXTRACTION = "--skip-extraction"
 
 
 # ----------------- TOOLS --------------------------------
