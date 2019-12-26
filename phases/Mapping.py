@@ -72,7 +72,7 @@ def load_values():
         script_info = dict()
         script_list = Reader.read_json(Definitions.FILE_SCRIPT_INFO)
         for (vec_path_info, vec_info) in script_list:
-            script_info[vec_path_info] = vec_info
+            script_info[(vec_path_info[0], vec_path_info[1], vec_path_info[2])] = vec_info
         Values.generated_script_for_c_files = script_info
 
     # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
