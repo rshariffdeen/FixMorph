@@ -32,7 +32,7 @@ def load_values():
 
 
 def save_values():
-    Writer.write_as_json(clone_list, Definitions.FILE_CLONE_INFO)
+    Writer.write_clone_list(clone_list, Definitions.FILE_CLONE_INFO)
 
 
 def safe_exec(function_def, title, *args):
