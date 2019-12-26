@@ -102,7 +102,7 @@ def load_values():
 
 
 def save_values():
-    Writer.write_as_json(generated_script_list, Definitions.FILE_SCRIPT_INFO)
+    Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
     Values.generated_script_for_c_files = generated_script_list
     save_current_state()
 

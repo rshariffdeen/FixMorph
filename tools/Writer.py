@@ -55,3 +55,13 @@ def write_clone_list(clone_list, output_file_path):
     with open(output_file_path, 'w') as out_file:
         out_file.writelines(content)
 
+
+def write_script_info(script_info, output_file_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    data_list = list()
+    for vec_path_info in script_info:
+        vec_info = script_info[vec_path_info]
+        data_list.append((vec_path_info, vec_info))
+    content = json.dumps(data_list)
+    with open(output_file_path, 'w') as out_file:
+        out_file.writelines(content)
