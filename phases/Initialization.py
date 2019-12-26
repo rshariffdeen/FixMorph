@@ -89,6 +89,8 @@ def read_conf():
                 Values.SKIP_VEC_GEN = True
             elif Definitions.ARG_SKIP_EXTRACTION in arg:
                 Values.SKIP_EXTRACTION = True
+            elif Definitions.ARG_SKIP_MAPPING in arg:
+                Values.SKIP_MAPPING = True
             elif Definitions.ARG_SKIP_SLICE in arg:
                 Values.SKIP_SLICE = True
             elif Definitions.ARG_SKIP_WEAVE in arg:

@@ -1,6 +1,6 @@
 from common import Definitions, Values
-from common.Utilities import execute_command, error_exit
-from tools import Emitter
+from common.Utilities import execute_command, error_exit, save_current_state
+from tools import Emitter, Reader, Writer
 
 
 def generate_map(file_a, file_b, output_file):
@@ -67,24 +67,45 @@ def get_mapping(map_file_name):
     return node_map
 
 
+def load_values():
+    if not Values.generated_script_for_c_files:
+        script_info = list()
+        script_list = Reader.read_json(Definitions.FILE_SCRIPT_INFO)
+        for (vec_path_info, vec_info) in script_list:
+            script_info[vec_path_info] = vec_info
+        Values.generated_script_for_c_files = script_info
+
+    # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+
+
+def save_values():
+    # Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
+    # Values.generated_script_for_c_files = generated_script_list
+    save_current_state()
+
+
 def map():
     Emitter.title("Variable Mapping")
-    Emitter.sub_title("Variable mapping for header files")
-    if len(Values.generated_script_for_header_files) == 0:
-        Emitter.normal("\t -nothing-to-do")
-    else:
-        for file_list, generated_data in Values.generated_script_for_header_files.items():
-            map_file_name = "output/diff_script_AC"
-            generate_map(file_list[0], file_list[2], map_file_name)
-            variable_map = get_mapping(map_file_name)
-            Values.variable_map[file_list] = variable_map
 
-    Emitter.sub_title("Variable mapping for C files")
-    if len(Values.generated_script_for_c_files) == 0:
-        Emitter.normal("\t -nothing-to-do")
-    else:
-        for file_list, generated_data in Values.generated_script_for_c_files.items():
-            map_file_name = "output/diff_script_AC"
-            generate_map(file_list[0], file_list[2], map_file_name)
-            variable_map = get_mapping(map_file_name)
-            Values.variable_map[file_list] = variable_map
+    load_values()
+    if not Values.SKIP_MAPPING:
+        # Emitter.sub_title("Variable mapping for header files")
+        # if len(Values.generated_script_for_header_files) == 0:
+        #     Emitter.normal("\t -nothing-to-do")
+        # else:
+        #     for file_list, generated_data in Values.generated_script_for_header_files.items():
+        #         map_file_name = "output/diff_script_AC"
+        #         generate_map(file_list[0], file_list[2], map_file_name)
+        #         variable_map = get_mapping(map_file_name)
+        #         Values.variable_map[file_list] = variable_map
+        #
+        Emitter.sub_title("Variable mapping for C files")
+        if len(Values.generated_script_for_c_files) == 0:
+            Emitter.normal("\t -nothing-to-do")
+        else:
+            for file_list, generated_data in Values.generated_script_for_c_files.items():
+                map_file_name = "output/diff_script_AC"
+                generate_map(file_list[0], file_list[2], map_file_name)
+                variable_map = get_mapping(map_file_name)
+                Values.variable_map[file_list] = variable_map
+        save_values()

@@ -23,6 +23,7 @@ SKIP_BUILD = False
 SKIP_DETECTION = False
 SKIP_VEC_GEN = False
 SKIP_EXTRACTION = False
+SKIP_MAPPING = False
 
 
 

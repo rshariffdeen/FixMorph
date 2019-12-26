@@ -101,6 +101,7 @@ ARG_SKIP_BUILD = "--skip-build"
 ARG_SKIP_VEC_GEN = "--skip-vec-gen"
 ARG_SKIP_DETECTION = "--skip-detection"
 ARG_SKIP_EXTRACTION = "--skip-extraction"
+ARG_SKIP_MAPPING = "--skip-mapping"
 
 
 # ----------------- TOOLS --------------------------------
