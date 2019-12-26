@@ -29,10 +29,10 @@ def save_current_state():
 
 
 def load_state():
-    Values.Project_A = pickle.load(Definitions.FILE_PROJECT_A)
-    Values.Project_B = pickle.load(Definitions.FILE_PROJECT_B)
-    Values.Project_C = pickle.load(Definitions.FILE_PROJECT_C)
-    Values.Project_D = pickle.load(Definitions.FILE_PROJECT_D)
+    Values.Project_A = pickle.load(open(Definitions.FILE_PROJECT_A, 'wb'))
+    Values.Project_B = pickle.load(open(Definitions.FILE_PROJECT_B, 'wb'))
+    Values.Project_C = pickle.load(open(Definitions.FILE_PROJECT_C, 'wb'))
+    Values.Project_D = pickle.load(open(Definitions.FILE_PROJECT_D, 'wb'))
 
 
 def create_directories():
