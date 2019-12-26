@@ -65,3 +65,14 @@ def write_script_info(script_info, output_file_path):
     content = json.dumps(data_list)
     with open(output_file_path, 'w') as out_file:
         out_file.writelines(content)
+
+
+def write_map_info(map_info, output_file_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    data_list = list()
+    for file_path_info in map_info:
+        node_map = map_info[file_path_info]
+        data_list.append((file_path_info, node_map))
+    content = json.dumps(data_list)
+    with open(output_file_path, 'w') as out_file:
+        out_file.writelines(content)

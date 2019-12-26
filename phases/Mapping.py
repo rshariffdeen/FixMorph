@@ -84,7 +84,6 @@ def save_values():
 
 def map():
     Emitter.title("Variable Mapping")
-
     load_values()
     if not Values.SKIP_MAPPING:
         # Emitter.sub_title("Variable mapping for header files")
