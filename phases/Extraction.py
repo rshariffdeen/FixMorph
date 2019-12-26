@@ -6,7 +6,7 @@ import os
 import time
 from common import Definitions, Values
 from common.Utilities import execute_command, error_exit
-from tools import Emitter
+from tools import Emitter, Collector
 
 
 def generate_edit_script(file_a, file_b, output_file):
@@ -34,7 +34,7 @@ def generate_script_for_header_files(files_list_to_patch):
             error_exit("Error: File not found.", file_b)
         # Generate edit scripts for diff and matching
         generate_edit_script(file_a, file_b, script_file_ab)
-        original_script, inserted_node_list, map_ab = get_instruction_list(script_file_ab)
+        original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
 
         generated_data = (original_script, inserted_node_list, map_ab)
         generated_script_list[(file_a, file_b, file_c)] = generated_data
@@ -61,7 +61,7 @@ def generate_script_for_c_files(file_list_to_patch):
 
         # Generate edit scripts for diff and matching
         generate_edit_script(vec_f_a.file_path, vec_f_b.file_path, script_file_ab)
-        original_script, inserted_node_list, map_ab = get_instruction_list(script_file_ab)
+        original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
 
         generated_data = (original_script, inserted_node_list, map_ab)
         generated_script_list[(vec_f_a.file_path, vec_f_b.file_path, vec_f_c.file_path)] = generated_data
