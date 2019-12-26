@@ -22,10 +22,10 @@ def execute_command(command, show_output=True):
 
 
 def save_current_state():
-    pickle.dump(Values.Project_A, Definitions.FILE_PROJECT_A)
-    pickle.dump(Values.Project_B, Definitions.FILE_PROJECT_B)
-    pickle.dump(Values.Project_C, Definitions.FILE_PROJECT_C)
-    pickle.dump(Values.Project_D, Definitions.FILE_PROJECT_D)
+    pickle.dump(Values.Project_A, open(Definitions.FILE_PROJECT_A, 'wb'))
+    pickle.dump(Values.Project_B, open(Definitions.FILE_PROJECT_B, 'wb'))
+    pickle.dump(Values.Project_C, open(Definitions.FILE_PROJECT_C, 'wb'))
+    pickle.dump(Values.Project_D, open(Definitions.FILE_PROJECT_D, 'wb'))
 
 
 def load_state():
