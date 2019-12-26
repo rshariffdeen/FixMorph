@@ -33,7 +33,8 @@ FILE_AST_DIFF_ERROR = DIRECTORY_TMP + "/errors_ast_diff"
 FILE_PARTIAL_PATCH = DIRECTORY_TMP + "/gen-patch"
 
 
-FILE_DIFF_INFO = DIRECTORY_OUTPUT + "/diff-info"
+FILE_DIFF_INFO = ""
+FILE_CLONE_INFO = ""
 
 
 
