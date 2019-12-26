@@ -58,6 +58,23 @@ def create_fuzz_dir():
         execute_command(create_command)
 
 
+def create_directories():
+    create_patch_dir()
+    create_output_dir()
+    create_fuzz_dir()
+
+
+def create_files():
+    Definitions.FILE_PROJECT_A = Definitions.DIRECTORY_OUTPUT + "/project-A"
+    open(Definitions.FILE_PROJECT_A, 'a').close()
+    Definitions.FILE_PROJECT_B = Definitions.DIRECTORY_OUTPUT + "/project-B"
+    open(Definitions.FILE_PROJECT_B, 'a').close()
+    Definitions.FILE_PROJECT_C = Definitions.DIRECTORY_OUTPUT + "/project-C"
+    open(Definitions.FILE_PROJECT_C, 'a').close()
+    Definitions.FILE_PROJECT_D = Definitions.DIRECTORY_OUTPUT + "/project-D"
+    open(Definitions.FILE_PROJECT_D, 'a').close()
+
+
 def read_conf():
     Emitter.normal("\treading configuration values")
     if len(sys.argv) > 1:
@@ -150,9 +167,8 @@ def initialize():
     Emitter.title("Initializing project for Transfer")
     Emitter.sub_title("loading configuration")
     read_conf()
-    create_patch_dir()
-    create_output_dir()
-    create_fuzz_dir()
+    create_directories()
+    create_files()
     load_values()
     Emitter.sub_title("set environment")
     set_env_value()
