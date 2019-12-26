@@ -6,7 +6,7 @@ import time, sys
 from common.Utilities import execute_command, error_exit, find_files
 from common import Definitions, Values
 from ast import Vector, Parser
-from tools import Logger, Emitter, Detector, Differ, Generator
+from tools import Logger, Emitter, Detector, Writer, Generator, Reader
 
 
 def generate_target_vectors():
@@ -21,6 +21,10 @@ def find_clones():
     Emitter.sub_sub_title("Finding clone functions in Target")
     # Values.c_file_list_to_patch = Detector.detect_c_files()
     Detector.find_clone()
+
+
+def load_values():
+    Values.diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
 
 
 def safe_exec(function_def, title, *args):
@@ -46,6 +50,7 @@ def safe_exec(function_def, title, *args):
 def detect():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Clone Detection")
+    load_values()
     if not Values.SKIP_DETECTION:
         if not Values.SKIP_VEC_GEN:
             safe_exec(generate_target_vectors, "generating vectors for target")

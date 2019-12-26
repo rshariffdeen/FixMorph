@@ -6,7 +6,7 @@ import sys
 import time
 from common.Utilities import error_exit
 from common import Definitions, Values
-from tools import Logger, Emitter, Differ
+from tools import Logger, Emitter, Differ, Writer
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -68,7 +68,7 @@ def safe_exec(function_def, title, *args):
     return result
 
 
-def set_values():
+def load_values():
     global FILE_DIFF_C, FILE_DIFF_H, FILE_DIFF_ALL
     global FILE_AST_SCRIPT, FILE_AST_DIFF_ERROR
     global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
@@ -77,11 +77,12 @@ def set_values():
 def diff():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Analysing Changes")
-    set_values()
+    load_values()
     if not Values.SKIP_ANALYSE:
         safe_exec(analyse_source_diff, "analysing source diff")
         safe_exec(analyse_ast_diff, "analysing ast diff")
     else:
         Emitter.special("\n\t-skipping this phase-")
-    Values.diff_info = diff_info
+    Writer.write_as_json(diff_info, Definitions.FILE_DIFF_INFO)
+
 
