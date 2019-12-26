@@ -145,10 +145,10 @@ def initialize():
     Emitter.title("Initializing project for Transfer")
     Emitter.sub_title("loading configuration")
     read_conf()
-    load_values()
     create_patch_dir()
     create_output_dir()
     create_fuzz_dir()
+    load_values()
     Emitter.sub_title("set environment")
     set_env_value()
 
