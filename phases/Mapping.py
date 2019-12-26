@@ -75,13 +75,11 @@ def load_values():
             script_info[(vec_path_info[0], vec_path_info[1], vec_path_info[2])] = vec_info
         Values.generated_script_for_c_files = script_info
 
-    # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+    Definitions.FILE_MAP_INFO = Definitions.DIRECTORY_OUTPUT + "/map-info"
 
 
 def save_values():
-    # Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
-    # Values.generated_script_for_c_files = generated_script_list
-    save_current_state()
+    Writer.write_as_json(Values.variable_map, Definitions.FILE_MAP_INFO)
 
 
 def map():
@@ -104,7 +102,7 @@ def map():
             Emitter.normal("\t -nothing-to-do")
         else:
             for file_list, generated_data in Values.generated_script_for_c_files.items():
-                map_file_name = "output/diff_script_AC"
+                map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
                 generate_map(file_list[0], file_list[2], map_file_name)
                 variable_map = get_mapping(map_file_name)
                 Values.variable_map[file_list] = variable_map
