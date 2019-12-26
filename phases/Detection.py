@@ -3,7 +3,7 @@
 
 
 import time, sys
-from common.Utilities import execute_command, error_exit, save_current_state
+from common.Utilities import execute_command, error_exit, save_current_state, load_state
 from common import Definitions, Values
 from ast import Vector, Parser
 from tools import Logger, Emitter, Detector, Writer, Generator, Reader
@@ -29,8 +29,8 @@ def find_clones():
 def load_values():
     if not Values.diff_info:
         Values.diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
+        load_state()
     Definitions.FILE_CLONE_INFO = Definitions.DIRECTORY_OUTPUT + "/clone-info"
-
 
 
 def save_values():
