@@ -117,8 +117,8 @@ def read_conf():
             Values.PATH_C = configuration.replace(Definitions.CONF_PATH_C, '')
             if "$HOME$" in Values.PATH_C:
                 Values.PATH_C = Values.PATH_C.replace("$HOME$", Definitions.DIRECTORY_MAIN)
-                if str(Values.PATH_C)[-1] == "/":
-                    Values.PATH_C = Values.PATH_C[:-1]
+            if str(Values.PATH_C)[-1] == "/":
+                Values.PATH_C = Values.PATH_C[:-1]
         elif Definitions.CONF_FLAGS_A in configuration:
             Values.BUILD_FLAGS_A = configuration.replace(Definitions.CONF_FLAGS_A, '')
         elif Definitions.CONF_FLAGS_C in configuration:
