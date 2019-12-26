@@ -27,12 +27,14 @@ def find_clones():
 
 
 def load_values():
-    Values.diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
+    if not Values.diff_info:
+        Values.diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
     Definitions.FILE_CLONE_INFO = Definitions.DIRECTORY_OUTPUT + "/clone-info"
 
 
 def save_values():
     Writer.write_clone_list(clone_list, Definitions.FILE_CLONE_INFO)
+    Values.c_file_list_to_patch = clone_list
 
 
 def safe_exec(function_def, title, *args):
