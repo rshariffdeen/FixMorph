@@ -3,7 +3,7 @@
 
 
 import time, sys
-from common.Utilities import execute_command, error_exit, find_files
+from common.Utilities import execute_command, error_exit, save_current_state
 from common import Definitions, Values
 from ast import Vector, Parser
 from tools import Logger, Emitter, Detector, Writer, Generator, Reader
@@ -30,11 +30,16 @@ def load_values():
     if not Values.diff_info:
         Values.diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
     Definitions.FILE_CLONE_INFO = Definitions.DIRECTORY_OUTPUT + "/clone-info"
+    Definitions.FILE_PROJECT_A = Definitions.DIRECTORY_OUTPUT + "/project-A"
+    Definitions.FILE_PROJECT_B = Definitions.DIRECTORY_OUTPUT + "/project-B"
+    Definitions.FILE_PROJECT_C = Definitions.DIRECTORY_OUTPUT + "/project-C"
+    Definitions.FILE_PROJECT_D = Definitions.DIRECTORY_OUTPUT + "/project-D"
 
 
 def save_values():
     Writer.write_clone_list(clone_list, Definitions.FILE_CLONE_INFO)
     Values.c_file_list_to_patch = clone_list
+    save_current_state()
 
 
 def safe_exec(function_def, title, *args):

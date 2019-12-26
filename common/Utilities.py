@@ -3,8 +3,9 @@
 import os
 import sys
 import subprocess
-from tools import Logger, Emitter
-from common import Definitions
+import pickle
+from tools import Logger, Emitter, Writer, Reader
+from common import Definitions, Values
 
 
 def execute_command(command, show_output=True):
@@ -18,6 +19,20 @@ def execute_command(command, show_output=True):
     (output, error) = process.communicate()
     # out is the output of the command, and err is the exit value
     return str(process.returncode)
+
+
+def save_current_state():
+    pickle.dump(Values.Project_A, Definitions.FILE_PROJECT_A)
+    pickle.dump(Values.Project_B, Definitions.FILE_PROJECT_B)
+    pickle.dump(Values.Project_C, Definitions.FILE_PROJECT_C)
+    pickle.dump(Values.Project_D, Definitions.FILE_PROJECT_D)
+
+
+def load_state():
+    Values.Project_A = pickle.load(Definitions.FILE_PROJECT_A)
+    Values.Project_B = pickle.load(Definitions.FILE_PROJECT_B)
+    Values.Project_C = pickle.load(Definitions.FILE_PROJECT_C)
+    Values.Project_D = pickle.load(Definitions.FILE_PROJECT_D)
 
 
 def create_directories():

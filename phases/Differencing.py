@@ -4,7 +4,7 @@
 
 import sys
 import time
-from common.Utilities import error_exit
+from common.Utilities import error_exit, save_current_state
 from common import Definitions, Values
 from tools import Logger, Emitter, Differ, Writer
 
@@ -78,6 +78,7 @@ def load_values():
 
 def save_values():
     Writer.write_as_json(diff_info, Definitions.FILE_DIFF_INFO)
+    save_current_state()
 
 
 def diff():
