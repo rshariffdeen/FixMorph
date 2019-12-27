@@ -3,6 +3,7 @@
 ####################################################################################################
 
 	Crochet - Horizontal Code Edit Transfer
+	Test conducted on: 27-Dec-2019 (21:07:25.268693)
 
 ####################################################################################################
 [K
@@ -15,12 +16,12 @@
 	loading configuration
 	__________________________________________________________________________________________
 
-[K	reading configuration values
+[K		reading configuration values
 [K
 	set environment
 	__________________________________________________________________________________________
 
-[K	setting environment values
+[K		setting environment values
 [K
 ====================================================================================================
 
@@ -64,7 +65,7 @@
 [K		/mariadb/MDEV-9225/oracle_mysql-5.5/
 [K		/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
 [K
-	Successful building binaries, after 2327.8358619213104 seconds.
+	Successful building binaries, after 2116.504458665848 seconds.
 [K
 ====================================================================================================
 
@@ -100,7 +101,7 @@
 [K				free_used_memory 182-191[K[K			/mariadb/MDEV-9225/mariadb-5.5.49/:
 [K				free_used_memory in Pb/client/mysql_upgrade.c
 [K				free_used_memory 182-192[K[K
-	Successful analysing source diff, after 2.1940362453460693 seconds.
+	Successful analysing source diff, after 2.0321922302246094 seconds.
 [K
 	analysing ast diff
 	__________________________________________________________________________________________
@@ -114,7 +115,7 @@
 [K			filtering AST script by merging and grouping
 [K			merging AST script
 [K
-	Successful analysing ast diff, after 5.133488893508911 seconds.
+	Successful analysing ast diff, after 4.378860950469971 seconds.
 [K
 ====================================================================================================
 
@@ -142,13 +143,322 @@
 			/mariadb/MDEV-9225/oracle_mysql-5.5/regex/main.c
 [K				Failed parsing AST for file:
 			/mariadb/MDEV-9225/oracle_mysql-5.5/libmysql/conf_to_src.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/innobase/row/row0merge.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/innobase/mem/mem0dbg.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbTick.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbConfig.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbCondition.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbMem.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbHost.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbDaemon.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbEnv.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbThread.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbMutex.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/NdbSleep.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbTick.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbCondition.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbMem.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbHost.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbDaemon.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbEnv.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbThread.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbTCP.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbMutex.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/portlib/win32/NdbSleep.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/util/version.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/util/ndb_init.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/util/ndb_rand.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/util/strdup.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/util/basestring_vsnprintf.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/util/uucode.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/common/util/random.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/kernel/error/ndbd_exit_codes.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/ndbapi/ndberror_check.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/ndb/src/ndbapi/ndberror.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/storage/archive/archive_reader.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/libmysqld/libmysqld.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/libedit/np/wcsdup.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/search.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/kill.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/savestring.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/rltty.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/funmap.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/misc.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/keymaps.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/terminal.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/history.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/tilde.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/nls.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/text.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/histsearch.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/vi_mode.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/parens.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/emacs_keymap.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/macro.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/display.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/vi_keymap.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/undo.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/shell.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/histfile.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/bind.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/xmalloc.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/isearch.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/compat.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/util.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/input.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/mbutil.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/complete.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/histexpand.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/callback.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/readline.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/cmd-line-utils/readline/signals.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/client/get_password.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/client/echo.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/dbug/my_main.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/dbug/example3.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/dbug/main.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/dbug/example1.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/dbug/example2.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/dbug/factorial.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/dbug/dbug_analyze.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_wincond.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_crc32.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_winerr.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_libwrap.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_windac.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_conio.c
+[K	Deckard fail. The vector file was not generated:
+[K	/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_init.c.atoi_octal.vec
+
+[K	Deckard fail. The vector file was not generated:
+[K	/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_init.c.my_init.vec
+
+[K	Deckard fail. The vector file was not generated:
+[K	/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_init.c.my_end.vec
+
+[K	Deckard fail. The vector file was not generated:
+[K	/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_init.c.my_init_mysys_psi_keys.vec
+
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_winfile.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/mysys/my_winthread.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/strings/ctype-czech.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/strings/conf_to_src.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/strings/strnlen.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/strings/do_ctype.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/strings/uca-dump.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/strings/dump_map.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/strings/utr11-dump.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/strings/uctypedump.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/scripts/mysql_fix_privilege_tables_sql.c
+[K				Failed parsing AST for file:
+			/mariadb/MDEV-9225/oracle_mysql-5.5/extra/charset2html.c
+[K
+	Successful generating vectors for target, after 1340.7733328342438 seconds.
+[K
+	finding clones in target
+	__________________________________________________________________________________________
+
+[K
+		Finding clone functions in Target
+		------------------------------------------------------------------------------------------
+
+[K		checking vectors for C files in Pa...
+[K		checking vectors for C files in Pc...
+[K		finding clones for edited functions:
+
+[K			Finding match for free_used_memory in $Pa/client/mysql_upgrade.c:
+[K			Function: free_used_memory in $Pc/client/mysql_upgrade.c
+[K			Distance: 0.03342746146017948
+
+[K
+	Successful finding clones in target, after 241.3651511669159 seconds.
+[K
+====================================================================================================
+
+	Generating GumTree script for patch
+====================================================================================================
+
+[K
+	Starting generating script for C files...
+	__________________________________________________________________________________________
+
+[K	Generating edit script: mysql_upgrade.c to mysql_upgrade.c...
+[K
+	Successful generating script for C files, after 1.9102585315704346 seconds.
+[K
+====================================================================================================
+
+	Variable Mapping
+====================================================================================================
+
+[K
+	Variable mapping for C files
+	__________________________________________________________________________________________
+
+[K	Generating mapping: mysql_upgrade.c to mysql_upgrade.c...
+[K
+====================================================================================================
+
+	Translate GumTree Script
+====================================================================================================
+
+[K
+	Translating scripts for C files
+	__________________________________________________________________________________________
+
+[K	Generating JSON temp files for each pertinent file...
+[K			Clang AST parse /mariadb/MDEV-9225/mariadb-5.5.48/client/mysql_upgrade.c in Pa...
+[K			Clang AST parse /mariadb/MDEV-9225/mariadb-5.5.49/client/mysql_upgrade.c in Pb...
+[K			Clang AST parse /mariadb/MDEV-9225/oracle_mysql-5.5/client/mysql_upgrade.c in Pc...
+[K
+====================================================================================================
+
+	Applying transformation
+====================================================================================================
+
+[K
+	Transforming file /mariadb/MDEV-9225/oracle_mysql-5.5/client/mysql_upgrade.c
+	__________________________________________________________________________________________
+
+[K	Original AST script
+[K			AST Script:
+[K				 Insert IfStmt(14287) CompoundStmt(14286) 0
+[K				 Insert DeclRefExpr(14288) IfStmt(14287) 0
+[K				 Move CallExpr(14289) IfStmt(14287) 1
+[K	Generated AST script
+[K			AST Script:
+[K				 Delete CallExpr(13517)
+[K				 Insert IfStmt(14287) into CompoundStmt(13516) at 0
+[K	Original Patch
+[K		184a185
+[K		>   if (defaults_argv)
+[K	Generated Patch
+[K		162c162
+[K		<   /* Free memory allocated by 'load_defaults' */
+[K		---
+[K		>  if (defaults_argv)
+[K		163a164,165
+[K		>
+[K		>   /* Free memory allocated by 'load_defaults' */
+[K
+	Successful transformation
+[K
+====================================================================================================
+
+	Patch Verification
+====================================================================================================
+
+[K
+	verifying compilation...
+	__________________________________________________________________________________________
+
+[K
+		building projects
+		------------------------------------------------------------------------------------------
+
+[K			/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
+[K	cd /mariadb/MDEV-9225/oracle_mysql-5.5/;bear make CFLAGS='-g -O0 -static -DNDEBUG -fsanitize=' CXXFLAGS='-g -O0 -static -DNDEBUG -fsanitize=' > /crochet/logs/MDEV-9225/log-make
 
 
-[K	'ascii' codec can't decode byte 0xad in position 3535: ordinal not in range(128)
-[K	Unexpected error in parseAST with file:
-[K	/mariadb/MDEV-9225/oracle_mysql-5.5/storage/innobase/os/os0file.c
-[K	Crash during generating vectors for target, after 165.60104608535767 seconds.
+[K	BUILD FAILED!!
+Exit Code: 2
+[K	Crash during verifying compilation, after 163.14602518081665 seconds.
 
 
 [K	Error. Exiting...
-[K	Unexpected error during generating vectors for target.
+[K	Unexpected error during verifying compilation.

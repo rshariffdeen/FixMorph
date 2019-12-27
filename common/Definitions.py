@@ -1,11 +1,18 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+import sys
 import os
+
+# ----------------- Functions --------------------------------
+def getBugID():
+    for arg in sys.argv:
+        if "--conf=" in arg:
+            return '/' + str(arg).replace(".conf", '').split('/')[-1]
 
 # ------------------- Directories --------------------
 
 DIRECTORY_MAIN = os.getcwd()
-DIRECTORY_LOG = DIRECTORY_MAIN + "/logs"
+DIRECTORY_LOG = DIRECTORY_MAIN + "/logs" + getBugID()
 DIRECTORY_OUTPUT_BASE = DIRECTORY_MAIN + "/output"
 DIRECTORY_OUTPUT = ""
 DIRECTORY_TMP = DIRECTORY_MAIN + "/tmp"
@@ -105,7 +112,6 @@ ARG_SKIP_DETECTION = "--skip-detection"
 ARG_SKIP_EXTRACTION = "--skip-extraction"
 ARG_SKIP_MAPPING = "--skip-mapping"
 
-
 # ----------------- TOOLS --------------------------------
 TOOL_VECGEN = "third-party/deckard/cvecgen_fail "
 TOOL_VECGEN_ORIG = "third-party/deckard/cvecgen "
@@ -131,3 +137,4 @@ AT = " at "
 INTO = " into "
 AND = "and"
 order = [UPDATE,DELETE,UPDATEMOVE, MOVE, INSERT]
+
