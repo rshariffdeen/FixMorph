@@ -3,11 +3,7 @@
 ####################################################################################################
 
 	Crochet - Horizontal Code Edit Transfer
-<<<<<<< HEAD
-	Test conducted on: 27-Dec-2019 (21:07:25.268693)
-=======
-	Test conducted on: 27-Dec-2019 (11:09:24.183773)
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
+	Test conducted on: 28-Dec-2019 (00:30:17.459366)
 
 ####################################################################################################
 [K
@@ -69,11 +65,7 @@
 [K		/mariadb/MDEV-9225/oracle_mysql-5.5/
 [K		/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
 [K
-<<<<<<< HEAD
-	Successful building binaries, after 2116.504458665848 seconds.
-=======
-	Successful building binaries, after 2135.7474505901337 seconds.
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
+	Successful building binaries, after 2117.8834545612335 seconds.
 [K
 ====================================================================================================
 
@@ -109,11 +101,7 @@
 [K				free_used_memory 182-191[K[K			/mariadb/MDEV-9225/mariadb-5.5.49/:
 [K				free_used_memory in Pb/client/mysql_upgrade.c
 [K				free_used_memory 182-192[K[K
-<<<<<<< HEAD
-	Successful analysing source diff, after 2.0321922302246094 seconds.
-=======
-	Successful analysing source diff, after 2.76100754737854 seconds.
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
+	Successful analysing source diff, after 1.7399327754974365 seconds.
 [K
 	analysing ast diff
 	__________________________________________________________________________________________
@@ -127,11 +115,7 @@
 [K			filtering AST script by merging and grouping
 [K			merging AST script
 [K
-<<<<<<< HEAD
-	Successful analysing ast diff, after 4.378860950469971 seconds.
-=======
-	Successful analysing ast diff, after 4.550907611846924 seconds.
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
+	Successful analysing ast diff, after 5.237798452377319 seconds.
 [K
 ====================================================================================================
 
@@ -364,11 +348,7 @@
 [K				Failed parsing AST for file:
 			/mariadb/MDEV-9225/oracle_mysql-5.5/extra/charset2html.c
 [K
-<<<<<<< HEAD
-	Successful generating vectors for target, after 1340.7733328342438 seconds.
-=======
-	Successful generating vectors for target, after 1341.3483777046204 seconds.
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
+	Successful generating vectors for target, after 1338.8989670276642 seconds.
 [K
 	finding clones in target
 	__________________________________________________________________________________________
@@ -386,11 +366,7 @@
 [K			Distance: 0.03342746146017948
 
 [K
-<<<<<<< HEAD
-	Successful finding clones in target, after 241.3651511669159 seconds.
-=======
-	Successful finding clones in target, after 238.30365133285522 seconds.
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
+	Successful finding clones in target, after 238.75400042533875 seconds.
 [K
 ====================================================================================================
 
@@ -403,11 +379,7 @@
 
 [K	Generating edit script: mysql_upgrade.c to mysql_upgrade.c...
 [K
-<<<<<<< HEAD
-	Successful generating script for C files, after 1.9102585315704346 seconds.
-=======
-	Successful generating script for C files, after 2.1773695945739746 seconds.
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
+	Successful generating script for C files, after 2.1300208568573 seconds.
 [K
 ====================================================================================================
 
@@ -480,20 +452,12 @@
 		------------------------------------------------------------------------------------------
 
 [K			/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
-<<<<<<< HEAD
 [K	cd /mariadb/MDEV-9225/oracle_mysql-5.5/;bear make CFLAGS='-g -O0 -static -DNDEBUG -fsanitize=' CXXFLAGS='-g -O0 -static -DNDEBUG -fsanitize=' > /crochet/logs/MDEV-9225/log-make
-=======
-[K	cd /mariadb/MDEV-9225/oracle_mysql-5.5/;bear make CFLAGS='-g -O0 -static -DNDEBUG -fsanitize=' CXXFLAGS='-g -O0 -static -DNDEBUG -fsanitize=' > /crochet/logs/log-make
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
 
 
 [K	BUILD FAILED!!
 Exit Code: 2
-<<<<<<< HEAD
-[K	Crash during verifying compilation, after 163.14602518081665 seconds.
-=======
-[K	Crash during verifying compilation, after 165.2102026939392 seconds.
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
+[K	Crash during verifying compilation, after 164.84062814712524 seconds.
 
 
 [K	Error. Exiting...

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
-import psutil
 
 # ----------------- Functions --------------------------------
 def getBugID():
@@ -139,7 +138,3 @@ AT = " at "
 INTO = " into "
 AND = "and"
 order = [UPDATE,DELETE,UPDATEMOVE, MOVE, INSERT]
-<<<<<<< HEAD
-
-=======
->>>>>>> 6efc478e7a1d5dc897484403a4e5c8e86d04d37c
