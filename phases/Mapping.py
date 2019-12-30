@@ -80,6 +80,7 @@ def load_values():
 
 def save_values():
     Writer.write_map_info(Values.variable_map, Definitions.FILE_MAP_INFO)
+    save_current_state()
 
 
 def map():

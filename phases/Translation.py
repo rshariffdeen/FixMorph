@@ -1144,7 +1144,7 @@ def load_values():
 
 
 def save_values():
-    Writer.write_as_json(translated_script_list, Definitions.FILE_TRANSLATED_SCRIPT_INFO)
+    Writer.write_script_info(translated_script_list, Definitions.FILE_TRANSLATED_SCRIPT_INFO)
     Values.translated_script_for_files = translated_script_list
     save_current_state()
 
