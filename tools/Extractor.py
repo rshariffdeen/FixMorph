@@ -532,3 +532,13 @@ def extract_unique_in_order(list):
     seen_add = seen_set.add
     return [x for x in list if not (x in seen_set or seen_add(x))]
 
+
+def extract_project_path(source_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    if Values.PATH_A + "/" in source_path:
+        return Values.PATH_A
+    elif Values.PATH_B in source_path:
+        return Values.PATH_B
+    elif Values.PATH_C in source_path:
+        return Values.PATH_C
+
