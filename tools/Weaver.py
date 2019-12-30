@@ -224,7 +224,7 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     with open(script_file_name, 'w') as script_file:
         for instruction in instruction_list:
             if "Insert" in instruction:
-                insert_node_id = instruction.split("(")[0].replace(")", "")
+                insert_node_id = instruction.split("(")[1].split(")")[0]
                 inserting_node = Finder.search_ast_node_by_id(ast_map_b, int(insert_node_id))
                 missing_function_list.update(Identifier.identify_missing_functions(ast_map_a,
                                                                                    inserting_node,
