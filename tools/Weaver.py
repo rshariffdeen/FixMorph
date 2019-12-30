@@ -217,6 +217,7 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     ast_map_b = Generator.get_ast_json(file_b)
     ast_map_c = Generator.get_ast_json(file_c)
 
+    file_d = str(file_c).replace(Values.Project_C.path, Values.Project_D.path)
 
     # Check for an edit script
     script_file_name = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_script"
@@ -229,7 +230,7 @@ def weave_code(file_a, file_b, file_c, instruction_list):
                 missing_function_list.update(Identifier.identify_missing_functions(ast_map_a,
                                                                                    inserting_node,
                                                                                    file_b,
-                                                                                   file_c,
+                                                                                   file_d,
                                                                                    ast_map_c))
 
             script_file.write(instruction + "\n")
@@ -237,7 +238,7 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     output_file = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
     backup_command = ""
     # We add file_c into our dict (changes) to be able to backup and copy it
-    file_d = str(file_c).replace(Values.Project_C.path, Values.Project_D.path)
+
     if file_c not in backup_file_list.keys():
         filename = file_c.split("/")[-1]
         backup_file = str(file_index) + "_" + filename
