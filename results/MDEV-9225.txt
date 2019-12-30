@@ -3,7 +3,7 @@
 ####################################################################################################
 
 	Crochet - Horizontal Code Edit Transfer
-	Test conducted on: 28-Dec-2019 (00:30:17.459366)
+	Test conducted on: 30-Dec-2019 (12:34:52.745396)
 
 ####################################################################################################
 [K
@@ -65,7 +65,7 @@
 [K		/mariadb/MDEV-9225/oracle_mysql-5.5/
 [K		/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
 [K
-	Successful building binaries, after 2117.8834545612335 seconds.
+	Successful building binaries, after 2119.321117401123 seconds.
 [K
 ====================================================================================================
 
@@ -101,7 +101,7 @@
 [K				free_used_memory 182-191[K[K			/mariadb/MDEV-9225/mariadb-5.5.49/:
 [K				free_used_memory in Pb/client/mysql_upgrade.c
 [K				free_used_memory 182-192[K[K
-	Successful analysing source diff, after 1.7399327754974365 seconds.
+	Successful analysing source diff, after 2.240597724914551 seconds.
 [K
 	analysing ast diff
 	__________________________________________________________________________________________
@@ -115,7 +115,7 @@
 [K			filtering AST script by merging and grouping
 [K			merging AST script
 [K
-	Successful analysing ast diff, after 5.237798452377319 seconds.
+	Successful analysing ast diff, after 4.57153058052063 seconds.
 [K
 ====================================================================================================
 
@@ -348,7 +348,7 @@
 [K				Failed parsing AST for file:
 			/mariadb/MDEV-9225/oracle_mysql-5.5/extra/charset2html.c
 [K
-	Successful generating vectors for target, after 1338.8989670276642 seconds.
+	Successful generating vectors for target, after 1344.2676665782928 seconds.
 [K
 	finding clones in target
 	__________________________________________________________________________________________
@@ -366,7 +366,7 @@
 [K			Distance: 0.03342746146017948
 
 [K
-	Successful finding clones in target, after 238.75400042533875 seconds.
+	Successful finding clones in target, after 238.48716711997986 seconds.
 [K
 ====================================================================================================
 
@@ -379,7 +379,7 @@
 
 [K	Generating edit script: mysql_upgrade.c to mysql_upgrade.c...
 [K
-	Successful generating script for C files, after 2.1300208568573 seconds.
+	Successful generating script for C files, after 2.238508462905884 seconds.
 [K
 ====================================================================================================
 
@@ -452,13 +452,17 @@
 		------------------------------------------------------------------------------------------
 
 [K			/mariadb/MDEV-9225/oracle_mysql-5.5-patch/
-[K	cd /mariadb/MDEV-9225/oracle_mysql-5.5/;bear make CFLAGS='-g -O0 -static -DNDEBUG -fsanitize=' CXXFLAGS='-g -O0 -static -DNDEBUG -fsanitize=' > /crochet/logs/MDEV-9225/log-make
+[K
+	Successful verifying compilation, after 704.701132774353 seconds.
+[K	
+Run time statistics:
+-----------------------
 
+[K	Initialization: 2.5654680728912354 seconds
+[K	Build Analysis: 2119.3222284317017 seconds
+[K	Diff Analysis: 6.819479942321777 seconds
+[K	Clone Analysis: 2.9283618927001953 seconds
+[K	Map Generation: 3.149686098098755 seconds
+[K
+Crochet finished successfully after 4431.994188308716 seconds
 
-[K	BUILD FAILED!!
-Exit Code: 2
-[K	Crash during verifying compilation, after 164.84062814712524 seconds.
-
-
-[K	Error. Exiting...
-[K	Unexpected error during verifying compilation.
