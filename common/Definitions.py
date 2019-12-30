@@ -102,6 +102,7 @@ KEY_DURATION_EXPLOIT_GENERATION = 'exploitation'
 # ---------------- ARGUMENTS ---------------------------
 ARG_CONF_FILE = "--conf="
 ARG_DEBUG = "--debug"
+ARG_BACKPORT = "--backport"
 ARG_SKIP_WEAVE = "--skip-weave"
 ARG_SKIP_SLICE = "--skip-slice"
 ARG_SKIP_ANALYSE = "--skip-analyse"
