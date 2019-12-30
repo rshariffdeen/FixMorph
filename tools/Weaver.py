@@ -259,11 +259,11 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     execute_command(patch_command)
 
     # We fix basic syntax errors that could have been introduced by the patch
-    # fix_command = Definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
-    # if file_c[-1] == "h":
-    #     fix_command += " --"
-    # fix_command += " 2>" + syntax_error_file_name
-    # execute_command(fix_command)
+    fix_command = Definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
+    if file_c[-1] == "h":
+        fix_command += " --"
+    fix_command += " 2>" + syntax_error_file_name
+    execute_command(fix_command)
 
     # # We check that everything went fine, otherwise, we restore everything
     # try:
