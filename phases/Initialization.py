@@ -97,6 +97,8 @@ def read_conf():
                 Values.SKIP_WEAVE = True
             elif Definitions.ARG_SKIP_VERIFY in arg:
                 Values.SKIP_VERIFY = True
+            elif Definitions.ARG_SKIP_TRANSLATION in arg:
+                Values.SKIP_TRANSLATION = True
             elif Definitions.ARG_SKIP_RESTORE in arg:
                 Values.SKIP_RESTORE = True
             elif Definitions.ARG_CONF_FILE in arg:

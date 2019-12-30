@@ -1153,7 +1153,7 @@ def translate():
     global translated_script_list
     Emitter.title("Translate GumTree Script")
     load_values()
-    if not Values.SKIP_MAPPING:
+    if not Values.SKIP_TRANSLATION:
 
         # Emitter.sub_title("Translating scripts for header files")
         # for file_list, generated_data in Values.generated_script_for_header_files.items():
