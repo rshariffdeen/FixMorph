@@ -141,4 +141,4 @@ TO = " to "
 AT = " at "
 INTO = " into "
 AND = "and"
-order = [UPDATE,DELETE,UPDATEMOVE, MOVE, INSERT]
+order = [DELETE, UPDATE, UPDATEMOVE, MOVE, INSERT]
