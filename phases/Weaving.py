@@ -27,12 +27,12 @@ def safe_exec(function_def, title, *args):
 
 def load_values():
     load_state()
-    # if not Values.variable_map:
-    #     map_info = dict()
-    #     map_list = Reader.read_json(Definitions.FILE_MAP_INFO)
-    #     for (file_path_info, node_map) in map_list:
-    #         map_info[(file_path_info[0], file_path_info[1])] = node_map
-    #     Values.variable_map = map_info
+    if not Values.translated_script_for_files:
+        # map_info = dict()
+        # map_list = Reader.read_json(Definitions.FILE_MAP_INFO)
+        # for (file_path_info, node_map) in map_list:
+        #     map_info[(file_path_info[0], file_path_info[1])] = node_map
+        Values.translated_script_for_files = Reader.read_json(Definitions.FILE_TRANSLATED_SCRIPT_INFO)
 
     # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
 
