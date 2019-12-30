@@ -1,8 +1,10 @@
 import sys
-from tools import Logger, Emitter
-from common.Utilities import execute_command
+from tools import Logger, Emitter, Finder
+from common.Utilities import execute_command, get_file_list
 import os
-from common import Definitions
+from common import Definitions, Values
+from ast import Generator
+
 
 FILE_MACRO_DEF = Definitions.DIRECTORY_TMP + "/macro-def"
 
@@ -67,6 +69,21 @@ def extract_complete_function_node(function_def_node, source_path):
                     return None, None
                 search_dir = os.path.dirname(search_dir)
 
-        ast_tree = ASTGenerator.get_ast_json(source_file_loc)
+        ast_tree = Generator.get_ast_json(source_file_loc)
         function_node = Finder.search_function_node_by_name(ast_tree, function_name)
         return function_node, source_file_loc
+
+
+def extract_call_node_list(ast_node):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    call_expr_list = list()
+    node_type = str(ast_node["type"])
+    if node_type == "CallExpr":
+        call_expr_list.append(ast_node)
+    else:
+        if len(ast_node['children']) > 0:
+            for child_node in ast_node['children']:
+                child_call_list = extract_call_node_list(child_node)
+                call_expr_list = call_expr_list + child_call_list
+    return call_expr_list
+
