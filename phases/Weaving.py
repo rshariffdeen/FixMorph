@@ -58,3 +58,5 @@ def weave():
             Emitter.emit_ast_script(translated_script)
             Weaver.apply_patch(file_list[0], file_list[1], file_list[2], translated_script)
             file_index += 1
+    else:
+        Emitter.special("\n\t-skipping this phase-")
