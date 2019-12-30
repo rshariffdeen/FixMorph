@@ -173,7 +173,7 @@ def find_header_file(query, source_path):
     FILE_GREP_RESULT = Definitions.DIRECTORY_OUTPUT + "/grep-output"
     search_command = "cd " + project_dir + ";"
     search_command += "grep -inr -e \"" + query + "\" . | grep define"
-    search_command += search_command + " > " + FILE_GREP_RESULT
+    search_command += " > " + FILE_GREP_RESULT
     execute_command(search_command)
     with open(FILE_GREP_RESULT, 'r') as result_file:
         lines = result_file.readlines()
