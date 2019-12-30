@@ -4,6 +4,8 @@ from common.Utilities import execute_command, error_exit, save_current_state, lo
 from tools import Emitter, Reader, Writer
 from ast import Parser
 
+translated_script_list = dict()
+
 
 def id_from_string(simplestring):
     return int(simplestring.split("(")[-1][:-1])
@@ -1138,20 +1140,21 @@ def load_values():
             map_info[(file_path_info[0], file_path_info[1])] = node_map
         Values.variable_map = map_info
 
-    # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+    Definitions.FILE_TRANSLATED_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/trans-script-info"
 
 
 def save_values():
-    # Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
-    # Values.generated_script_for_c_files = generated_script_list
+    Writer.write_script_info(translated_script_list, Definitions.FILE_TRANSLATED_SCRIPT_INFO)
+    Values.translated_script_for_files = translated_script_list
     save_current_state()
 
 
 def translate():
+    global translated_script_list
     Emitter.title("Translate GumTree Script")
     load_values()
     if not Values.SKIP_MAPPING:
-        translated_script_list = dict()
+
         # Emitter.sub_title("Translating scripts for header files")
         # for file_list, generated_data in Values.generated_script_for_header_files.items():
         #     # Generate AST as json files
@@ -1216,7 +1219,6 @@ def translate():
                                                          generated_data[2], variable_map)
             translated_script_list[file_list] = (translated_script, original_script)
 
-        Values.translated_script_for_files = translated_script_list
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

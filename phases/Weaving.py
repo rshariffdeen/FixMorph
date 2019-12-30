@@ -1,7 +1,7 @@
 import time
-from common import Values
-from common.Utilities import error_exit
-from tools import Emitter, Weaver
+from common import Values, Definitions
+from common.Utilities import error_exit, save_current_state, load_state
+from tools import Emitter, Weaver, Reader, Writer
 
 file_index = 1
 backup_file_list = dict()
@@ -23,6 +23,24 @@ def safe_exec(function_def, title, *args):
         Emitter.error("Crash during " + description + ", after " + duration + " seconds.")
         error_exit(exception, "Unexpected error during " + description + ".")
     return result
+
+
+def load_values():
+    load_state()
+    # if not Values.variable_map:
+    #     map_info = dict()
+    #     map_list = Reader.read_json(Definitions.FILE_MAP_INFO)
+    #     for (file_path_info, node_map) in map_list:
+    #         map_info[(file_path_info[0], file_path_info[1])] = node_map
+    #     Values.variable_map = map_info
+
+    # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+
+
+def save_values():
+    # Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
+    # Values.generated_script_for_c_files = generated_script_list
+    save_current_state()
 
 
 def weave():
