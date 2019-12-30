@@ -28,11 +28,11 @@ def safe_exec(function_def, title, *args):
 def load_values():
     load_state()
     if not Values.translated_script_for_files:
-        # map_info = dict()
-        # map_list = Reader.read_json(Definitions.FILE_MAP_INFO)
-        # for (file_path_info, node_map) in map_list:
-        #     map_info[(file_path_info[0], file_path_info[1])] = node_map
-        Values.translated_script_for_files = Reader.read_json(Definitions.FILE_TRANSLATED_SCRIPT_INFO)
+        script_info = dict()
+        script_list = Reader.read_json(Definitions.FILE_SCRIPT_INFO)
+        for (path_info, trans_script_info) in script_list:
+            script_info[(path_info[0], path_info[1], path_info[2])] = trans_script_info
+        Values.translated_script_for_files = script_info
 
     # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
 
@@ -46,13 +46,15 @@ def save_values():
 def weave():
     global file_index
     Emitter.title("Applying transformation")
-    for file_list, generated_data in Values.translated_script_for_files.items():
-        Emitter.sub_title("Transforming file " + file_list[2])
-        Emitter.special("Original AST script")
-        original_script = generated_data[1]
-        Emitter.emit_ast_script(original_script)
-        Emitter.special("Generated AST script")
-        translated_script = generated_data[0]
-        Emitter.emit_ast_script(translated_script)
-        Weaver.apply_patch(file_list[0], file_list[1], file_list[2], translated_script)
-        file_index += 1
+    load_values()
+    if not Values.SKIP_WEAVE:
+        for file_list, generated_data in Values.translated_script_for_files.items():
+            Emitter.sub_title("Transforming file " + file_list[2])
+            Emitter.special("Original AST script")
+            original_script = generated_data[1]
+            Emitter.emit_ast_script(original_script)
+            Emitter.special("Generated AST script")
+            translated_script = generated_data[0]
+            Emitter.emit_ast_script(translated_script)
+            Weaver.apply_patch(file_list[0], file_list[1], file_list[2], translated_script)
+            file_index += 1
