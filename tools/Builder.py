@@ -295,10 +295,10 @@ def build_instrumented_code(source_directory):
 def build_verify():
     global CC, CXX, CXX_FLAGS, C_FLAGS, LD_FLAGS
     Emitter.sub_sub_title("building projects")
-    CC = "clang-7"
-    CXX = "clang++-7"
-    CXX_FLAGS = "'-g -O0 -static -fPIC -DNDEBUG'"
-    C_FLAGS = "'-g -O0 -static -fPIC -DNDEBUG'"
+    CC = "clang"
+    CXX = "clang++"
+    CXX_FLAGS = "'-g -O0 -DNDEBUG'"
+    C_FLAGS = "'-g -O0 -DNDEBUG'"
     Emitter.normal("\t\t" + Values.Project_D.path)
     clean_project(Values.Project_D.path)
     clean_project(Values.Project_C.path)
