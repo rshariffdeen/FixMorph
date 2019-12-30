@@ -3,6 +3,7 @@
 import sys
 from common import Definitions, Values
 from tools import Logger
+from datetime import datetime
 
 GREY = '\t\x1b[1;30m'
 RED = '\t\x1b[1;31m'
@@ -121,8 +122,8 @@ def debug(message):
 
 def start():
     Logger.create()
-    write("\n\n" + "#"*100 + "\n\n\tCrochet - Horizontal Code Edit Transfer\n\n" + "#"*100, BLUE)
-
+    now = datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)");
+    write("\n\n" + "#"*100 + "\n\n\tCrochet - Horizontal Code Edit Transfer\n\tTest conducted on: " + now + "\n\n" + "#"*100, BLUE)
 
 def end(time_info):
     statistics("\nRun time statistics:\n-----------------------\n")

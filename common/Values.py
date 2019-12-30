@@ -42,6 +42,7 @@ CRASH_LINE_LIST = dict()
 TRACE_LIST = dict()
 
 # ------------------ Configuration Values ---------------
+BUG_ID = ""
 PATH_A = ""
 PATH_B = ""
 PATH_C = ""
