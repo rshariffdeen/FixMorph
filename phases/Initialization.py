@@ -113,6 +113,14 @@ def read_conf():
                 Values.SKIP_EXTRACTION = True
                 Values.SKIP_TRANSLATION = True
                 Values.SKIP_DETECTION = True
+            elif Definitions.ARG_ONLY_VERIFY in arg:
+                Values.SKIP_VERIFY = True
+                Values.SKIP_WEAVE = True
+                Values.SKIP_ANALYSE = True
+                Values.SKIP_MAPPING = True
+                Values.SKIP_EXTRACTION = True
+                Values.SKIP_TRANSLATION = True
+                Values.SKIP_DETECTION = True
             elif Definitions.ARG_SKIP_BUILD in arg:
                 Values.SKIP_BUILD = True
 
