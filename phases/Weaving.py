@@ -62,17 +62,22 @@ def transplant_missing_functions():
 
 
 def transplant_code():
-    global file_index
+    global file_index, missing_function_list
     for file_list, generated_data in Values.translated_script_for_files.items():
-        Emitter.sub_title("Transforming file " + file_list[2])
+        Emitter.sub_sub_title(file_list[2])
         Emitter.special("Original AST script")
         original_script = generated_data[1]
         Emitter.emit_ast_script(original_script)
         Emitter.special("Generated AST script")
         translated_script = generated_data[0]
         Emitter.emit_ast_script(translated_script)
-        Weaver.weave_code(file_list[0], file_list[1], file_list[2], translated_script)
+        identified_missing_function_list = Weaver.weave_code(file_list[0], file_list[1], file_list[2], translated_script)
         file_index += 1
+        if missing_function_list:
+            if identified_missing_function_list:
+                missing_function_list = missing_function_list.update(identified_missing_function_list)
+        else:
+            missing_function_list = identified_missing_function_list
 
 
 def load_values():

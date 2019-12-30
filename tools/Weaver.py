@@ -231,6 +231,7 @@ def weave_code(file_a, file_b, file_c, instruction_list):
                                                                                    file_b,
                                                                                    file_c,
                                                                                    ast_map_c))
+
             script_file.write(instruction + "\n")
 
     output_file = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
@@ -287,3 +288,4 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     # execute_command(c5)
 
     Emitter.success("\n\tSuccessful transformation")
+    return missing_function_list
