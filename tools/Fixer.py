@@ -6,9 +6,7 @@ import sys, os
 from common.Utilities import execute_command, error_exit, show_partial_diff, backup_file
 from common import Definitions
 from ast import Generator
-import Logger
-import Finder
-import Emitter
+from tools import Logger, Finder, Emitter
 
 
 FILE_SYNTAX_ERRORS = ""
