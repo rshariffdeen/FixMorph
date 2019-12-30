@@ -1052,11 +1052,12 @@ def adjust_pos(modified_script):
 
 def rewrite_as_script(modified_script):
     instruction_AB = []
+    delete_instruction_list = dict()
     for i in modified_script:
         inst = i[0]
         if inst == Definitions.DELETE:
             nodeA = i[1].simple_print()
-            instruction_AB.append((Definitions.DELETE, nodeA))
+            delete_instruction_list[int(get_id(nodeA))] = (Definitions.DELETE, nodeA)
         elif inst == Definitions.UPDATE:
             nodeA = i[1].simple_print()
             nodeB = i[2].simple_print()
@@ -1076,6 +1077,10 @@ def rewrite_as_script(modified_script):
             nodeB2 = i[2].simple_print()
             pos = int(i[3])
             instruction_AB.append((Definitions.UPDATEMOVE, nodeB1, nodeB2, pos))
+
+    # insert sorted delete insturctions
+    for node_id in sorted(delete_instruction_list.keys()):
+        instruction_AB.insert(0,delete_instruction_list[node_id])
     return instruction_AB
 
 
