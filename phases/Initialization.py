@@ -112,6 +112,7 @@ def read_conf():
                 Values.SKIP_MAPPING = True
                 Values.SKIP_EXTRACTION = True
                 Values.SKIP_TRANSLATION = True
+                Values.SKIP_DETECTION = True
             elif Definitions.ARG_SKIP_BUILD in arg:
                 Values.SKIP_BUILD = True
 
