@@ -73,3 +73,5 @@ def verify():
         safe_exec(verify_compilation, "verifying compilation")
     # safe_exec(verify_exploit, "verifying exploit")
     # safe_exec(verify_behavior, "verifying differential behavior")
+    else:
+        Emitter.special("\n\t-skipping this phase-")

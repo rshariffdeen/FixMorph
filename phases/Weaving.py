@@ -1,10 +1,17 @@
 import time
+import sys
 from common import Values, Definitions
 from common.Utilities import error_exit, save_current_state, load_state
-from tools import Emitter, Weaver, Reader, Writer
+from tools import Emitter, Weaver, Reader, Logger, Fixer, Merger
 
 file_index = 1
 backup_file_list = dict()
+
+missing_function_list = dict()
+missing_macro_list = dict()
+missing_header_list = dict()
+missing_data_type_list = dict()
+modified_source_list = list()
 
 
 def safe_exec(function_def, title, *args):
@@ -23,6 +30,49 @@ def safe_exec(function_def, title, *args):
         Emitter.error("Crash during " + description + ", after " + duration + " seconds.")
         error_exit(exception, "Unexpected error during " + description + ".")
     return result
+
+
+def transplant_missing_header():
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    global modified_source_list, missing_header_list
+    modified_source_list = Weaver.weave_headers(missing_header_list, modified_source_list)
+
+
+def transplant_missing_macros():
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    global modified_source_list, missing_macro_list
+    modified_source_list = Weaver.weave_definitions(missing_macro_list, modified_source_list)
+
+
+def transplant_missing_data_types():
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    global modified_source_list, missing_data_type_list
+    modified_source_list = Weaver.weave_data_type(missing_data_type_list, modified_source_list)
+
+
+def transplant_missing_functions():
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    global missing_header_list, missing_macro_list, modified_source_list
+    missing_header_list_func, \
+    missing_macro_list_func, modified_source_list = Weaver.weave_functions(missing_function_list,
+                                                                           modified_source_list)
+
+    missing_macro_list = Merger.merge_macro_info(missing_macro_list, missing_macro_list_func)
+    missing_header_list = Merger.merge_header_info(missing_header_list, missing_header_list_func)
+
+
+def transplant_code():
+    global file_index
+    for file_list, generated_data in Values.translated_script_for_files.items():
+        Emitter.sub_title("Transforming file " + file_list[2])
+        Emitter.special("Original AST script")
+        original_script = generated_data[1]
+        Emitter.emit_ast_script(original_script)
+        Emitter.special("Generated AST script")
+        translated_script = generated_data[0]
+        Emitter.emit_ast_script(translated_script)
+        Weaver.weave_code(file_list[0], file_list[1], file_list[2], translated_script)
+        file_index += 1
 
 
 def load_values():
@@ -44,19 +94,15 @@ def save_values():
 
 
 def weave():
-    global file_index
+
     Emitter.title("Applying transformation")
     load_values()
     if not Values.SKIP_WEAVE:
-        for file_list, generated_data in Values.translated_script_for_files.items():
-            Emitter.sub_title("Transforming file " + file_list[2])
-            Emitter.special("Original AST script")
-            original_script = generated_data[1]
-            Emitter.emit_ast_script(original_script)
-            Emitter.special("Generated AST script")
-            translated_script = generated_data[0]
-            Emitter.emit_ast_script(translated_script)
-            Weaver.apply_patch(file_list[0], file_list[1], file_list[2], translated_script)
-            file_index += 1
+        safe_exec(transplant_code, "transplanting code")
+        safe_exec(transplant_missing_functions, "transplanting functions")
+        safe_exec(transplant_missing_data_types, "transplanting data structures")
+        safe_exec(transplant_missing_macros, "transplanting macros")
+        safe_exec(transplant_missing_header, "transplanting header files")
+        safe_exec(Fixer.check, "correcting syntax errors", modified_source_list)
     else:
         Emitter.special("\n\t-skipping this phase-")
