@@ -108,6 +108,7 @@ def run():
     print("[DRIVER] Running experiment driver")
     read_arg()
     load_experiment()
+    create_directories()
     index = 1
     for experiment_item in EXPERIMENT_ITEMS:
         experiment_name = "Experiment-" + str(index) + "\n-----------------------------"
