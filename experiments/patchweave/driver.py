@@ -15,11 +15,13 @@ ARG_DATA_PATH = "--data-dir="
 ARG_TOOL_PATH = "--tool-path="
 ARG_TOOL_NAME = "--tool-name="
 ARG_TOOL_PARAMS = "--tool-param="
+ARG_DEBUG_MODE = "--debug"
 
 CONF_DATA_PATH = ""
 CONF_TOOL_PATH = ""
 CONF_TOOL_PARAMS = ""
 CONF_TOOL_NAME = ""
+CONF_DEBUG = False
 
 FILE_META_DATA = "meta-data"
 FILE_ERROR_LOG = "error-log"
@@ -35,7 +37,8 @@ def setup(script_path, script_name, deploy_path):
     global FILE_ERROR_LOG
     print("\t[INFO]creating setup")
     command = "{ cd " + script_path + "; bash " + script_name + " " + deploy_path + ";} 2> " + FILE_ERROR_LOG
-    # print(command)
+    if CONF_DEBUG:
+        print("\t[COMMAND]" + command)
     process = subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
     (output, error) = process.communicate()
 
@@ -53,7 +56,7 @@ def load_experiment():
 
 
 def read_arg():
-    global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS, CONF_TOOL_PATH
+    global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_DEBUG
     print("[DRIVER] Reading configuration values")
     if len(sys.argv) > 1:
         for arg in sys.argv:
@@ -65,6 +68,8 @@ def read_arg():
                 CONF_TOOL_PATH = str(arg).replace(ARG_TOOL_PATH, "")
             elif ARG_TOOL_PARAMS in arg:
                 CONF_TOOL_PARAMS = str(arg).replace(ARG_TOOL_PARAMS, "")
+            elif ARG_DEBUG_MODE in arg:
+                CONF_DEBUG = True
 
     else:
         print("Usage: python driver [OPTIONS] ")
@@ -73,6 +78,7 @@ def read_arg():
         print("\t" + ARG_TOOL_NAME + "\t| " + "name of the tool")
         print("\t" + ARG_TOOL_PATH + "\t| " + "path of the tool")
         print("\t" + ARG_TOOL_PARAMS + "\t| " + "parameters for the tool")
+        print("\t" + ARG_DEBUG_MODE + "\t| " + "enable debug mode")
         exit()
 
 
@@ -81,7 +87,10 @@ def run():
     print("[DRIVER] Running experiment driver")
     read_arg()
     load_experiment()
+    index = 1
     for experiment_item in EXPERIMENT_ITEMS:
+        experiment_name = "Experiment-" + str(index) + "\n-----------------------------"
+        print(experiment_name)
         directory_name = str(experiment_item[KEY_DONOR])
         script_name = str(experiment_item[KEY_BUG_NAME]) + ".sh"
         category = experiment_item[KEY_CATEGORY]
@@ -89,6 +98,7 @@ def run():
             directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
         script_path = DIR_MAIN + "/" + DIR_SCRIPT + "/" + str(category) + "/" + str(directory_name)
         setup(script_path, script_name, CONF_DATA_PATH)
+        index = index + 1
 
 
 if __name__ == "__main__":
