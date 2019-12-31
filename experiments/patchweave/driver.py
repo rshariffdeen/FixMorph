@@ -40,13 +40,13 @@ def execute_command(command):
     (output, error) = process.communicate()
 
 
-def setup(script_path, script_name, conf_path, deploy_path):
+def setup(script_path, script_name, conf_path, deploy_conf_path):
     global FILE_ERROR_LOG, CONF_DATA_PATH
     print("\t[INFO] running script for setup")
     script_command = "{ cd " + script_path + "; bash " + script_name + " " + CONF_DATA_PATH + ";} 2> " + FILE_ERROR_LOG
     execute_command(script_command)
     print("\t[INFO] copying configuration")
-    copy_command = "{ cp " + conf_path + " " + deploy_path + ";} 2> " + FILE_ERROR_LOG
+    copy_command = "{ cp " + conf_path + " " + deploy_conf_path + ";} 2> " + FILE_ERROR_LOG
     execute_command(copy_command)
 
 
@@ -111,12 +111,11 @@ def run():
         script_path = DIR_MAIN + "/" + DIR_SCRIPT + "/" + category + "/" + directory_name
         conf_file_path = DIR_MAIN + "/" + DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
         deploy_path = CONF_DATA_PATH + "/" + directory_name + "/" + bug_name + "/"
-
+        deployed_conf_path = deploy_path + "/" + conf_file_name
         print("\t[META-DATA] category: " + category)
         print("\t[META-DATA] project: " + directory_name)
         print("\t[META-DATA] bug ID: " + bug_name)
-        setup(script_path, script_name, conf_file_path, deploy_path)
-        deployed_conf_path = deploy_path + "/" + conf_file_name
+        setup(script_path, script_name, conf_file_path, deployed_conf_path)
         evaluate(deployed_conf_path)
         index = index + 1
 
