@@ -188,6 +188,8 @@ def read_conf():
             Values.KLEE_FLAG_C = configuration.replace(Definitions.CONF_KLEE_FLAGS_C, '')
         elif Definitions.CONF_DIFF_SIZE in configuration:
             Values.AST_DIFF_SIZE = configuration.replace(Definitions.CONF_DIFF_SIZE, '')
+        elif Definitions.CONF_EXPLOIT_C in configuration:
+            Values.EXPLOIT_C = configuration.replace(Definitions.CONF_EXPLOIT_C, '')
 
 
 def initialize():
