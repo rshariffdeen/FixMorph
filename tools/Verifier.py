@@ -97,7 +97,7 @@ def differential_test(file_extension, input_directory, exploit_command,
                       project_c_path, project_d_path, output_directory):
 
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.sub_sub_title("analyzing fuzz inputs")
+    Emitter.normal("\tanalyzing fuzz inputs")
     count = 100
     fixes = 0
     errors = 0
