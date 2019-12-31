@@ -25,8 +25,6 @@ SKIP_VEC_GEN = False
 SKIP_EXTRACTION = False
 SKIP_MAPPING = False
 SKIP_TRANSLATION = False
-SKIP_VERIFY = False
-
 
 
 STANDARD_FUNCTION_LIST = list()
@@ -39,8 +37,7 @@ DIFF_FUNCTION_LIST = ""
 DIFF_LINE_LIST = dict()
 DIVERGENT_POINT_LIST = list()
 FUNCTION_MAP = ""
-CRASH_LINE_LIST = dict()
-TRACE_LIST = dict()
+
 
 # ------------------ Configuration Values ---------------
 BUG_ID = ""

@@ -143,11 +143,23 @@ def end(time_info):
 
 def help():
     print("Usage: python crochet [OPTIONS] " + Definitions.ARG_CONF_FILE + "$FILE_PATH")
+
     print("Options are:")
     print("\t" + Definitions.ARG_DEBUG + "\t| " + "enable debugging information")
-    print("\t" + Definitions.ARG_SKIP_VERIFY + "\t| " + "disable verification")
-    print("\t" + Definitions.ARG_SKIP_WEAVE + "\t| " + "disable transplant")
-    print("\t" + Definitions.ARG_SKIP_SLICE + "\t| " + "disable slicing")
-    print("\t" + Definitions.ARG_SKIP_ANALYSE + "\t| " + "disable analysis")
-    print("\t" + Definitions.ARG_SKIP_BUILD + "\t| " + "disable build")
+
+    print("Skip Phases\n-----------------------\n")
+    print("\t" + Definitions.ARG_SKIP_BUILD + "\t| " + "skip build")
+    print("\t" + Definitions.ARG_SKIP_ANALYSE + "\t| " + "skip diff analysis")
     print("\t" + Definitions.ARG_SKIP_VEC_GEN + "\t| " + "disable vector generation")
+    print("\t" + Definitions.ARG_SKIP_DETECTION + "\t| " + "skip clone analysis")
+    print("\t" + Definitions.ARG_SKIP_EXTRACTION + "\t| " + "skip AST analysis")
+    print("\t" + Definitions.ARG_SKIP_MAPPING + "\t| " + "skip variable analysis")
+    print("\t" + Definitions.ARG_SKIP_TRANSLATION + "\t| " + "skip translation")
+    print("\t" + Definitions.ARG_SKIP_WEAVE + "\t| " + "skip transplant")
+    print("\t" + Definitions.ARG_SKIP_VERIFY + "\t| " + "skip verification")
+
+    print("Run Only Phases\n-----------------------\n")
+    print("\t" + Definitions.ARG_ONLY_WEAVE + "\t| " + "run only transplantation")
+    print("\t" + Definitions.ARG_ONLY_BUILD + "\t| " + "run only build")
+    print("\t" + Definitions.ARG_ONLY_VERIFY + "\t| " + "run only verification")
+

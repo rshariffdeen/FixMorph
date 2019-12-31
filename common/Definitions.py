@@ -53,7 +53,6 @@ FILE_PROJECT_C = ""
 FILE_PROJECT_D = ""
 
 
-
 FILE_EXCLUDED_EXTENSIONS = DIRECTORY_TMP + "/excluded-extensions"
 FILE_EXCLUDED_EXTENSIONS_A = DIRECTORY_TMP + "/excluded-extensions-a"
 FILE_EXCLUDED_EXTENSIONS_B = DIRECTORY_TMP + "/excluded-extensions-b"
@@ -68,6 +67,7 @@ FILE_FIND_RESULT = DIRECTORY_TMP + "/find_tmp"
 CONF_PATH_A = "path_a:"
 CONF_PATH_B = "path_b:"
 CONF_PATH_C = "path_c:"
+CONF_PATH_POC = "path_poc:"
 CONF_EXPLOIT_A = "exploit_command_a:"
 CONF_CONFIG_COMMAND_A = "config_command_a:"
 CONF_BUILD_COMMAND_A = "build_command_a:"
@@ -80,6 +80,7 @@ CONF_ASAN_FLAG = "asan_flag:"
 CONF_KLEE_FLAGS_A = "klee_flags_a:"
 CONF_KLEE_FLAGS_C = "klee_flags_c:"
 CONF_DIFF_SIZE = "diff_size:"
+
 
 # ----------------- KEY DEFINITIONS -------------------
 
@@ -104,7 +105,6 @@ ARG_CONF_FILE = "--conf="
 ARG_DEBUG = "--debug"
 ARG_BACKPORT = "--backport"
 ARG_SKIP_WEAVE = "--skip-weave"
-ARG_SKIP_SLICE = "--skip-slice"
 ARG_SKIP_ANALYSE = "--skip-analyse"
 ARG_SKIP_VERIFY = "--skip-verify"
 ARG_SKIP_RESTORE = "--skip-restore"

@@ -91,8 +91,6 @@ def read_conf():
                 Values.SKIP_EXTRACTION = True
             elif Definitions.ARG_SKIP_MAPPING in arg:
                 Values.SKIP_MAPPING = True
-            elif Definitions.ARG_SKIP_SLICE in arg:
-                Values.SKIP_SLICE = True
             elif Definitions.ARG_SKIP_WEAVE in arg:
                 Values.SKIP_WEAVE = True
             elif Definitions.ARG_SKIP_VERIFY in arg:
@@ -134,7 +132,6 @@ def read_conf():
                 Values.SKIP_DETECTION = True
             elif Definitions.ARG_SKIP_BUILD in arg:
                 Values.SKIP_BUILD = True
-
             elif "Crochet.py" in arg:
                 continue
             else:
@@ -167,6 +164,10 @@ def read_conf():
                 Values.PATH_C = Values.PATH_C.replace("$HOME$", Definitions.DIRECTORY_MAIN)
             if str(Values.PATH_C)[-1] == "/":
                 Values.PATH_C = Values.PATH_C[:-1]
+        elif Definitions.CONF_PATH_POC in configuration:
+            Values.PATH_POC = configuration.replace(Definitions.CONF_PATH_POC, '')
+            if "$HOME$" in Values.PATH_POC:
+                Values.PATH_POC = Values.PATH_POC.replace("$HOME$", Definitions.DIRECTORY_MAIN)
         elif Definitions.CONF_FLAGS_A in configuration:
             Values.BUILD_FLAGS_A = configuration.replace(Definitions.CONF_FLAGS_A, '')
         elif Definitions.CONF_FLAGS_C in configuration:
