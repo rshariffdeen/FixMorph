@@ -1,0 +1,51 @@
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/strings/ctype-ucs2.c: In function 'my_fill_utf32':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/strings/ctype-ucs2.c:2321:8: warning: variable 'buflen' set but not used [-Wunused-but-set-variable]
+   uint buflen;
+        ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/storage/innobase/dict/dict0dict.c: In function 'dict_foreign_remove_from_cache':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/storage/innobase/dict/dict0dict.c:2539:6: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+      = *(dict_foreign_t**) node->value;
+      ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/storage/innobase/dict/dict0dict.c:2562:6: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+      = *(dict_foreign_t**) node->value;
+      ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/storage/innobase/dict/dict0dict.c: In function 'dict_foreign_find':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/storage/innobase/dict/dict0dict.c:2599:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+    DBUG_RETURN(*(dict_foreign_t**) node->value);
+    ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/storage/innobase/dict/dict0dict.c:2610:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+    DBUG_RETURN(*(dict_foreign_t**) node->value);
+    ^
+/usr/bin/ar: creating /mariadb/MDEV-9225/oracle_mysql-5.5-patch/libmysql/libmysqlclient.a
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/sql/filesort.cc: In function 'void make_sortkey(SORTPARAM*, uchar*, uchar*)':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/sql/filesort.cc:869:16: warning: variable 'tmp_length' set but not used [-Wunused-but-set-variable]
+           uint tmp_length;
+                ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/sql/slave.cc: In function 'int terminate_slave_thread(THD*, mysql_mutex_t*, mysql_cond_t*, volatile uint*, bool)':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/sql/slave.cc:665:9: warning: variable 'error' set but not used [-Wunused-but-set-variable]
+     int error;
+         ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/sql/sql_partition.cc: In function 'int get_part_iter_for_interval_cols_via_map(partition_info*, bool, uint32*, uchar*, uchar*, uint, uint, uint, PARTITION_ITERATOR*)':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/sql/sql_partition.cc:7683:47: warning: 'get_col_endpoint' may be used uninitialized in this function [-Wmaybe-uninitialized]
+     part_iter->part_nums.end= get_col_endpoint(part_info, FALSE,
+                                               ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/sql/sql_repl.cc: In function 'bool log_in_use(const char*)':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/sql/sql_repl.cc:253:78: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+     DEBUG_SYNC(current_thd,"purge_logs_after_lock_index_before_thread_count");
+                                                                              ^
+CMakeFiles/perror.dir/perror.c.o: In function `main':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/extra/perror.c:305: warning: `sys_errlist' is deprecated; use `strerror' or `strerror_r' instead
+CMakeFiles/perror.dir/perror.c.o: In function `main':
+perror.c:(.text.startup+0x258): warning: `sys_nerr' is deprecated; use `strerror' or `strerror_r' instead
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/tests/bug25714.c: In function 'main':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/tests/bug25714.c:26:7: warning: variable 'OK' set but not used [-Wunused-but-set-variable]
+   int OK;
+       ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/client/mysqltest.cc: In function 'char* re_eprint(int)':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/client/mysqltest.cc:8091:10: warning: unused variable 'len' [-Wunused-variable]
+   size_t len= my_regerror(REG_ITOA|err, (my_regex_t *)NULL,
+          ^
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/client/mysqldump.c: In function 'print_xml_row':
+/mariadb/MDEV-9225/oracle_mysql-5.5-patch/client/mysqldump.c:1877:11: warning: variable 'body_found' set but not used [-Wunused-but-set-variable]
+   my_bool body_found= 0;
+           ^
