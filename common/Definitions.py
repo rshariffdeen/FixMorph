@@ -129,7 +129,7 @@ DIFF_SIZE = "1000"
 SYNTAX_CHECK_COMMAND = "clang-check "
 STYLE_FORMAT_COMMAND = "clang-format -style=LLVM "
 
-crash_word_list = ["abort", "core dumped", "crashed", "exception"]
+crash_word_list = ["abort", "core dumped", "crashed", "exception", "dumped core"]
 error_word_list = ["runtime error", "buffer-overflow", "unsigned integer overflow"]
 
 UPDATEMOVE = "UpdateMove"
