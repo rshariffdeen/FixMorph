@@ -27,7 +27,7 @@ FILE_META_DATA = "meta-data"
 FILE_ERROR_LOG = "error-log"
 
 DIR_SCRIPT = "scripts"
-DIR_CONF = "conf"
+DIR_CONF = "configuration"
 DIR_MAIN = os.getcwd()
 
 EXPERIMENT_ITEMS = list()
