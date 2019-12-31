@@ -12,6 +12,7 @@ from tools import Logger, Emitter, Verifier, Fuzzer
 DIR_FUZZ_INPUT = ""
 DIR_FUZZ_OUTPUT_LOG = ""
 FILE_EXPLOIT_OUTPUT = ""
+ITERATION_COUNT = 5
 
 
 def verify_compilation():
@@ -32,10 +33,26 @@ def verify_exploit():
 
 
 def verify_behavior():
+    global ITERATION_COUNT
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    file_extension = Fuzzer.generate_files(Values.PATH_POC, DIR_FUZZ_INPUT)
-    Verifier.differential_test(file_extension, DIR_FUZZ_INPUT, Values.EXPLOIT_C,
+    total_errors = 0
+    total_fixes = 0
+    for i in range(0, ITERATION_COUNT):
+        Emitter.sub_sub_title("Iteration " + str(i+1))
+        file_extension = Fuzzer.generate_files(Values.PATH_POC, DIR_FUZZ_INPUT)
+        fixes, errors = Verifier.differential_test(file_extension, DIR_FUZZ_INPUT, Values.EXPLOIT_C,
                                Values.PATH_C, Values.Project_D.path, DIR_FUZZ_OUTPUT_LOG)
+        total_errors += errors
+        total_fixes += fixes
+
+    Emitter.sub_sub_title("Summary")
+    Emitter.normal("\t\tTotal test: " + str(100 * int(ITERATION_COUNT)))
+    Emitter.normal("\t\tTotal test that passed only in Pd: " + str(total_fixes))
+    Emitter.normal("\t\tTotal test that failed only in Pd: " + str(total_errors))
+    Emitter.normal("\t\tAverage test that passed only in Pd: " + str(total_fixes/int(ITERATION_COUNT)))
+    Emitter.normal("\t\tAverage test that failed only in Pd: " + str(total_errors/int(ITERATION_COUNT)))
+
+
 
 
 def safe_exec(function_def, title, *args):

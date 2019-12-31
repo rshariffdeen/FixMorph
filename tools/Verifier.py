@@ -132,3 +132,4 @@ def differential_test(file_extension, input_directory, exploit_command,
     Logger.information("\t\tTotal test that passed only in Pd: " + str(fixes))
     Logger.information("\t\tTotal test that failed only in Pd: " + str(errors))
 
+    return fixes, errors
