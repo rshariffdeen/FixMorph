@@ -6,6 +6,52 @@
     "bug_name":"div-zero-1",
     "poc_path":"/poc/jasper/CVE-2016-8691.j2k",
     "cve_id":"CVE-2016-8691"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"openjpeg",
+    "target":"jasper",
+    "bug_name":"div-zero-1",
+    "poc_path":"/poc/jasper/CVE-2016-8691.j2k",
+    "cve_id":"CVE-2016-8691"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"jasper",
+    "target":"openjpeg",
+    "bug_name":"signed-int-overflow",
+    "poc_path":"/poc/jasper/CVE-2016-9387.jp2",
+    "cve_id":"CVE-2016-9387"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"openjpeg",
+    "target":"jasper",
+    "bug_name":"signed-int-overflow",
+    "poc_path":"/poc/jasper/CVE-2016-9387.jp2",
+    "cve_id":"CVE-2016-9387"
+  },
+
+
+  {
+    "category":"cross-program",
+    "donor":"jasper",
+    "target":"openjpeg",
+    "bug_name":"div-zero-2",
+    "poc_path":"/poc/jasper/CVE-2016-8692.j2k",
+    "cve_id":"CVE-2016-8692"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"openjpeg",
+    "target":"jasper",
+    "bug_name":"div-zero-2",
+    "poc_path":"/poc/jasper/CVE-2016-8692.j2k",
+    "cve_id":"CVE-2016-8692"
   }
 
 
