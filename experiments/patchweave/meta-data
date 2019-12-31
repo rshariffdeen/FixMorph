@@ -1,0 +1,12 @@
+[
+  {
+    "category": "cross-program",
+    "donor": "jasper",
+    "target": "openjpeg",
+    "bug_name": "div-zero-1",
+    "poc_path": "/poc/jasper/CVE-2016-8691.j2k",
+    "cve_id": "CVE-2016-8691"
+  }
+
+
+]
