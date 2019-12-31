@@ -125,16 +125,19 @@ def start():
     now = datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)");
     write("\n\n" + "#"*100 + "\n\n\tCrochet - Horizontal Code Edit Transfer\n\tTest conducted on: " + now + "\n\n" + "#"*100, BLUE)
 
+
 def end(time_info):
     statistics("\nRun time statistics:\n-----------------------\n")
     statistics("Initialization: " + time_info[Definitions.KEY_DURATION_INITIALIZATION] + " seconds")
     statistics("Build Analysis: " + time_info[Definitions.KEY_DURATION_BUILD_ANALYSIS] + " seconds")
     statistics("Diff Analysis: " + time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] + " seconds")
     statistics("Clone Analysis: " + time_info[Definitions.KEY_DURATION_CLONE_ANALYSIS] + " seconds")
+    statistics("AST Analysis: " + time_info[Definitions.KEY_DURATION_EXTRACTION] + " seconds")
     statistics("Map Generation: " + time_info[Definitions.KEY_DURATION_MAP_GENERATION] + " seconds")
-    # statistics("Slicing: " + time_info[Definitions.KEY_DURATION_SLICE] + " seconds")
-    # statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
-    # statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
+    statistics("Slicing: " + time_info[Definitions.KEY_DURATION_SLICE] + " seconds")
+    statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSLATION] + " seconds")
+    statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
+    statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
     success("\nCrochet finished successfully after " + time_info[Definitions.KEY_DURATION_TOTAL] + " seconds\n")
 
 
