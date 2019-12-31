@@ -35,6 +35,24 @@
     "cve_id":"CVE-2016-9387"
   },
 
+  {
+    "category":"cross-program",
+    "donor":"jasper",
+    "target":"openjpeg",
+    "bug_name":"null-ptr",
+    "poc_path":"/poc/jasper/CVE-2017-6850.jp2",
+    "cve_id":"CVE-2017-6850"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"openjpeg",
+    "target":"jasper",
+    "bug_name":"null-ptr",
+    "poc_path":"/poc/jasper/CVE-2017-6850.jp2",
+    "cve_id":"CVE-2017-6850"
+  },
+
 
   {
     "category":"cross-program",
@@ -52,7 +70,59 @@
     "bug_name":"div-zero-2",
     "poc_path":"/poc/jasper/CVE-2016-8692.j2k",
     "cve_id":"CVE-2016-8692"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"jasper",
+    "target":"openjpeg",
+    "bug_name":"unsigned-int-overflow-1",
+    "poc_path":"/poc/jasper/CVE-2016-9387.jp2",
+    "cve_id":"CVE-2016-9390"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"openjpeg",
+    "target":"jasper",
+    "bug_name":"unsigned-int-overflow-1",
+    "poc_path":"/poc/jasper/CVE-2016-9387.jp2",
+    "cve_id":"CVE-2016-9390"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"openjpeg",
+    "target":"libwebp",
+    "bug_name":"signed-int-overflow",
+    "poc_path":"/poc/jasper/CVE-2016-9262.jp2",
+    "cve_id":"CVE-2016-9262"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"jasper",
+    "target":"libwebp",
+    "bug_name":"shift-overflow",
+    "poc_path":"/poc/graphicsmagick/CVE-2016-9830.jng",
+    "cve_id":"CVE-2016-9830"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"libwebp",
+    "target":"jasper",
+    "bug_name":"shift-overflow",
+    "poc_path":"/poc/graphicsmagick/CVE-2016-9830.jng",
+    "cve_id":"CVE-2016-9830"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"jasper",
+    "target":"openjpeg",
+    "bug_name":"unsigned-int-overflow-2",
+    "poc_path":"/poc/jasper/CVE-2016-9393.jp2",
+    "cve_id":"CVE-2016-9393"
   }
-
-
 ]
