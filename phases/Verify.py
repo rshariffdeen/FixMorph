@@ -6,11 +6,12 @@ import sys
 import time
 from common.Utilities import error_exit
 from common import Values, Definitions
-from tools import Logger, Emitter, Verifier
+from tools import Logger, Emitter, Verifier, Fuzzer
 
 
 DIR_FUZZ_INPUT = ""
 DIR_FUZZ_OUTPUT_LOG = ""
+FILE_EXPLOIT_OUTPUT = ""
 
 
 def verify_compilation():
@@ -18,25 +19,23 @@ def verify_compilation():
     Verifier.run_compilation()
 
 
-# def verify_exploit():
-#     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-#     target_trace_info = Exploit.target_exit_code, Exploit.target_crashed, Exploit.FILE_EXPLOIT_OUTPUT_C
-#     Verifier.run_exploit(target_trace_info,
-#                          Values.EXPLOIT_C,
-#                          Values.Project_D.path,
-#                          Values.PATH_POC,
-#                          Exploit.FILE_EXPLOIT_OUTPUT_D,
-#                          Definitions.crash_word_list,
-#                          Trace.crash_location_c
-#                          )
+def verify_exploit():
+    global FILE_EXPLOIT_OUTPUT
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Verifier.run_exploit(Values.Project_C.path,
+                         Values.EXPLOIT_C,
+                         Values.Project_D.path,
+                         Values.PATH_POC,
+                         FILE_EXPLOIT_OUTPUT,
+                         Definitions.crash_word_list
+                         )
 
 
-# def verify_behavior():
-#     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-#     target_trace_info = Exploit.target_exit_code, Exploit.target_crashed, Exploit.FILE_EXPLOIT_OUTPUT_C
-#     file_extension = Fuzzer.generate_files(Values.PATH_POC, DIR_FUZZ_INPUT)
-#     Verifier.differential_test(file_extension, DIR_FUZZ_INPUT, Values.EXPLOIT_C,
-#                                Values.PATH_C, Values.Project_D.path, DIR_FUZZ_OUTPUT_LOG)
+def verify_behavior():
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    file_extension = Fuzzer.generate_files(Values.PATH_POC, DIR_FUZZ_INPUT)
+    Verifier.differential_test(file_extension, DIR_FUZZ_INPUT, Values.EXPLOIT_C,
+                               Values.PATH_C, Values.Project_D.path, DIR_FUZZ_OUTPUT_LOG)
 
 
 def safe_exec(function_def, title, *args):
@@ -60,9 +59,10 @@ def safe_exec(function_def, title, *args):
 
 
 def set_values():
-    global DIR_FUZZ_INPUT, DIR_FUZZ_OUTPUT_LOG
+    global DIR_FUZZ_INPUT, DIR_FUZZ_OUTPUT_LOG, FILE_EXPLOIT_OUTPUT
     DIR_FUZZ_INPUT = Definitions.DIRECTORY_OUTPUT + "/fuzz-input"
     DIR_FUZZ_OUTPUT_LOG = Definitions.DIRECTORY_OUTPUT + "/fuzz-output"
+    FILE_EXPLOIT_OUTPUT = Definitions.DIRECTORY_OUTPUT + "/program-output"
 
 
 def verify():
@@ -71,7 +71,8 @@ def verify():
     set_values()
     if not Values.SKIP_VERIFY:
         safe_exec(verify_compilation, "verifying compilation")
-    # safe_exec(verify_exploit, "verifying exploit")
-    # safe_exec(verify_behavior, "verifying differential behavior")
+        if Values.PATH_POC:
+            safe_exec(verify_exploit, "verifying exploit")
+            safe_exec(verify_behavior, "verifying differential behavior")
     else:
         Emitter.special("\n\t-skipping this phase-")
