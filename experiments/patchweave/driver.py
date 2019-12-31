@@ -46,16 +46,15 @@ def evaluate():
 
 def load_experiment():
     global EXPERIMENT_ITEMS
-    print("Loading experiment data")
+    print("[DRIVER] Loading experiment data")
     with open(FILE_META_DATA, 'r') as in_file:
-        content = in_file.readline()
-        json_data = json.loads(content)
+        json_data = json.load(in_file)
         EXPERIMENT_ITEMS = json_data
 
 
 def read_arg():
     global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS, CONF_TOOL_PATH
-    print("Reading configuration values")
+    print("[DRIVER] Reading configuration values")
     if len(sys.argv) > 1:
         for arg in sys.argv:
             if ARG_DATA_PATH in arg:
@@ -79,7 +78,7 @@ def read_arg():
 
 def run():
     global EXPERIMENT_ITEMS, DIR_MAIN, CONF_DATA_PATH
-    print("Running experiment driver")
+    print("[DRIVER] Running experiment driver")
     read_arg()
     load_experiment()
     for experiment_item in EXPERIMENT_ITEMS:
@@ -96,5 +95,5 @@ if __name__ == "__main__":
     try:
         run()
     except KeyboardInterrupt as e:
-        print("Program Interrupted by User")
+        print("[DRIVER] Program Interrupted by User")
         exit()
