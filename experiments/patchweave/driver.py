@@ -26,11 +26,19 @@ CONF_DEBUG = False
 FILE_META_DATA = "meta-data"
 FILE_ERROR_LOG = "error-log"
 
-DIR_SCRIPT = "scripts"
-DIR_CONF = "configuration"
+
 DIR_MAIN = os.getcwd()
+DIR_LOGS = DIR_MAIN + "/logs"
+DIR_SCRIPT = DIR_MAIN + "/scripts"
+DIR_CONF = DIR_MAIN + "/configuration"
+
 
 EXPERIMENT_ITEMS = list()
+
+
+def create_directories():
+    create_command = "mkdir " + DIR_LOGS
+    execute_command(create_command)
 
 
 def execute_command(command):
@@ -51,10 +59,13 @@ def setup(script_path, script_name, conf_path, deploy_conf_path):
 
 
 def evaluate(conf_path):
-    global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME
+    global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME, DIR_LOGS
     print("\t[INFO]running evaluation")
+    log_path = DIR_LOGS + "/" + str(conf_path).split("/")[-1].replace(".conf", ".log")
     tool_command = "{ cd " + CONF_TOOL_PATH + ";" + CONF_TOOL_NAME + " --conf=" + conf_path + " "+ CONF_TOOL_PARAMS + ";} 2> " + FILE_ERROR_LOG
     execute_command(tool_command)
+    copy_log = "{ cp " + CONF_TOOL_PATH + "/logs/log-latest " + log_path + ";} 2> " + FILE_ERROR_LOG
+    execute_command(copy_log)
 
 
 def load_experiment():
@@ -108,8 +119,8 @@ def run():
         category = str(experiment_item[KEY_CATEGORY])
         if category == "cross-program":
             directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
-        script_path = DIR_MAIN + "/" + DIR_SCRIPT + "/" + category + "/" + directory_name
-        conf_file_path = DIR_MAIN + "/" + DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
+        script_path = DIR_SCRIPT + "/" + category + "/" + directory_name
+        conf_file_path = DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
         deploy_path = CONF_DATA_PATH + "/" + directory_name + "/" + bug_name + "/"
         deployed_conf_path = deploy_path + "/" + conf_file_name
         print("\t[META-DATA] category: " + category)
