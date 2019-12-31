@@ -33,23 +33,33 @@ DIR_MAIN = os.getcwd()
 EXPERIMENT_ITEMS = list()
 
 
-def setup(script_path, script_name, deploy_path):
-    global FILE_ERROR_LOG
-    print("\t[INFO]creating setup")
-    command = "{ cd " + script_path + "; bash " + script_name + " " + deploy_path + ";} 2> " + FILE_ERROR_LOG
+def execute_command(command):
     if CONF_DEBUG:
         print("\t[COMMAND]" + command)
     process = subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
     (output, error) = process.communicate()
 
 
-def evaluate():
+def setup(script_path, script_name, conf_path, deploy_path):
+    global FILE_ERROR_LOG, CONF_DATA_PATH
+    print("\t[INFO] running script for setup")
+    script_command = "{ cd " + script_path + "; bash " + script_name + " " + CONF_DATA_PATH + ";} 2> " + FILE_ERROR_LOG
+    execute_command(script_command)
+    print("\t[INFO] copying configuration")
+    copy_command = "{ cp " + conf_path + " " + deploy_path + ";} 2> " + FILE_ERROR_LOG
+    execute_command(copy_command)
+
+
+def evaluate(conf_path):
+    global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME
     print("\t[INFO]running evaluation")
+    tool_command = "{ cd " + CONF_TOOL_PATH + ";" + CONF_TOOL_NAME + " --conf=" + conf_path + " "+ CONF_TOOL_PARAMS + ";} 2> " + FILE_ERROR_LOG
+    execute_command(tool_command)
 
 
 def load_experiment():
     global EXPERIMENT_ITEMS
-    print("[DRIVER] Loading experiment data")
+    print("[DRIVER] Loading experiment data\n")
     with open(FILE_META_DATA, 'r') as in_file:
         json_data = json.load(in_file)
         EXPERIMENT_ITEMS = json_data
@@ -91,13 +101,23 @@ def run():
     for experiment_item in EXPERIMENT_ITEMS:
         experiment_name = "Experiment-" + str(index) + "\n-----------------------------"
         print(experiment_name)
+        bug_name = str(experiment_item[KEY_BUG_NAME])
         directory_name = str(experiment_item[KEY_DONOR])
-        script_name = str(experiment_item[KEY_BUG_NAME]) + ".sh"
-        category = experiment_item[KEY_CATEGORY]
+        script_name = bug_name + ".sh"
+        conf_file_name = bug_name + ".conf"
+        category = str(experiment_item[KEY_CATEGORY])
         if category == "cross-program":
             directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
-        script_path = DIR_MAIN + "/" + DIR_SCRIPT + "/" + str(category) + "/" + str(directory_name)
-        setup(script_path, script_name, CONF_DATA_PATH)
+        script_path = DIR_MAIN + "/" + DIR_SCRIPT + "/" + category + "/" + directory_name
+        conf_file_path = DIR_MAIN + "/" + DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
+        deploy_path = CONF_DATA_PATH + "/" + directory_name + "/" + bug_name + "/"
+
+        print("\t[META-DATA] category: " + category)
+        print("\t[META-DATA] project: " + directory_name)
+        print("\t[META-DATA] bug ID: " + bug_name)
+        setup(script_path, script_name, conf_file_path, deploy_path)
+        deployed_conf_path = deploy_path + "/" + conf_file_name
+        evaluate(deployed_conf_path)
         index = index + 1
 
 
