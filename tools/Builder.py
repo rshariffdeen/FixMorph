@@ -25,11 +25,11 @@ def config_project(project_path, is_llvm, custom_config_command=None):
         if custom_config_command == "skip":
             return
         else:
+            config_command = custom_config_command + ' '
             if "cmake" not in custom_config_command:
                 if CC == "wllvm":
                     custom_config_command = remove_fsanitize(custom_config_command)
                     # print(custom_config_command)
-                config_command = custom_config_command + ' '
                 config_command += "CC=" + CC + " "
                 config_command += "CXX=" + CXX + " "
                 if "--cc=" in config_command:
