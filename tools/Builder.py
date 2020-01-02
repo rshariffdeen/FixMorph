@@ -28,9 +28,9 @@ def config_project(project_path, is_llvm, custom_config_command=None):
             if CC == "wllvm":
                 custom_config_command = remove_fsanitize(custom_config_command)
                 # print(custom_config_command)
-            config_command = "CC=" + CC + " "
+            config_command = custom_config_command + ' '
+            config_command += "CC=" + CC + " "
             config_command += "CXX=" + CXX + " "
-            config_command += custom_config_command
             if "--cc=" in config_command:
                 config_command = config_command.replace("--cc=clang-7", "--cc=" + CC)
             # print(config_command)
@@ -146,12 +146,18 @@ def build_project(project_path, build_command=None):
         build_command = "bear make CFLAGS=" + C_FLAGS + " "
         build_command += "CXXFLAGS=" + CXX_FLAGS + " > " + Definitions.FILE_MAKE_LOG
     else:
-        if not os.path.isfile(project_path + "/compile_commands.json"):
-            build_command = build_command.replace("make", "bear make")
-        if CC == "wllvm":
-            build_command = remove_fsanitize(build_command)
-        if "-j" not in build_command:
-            build_command = apply_flags(build_command)
+        if "-no-static" in build_command:
+            c_flags_Nstatic = C_FLAGS.replace("-static", "")
+            build_command = "bear make CFLAGS=" + c_flags_Nstatic + " "
+            cxx_flags_Nstatic = CXX_FLAGS.replace("-static", "")
+            build_command += "CXXFLAGS=" + cxx_flags_Nstatic + " > " + Definitions.FILE_MAKE_LOG
+        else:
+            if not os.path.isfile(project_path + "/compile_commands.json"):
+                build_command = build_command.replace("make", "bear make")
+            if CC == "wllvm":
+                build_command = remove_fsanitize(build_command)
+            if "-j" not in build_command:
+                build_command = apply_flags(build_command)
     build_command = dir_command + build_command
     # print(build_command)
     ret_code = execute_command(build_command)

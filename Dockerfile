@@ -24,8 +24,10 @@ RUN apt-get update && apt-get install -y \
     subversion \
     unzip \
     zlib1g-dev \
-    wget\
-    tzdata
+    wget \
+    tzdata \
+    libsoxr-dev \
+    libavahi-client-dev \
 
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"
