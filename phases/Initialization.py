@@ -12,9 +12,9 @@ from tools import Emitter
 
 def load_standard_list():
     with open(Definitions.FILE_STANDARD_FUNCTION_LIST, "r") as list_file:
-        Values.STANDARD_FUNCTION_LIST = [line[:-1] for line in list_file]
+        Values.STANDARD_FUNCTION_LIST = [line.strip() for line in list_file]
     with open(Definitions.FILE_STANDARD_MACRO_LIST, "r") as list_file:
-        Values.STANDARD_MACRO_LIST = [line[:-1] for line in list_file]
+        Values.STANDARD_MACRO_LIST = [line.strip() for line in list_file]
 
 
 def set_env_value():
