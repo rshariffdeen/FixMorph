@@ -818,6 +818,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 insert_node = json_ast_dump[Values.Project_B.name][insert_node_id]
                 target_node_b_id = id_from_string(txt_target_node_b)
                 target_node_b = json_ast_dump[Values.Project_B.name][target_node_b_id]
+                target_node = "?"
                 # TODO: Is this correct?
                 if target_node_b.line is not None:
                     insert_node.line = target_node_b.line
@@ -911,7 +912,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     insert_node.children = []
                     if insert_node.line == None:
                         insert_node.line = insert_node.parent.line
-                    if type(target_node) == Parser.AST:
+                    if target_node is not None and type(target_node) == Parser.AST:
                         if target_node.line == None:
                             target_node.line = target_node.parent.line
                         if target_node not in inserted_node_list_d:
