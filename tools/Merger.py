@@ -44,18 +44,20 @@ def merge_var_map(map_a, map_b):
     return var_map
 
 
-def merge_macro_info(info_a, info_b):
+def merge_macro_info(list_a, list_b):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     macro_info = dict()
-    for macro_name in info_a:
-        info = info_a[macro_name]
-        if macro_name in info_b.keys():
-            error_exit("MULTIPLE USAGE OF MACRO")
-        macro_info[macro_name] = info
+    for macro_name in list_a:
+        info_a = list_a[macro_name]
+        if macro_name in list_b.keys():
+            info_b = list_b[macro_name]
+            if info_a['target'] != info_b['target']:
+                error_exit("MULTIPLE USAGE OF MACRO")
+        macro_info[macro_name] = info_a
 
-    for macro_name in info_b:
-        info = info_b[macro_name]
-        macro_info[macro_name] = info
+    for macro_name in list_b:
+        info_b = list_b[macro_name]
+        macro_info[macro_name] = info_b
     return macro_info
 
 

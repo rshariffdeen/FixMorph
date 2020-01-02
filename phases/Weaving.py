@@ -81,7 +81,7 @@ def transplant_code():
 
         if missing_macro_list:
             if identified_missing_macro_list:
-                missing_macro_list = missing_macro_list.update(identified_missing_macro_list)
+                missing_macro_list = Merger.merge_macro_info(missing_macro_list, identified_missing_macro_list)
         else:
             missing_macro_list = identified_missing_macro_list
 
