@@ -257,6 +257,8 @@ def extract_macro_definition(ast_node, source_file, target_file):
                     if info['source'] != source_file or info['target'] != target_file:
                         error_exit("MACRO REQUIRED MULTIPLE TIMES!!")
         else:
+            if "(" in identifier:
+                identifier = identifier.split("(")[0]
             token_list = identifier.split(" ")
             # print(token_list)
             for token in token_list:
