@@ -120,6 +120,8 @@ def run():
         category = str(experiment_item[KEY_CATEGORY])
         if category == "cross-program":
             directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
+        elif category == "backporting":
+            directory_name = "backport/" + str(experiment_item[KEY_DONOR])
         script_path = DIR_SCRIPT + "/" + category + "/" + directory_name
         conf_file_path = DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
         deploy_path = CONF_DATA_PATH + "/" + directory_name + "/" + bug_name + "/"
