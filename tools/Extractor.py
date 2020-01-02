@@ -220,7 +220,7 @@ def extract_typeloc_node_list(ast_node):
     return typeloc_node_list
 
 
-def extract_macro_definition(ast_node, skip_line_list, source_file, target_file):
+def extract_macro_definition(ast_node, source_file, target_file):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\t\t\textracting macro definitions")
     macro_list = dict()
@@ -231,8 +231,6 @@ def extract_macro_definition(ast_node, skip_line_list, source_file, target_file)
         identifier = str(ast_node['value'])
         # print(identifier)
         start_line = int(ast_node['start line'])
-        if start_line in skip_line_list:
-            return macro_list
         node_child_count = len(ast_node['children'])
         if identifier in Values.STANDARD_MACRO_LIST:
             return macro_list

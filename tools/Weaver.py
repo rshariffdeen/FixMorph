@@ -233,6 +233,11 @@ def weave_code(file_a, file_b, file_c, instruction_list):
                                                                                    file_d,
                                                                                    ast_map_c))
 
+                missing_macro_list.update(Identifier.identify_missing_macros(ast_map_a,
+                                                                             file_b,
+                                                                             file_d
+                                                                             ))
+
             script_file.write(instruction + "\n")
 
     output_file = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
