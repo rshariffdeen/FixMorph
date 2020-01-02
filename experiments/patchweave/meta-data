@@ -124,5 +124,60 @@
     "bug_name":"unsigned-int-overflow-2",
     "poc_path":"/poc/jasper/CVE-2016-9393.jp2",
     "cve_id":"CVE-2016-9393"
+  },
+  {
+    "category":"backporting",
+    "donor":"libming",
+    "bug_name":"div-zero",
+    "poc_path":"/poc/libming/CVE-2016-9265.swf",
+    "cve_id":"CVE-2016-9265"
+  },
+  {
+    "category":"backporting",
+    "donor":"libming",
+    "bug_name":"negative-shift",
+    "poc_path":"/poc/libming/CVE-2016-9266.swf",
+    "cve_id":"CVE-2016-9266"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"libtiff",
+    "bug_name":"heap-buffer-overflow",
+    "poc_path":"/poc/openjpeg/CVE-2017-14039.tif",
+    "cve_id":"CVE-2017-14039"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"libsndfile",
+    "bug_name":"buffer-overflow",
+    "poc_path":"/poc/libsndfile/CVE-2017-8365.flac",
+    "cve_id":"CVE-2017-8365"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"libzip",
+    "bug_name":"memory-error",
+    "poc_path":"/poc/libzip/CVE-2017-14107.zip",
+    "cve_id":"CVE-2017-14107"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"jasper",
+    "bug_name":"int-overflow",
+    "poc_path":"/poc/jasper/CVE-2016-9387.jp2",
+    "cve_id":"CVE-2016-9387"
+  },
+
+  {
+    "category":"cross-program",
+    "donor":"libtiff",
+    "target":"jasper",
+    "bug_name":"memory-write-error",
+    "poc_path":"/poc/jasper/CVE-2016-8884.bmp",
+    "cve_id":"CVE-2016-8884"
   }
 ]
