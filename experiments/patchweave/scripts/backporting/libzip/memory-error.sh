@@ -5,11 +5,11 @@ dir_name=$1/backport/$project_name/$bug_id
 project_url=https://github.com/nih-at/libzip.git
 pa=$project_name-1.2.0
 pb=$project_name-1.3.0
-pc=$project_name-1.1.0
+pc=$project_name-1.1.2
 
 pa_commit=e37a0ea
 pb_commit=9b46957e
-pc_commit=rel-1-1
+pc_commit=rel-1-1-2
 
 
 mkdir -p $dir_name
