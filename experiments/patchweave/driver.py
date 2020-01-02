@@ -104,7 +104,7 @@ def read_arg():
 
 
 def run():
-    global EXPERIMENT_ITEMS, DIR_MAIN, CONF_DATA_PATH
+    global EXPERIMENT_ITEMS, DIR_MAIN, CONF_DATA_PATH, CONF_TOOL_PARAMS
     print("[DRIVER] Running experiment driver")
     read_arg()
     load_experiment()
@@ -124,6 +124,7 @@ def run():
         conf_file_path = DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
         if category == "backporting":
             directory_name = "backport/" + str(experiment_item[KEY_DONOR])
+            CONF_TOOL_PARAMS = " --backport "
         deploy_path = CONF_DATA_PATH + "/" + directory_name + "/" + bug_name + "/"
         deployed_conf_path = deploy_path + "/" + conf_file_name
         print("\t[META-DATA] category: " + category)
