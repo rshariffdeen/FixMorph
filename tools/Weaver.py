@@ -294,4 +294,4 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     # execute_command(c5)
 
     Emitter.success("\n\tSuccessful transformation")
-    return missing_function_list
+    return missing_function_list, missing_macro_list
