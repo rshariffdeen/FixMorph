@@ -25,15 +25,16 @@ def config_project(project_path, is_llvm, custom_config_command=None):
         if custom_config_command == "skip":
             return
         else:
-            if CC == "wllvm":
-                custom_config_command = remove_fsanitize(custom_config_command)
-                # print(custom_config_command)
-            config_command = custom_config_command + ' '
-            config_command += "CC=" + CC + " "
-            config_command += "CXX=" + CXX + " "
-            if "--cc=" in config_command:
-                config_command = config_command.replace("--cc=clang-7", "--cc=" + CC)
-            # print(config_command)
+            if "cmake" not in custom_config_command:
+                if CC == "wllvm":
+                    custom_config_command = remove_fsanitize(custom_config_command)
+                    # print(custom_config_command)
+                config_command = custom_config_command + ' '
+                config_command += "CC=" + CC + " "
+                config_command += "CXX=" + CXX + " "
+                if "--cc=" in config_command:
+                    config_command = config_command.replace("--cc=clang-7", "--cc=" + CC)
+                # print(config_command)
 
     elif os.path.exists(project_path + "/autogen.sh"):
         config_command = "./autogen.sh;"
