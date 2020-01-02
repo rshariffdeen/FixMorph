@@ -237,6 +237,8 @@ def extract_macro_definition(ast_node, source_file, target_file):
         # print(node_child_count)
         if node_child_count > 0:
             for child_node in ast_node['children']:
+                if 'value' not in child_node:
+                    continue
                 identifier = str(child_node['value'])
                 # print(identifier)
                 if str(identifier).isdigit():
