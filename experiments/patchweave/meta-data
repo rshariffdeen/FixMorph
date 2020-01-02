@@ -85,7 +85,7 @@
     "category":"cross-program",
     "donor":"openjpeg",
     "target":"jasper",
-    "bug_name":"unsigned-int-overflow-1",
+    "bug_name":"unsigned-int-overflow",
     "poc_path":"/poc/jasper/CVE-2016-9387.jp2",
     "cve_id":"CVE-2016-9390"
   },
