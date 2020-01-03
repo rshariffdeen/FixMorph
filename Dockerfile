@@ -3,6 +3,7 @@ MAINTAINER Ridwan Shariffdeen <ridwan@comp.nus.edu.sg>
 
 RUN apt-get update && apt-get install -y \
     autoconf \
+    autoconf-archive \
     autogen \
     bison \
     cmake \
@@ -29,6 +30,9 @@ RUN apt-get update && apt-get install -y \
     tzdata \
     libsoxr-dev \
     libavahi-client-dev \
+    mesa-common-dev \
+    gtk+-3.0 \
+    libgconf2-dev \
 
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"
