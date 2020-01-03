@@ -205,6 +205,7 @@ def extract_child_id_list(ast_object):
 def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump, map_ab, map_ac):
     translated_instruction_list = list()
     inserted_node_list_d = list()
+    update_list_d = list()
     deleted_node_list_d = dict()
     map_bd = dict()
     for instruction in modified_script:
@@ -216,7 +217,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 txt_update_node = instruction[2]
                 target_node = "?"
                 update_node_id = id_from_string(txt_update_node)
-                if int(update_node_id) in inserted_node_list_d:
+                if int(update_node_id) in update_list_d:
                     continue
                 update_node = json_ast_dump[Values.Project_B.name][update_node_id]
 
@@ -472,9 +473,11 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 offset = int(instruction[3])
                 insert_node_id = id_from_string(txt_insert_node)
                 insert_node = json_ast_dump[Values.Project_B.name][insert_node_id]
-                inserted_node_list_d = inserted_node_list_d + extract_child_id_list(insert_node)
+                update_list_d = update_list_d + extract_child_id_list(insert_node)
                 target_node_b_id = id_from_string(txt_target_node_b)
                 target_node_b = json_ast_dump[Values.Project_B.name][target_node_b_id]
+                if int(target_node_b_id) in update_list_d:
+                    continue
                 target_node = "?"
                 # TODO: Is this correct?
                 if target_node_b.line is not None:
@@ -565,14 +568,14 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     error_exit(e, "Failed at locating pos.")
                 if type(insert_node) == Parser.AST:
                     map_bd[txt_insert_node] = insert_node
-                    inserted_node_list_d.append(int(insert_node.id))
+                    inserted_node_list_d.append(insert_node)
                     insert_node.children = []
                     if insert_node.line == None:
                         insert_node.line = insert_node.parent.line
                     if target_node is not None and type(target_node) == Parser.AST:
                         if target_node.line == None:
                             target_node.line = target_node.parent.line
-                        if int(target_node.id) not in inserted_node_list_d:
+                        if target_node not in inserted_node_list_d:
                             instruction = get_instruction((Definitions.INSERT, insert_node, target_node, offset))
                             translated_instruction_list.append(instruction)
             except Exception as e:
