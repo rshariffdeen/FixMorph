@@ -8,7 +8,7 @@ import os
 from common.Utilities import error_exit
 import collections
 from common import Values
-from tools import Emitter, Logger, Extractor, Finder, Oracle
+from tools import Emitter, Logger, Extractor, Finder, Oracle, Converter
 from ast import Generator
 
 
@@ -237,13 +237,22 @@ def identify_missing_macros(ast_node, source_file, target_file):
     # print(ast_node)
     missing_macro_list = dict()
     node_type = str(ast_node['type'])
+    target_macro_list = Converter.convert_macro_list_to_dict(Extractor.extract_macro_definitions(target_file))
     if node_type == "Macro":
-        missing_macro_list = Extractor.extract_macro_definition(ast_node, source_file, target_file)
+        node_macro_list = Extractor.extract_macro_definition(ast_node, source_file, target_file)
+        for macro_name in node_macro_list:
+            if macro_name not in node_macro_list:
+                missing_macro_list[macro_name] = node_macro_list[macro_name]
     else:
         macro_node_list = Extractor.extract_macro_node_list(ast_node)
+        node_macro_list = dict()
         # print(macro_node_list)
         for macro_node in macro_node_list:
-            missing_macro_list.update(Extractor.extract_macro_definition(macro_node, source_file, target_file))
+            node_macro_list.update(Extractor.extract_macro_definition(macro_node, source_file, target_file))
+        for macro_name in node_macro_list:
+            if macro_name not in node_macro_list:
+                missing_macro_list[macro_name] = node_macro_list[macro_name]
+
     # print(missing_macro_list)
     return missing_macro_list
 

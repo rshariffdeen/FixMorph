@@ -376,3 +376,11 @@ def convert_node_to_str(ast_node):
         return left_operand + " " + operator + " " + right_operand
     return node_str
 
+
+def convert_macro_list_to_dict(string_list):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    macro_list = dict()
+    for macro_def in string_list:
+        macro_name = str(macro_def).split(" ")[1]
+        macro_list[macro_name] = macro_def
+    return macro_list
