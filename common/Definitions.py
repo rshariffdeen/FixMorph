@@ -142,4 +142,4 @@ TO = " to "
 AT = " at "
 INTO = " into "
 AND = "and"
-order = [DELETE, UPDATE, UPDATEMOVE, MOVE, INSERT]
+order = [DELETE, INSERT, UPDATE, UPDATEMOVE, MOVE]
