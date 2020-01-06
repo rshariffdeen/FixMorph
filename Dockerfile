@@ -63,7 +63,9 @@ RUN echo "Y" | pysmt-install  --z
 
 # Libraries for Experiments
 RUN apt-get install -y \
+    libdaemon-dev \
     libfreetype6-dev \
+    libpopt-dev \
     libtiff5-dev
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
