@@ -64,7 +64,7 @@ def evaluate(conf_path, bug_name):
     log_path = DIR_LOGS + "/" + str(conf_path).split("/")[-1].replace(".conf", ".log")
     tool_command = "{ cd " + CONF_TOOL_PATH + ";" + CONF_TOOL_NAME + " --conf=" + conf_path + " "+ CONF_TOOL_PARAMS + ";} 2> " + FILE_ERROR_LOG
     execute_command(tool_command)
-    copy_log = "{ cp " + CONF_TOOL_PATH + "/logs" + bug_name + "/log-latest " + log_path + ";} 2> " + FILE_ERROR_LOG
+    copy_log = "{ cp " + CONF_TOOL_PATH + "/logs/" + bug_name + "/log-latest " + log_path + ";} 2> " + FILE_ERROR_LOG
     execute_command(copy_log)
 
 
