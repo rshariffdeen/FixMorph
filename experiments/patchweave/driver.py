@@ -61,7 +61,7 @@ def setup(script_path, script_name, conf_path, deploy_conf_path):
 def evaluate(conf_path, bug_name):
     global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME, DIR_LOGS
     print("\t[INFO]running evaluation")
-    log_path = DIR_LOGS + "/" + str(conf_path).split("/")[-1].replace(".conf", ".log")
+    log_path = str(conf_path).replace(".conf", ".log")
     tool_command = "{ cd " + CONF_TOOL_PATH + ";" + CONF_TOOL_NAME + " --conf=" + conf_path + " "+ CONF_TOOL_PARAMS + ";} 2> " + FILE_ERROR_LOG
     execute_command(tool_command)
     copy_log = "{ cp " + CONF_TOOL_PATH + "/logs/" + bug_name + "/log-latest " + log_path + ";} 2> " + FILE_ERROR_LOG
