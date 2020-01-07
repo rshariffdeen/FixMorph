@@ -31,7 +31,7 @@ DIR_MAIN = os.getcwd()
 DIR_LOGS = DIR_MAIN + "/logs"
 DIR_SCRIPT = DIR_MAIN + "/scripts"
 DIR_CONF = DIR_MAIN + "/configuration"
-
+DIR_POC = DIR_MAIN + "/exploits"
 
 EXPERIMENT_ITEMS = list()
 
@@ -39,6 +39,8 @@ EXPERIMENT_ITEMS = list()
 def create_directories():
     create_command = "mkdir " + DIR_LOGS
     execute_command(create_command)
+    copy_command = "cp -rf " + DIR_POC + " " + CONF_DATA_PATH
+    execute_command(copy_command)
 
 
 def execute_command(command):
