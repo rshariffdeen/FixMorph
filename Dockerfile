@@ -63,10 +63,17 @@ RUN echo "Y" | pysmt-install  --z
 
 # Libraries for Experiments
 RUN apt-get install -y \
+
+    libasound2-dev \
+    libconfig-dev \
+    libcrypto++-dev \
     libdaemon-dev \
     libfreetype6-dev \
     libpopt-dev \
-    libtiff5-dev
+    libsoxr-dev \
+    libssl-dev \
+    libtiff5-dev \
+    libpulse-dev
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
