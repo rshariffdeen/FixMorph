@@ -63,7 +63,6 @@ RUN echo "Y" | pysmt-install  --z
 
 # Libraries for Experiments
 RUN apt-get install -y \
-
     libasound2-dev \
     libconfig-dev \
     libcrypto++-dev \
