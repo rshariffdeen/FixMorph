@@ -25,14 +25,9 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     subversion \
     unzip \
-    zlib1g-dev \
     wget \
-    tzdata \
-    libsoxr-dev \
-    libavahi-client-dev \
-    mesa-common-dev \
-    gtk+-3.0 \
-    libgconf2-dev \
+    zlib1g-dev
+
 
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"
@@ -63,16 +58,22 @@ RUN echo "Y" | pysmt-install  --z
 
 # Libraries for Experiments
 RUN apt-get install -y \
+    gtk+-3.0 \
+    libavahi-client-dev \
     libasound2-dev \
+    libgconf2-dev \
     libconfig-dev \
     libcrypto++-dev \
     libdaemon-dev \
     libfreetype6-dev \
     libpopt-dev \
+    libpulse-dev \
     libsoxr-dev \
     libssl-dev \
     libtiff5-dev \
-    libpulse-dev
+    mesa-common-dev \
+    tzdata
+
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
