@@ -11,9 +11,6 @@ RUN apt-get update && apt-get install -y \
     flex \
     git \
     google-perftools \
-    libboost-all-dev \
-    libgoogle-perftools-dev \
-    libncurses5-dev \
     mercurial \
     minisat \
     nano \
@@ -72,7 +69,11 @@ RUN apt-get install -y \
     libssl-dev \
     libtiff5-dev \
     mesa-common-dev \
-    tzdata
+    libboost-all-dev \
+    libgoogle-perftools-dev \
+    libncurses5-dev \
+    tzdata \
+    libnl-3-dev
 
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
