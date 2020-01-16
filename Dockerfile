@@ -63,6 +63,8 @@ RUN apt-get install -y \
     libcrypto++-dev \
     libdaemon-dev \
     libfreetype6-dev \
+    libnl-3-dev \
+    libnl-genl-3-dev \
     libpopt-dev \
     libpulse-dev \
     libsoxr-dev \
@@ -72,8 +74,8 @@ RUN apt-get install -y \
     libboost-all-dev \
     libgoogle-perftools-dev \
     libncurses5-dev \
-    tzdata \
-    libnl-3-dev
+    tzdata
+
 
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
