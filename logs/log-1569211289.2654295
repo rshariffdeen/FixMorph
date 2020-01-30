@@ -1,0 +1,374 @@
+[Start] Crochet started at 2019-09-23 12:01:29.265700
+[INFO]: Initializing project for Transfer
+[INFO]: loading configuration
+[COMMAND]: cp -rf /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1 /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1-patch
+[COMMAND]: mkdir /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/output/CVE-2016-9560
+[COMMAND]: mkdir /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/output/CVE-2016-9560/fuzz-input
+[COMMAND]: mkdir /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/output/CVE-2016-9560/fuzz-output
+[INFO]: creating project for /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25
+[INFO]: creating project for /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26
+[INFO]: creating project for /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1
+[INFO]: creating project for /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1-patch
+[INFO]: set environment
+[COMMAND]: export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python
+[TRACE]: phases.Building:build: dict_keys([])
+[INFO]: Building Projects
+[TRACE]: phases.Building:safe_exec: dict_keys(['args', 'title', 'function_def'])
+[INFO]: building binaries
+[INFO]: running <function build_normal at 0x7f12b2478950>
+[INFO]: restoring projects
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/;git clean -fd; git reset --hard HEAD
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/;git clean -fd; git reset --hard HEAD
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1/;git clean -fd; git reset --hard HEAD
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1-patch/;git clean -fd; git reset --hard HEAD
+[INFO]: cleaning projects
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/; make clean; make distclean; rm compile_commands.json; rm CMakeCache.txt; rm -rf CMakeFiles
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/; make clean; make distclean; rm compile_commands.json; rm CMakeCache.txt; rm -rf CMakeFiles
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1/; make clean; make distclean; rm compile_commands.json; rm CMakeCache.txt; rm -rf CMakeFiles
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1-patch/; make clean; make distclean; rm compile_commands.json; rm CMakeCache.txt; rm -rf CMakeFiles
+[INFO]: configuring projects
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/;autoreconf -i;CC=clang CXX=clang++ ./configure CFLAGS='-g -O0' CXXFLAGS='-g -O0'
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/;autoreconf -i;CC=clang CXX=clang++ ./configure CFLAGS='-g -O0' CXXFLAGS='-g -O0'
+[COMMAND]: rm aclocal.m4;aclocal
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1/;CC=clang CXX=clang++ ./configure CFLAGS='-g -O0' CXXFLAGS='-g -O0'
+[COMMAND]: rm aclocal.m4;aclocal
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1-patch/;CC=clang CXX=clang++ ./configure CFLAGS='-g -O0' CXXFLAGS='-g -O0'
+[INFO]: building projects
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/;bear make CFLAGS='-g -O0 -DNDEBUG ' CXXFLAGS='-g -O0 -DNDEBUG ' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/logs/log-make
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/;bear make CFLAGS='-g -O0 -DNDEBUG ' CXXFLAGS='-g -O0 -DNDEBUG ' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/logs/log-make
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1/;bear make CFLAGS='-g -O0 -DNDEBUG ' CXXFLAGS='-g -O0 -DNDEBUG ' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/logs/log-make
+[COMMAND]: cd /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.1-patch/;bear make CFLAGS='-g -O0 -DNDEBUG ' CXXFLAGS='-g -O0 -DNDEBUG ' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/logs/log-make
+
+	Successful building binaries, after 128.44556283950806 seconds.
+[TRACE]: phases.Differencing:diff: dict_keys([])
+[INFO]: Analysing Changes
+[TRACE]: phases.Differencing:safe_exec: dict_keys(['args', 'title', 'function_def'])
+[INFO]: analysing source diff
+[INFO]: running <function analyse_source_diff at 0x7f12b2dadea0>
+[TRACE]: phases.Differencing:analyse_source_diff: dict_keys([])
+[TRACE]: tools.Differ:diff_files: dict_keys(['project_path_b', 'project_path_a', 'output_ext', 'output_ext_b', 'output_ext_a', 'output_h_diff', 'output_c_diff', 'output_diff_file'])
+[TRACE]: common.Utilities:get_file_extension_list: dict_keys(['output_file_name', 'src_path'])
+[COMMAND]: find /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25 -type f -not -name '*\.c' -not -name '*\.h' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/excluded-extensions-a
+[TRACE]: common.Utilities:get_file_extension_list: dict_keys(['output_file_name', 'src_path'])
+[COMMAND]: find /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26 -type f -not -name '*\.c' -not -name '*\.h' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/excluded-extensions-b
+[COMMAND]: diff -ENZBbwqr /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25 /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26 -X /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/excluded-extensions> /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/diff_all;cat /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/diff_all| grep -P '\.c and ' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/diff_C;cat /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/diff_all| grep -P '\.h and ' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/diff_H
+[INFO]: analysing header files
+[TRACE]: tools.Differ:diff_h_files: dict_keys(['project_path_a', 'diff_file_path'])
+[INFO]: analysing C/CPP source files
+[TRACE]: tools.Differ:diff_c_files: dict_keys(['diff_file_path'])
+[INFO]: analysing changed code segments
+[TRACE]: tools.Differ:diff_code: dict_keys(['output_file', 'diff_file_path'])
+[COMMAND]: diff -ENBZbwr /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/temp_diff
+[TRACE]: ast.Generator:get_function_name_list: dict_keys(['pertinent_lines', 'source_file', 'project'])
+[TRACE]: ast.Generator:parse_ast: dict_keys(['use_deckard', 'file_path'])
+[TRACE]: ast.Generator:generate_json: dict_keys(['file_path'])
+[TRACE]: ast.Generator:ast_dump: dict_keys(['is_header', 'output_path', 'file_path'])
+[COMMAND]: crochet-diff -ast-dump-json /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c 2> output/errors_AST_dump > /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c.AST
+[WARNING]: return code:0
+[TRACE]: ast.AST:load_from_file: dict_keys(['file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Vector:generate_deckard_vec: dict_keys(['self'])
+[INFO]: generating vector for 		jpc_dec_tileinit 675-958
+[COMMAND]: echo /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c.jpc_dec_tileinit.vec
+ >>  output/errors; third-party/Deckard/cvecgen_fail  --start-line-number 675 --end-line-number 958 /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c -o /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c.jpc_dec_tileinit.vec 2> output/errors
+[TRACE]: ast.Generator:get_function_name_list: dict_keys(['pertinent_lines', 'source_file', 'project'])
+[TRACE]: ast.Generator:parse_ast: dict_keys(['use_deckard', 'file_path'])
+[TRACE]: ast.Generator:generate_json: dict_keys(['file_path'])
+[TRACE]: ast.Generator:ast_dump: dict_keys(['is_header', 'output_path', 'file_path'])
+[COMMAND]: crochet-diff -ast-dump-json /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c 2> output/errors_AST_dump > /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c.AST
+[WARNING]: return code:0
+[TRACE]: ast.AST:load_from_file: dict_keys(['file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Generator:generate_vector: dict_keys(['is_deckard', 'end_line', 'start_line', 'f_or_struct', 'file_path'])
+[TRACE]: ast.Vector:generate_deckard_vec: dict_keys(['self'])
+[INFO]: generating vector for 		jpc_dec_tileinit 675-958
+[COMMAND]: echo /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c.jpc_dec_tileinit.vec
+ >>  output/errors; third-party/Deckard/cvecgen_fail  --start-line-number 675 --end-line-number 958 /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c -o /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c.jpc_dec_tileinit.vec 2> output/errors
+
+	Successful analysing source diff, after 1.607839584350586 seconds.
+[TRACE]: phases.Differencing:safe_exec: dict_keys(['args', 'title', 'function_def'])
+[INFO]: analysing ast diff
+[INFO]: running <function analyse_ast_diff at 0x7f12b08b5488>
+[TRACE]: phases.Differencing:analyse_ast_diff: dict_keys([])
+[TRACE]: tools.Differ:diff_ast: dict_keys(['script_file_path', 'project_path_b', 'project_path_a', 'diff_info'])
+[INFO]: /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c
+[TRACE]: tools.Differ:get_ast_script: dict_keys(['script_file_path', 'source_b', 'source_a'])
+[TRACE]: ast.Generator:generate_ast_script: dict_keys(['dump_matches', 'outfile_path', 'source_b', 'source_a'])
+[COMMAND]: crochet-diff -s=10 /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c 2> /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/errors_ast_diff > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/ast-script
+[TRACE]: ast.Generator:get_ast_json: dict_keys(['file_path'])
+[TRACE]: ast.Generator:ast_dump: dict_keys(['is_header', 'output_path', 'file_path'])
+[COMMAND]: crochet-diff -ast-dump-json /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c 2> output/errors_AST_dump > /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c.AST
+[WARNING]: return code:0
+[TRACE]: ast.Generator:get_ast_json: dict_keys(['file_path'])
+[TRACE]: ast.Generator:ast_dump: dict_keys(['is_header', 'output_path', 'file_path'])
+[COMMAND]: crochet-diff -ast-dump-json /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c 2> output/errors_AST_dump > /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c.AST
+[WARNING]: return code:0
+[TRACE]: tools.Mapper:map_ast_from_source: dict_keys(['script_file_path', 'source_b', 'source_a'])
+[TRACE]: ast.Generator:generate_ast_script: dict_keys(['dump_matches', 'outfile_path', 'source_b', 'source_a'])
+[COMMAND]: crochet-diff -s=10 -dump-matches /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.25/src/libjasper/jpc/jpc_dec.c /home/rshariffdeen/workspace/research-work/patch-transplant/data-set/jasper/CVE-2016-9560/jasper-1.900.26/src/libjasper/jpc/jpc_dec.c 2> /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/errors_ast_diff | grep -P '^Match ' | grep -P '^Match ' > /home/rshariffdeen/workspace/research-work/patch-transplant/crochet/tmp/ast-script
+[TRACE]: tools.Filter:filter_ast_script: dict_keys(['mapping_ba', 'info_b', 'info_a', 'ast_script'])
+[TRACE]: tools.Merger:merge_ast_script: dict_keys(['mapping_ba', 'ast_node_b', 'ast_node_a', 'ast_script'])
+[TRACE]: ast.AST:load_from_map: dict_keys(['ast_map'])
+[TRACE]: ast.AST:load_from_map: dict_keys(['ast_map'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[TRACE]: tools.Finder:search_ast_node_by_id: dict_keys(['find_id', 'ast_node'])
+[ERROR]: Crash during analysing ast diff, after 3.4493958950042725 seconds.
+[ERROR]: 'parent_id'
+[ERROR]: 'parent_id'
+[ERROR]: Unexpected error during analysing ast diff.
+[ERROR]: Unexpected error during analysing ast diff.
