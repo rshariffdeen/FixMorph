@@ -175,3 +175,6 @@ def clean_parse(content, separator):
     node2 = separator.join(nodes[half:])
     return [node1, node2]
 
+
+def is_intersect(start, end, start2, end2):
+    return not (end2 < start or start2 > end)

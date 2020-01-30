@@ -124,6 +124,7 @@ ARG_SKIP_TRANSLATION = "--skip-trans"
 TOOL_VECGEN = "third-party/deckard/cvecgen_fail "
 TOOL_VECGEN_ORIG = "third-party/deckard/cvecgen "
 
+APP_AST_DIFF = "crochet-diff"
 PATCH_COMMAND = "crochet-patch"
 PATCH_SIZE = "1000"
 DIFF_COMMAND = "crochet-diff "

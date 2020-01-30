@@ -142,7 +142,6 @@ def extract_decl_list(ast_node):
     return list(set(dec_list))
 
 
-
 def extract_decl_node_list(ast_node):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dec_list = dict()
@@ -170,6 +169,16 @@ def extract_enum_node_list(ast_tree):
         for child_node in ast_tree['children']:
             child_dec_list = extract_enum_node_list(child_node)
             dec_list.update(child_dec_list)
+    return dec_list
+
+
+def extract_global_var_node_list(ast_tree):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    dec_list = list()
+    for ast_node in ast_tree:
+        node_type = str(ast_node["type"])
+        if node_type in ["VarDecl"]:
+            dec_list.append(ast_node)
     return dec_list
 
 
@@ -285,6 +294,16 @@ def extract_macro_node_list(ast_node):
             for child_node in ast_node['children']:
                 child_ref_list = extract_macro_node_list(child_node)
                 macro_node_list = macro_node_list + child_ref_list
+    return macro_node_list
+
+
+def extract_macro_def_node_list(ast_tree):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    macro_node_list = list()
+    for ast_node in ast_tree:
+        node_type = str(ast_node["type"])
+        if node_type in ["Macro"]:
+            macro_node_list.append(ast_node)
     return macro_node_list
 
 

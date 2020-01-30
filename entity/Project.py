@@ -20,4 +20,5 @@ class Project:
         self.macro_list = dict()
         self.def_list = dict()
         self.decl_list = dict()
-
+        self.enum_list = dict()
+        self.type_def_list = dict()

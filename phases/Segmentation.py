@@ -6,20 +6,12 @@ import sys
 import time
 from common.Utilities import error_exit, save_current_state, load_state
 from common import Definitions, Values
-from tools import Logger, Emitter, Differ, Writer, Merger, Reader
-
-FILE_EXCLUDED_EXTENSIONS = ""
-FILE_EXCLUDED_EXTENSIONS_A = ""
-FILE_EXCLUDED_EXTENSIONS_B = ""
-FILE_DIFF_C = ""
-FILE_DIFF_H = ""
-FILE_DIFF_ALL = ""
-FILE_AST_SCRIPT = ""
-FILE_AST_DIFF_ERROR = ""
+from tools import Logger, Emitter, Identifier, Writer, Merger, Reader
 
 
 def segment_code(diff_info):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Identifier.identify_code_segment(diff_info)
 
 
 def safe_exec(function_def, title, *args):

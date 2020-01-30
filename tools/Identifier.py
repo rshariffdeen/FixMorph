@@ -5,11 +5,12 @@
 import sys
 import os
 
-from common.Utilities import error_exit
+from common.Utilities import error_exit, is_intersect
 import collections
 from common import Values
 from tools import Emitter, Logger, Extractor, Finder, Oracle, Converter
-from ast import Generator
+from ast import Generator, Vector
+from tools import Generator as Gen
 
 
 STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *"]
@@ -532,5 +533,66 @@ def identify_fixed_errors(output_a, output_b):
     return list(set(fixed_error_list))
 
 
-def identify_code_segment(diff_info):
+def identify_code_segment(diff_info, project):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    grouped_line_info = dict()
+    for source_loc in diff_info:
+        source_file, start_line = source_loc.split(":")
+        diff_line_info = diff_info[source_loc]
+        if source_file not in grouped_line_info:
+            grouped_line_info[source_file] = list()
+        grouped_line_info[source_file].append(diff_line_info['old-lines'])
+
+    for source_file in grouped_line_info:
+        pertinent_lines = grouped_line_info[source_file]
+        ast_tree = Gen.generate_ast_json(source_file)
+        enum_list = list()
+        function_list = list()
+        macro_list = list()
+        struct_list = list()
+        type_def_list = list()
+        def_list = list()
+        decl_list = list()
+        for ast_node in ast_tree:
+            node_type = str(ast_node["type"])
+            if node_type in ["VarDecl"]:
+                def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+            elif node_type in ["EnumConstantDecl"]:
+                enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+            elif node_type in ["Macro"]:
+                macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+            elif node_type in ["TypedefDecl"]:
+                type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+            elif node_type in ["RecordDecl"]:
+                struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+            elif node_type in ["FunctionDecl"]:
+                type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+            else:
+                error_exit("unknown node type for code segmentation: " + str(node_type))
+
+        for function_name, begin_line, finish_line in function_list:
+            for start_line, end_line in pertinent_lines:
+                if is_intersect(begin_line, finish_line, start_line, end_line):
+                    if source_file not in project.function_list.keys():
+                        project.function_list[source_file] = dict()
+                    if function_name not in project.function_list[source_file]:
+                        project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name,
+                                                                                          begin_line, finish_line, True)
+
+        for struct_name, begin_line, finish_line in struct_list:
+            for start_line, end_line in pertinent_lines:
+                if is_intersect(begin_line, finish_line, start_line, end_line):
+                    if source_file not in project.struct_list.keys():
+                        project.struct_list[source_file] = dict()
+                    if struct_name not in project.struct_list[source_file]:
+                        project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name,
+                                                                                      begin_line, finish_line, True)
+
+        for macro_name, begin_line, finish_line in macro_list:
+            for start_line, end_line in pertinent_lines:
+                if is_intersect(begin_line, finish_line, start_line, end_line):
+                    if source_file not in project.macro_list.keys():
+                        project.macro_list[source_file] = dict()
+                    if macro_name not in project.macro_list[source_file]:
+                        project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name,
+                                                                                     begin_line, finish_line, True)
