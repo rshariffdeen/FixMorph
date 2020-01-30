@@ -57,10 +57,10 @@ def generate_script_for_c_files(file_list_to_patch):
             if vec_f_a.function_name in Values.Project_B.function_list[vec_f_b_file].keys():
                 vec_f_b = Values.Project_B.function_list[vec_f_b_file][vec_f_a.function_name]
             else:
-                error_exit("Error: Function not found among affected.", vec_f_a.function, vec_f_b_file,
+                error_exit("Error: Function not found among affected.", vec_f_a.function_name, vec_f_b_file,
                            Values.Project_B.function_list[vec_f_b_file].keys())
         except Exception as e:
-            error_exit(e, vec_f_b_file, vec_f_a, Values.Project_A.path, Values.Project_B.path, vec_f_a.function)
+            error_exit(e, vec_f_b_file, vec_f_a, Values.Project_A.path, Values.Project_B.path, vec_f_a.function_name)
 
         # Generate edit scripts for diff and matching
         generate_edit_script(vec_f_a.file_path, vec_f_b.file_path, script_file_ab)
