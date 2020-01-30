@@ -553,7 +553,7 @@ def identify_code_segment(diff_info, project):
         type_def_list = list()
         def_list = list()
         decl_list = list()
-        for ast_node in ast_tree:
+        for ast_node in ast_tree['children']:
             node_type = str(ast_node["type"])
             if node_type in ["VarDecl"]:
                 def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
