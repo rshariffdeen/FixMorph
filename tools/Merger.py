@@ -112,6 +112,8 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             node_id_b = int(((script_line.split(" into ")[1]).split("(")[1]).split(")")[0])
             if node_id_b in inserted_node_list or node_id_b == 0:
                 inserted_node_list.append(node_id_a)
+                if node_id_b == 0:
+                    merged_ast_script.append(script_line)
                 continue
             replace_node = Finder.search_ast_node_by_id(ast_node_b, node_id_a)
             # print(replace_node)
