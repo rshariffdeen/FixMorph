@@ -17,3 +17,7 @@ class Project:
         self.name = name
         self.function_list = dict()
         self.struct_list = dict()
+        self.macro_list = dict()
+        self.def_list = dict()
+        self.decl_list = dict()
+
