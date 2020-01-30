@@ -54,7 +54,7 @@ def diff_h_files(diff_file_path, project_path_a):
 
 def diff_code(diff_file_path, output_file):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\tcollecting diff info...")
+    Emitter.normal("\t\tcollecting diff line information ...")
     diff_info = dict()
     with open(diff_file_path, 'r') as diff_file:
         diff_line = diff_file.readline().strip()
@@ -68,6 +68,7 @@ def diff_code(diff_file_path, output_file):
             pertinent_lines_b = []
             with open(output_file, 'r') as temp_diff_file:
                 file_line = temp_diff_file.readline().strip()
+                Emitter.normal("\t\t" + file_a + ":")
                 while file_line:
                     operation = ""
                     # We only want lines starting with a line number
@@ -110,7 +111,11 @@ def diff_code(diff_file_path, output_file):
                         elif operation == "modify":
                             diff_info[diff_loc]['old-lines'] = (start_a, end_a)
                             diff_info[diff_loc]['new-lines'] = (start_b, end_b)
+
+                        Emitter.normal("\t\t\t" + operation + ": " + str(start_a) + "-" + str(end_a))
                     file_line = temp_diff_file.readline().strip()
+
+
 
             try:
                 Generator.get_function_list_for_line_range(Values.Project_A, file_a, pertinent_lines_a)
