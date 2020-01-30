@@ -39,8 +39,6 @@ def analyse_source_diff():
     diff_info_c = Differ.diff_line(Definitions.FILE_DIFF_H, Definitions.FILE_TEMP_DIFF)
     diff_info_h = Differ.diff_line(Definitions.FILE_DIFF_C, Definitions.FILE_TEMP_DIFF)
     diff_info = Merger.merge_diff_info(diff_info_c, diff_info_h)
-    Emitter.sub_sub_title("analysing changed code segments")
-    diff_info = Differ.diff_line(Definitions.FILE_DIFF_C, Definitions.FILE_TEMP_DIFF)
 
 
 def analyse_ast_diff():

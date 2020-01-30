@@ -163,7 +163,16 @@ def diff_ast(diff_info, project_path_a, project_path_b, script_file_path):
     ast_map_a = ""
     ast_map_b = ""
     mapping_ba = ""
-    for diff_loc in diff_info.keys():
+
+    grouped_line_info = dict()
+    for source_loc in diff_info:
+        source_file, start_line = source_loc.split(":")
+        diff_line_info = diff_info[source_loc]
+        if source_file not in grouped_line_info:
+            grouped_line_info[source_file] = list()
+        grouped_line_info[source_file].append(diff_line_info)
+
+    for diff_loc in grouped_line_info.keys():
         source_path, line_number = diff_loc.split(":")
         if source_path != source_path_a:
             Emitter.sub_sub_title(source_path)
@@ -178,36 +187,37 @@ def diff_ast(diff_info, project_path_a, project_path_b, script_file_path):
                 mapping_ba = Mapper.map_ast_from_source(source_path_a, source_path_b, script_file_path)
             except:
                 Emitter.warning("\t\twarning: no AST generated")
-                del diff_info[diff_loc]
+                del grouped_line_info[diff_loc]
                 continue
 
         Emitter.normal("\tline number:" + line_number)
-        diff_loc_info = diff_info[diff_loc]
-        operation = diff_loc_info['operation']
-        filtered_ast_script = list()
-        if operation == 'insert':
-            start_line_b, end_line_b = diff_loc_info['new-lines']
-            line_range_b = (start_line_b, end_line_b)
-            line_range_a = (-1, -1)
-            info_a = (source_path_a, line_range_a, ast_map_a)
-            info_b = (source_path_b, line_range_b, ast_map_b)
-            filtered_ast_script = Filter.filter_ast_script(ast_script,
-                                                           info_a,
-                                                           info_b,
-                                                           mapping_ba
-                                                           )
-        elif operation == 'modify':
-            line_range_a = diff_loc_info['old-lines']
-            line_range_b = diff_loc_info['new-lines']
-            info_a = (source_path_a, line_range_a, ast_map_a)
-            info_b = (source_path_b, line_range_b, ast_map_b)
-            filtered_ast_script = Filter.filter_ast_script(ast_script,
-                                                           info_a,
-                                                           info_b,
-                                                           mapping_ba
-                                                           )
-        if filtered_ast_script is None:
-            del diff_info[diff_loc]
-            continue
-        diff_info[diff_loc]['ast-script'] = filtered_ast_script
+        diff_loc_list = grouped_line_info[diff_loc]
+        for diff_loc_info in diff_loc_list:
+            operation = diff_loc_info['operation']
+            filtered_ast_script = list()
+            if operation == 'insert':
+                start_line_b, end_line_b = diff_loc_info['new-lines']
+                line_range_b = (start_line_b, end_line_b)
+                line_range_a = (-1, -1)
+                info_a = (source_path_a, line_range_a, ast_map_a)
+                info_b = (source_path_b, line_range_b, ast_map_b)
+                filtered_ast_script = Filter.filter_ast_script(ast_script,
+                                                               info_a,
+                                                               info_b,
+                                                               mapping_ba
+                                                               )
+            elif operation == 'modify':
+                line_range_a = diff_loc_info['old-lines']
+                line_range_b = diff_loc_info['new-lines']
+                info_a = (source_path_a, line_range_a, ast_map_a)
+                info_b = (source_path_b, line_range_b, ast_map_b)
+                filtered_ast_script = Filter.filter_ast_script(ast_script,
+                                                               info_a,
+                                                               info_b,
+                                                               mapping_ba
+                                                               )
+            if filtered_ast_script is None:
+                del diff_info[diff_loc]
+                continue
+            diff_info[diff_loc]['ast-script'] = filtered_ast_script
     return diff_info
