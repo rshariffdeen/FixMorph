@@ -33,7 +33,7 @@ def run():
 
     time_start = time.time()
     Segmentation.segment()
-    time_info[Definitions.KEY_DURATION_SEG_ANALYSIS] = str(time.time() - time_start)
+    time_info[Definitions.KEY_DURATION_SEGMENTATION] = str(time.time() - time_start)
 
     time_start = time.time()
     Detection.detect()
