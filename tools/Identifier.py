@@ -596,3 +596,12 @@ def identify_code_segment(diff_info, project):
                     if macro_name not in project.macro_list[source_file]:
                         project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name,
                                                                                      begin_line, finish_line, True)
+
+        for enum_name, begin_line, finish_line in enum_list:
+            for start_line, end_line in pertinent_lines:
+                if is_intersect(begin_line, finish_line, start_line, end_line):
+                    if source_file not in project.enum_list.keys():
+                        project.enum_list[source_file] = dict()
+                    if enum_name not in project.enum_list[source_file]:
+                        project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name,
+                                                                                     begin_line, finish_line, True)

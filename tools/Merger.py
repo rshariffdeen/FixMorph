@@ -29,7 +29,8 @@ def merge_var_info(var_expr_map, var_value_map):
 
 def merge_diff_info(info_a, info_b):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    info_a.update(info_b)
+    for source_loc in info_b:
+        info_a[source_loc] = info_b[source_loc]
     return info_a
 
 
