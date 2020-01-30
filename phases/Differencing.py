@@ -6,7 +6,7 @@ import sys
 import time
 from common.Utilities import error_exit, save_current_state
 from common import Definitions, Values
-from tools import Logger, Emitter, Differ, Writer
+from tools import Logger, Emitter, Differ, Writer, Merger
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -35,8 +35,12 @@ def analyse_source_diff():
     Differ.diff_h_files(Definitions.FILE_DIFF_H, Values.PATH_A)
     Emitter.sub_sub_title("analysing C/CPP source files")
     Differ.diff_c_files(Definitions.FILE_DIFF_C)
+    Emitter.sub_sub_title("analysing changed code lines")
+    diff_info_c = Differ.diff_line(Definitions.FILE_DIFF_H, Definitions.FILE_TEMP_DIFF)
+    diff_info_h = Differ.diff_line(Definitions.FILE_DIFF_C, Definitions.FILE_TEMP_DIFF)
+    diff_info = Merger.merge_diff_info(diff_info_c, diff_info_h)
     Emitter.sub_sub_title("analysing changed code segments")
-    diff_info = Differ.diff_code(Definitions.FILE_DIFF_C, Definitions.FILE_TEMP_DIFF)
+    diff_info = Differ.diff_line(Definitions.FILE_DIFF_C, Definitions.FILE_TEMP_DIFF)
 
 
 def analyse_ast_diff():

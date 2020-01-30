@@ -530,3 +530,7 @@ def identify_fixed_errors(output_a, output_b):
     error_list_b = Extractor.extract_error_list_from_output(output_b)
     fixed_error_list = [error for error in error_list_a if error not in error_list_b]
     return list(set(fixed_error_list))
+
+
+def identify_code_segment(diff_info):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
