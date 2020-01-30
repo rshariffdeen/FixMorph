@@ -11,7 +11,7 @@ from tools import Logger, Emitter, Identifier, Writer, Merger, Reader
 
 def segment_code(diff_info):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Identifier.identify_code_segment(diff_info)
+    Identifier.identify_code_segment(diff_info, Values.Project_A)
 
 
 def safe_exec(function_def, title, *args):
@@ -49,7 +49,7 @@ def segment():
     Emitter.title("Segmentation of Code")
     load_values()
     if not Values.SKIP_SEGMENT:
-        safe_exec(segment_code, "identifying segments")
+        safe_exec(segment_code, "identifying segments", Values.diff_info)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")
