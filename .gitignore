@@ -3,6 +3,7 @@ conf/
 backup/
 tmp/
 conf/
+logs/
 cmake-build-debug
 .idea
 *.pyc
