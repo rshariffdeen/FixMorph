@@ -56,6 +56,14 @@ def generate_script_for_files(file_list_to_patch):
                 vector_source_a, vector_name_a = vec_path_a.split(".func_")
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                 vector_source_c, vector_name_c = vec_path_c.split(".func_")
+            elif "struct_" in vec_path_a:
+                    vector_source_a, vector_name_a = vec_path_a.split(".struct_")
+                    vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+                    vector_source_c, vector_name_c = vec_path_c.split(".struct_")
+            elif "enum_" in vec_path_a:
+                vector_source_a, vector_name_a = vec_path_a.split(".struct_")
+                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+                vector_source_c, vector_name_c = vec_path_c.split(".struct_")
                 # if vector_source_b not in Values.Project_B.function_list.keys():
                 #     error_exit("Error: File not found among affected.", vector_source_b)
                 # if vector_name_a in Values.Project_B.function_list[vector_source_b].keys():
