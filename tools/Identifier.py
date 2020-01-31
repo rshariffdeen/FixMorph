@@ -592,6 +592,7 @@ def identify_code_segment(diff_info, project):
                                                                                       begin_line, finish_line, True)
 
         for macro_name, begin_line, finish_line in macro_list:
+            macro_name = "macro_" + macro_name
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
                     if source_file not in project.macro_list.keys():

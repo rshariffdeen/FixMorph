@@ -64,11 +64,14 @@ def generate_vectors(file_extension, log_file, project):
                     function_name = "func_" + function_name.split("(")[0]
                     project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name, begin_line, finish_line, True)
 
+                ASTGenerator.get_vars(project, source_file, definition_list)
+
                 for struct_name, begin_line, finish_line in struct_list:
                     struct_name = "struct_" + struct_name.split(";")[0]
                     project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name, begin_line, finish_line, True)
 
                 for macro_name, begin_line, finish_line in macro_list:
+                    macro_name = "macro_" + macro_name
                     project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name, begin_line, finish_line, True)
 
                 count = 0
@@ -78,8 +81,6 @@ def generate_vectors(file_extension, log_file, project):
                         count = count + 1
                         enum_name = "enum_" + str(count)
                     project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name, begin_line, finish_line, True)
-
-                    ASTGenerator.get_vars(project, source_file, definition_list)
 
             except Exception as e:
                 error_exit(e, "Unexpected error in parseAST with file:", source_file)
