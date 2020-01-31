@@ -90,14 +90,8 @@ def safe_exec(function_def, title, *args):
 
 def load_values():
     if not Values.c_file_list_to_patch:
-        clone_list = list()
-        clone_info = Reader.read_json(Definitions.FILE_CLONE_INFO)
-        for (vec_a_info, vec_c_info, var_map) in clone_info:
-            vec_a = Vector.Vector(vec_a_info[0], vec_a_info[1], vec_a_info[2], vec_a_info[3], True)
-            vec_c = Vector.Vector(vec_c_info[0], vec_c_info[1], vec_c_info[2], vec_c_info[3], True)
-            clone_list.append((vec_a, vec_c, var_map))
-        Values.c_file_list_to_patch = clone_list
-
+        clone_list = Reader.read_json(Definitions.FILE_CLONE_INFO)
+        Values.file_list_to_patch = clone_list
     Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
 
 
@@ -113,7 +107,7 @@ def extract():
     load_values()
     if not Values.SKIP_EXTRACTION:
         # safe_exec(generate_script_for_header_files, "generating script for header files", Values.header_file_list_to_patch)
-        safe_exec(generate_script_for_c_files, "generating script for C files", Values.c_file_list_to_patch)
+        safe_exec(generate_script_for_c_files, "generating script for C files", Values.file_list_to_patch)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

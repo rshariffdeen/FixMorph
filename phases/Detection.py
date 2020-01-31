@@ -34,7 +34,7 @@ def load_values():
 
 def save_values():
     Writer.write_clone_list(clone_list, Definitions.FILE_CLONE_INFO)
-    Values.c_file_list_to_patch = clone_list
+    Values.file_list_to_patch = clone_list
     save_current_state()
 
 

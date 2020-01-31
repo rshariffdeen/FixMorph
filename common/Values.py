@@ -62,9 +62,7 @@ FILE_CONFIGURATION = ""
 AST_DIFF_SIZE = "10"
 
 silence_emitter = False
-
-header_file_list_to_patch = []
-c_file_list_to_patch = []
+file_list_to_patch = []
 
 generated_script_for_header_files = dict()
 generated_script_for_c_files = dict()
