@@ -187,7 +187,7 @@ def detect_enum_clones():
     candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
-        vector_source_a, vector_name_a = vector_path_a.split("struct_")
+        vector_source_a, vector_name_a = vector_path_a.split("enum_")
         vector_name_a = vector_name_a.replace(".vec", "")
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
@@ -211,7 +211,7 @@ def detect_function_clones():
     candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
-        vector_source_a, vector_name_a = vector_path_a.split("struct_")
+        vector_source_a, vector_name_a = vector_path_a.split("func_")
         vector_name_a = vector_name_a.replace(".vec", "")
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
