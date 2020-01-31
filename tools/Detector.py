@@ -136,7 +136,7 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
                             # vector_c = (vector_c[0], vector_c[1], distance)
                             candidate_list.append((vector_c[0], distance))
 
-        candidate_list_all[vector_a] = candidate_list
+        candidate_list_all[file_path_a] = candidate_list
 
     return candidate_list_all
 
@@ -150,16 +150,16 @@ def detect_struct_clones():
     UNKNOWN = "#UNKNOWN#"
     Emitter.normal("\tfinding clones for data-structures:\n")
     candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
-    for vector_a in candidate_list_all:
-        candidate_list = candidate_list_all[vector_a]
+    for file_path_a in candidate_list_all:
+        candidate_list = candidate_list_all[file_path_a]
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
-        candidate_file_path, candidate_name = candidate_file_path.split("struct_")
+        candidate_source_path, candidate_name = candidate_file_path.split("struct_")
         candidate_name = candidate_name.replace(".vec", "")
-        candidate_distance = best_candidate[2]
-        Emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_file_path))
+        candidate_distance = best_candidate[1]
+        Emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
-        clone_list.append((vector_a, best_candidate, None))
+        clone_list.append((file_path_a, candidate_file_path, None))
 
     return clone_list
 
