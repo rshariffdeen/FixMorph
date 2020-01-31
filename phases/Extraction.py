@@ -17,9 +17,7 @@ def generate_edit_script(file_a, file_b, output_file):
     name_b = file_b.split("/")[-1]
     Emitter.normal("Generating edit script: " + name_a + Definitions.TO + name_b + "...")
     try:
-        extra_arg = ""
-        if file_a[-2:] == ".h":
-            extra_arg = " --"
+        extra_arg = " --"
         command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches " + \
                   file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += " > " + output_file
