@@ -13,7 +13,7 @@ clone_list = dict()
 
 def generate_target_vectors():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.sub_sub_title("Generating vector files for all functions in Target")
+    Emitter.sub_sub_title("Generating vector files for all code segments in Target")
     Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C)
     Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C)
 
@@ -22,7 +22,7 @@ def find_clones():
     global clone_list
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Finding clone functions in Target")
-    clone_list = Detector.find_clone()
+    clone_list = Detector.find_clones()
     # Values.c_file_list_to_patch = Detector.find_clone()
 
 

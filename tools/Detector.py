@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-import time
+import sys
 from common.Utilities import execute_command, error_exit, find_files, get_file_extension_list
-from tools import Emitter, Finder
+from tools import Emitter, Finder, Logger
 from common import Definitions, Values
 from ast import Vector, Parser, Generator
 
@@ -93,7 +93,83 @@ def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
     return variable_mapping
 
 
-def find_clone():
+def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    candidate_list_all = dict()
+    for vector_a in vector_list_a:
+        # Assume vector already created
+        file_path_a = vector_a[0]
+        matrix_a = vector_a[1]
+
+        vector_c = vector_list_c[0]
+        matrix_c = vector_c[1]
+        best_distance = Vector.Vector.dist(matrix_a, matrix_c)
+        best_vector = vector_c
+        distance_matrix = dict()
+
+        # Get best match candidate
+        for vector_c in vector_list_c:
+            matrix_c = vector_c[1]
+            file_path_c = vector_c[0]
+            if matrix_c is not None:
+                distance = Vector.Vector.dist(matrix_a, matrix_c)
+                distance_matrix[file_path_c] = distance
+                if distance < best_distance:
+                    best_vector = vector_c
+                    best_distance = distance
+
+        # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
+        best_vector[2] = best_distance
+        candidate_list = [best_vector]
+        candidate_distance = dict()
+        candidate_location = dict()
+
+        # Collect all vectors within range best_distance - 2 x best_distance
+        for vector_c in vector_list_c:
+            matrix_c = vector_c[1]
+            file_path_c = vector_c[0]
+            if vector_c is not None:
+                if vector_c != best_vector:
+                    distance = distance_matrix[file_path_c]
+                    if distance <= dist_factor * best_distance:
+                        vector_c[2] = distance
+                        candidate_list.append(vector_c)
+
+        candidate_list_all[vector_a] = candidate_list
+
+    return candidate_list_all
+
+
+def detect_struct_clones():
+    extension = "*struct*\.vec"
+    vector_list_a = Finder.search_vector_list(Values.Project_A, extension)
+    vector_list_c = Finder.search_vector_list(Values.Project_C, extension)
+    clone_list = []
+    factor = 2
+    UNKNOWN = "#UNKNOWN#"
+    Emitter.normal("\tfinding clones for data-structures:\n")
+    candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
+    for vector_a in candidate_list_all:
+        candidate_list = candidate_list_all[vector_a]
+        best_candidate = candidate_list[0]
+        candidate_file_path = best_candidate[0]
+        candidate_file_path, candidate_name = candidate_file_path.split("struct_")
+        candidate_name = candidate_name.replace(".vec", "")
+        candidate_distance = best_candidate[2]
+        Emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_file_path))
+        Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
+        clone_list.append((vector_a, best_candidate, None))
+
+    return clone_list
+
+
+def fine_clones():
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    struct_clones = detect_struct_clones()
+    print(struct_clones)
+
+
+def find_clone_old():
     extension = "*\.c\.*\.vec"
     clone_list = []
     vector_list_a = Finder.search_vector_list(Values.Project_A, extension)
