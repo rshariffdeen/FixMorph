@@ -61,9 +61,9 @@ def generate_script_for_files(file_list_to_patch):
                     vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                     vector_source_c, vector_name_c = vec_path_c.split(".struct_")
             elif "enum_" in vec_path_a:
-                vector_source_a, vector_name_a = vec_path_a.split(".struct_")
+                vector_source_a, vector_name_a = vec_path_a.split(".enum_")
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                vector_source_c, vector_name_c = vec_path_c.split(".struct_")
+                vector_source_c, vector_name_c = vec_path_c.split(".enum_")
                 # if vector_source_b not in Values.Project_B.function_list.keys():
                 #     error_exit("Error: File not found among affected.", vector_source_b)
                 # if vector_name_a in Values.Project_B.function_list[vector_source_b].keys():
@@ -128,7 +128,7 @@ def extract():
     load_values()
     if not Values.SKIP_EXTRACTION:
         # safe_exec(generate_script_for_header_files, "generating script for header files", Values.header_file_list_to_patch)
-        safe_exec(generate_script_for_files, "generating script for C files", Values.file_list_to_patch)
+        safe_exec(generate_script_for_files, "generating script for files", Values.file_list_to_patch)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")
