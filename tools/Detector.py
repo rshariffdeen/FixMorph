@@ -160,14 +160,37 @@ def detect_struct_clones():
         Emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((file_path_a, candidate_file_path, None))
+    return clone_list
 
+
+def detect_enum_clones():
+    extension = "*enum*\.vec"
+    vector_list_a = Finder.search_vector_list(Values.Project_A, extension)
+    vector_list_c = Finder.search_vector_list(Values.Project_C, extension)
+    clone_list = []
+    factor = 2
+    UNKNOWN = "#UNKNOWN#"
+    Emitter.normal("\tfinding clones for enum definitions:\n")
+    candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
+    for file_path_a in candidate_list_all:
+        candidate_list = candidate_list_all[file_path_a]
+        best_candidate = candidate_list[0]
+        candidate_file_path = best_candidate[0]
+        candidate_source_path, candidate_name = candidate_file_path.split("enum_")
+        candidate_name = candidate_name.replace(".vec", "")
+        candidate_distance = best_candidate[1]
+        Emitter.success("\t\t\tEnum Definition: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
+        clone_list.append((file_path_a, candidate_file_path, None))
     return clone_list
 
 
 def detect_clones():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     struct_clones = detect_struct_clones()
+    enum_clones = detect_enum_clones()
     print(struct_clones)
+    print(enum_clones)
 
 
 def find_clone_old():
