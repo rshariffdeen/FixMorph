@@ -22,7 +22,7 @@ def find_clones():
     global clone_list
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Finding clone functions in Target")
-    clone_list = Detector.find_clones()
+    clone_list = Detector.detect_clones()
     # Values.c_file_list_to_patch = Detector.find_clone()
 
 

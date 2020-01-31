@@ -163,7 +163,7 @@ def detect_struct_clones():
     return clone_list
 
 
-def fine_clones():
+def detect_clones():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     struct_clones = detect_struct_clones()
     print(struct_clones)
