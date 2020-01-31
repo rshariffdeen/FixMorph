@@ -47,27 +47,40 @@ def generate_edit_script(file_a, file_b, output_file):
 def generate_script_for_files(file_list_to_patch):
     global generated_script_list
     script_file_ab = Definitions.DIRECTORY_TMP + "/diff_script_AB"
-    for (vec_f_a, vec_f_c, var_map) in file_list_to_patch:
+    for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
+        vector_source_a = ""
+        vector_source_b = ""
+        vector_source_c = ""
         try:
-            # print(vec_f_a.file_path)
-            vec_f_b_file = vec_f_a.replace(Values.Project_A.path, Values.Project_B.path)
-            # print(vec_f_b_file)
-            if vec_f_b_file not in Values.Project_B.function_list.keys():
-                error_exit("Error: File not found among affected.", vec_f_b_file)
-            if vec_f_a.function_name in Values.Project_B.function_list[vec_f_b_file].keys():
-                vec_f_b = Values.Project_B.function_list[vec_f_b_file][vec_f_a.function_name]
-            else:
-                error_exit("Error: Function not found among affected.", vec_f_a.function_name, vec_f_b_file,
-                           Values.Project_B.function_list[vec_f_b_file].keys())
+            if "func_" in vec_path_a:
+                vector_source_a, vector_name_a = vec_path_a.split(".func_")
+                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+                vector_source_c, vector_name_c = vec_path_c.split(".func_")
+                if vector_source_b not in Values.Project_B.function_list.keys():
+                    error_exit("Error: File not found among affected.", vector_source_b)
+                if vector_name_a in Values.Project_B.function_list[vector_source_b].keys():
+                    vec_b = Values.Project_B.function_list[vector_source_b][vector_name_a]
+                else:
+                    error_exit("Error: Function not found among affected.", vector_name_a, vector_source_b)
+
+            # vec_f_b_file = vec_f_a.replace(Values.Project_A.path, Values.Project_B.path)
+            # # print(vec_f_b_file)
+            # if vec_f_b_file not in Values.Project_B.function_list.keys():
+            #     error_exit("Error: File not found among affected.", vec_f_b_file)
+            # if vec_f_a.function_name in Values.Project_B.function_list[vec_f_b_file].keys():
+            #     vec_f_b = Values.Project_B.function_list[vec_f_b_file][vec_f_a.function_name]
+            # else:
+            #     error_exit("Error: Function not found among affected.", vec_f_a.function_name, vec_f_b_file,
+            #                Values.Project_B.function_list[vec_f_b_file].keys())
+
         except Exception as e:
-            error_exit(e, vec_f_b_file, vec_f_a, Values.Project_A.path, Values.Project_B.path, vec_f_a.function_name)
+            error_exit("something went wrong with extraction phase")
 
         # Generate edit scripts for diff and matching
-        generate_edit_script(vec_f_a.file_path, vec_f_b.file_path, script_file_ab)
+        generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
         original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
-
         generated_data = (original_script, inserted_node_list, map_ab)
-        generated_script_list[(vec_f_a.file_path, vec_f_b.file_path, vec_f_c.file_path)] = generated_data
+        generated_script_list[(vector_source_a, vector_source_b, vector_source_c)] = generated_data
 
 
 def safe_exec(function_def, title, *args):
