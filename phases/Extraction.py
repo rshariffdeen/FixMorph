@@ -89,7 +89,7 @@ def safe_exec(function_def, title, *args):
 
 
 def load_values():
-    if not Values.c_file_list_to_patch:
+    if not Values.file_list_to_patch:
         clone_list = Reader.read_json(Definitions.FILE_CLONE_INFO)
         Values.file_list_to_patch = clone_list
     Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
