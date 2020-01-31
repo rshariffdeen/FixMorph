@@ -234,7 +234,9 @@ def detect_clones():
     enum_clones = detect_enum_clones()
     # print(enum_clones)
     Emitter.sub_sub_title("Finding clone functions in Target")
-    enum_clones = detect_function_clones()
+    function_clones = detect_function_clones()
+    clone_list = struct_clones + enum_clones + function_clones
+    return clone_list
 
 
 def find_clone_old():
