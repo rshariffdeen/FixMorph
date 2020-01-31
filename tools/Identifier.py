@@ -580,6 +580,7 @@ def identify_code_segment(diff_info, project):
                                                                                           begin_line, finish_line, True)
 
         for struct_name, begin_line, finish_line in struct_list:
+            struct_name = "struct_" + struct_name.split(";")[0]
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
                     if source_file not in project.struct_list.keys():
@@ -598,6 +599,7 @@ def identify_code_segment(diff_info, project):
                                                                                      begin_line, finish_line, True)
 
         for enum_name, begin_line, finish_line in enum_list:
+            enum_name = "enum_" + enum_name.split(";")[0]
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
                     if source_file not in project.enum_list.keys():
