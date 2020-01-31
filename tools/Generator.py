@@ -44,8 +44,9 @@ def generate_vectors(file_extension, log_file, project):
                     elif node_type in ["TypedefDecl"]:
                         type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["RecordDecl"]:
-                        if ast_node['file'] == source_file:
-                            struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                        if 'file' in ast_node.keys():
+                            if ast_node['file'] == source_file:
+                                struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["FunctionDecl"]:
                         if ast_node['file'] == source_file:
                             function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
