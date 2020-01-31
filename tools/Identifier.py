@@ -571,6 +571,7 @@ def identify_code_segment(diff_info, project):
                 error_exit("unknown node type for code segmentation: " + str(node_type))
 
         for function_name, begin_line, finish_line in function_list:
+            function_name = "func_" + function_name.split("(")[0]
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
                     if source_file not in project.function_list.keys():
