@@ -167,9 +167,9 @@ def detect_struct_clones():
         vector_name_a = vector_name_a.replace(".vec", "")
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
-        candidate_source_path, candidate_name = candidate_file_path.split("struct_")
-        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, Values.Project_A.name)
-        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, Values.Project_C.name)
+        candidate_source_path, candidate_name = candidate_file_path.split(".struct_")
+        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
+        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
@@ -189,13 +189,13 @@ def detect_enum_clones():
     candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
-        vector_source_a, vector_name_a = vector_path_a.split("enum_")
+        vector_source_a, vector_name_a = vector_path_a.split(".enum_")
         vector_name_a = vector_name_a.replace(".vec", "")
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split("enum_")
-        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, Values.Project_A.name)
-        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, Values.Project_C.name)
+        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
+        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
@@ -215,13 +215,13 @@ def detect_function_clones():
     candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
-        vector_source_a, vector_name_a = vector_path_a.split("func_")
+        vector_source_a, vector_name_a = vector_path_a.split(".func_")
         vector_name_a = vector_name_a.replace(".vec", "")
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split("func_")
-        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, Values.Project_A.name)
-        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, Values.Project_C.name)
+        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
+        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
