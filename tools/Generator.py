@@ -24,13 +24,51 @@ def generate_vectors(file_extension, log_file, project):
             # Parses it to get useful information and generate vectors
             try:
                 function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=True)
-                for function_name, begin_line, finish_line in function_list:
-                    if source_file not in project.function_list.keys():
-                        project.function_list[source_file] = dict()
 
-                    if function_name not in project.function_list[source_file]:
-                        project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name,
-                                                                                      begin_line, finish_line, False)
+                ast_tree = generate_ast_json(source_file)
+                enum_list = list()
+                function_list = list()
+                macro_list = list()
+                struct_list = list()
+                type_def_list = list()
+                def_list = list()
+                decl_list = list()
+                for ast_node in ast_tree['children']:
+                    node_type = str(ast_node["type"])
+                    if node_type in ["VarDecl"]:
+                        def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                    elif node_type in ["EnumConstantDecl", "EnumDecl"]:
+                        enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                    elif node_type in ["Macro"]:
+                        macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                    elif node_type in ["TypedefDecl"]:
+                        type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                    elif node_type in ["RecordDecl"]:
+                        struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                    elif node_type in ["FunctionDecl"]:
+                        function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                    else:
+                        error_exit("unknown node type for code segmentation: " + str(node_type))
+
+                project.enum_list[source_file] = dict()
+                project.struct_list[source_file] = dict()
+                project.function_list[source_file] = dict()
+                project.macro_list[source_file] = dict()
+
+                for function_name, begin_line, finish_line in function_list:
+                    function_name = "func_" + function_name.split("(")[0]
+                    project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name, begin_line, finish_line, True)
+
+                for struct_name, begin_line, finish_line in struct_list:
+                    struct_name = "struct_" + struct_name.split(";")[0]
+                    project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name, begin_line, finish_line, True)
+
+                for macro_name, begin_line, finish_line in macro_list:
+                    project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name, begin_line, finish_line, True)
+
+                for enum_name, begin_line, finish_line in enum_list:
+                    enum_name = "enum_" + enum_name.split(";")[0]
+                    project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name, begin_line, finish_line, True)
 
                     ASTGenerator.get_vars(project, source_file, definition_list)
 

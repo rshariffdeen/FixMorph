@@ -14,7 +14,7 @@ clone_list = dict()
 def generate_target_vectors():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Generating vector files for all functions in Target")
-    # Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C)
+    Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C)
     Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C)
 
 
