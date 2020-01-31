@@ -119,8 +119,8 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
                     best_distance = distance
 
         # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
-        best_vector = (best_vector[0], best_vector[1], best_distance)
-        candidate_list = [best_vector]
+        # best_vector = (best_vector[0], best_vector[1], best_distance)
+        candidate_list = [(best_vector[0], best_distance)]
         candidate_distance = dict()
         candidate_location = dict()
 
@@ -133,8 +133,8 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
                     if matrix_c is not None:
                         distance = distance_matrix[file_path_c]
                         if distance <= dist_factor * best_distance:
-                            vector_c = (vector_c[0], vector_c[1], distance)
-                            candidate_list.append(vector_c)
+                            # vector_c = (vector_c[0], vector_c[1], distance)
+                            candidate_list.append((vector_c[0], distance))
 
         candidate_list_all[vector_a] = candidate_list
 
