@@ -38,7 +38,9 @@ def generate_vectors(file_extension, log_file, project):
                     if node_type in ["VarDecl"]:
                         def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["EnumConstantDecl", "EnumDecl"]:
-                        enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                        if 'file' in ast_node.keys():
+                            if ast_node['file'] == source_file:
+                                enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["Macro"]:
                         macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["TypedefDecl"]:
