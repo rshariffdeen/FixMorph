@@ -168,6 +168,8 @@ def detect_struct_clones():
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split("struct_")
+        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, Values.Project_A.name)
+        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, Values.Project_C.name)
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
@@ -192,6 +194,8 @@ def detect_enum_clones():
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split("enum_")
+        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, Values.Project_A.name)
+        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, Values.Project_C.name)
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
@@ -216,6 +220,8 @@ def detect_function_clones():
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split("func_")
+        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, Values.Project_A.name)
+        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, Values.Project_C.name)
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
@@ -239,120 +245,120 @@ def detect_clones():
     return clone_list
 
 
-def find_clone_old():
-    extension = "*\.c\.*\.vec"
-    clone_list = []
-    vector_list_a = Finder.search_vector_list(Values.Project_A, extension)
-    vector_list_c = Finder.search_vector_list(Values.Project_C, extension)
-    factor = 2
-    UNKNOWN = "#UNKNOWN#"
-    Emitter.normal("\tfinding clones for edited functions:\n")
-    for vector in vector_list_a:
-        # Assume vector already created
-        file_path = vector[0]
-        vector_a = vector[1]
-        best_match = vector_list_c[0]
-        best_distance = Vector.Vector.dist(vector_a, best_match[1])
-        distance_matrix = dict()
-        count_unknown = dict()
-        count_vars = dict()
-        var_map_list = dict()
-
-        # Get best match candidate
-        for j in vector_list_c:
-            vector_c = j[1]
-            if vector_c is not None:
-                distance = Vector.Vector.dist(vector_a, j[1])
-                distance_matrix[j[0]] = distance
-                if distance < best_distance:
-                    best_match = j
-                    best_distance = distance
-
-        # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
-        candidate_list = [best_match]
-        candidate_distance = dict()
-        candidate_location = dict()
-
-        # Collect all vectors within range best_distance - 2 x best_distance
-        for j in vector_list_c:
-            vector_c = j[1]
-            if vector_c is not None:
-                if j != best_match:
-                    distance = distance_matrix[j[0]]
-                    if distance <= factor * best_distance:
-                        candidate_list.append(j)
-
-        # We go up to -4 to remove the ".vec" part [filepath.function.vec]
-        fa = file_path.replace(Values.Project_A.path, "")[:-4].split(".")
-        f_a = fa[-1]
-        file_a = ".".join(fa[:-1])
-        Emitter.normal("\t\tFinding match for " + f_a + " in $Pa/" + file_a + ":")
-
-        best_candidate = ''
-        best_count = 0
-        best_distance = 0
-        best_prop = 0
-        var_map = ''
-
-        # TODO: Correct once I have appropriate only function comparison
-        for candidate in candidate_list:
-            fc = candidate[0].replace(Values.Project_C.path, "")[:-4].split(".")
-            f_c = fc[-1]
-            candidate_distance[f_c] = distance_matrix[candidate[0]]
-            file_c = ".".join(fc[:-1])
-            candidate_location[f_c] = file_c
-            d_c = str(distance_matrix[candidate[0]])
-            Emitter.information("\tPossible match for " + f_a + " in $Pa/" + file_a + ":")
-            Emitter.information("\t\tFunction: " + f_c + " in $Pc/" + file_c)
-            Emitter.information("\t\tDistance: " + d_c + "\n")
-            Emitter.information("\tVariable mapping from " + f_a + " to " + f_c + ":")
-            count_unknown[f_c] = 0
-            count_vars[f_c] = 0
-            try:
-                var_map_list[f_c] = detect_matching_variables(f_a, file_a, f_c, file_c)
-            except Exception as e:
-                error_exit(e, "Unexpected error while matching variables.")
-            with open('output/var-map', 'r', errors='replace') as mapped:
-                mapping = mapped.readline().strip()
-                while mapping:
-                    Emitter.information("\t\t" + mapping)
-                    if UNKNOWN in mapping:
-                        count_unknown[f_c] += 1
-                    count_vars[f_c] += 1
-                    mapping = mapped.readline().strip()
-            best_func_name = f_c
-            best_count = count_unknown[best_func_name]
-            best_distance = candidate_distance[best_func_name]
-            best_prop = count_unknown[best_func_name] / count_vars[best_func_name]
-            var_map = var_map_list[best_func_name]
-
-        for candidate in candidate_distance:
-            if count_unknown[candidate] < best_count:
-                best_count = count_unknown[candidate]
-                best_candidate = candidate
-                best_distance = candidate_distance[candidate]
-                best_prop = count_unknown[candidate] / count_vars[candidate]
-                var_map = var_map_list[candidate]
-            elif count_unknown[candidate] == best_count:
-                prop = count_unknown[candidate] / count_vars[candidate]
-                if prop < best_prop:
-                    best_candidate = candidate
-                    best_distance = candidate_distance[candidate]
-                    best_prop = prop
-                    var_map = var_map_list[candidate]
-                elif prop == best_prop:
-                    if candidate_distance[candidate] <= best_distance:
-                        best_candidate = candidate
-                        best_distance = candidate_distance[candidate]
-                        var_map = var_map_list[candidate]
-
-        Emitter.success("\t\t\tFunction: " + best_candidate + " in $Pc/" + str(candidate_location[best_candidate]))
-        Emitter.success("\t\t\tDistance: " + str(best_distance) + "\n")
-
-        clone_list.append((Values.Project_A.function_list[Values.Project_A.path + file_a][f_a],
-                               Values.Project_C.function_list[Values.Project_C.path + candidate_location[best_candidate]][best_candidate], var_map))
-
-    return clone_list
+# def find_clone_old():
+#     extension = "*\.c\.*\.vec"
+#     clone_list = []
+#     vector_list_a = Finder.search_vector_list(Values.Project_A, extension)
+#     vector_list_c = Finder.search_vector_list(Values.Project_C, extension)
+#     factor = 2
+#     UNKNOWN = "#UNKNOWN#"
+#     Emitter.normal("\tfinding clones for edited functions:\n")
+#     for vector in vector_list_a:
+#         # Assume vector already created
+#         file_path = vector[0]
+#         vector_a = vector[1]
+#         best_match = vector_list_c[0]
+#         best_distance = Vector.Vector.dist(vector_a, best_match[1])
+#         distance_matrix = dict()
+#         count_unknown = dict()
+#         count_vars = dict()
+#         var_map_list = dict()
+#
+#         # Get best match candidate
+#         for j in vector_list_c:
+#             vector_c = j[1]
+#             if vector_c is not None:
+#                 distance = Vector.Vector.dist(vector_a, j[1])
+#                 distance_matrix[j[0]] = distance
+#                 if distance < best_distance:
+#                     best_match = j
+#                     best_distance = distance
+#
+#         # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
+#         candidate_list = [best_match]
+#         candidate_distance = dict()
+#         candidate_location = dict()
+#
+#         # Collect all vectors within range best_distance - 2 x best_distance
+#         for j in vector_list_c:
+#             vector_c = j[1]
+#             if vector_c is not None:
+#                 if j != best_match:
+#                     distance = distance_matrix[j[0]]
+#                     if distance <= factor * best_distance:
+#                         candidate_list.append(j)
+#
+#         # We go up to -4 to remove the ".vec" part [filepath.function.vec]
+#         fa = file_path.replace(Values.Project_A.path, "")[:-4].split(".")
+#         f_a = fa[-1]
+#         file_a = ".".join(fa[:-1])
+#         Emitter.normal("\t\tFinding match for " + f_a + " in $Pa/" + file_a + ":")
+#
+#         best_candidate = ''
+#         best_count = 0
+#         best_distance = 0
+#         best_prop = 0
+#         var_map = ''
+#
+#         # TODO: Correct once I have appropriate only function comparison
+#         for candidate in candidate_list:
+#             fc = candidate[0].replace(Values.Project_C.path, "")[:-4].split(".")
+#             f_c = fc[-1]
+#             candidate_distance[f_c] = distance_matrix[candidate[0]]
+#             file_c = ".".join(fc[:-1])
+#             candidate_location[f_c] = file_c
+#             d_c = str(distance_matrix[candidate[0]])
+#             Emitter.information("\tPossible match for " + f_a + " in $Pa/" + file_a + ":")
+#             Emitter.information("\t\tFunction: " + f_c + " in $Pc/" + file_c)
+#             Emitter.information("\t\tDistance: " + d_c + "\n")
+#             Emitter.information("\tVariable mapping from " + f_a + " to " + f_c + ":")
+#             count_unknown[f_c] = 0
+#             count_vars[f_c] = 0
+#             try:
+#                 var_map_list[f_c] = detect_matching_variables(f_a, file_a, f_c, file_c)
+#             except Exception as e:
+#                 error_exit(e, "Unexpected error while matching variables.")
+#             with open('output/var-map', 'r', errors='replace') as mapped:
+#                 mapping = mapped.readline().strip()
+#                 while mapping:
+#                     Emitter.information("\t\t" + mapping)
+#                     if UNKNOWN in mapping:
+#                         count_unknown[f_c] += 1
+#                     count_vars[f_c] += 1
+#                     mapping = mapped.readline().strip()
+#             best_func_name = f_c
+#             best_count = count_unknown[best_func_name]
+#             best_distance = candidate_distance[best_func_name]
+#             best_prop = count_unknown[best_func_name] / count_vars[best_func_name]
+#             var_map = var_map_list[best_func_name]
+#
+#         for candidate in candidate_distance:
+#             if count_unknown[candidate] < best_count:
+#                 best_count = count_unknown[candidate]
+#                 best_candidate = candidate
+#                 best_distance = candidate_distance[candidate]
+#                 best_prop = count_unknown[candidate] / count_vars[candidate]
+#                 var_map = var_map_list[candidate]
+#             elif count_unknown[candidate] == best_count:
+#                 prop = count_unknown[candidate] / count_vars[candidate]
+#                 if prop < best_prop:
+#                     best_candidate = candidate
+#                     best_distance = candidate_distance[candidate]
+#                     best_prop = prop
+#                     var_map = var_map_list[candidate]
+#                 elif prop == best_prop:
+#                     if candidate_distance[candidate] <= best_distance:
+#                         best_candidate = candidate
+#                         best_distance = candidate_distance[candidate]
+#                         var_map = var_map_list[candidate]
+#
+#         Emitter.success("\t\t\tFunction: " + best_candidate + " in $Pc/" + str(candidate_location[best_candidate]))
+#         Emitter.success("\t\t\tDistance: " + str(best_distance) + "\n")
+#
+#         clone_list.append((Values.Project_A.function_list[Values.Project_A.path + file_a][f_a],
+#                                Values.Project_C.function_list[Values.Project_C.path + candidate_location[best_candidate]][best_candidate], var_map))
+#
+#     return clone_list
 
 #
 # def find_diff_files():
