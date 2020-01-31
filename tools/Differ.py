@@ -172,27 +172,24 @@ def diff_ast(diff_info, project_path_a, project_path_b, script_file_path):
             grouped_line_info[source_file] = list()
         grouped_line_info[source_file].append(diff_line_info)
 
-    for diff_loc in grouped_line_info.keys():
-        source_path, line_number = diff_loc.split(":")
-        if source_path != source_path_a:
-            Emitter.sub_sub_title(source_path)
-            source_path_a = source_path
-            line_number_a = line_number
-            source_path_b = str(source_path_a).replace(project_path_a,
-                                                       project_path_b)
-            ast_script = get_ast_script(source_path_a, source_path_b, script_file_path)
-            try:
-                ast_map_a = Generator.get_ast_json(source_path_a)
-                ast_map_b = Generator.get_ast_json(source_path_b)
-                mapping_ba = Mapper.map_ast_from_source(source_path_a, source_path_b, script_file_path)
-            except:
-                Emitter.warning("\t\twarning: no AST generated")
-                del grouped_line_info[diff_loc]
-                continue
+    for source_path_a in grouped_line_info.keys():
+        Emitter.sub_sub_title(source_path_a)
+        source_path_b = str(source_path_a).replace(project_path_a, project_path_b)
+        ast_script = get_ast_script(source_path_a, source_path_b, script_file_path)
+        try:
+            ast_map_a = Generator.get_ast_json(source_path_a)
+            ast_map_b = Generator.get_ast_json(source_path_b)
+            mapping_ba = Mapper.map_ast_from_source(source_path_a, source_path_b, script_file_path)
+        except Exception:
+            Emitter.warning("\t\twarning: no AST generated")
+            del grouped_line_info[source_path_a]
+            continue
 
-        Emitter.normal("\tline number:" + line_number)
-        diff_loc_list = grouped_line_info[diff_loc]
+        diff_loc_list = grouped_line_info[source_path_a]
         for diff_loc_info in diff_loc_list:
+            start_a, end_a = diff_loc_info['old-lines']
+            diff_loc = source_path_a + ":" + str(start_a)
+            Emitter.normal("\tline number:" + start_a)
             operation = diff_loc_info['operation']
             filtered_ast_script = list()
             if operation == 'insert':
