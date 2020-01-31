@@ -189,7 +189,7 @@ def diff_ast(diff_info, project_path_a, project_path_b, script_file_path):
         for diff_loc_info in diff_loc_list:
             start_a, end_a = diff_loc_info['old-lines']
             diff_loc = source_path_a + ":" + str(start_a)
-            Emitter.normal("\tline number:" + start_a)
+            Emitter.normal("\tline number:" + str(start_a))
             operation = diff_loc_info['operation']
             filtered_ast_script = list()
             if operation == 'insert':
