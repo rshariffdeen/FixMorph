@@ -56,12 +56,12 @@ def generate_script_for_files(file_list_to_patch):
                 vector_source_a, vector_name_a = vec_path_a.split(".func_")
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                 vector_source_c, vector_name_c = vec_path_c.split(".func_")
-                if vector_source_b not in Values.Project_B.function_list.keys():
-                    error_exit("Error: File not found among affected.", vector_source_b)
-                if vector_name_a in Values.Project_B.function_list[vector_source_b].keys():
-                    vec_b = Values.Project_B.function_list[vector_source_b][vector_name_a]
-                else:
-                    error_exit("Error: Function not found among affected.", vector_name_a, vector_source_b)
+                # if vector_source_b not in Values.Project_B.function_list.keys():
+                #     error_exit("Error: File not found among affected.", vector_source_b)
+                # if vector_name_a in Values.Project_B.function_list[vector_source_b].keys():
+                #     vec_b = Values.Project_B.function_list[vector_source_b][vector_name_a]
+                # else:
+                #     error_exit("Error: Function not found among affected.", vector_name_a, vector_source_b)
 
             # vec_f_b_file = vec_f_a.replace(Values.Project_A.path, Values.Project_B.path)
             # # print(vec_f_b_file)
