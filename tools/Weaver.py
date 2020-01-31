@@ -8,7 +8,7 @@ import sys
 file_index = 1
 backup_file_list = dict()
 FILENAME_BACKUP = "temp-source"
-TOOL_AST_PATCH = "crochet-patch"
+TOOL_AST_PATCH = "patchweave"
 FILE_TEMP_FIX = Definitions.DIRECTORY_TMP + "/temp-fix"
 
 
