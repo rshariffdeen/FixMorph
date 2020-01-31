@@ -101,6 +101,8 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
         file_path_a = vector_a[0]
         matrix_a = vector_a[1]
 
+        possible_candidate = file_path_a.replace(Values.Project_A.path, Values.Project_C.path)
+
         vector_c = vector_list_c[0]
         matrix_c = vector_c[1]
         best_distance = Vector.Vector.dist(matrix_a, matrix_c)
@@ -111,6 +113,12 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
         for vector_c in vector_list_c:
             matrix_c = vector_c[1]
             file_path_c = vector_c[0]
+            if file_path_c == possible_candidate:
+                distance = Vector.Vector.dist(matrix_a, matrix_c)
+                distance_matrix[file_path_c] = distance
+                best_vector = vector_c
+                best_distance = distance
+                break
             if matrix_c is not None:
                 distance = Vector.Vector.dist(matrix_a, matrix_c)
                 distance_matrix[file_path_c] = distance
