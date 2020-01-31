@@ -115,7 +115,7 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
         for vector_c in vector_list_c:
             matrix_c = vector_c[1]
             file_path_c = vector_c[0]
-            if file_path_c == possible_candidate:
+            if file_path_c == possible_candidate_path:
                 distance = Vector.Vector.dist(matrix_a, matrix_c)
                 distance_matrix[file_path_c] = distance
                 possible_candidate = vector_c
