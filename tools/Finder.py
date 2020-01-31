@@ -24,13 +24,13 @@ def search_vector(file_path):
     return None
 
 
-def search_vector_list(project, extension):
+def search_vector_list(project, extension, vec_type):
     if "c" in extension:
         rxt = "C"
     else:
         rxt = "h"
 
-    Emitter.normal("\tchecking vectors for " + rxt + " files in " + project.name + "...")
+    Emitter.normal("\tanalysing vectors for " + vec_type + " segments in " + project.name + "...")
     filepath = "output/vectors_" + rxt + "_" + project.name
     find_files(project.path, extension, filepath)
     with open(filepath, "r", errors='replace') as file:
