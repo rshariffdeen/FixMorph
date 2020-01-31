@@ -46,7 +46,8 @@ def generate_vectors(file_extension, log_file, project):
                     elif node_type in ["RecordDecl"]:
                         struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["FunctionDecl"]:
-                        function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                        if ast_node['file'] == source_file:
+                            function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     else:
                         error_exit("unknown node type for code segmentation: " + str(node_type))
 
