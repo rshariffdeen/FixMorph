@@ -66,8 +66,12 @@ def generate_vectors(file_extension, log_file, project):
                 for macro_name, begin_line, finish_line in macro_list:
                     project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name, begin_line, finish_line, True)
 
+                count = 0
                 for enum_name, begin_line, finish_line in enum_list:
                     enum_name = "enum_" + enum_name.split(";")[0]
+                    if "anonymous" in enum_name:
+                        count = count + 1
+                        enum_name = "enum_" + str(count)
                     project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name, begin_line, finish_line, True)
 
                     ASTGenerator.get_vars(project, source_file, definition_list)
