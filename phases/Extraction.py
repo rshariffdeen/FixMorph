@@ -44,13 +44,13 @@ def generate_edit_script(file_a, file_b, output_file):
 #     Values.generated_script_for_header_files = generated_script_list
 
 
-def generate_script_for_c_files(file_list_to_patch):
+def generate_script_for_files(file_list_to_patch):
     global generated_script_list
     script_file_ab = Definitions.DIRECTORY_TMP + "/diff_script_AB"
     for (vec_f_a, vec_f_c, var_map) in file_list_to_patch:
         try:
             # print(vec_f_a.file_path)
-            vec_f_b_file = vec_f_a.file_path.replace(Values.Project_A.path, Values.Project_B.path)
+            vec_f_b_file = vec_f_a.replace(Values.Project_A.path, Values.Project_B.path)
             # print(vec_f_b_file)
             if vec_f_b_file not in Values.Project_B.function_list.keys():
                 error_exit("Error: File not found among affected.", vec_f_b_file)
@@ -107,7 +107,7 @@ def extract():
     load_values()
     if not Values.SKIP_EXTRACTION:
         # safe_exec(generate_script_for_header_files, "generating script for header files", Values.header_file_list_to_patch)
-        safe_exec(generate_script_for_c_files, "generating script for C files", Values.file_list_to_patch)
+        safe_exec(generate_script_for_files, "generating script for C files", Values.file_list_to_patch)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

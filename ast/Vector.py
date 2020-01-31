@@ -13,15 +13,15 @@ class Vector:
     # deckard_vecs = dict()
     vid = 0
 
-    def __init__(self, file_path, function_name, start_line, end_line, is_deckard=True):
+    def __init__(self, file_path, name, start_line, end_line, is_deckard=True):
         # self.project = project
         self.file_path = file_path
-        self.function_name = function_name
+        self.name = name
         self.start_line = start_line
         self.end_line = end_line
         self.variables = []
-        if self.function_name is not None:
-            self.vector_path = self.file_path + "." + self.function_name + ".vec"
+        if self.name is not None:
+            self.vector_path = self.file_path + "." + self.name + ".vec"
         else:
             self.vector_path = self.file_path + ".vec"
         self.vector = None
@@ -35,12 +35,12 @@ class Vector:
 
     def generate_deckard_vec(self):
         Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-        if self.function_name is None:
+        if self.name is None:
             command = "echo " + self.vector_path + " >> output/errors; " + \
                       Vector.deckard_path + " " + self.file_path + " -o " + \
                       self.vector_path + " 2> output/errors"
         else:
-            current = "\t\t" + self.function_name + " " + str(self.start_line) + "-" + \
+            current = "\t\t" + self.name + " " + str(self.start_line) + "-" + \
                       str(self.end_line)
             Emitter.information("generating vector for " + str(current))
             start_line = self.start_line
@@ -68,7 +68,7 @@ class Vector:
             error_exit(exception, "Error with Deckard vector generation. Exiting...")
 
         if not os.path.isfile(self.vector_path):
-            if self.function_name is None:
+            if self.name is None:
                 c1 = "echo " + self.vector_path + " >> output/errors; " + \
                      Vector.deckard_path_2 + " " + self.file_path + " -o " + \
                      self.vector_path + " 2> output/errors"
