@@ -44,21 +44,26 @@ cd ../$pe
 git checkout $pe_commit
 
 cd $dir_name
-touch $bug_id.conf
+touch $bug_id-$pc.conf
 {
-  echo 'path_a:'$dir_name/$pa/src
-  echo 'path_b:'$dir_name/$pb/src
-  echo 'path_c:'$dir_name/$pc/src
-  echo 'path_d:'$dir_name/$pc/src
-  echo 'path_e:'$dir_name/$pc/src
+  echo 'path_a:'$dir_name/$pa/drivers/usb/gadget/function
+  echo 'path_b:'$dir_name/$pb/drivers/usb/gadget/function
+  echo 'path_c:'$dir_name/$pc/drivers/usb/gadget/function
   echo 'config_command_a:skip'
   echo 'config_command_c:skip'
-  echo 'config_command_d:skip'
-  echo 'config_command_e:skip'
   echo 'build_command_a:make -j10'
   echo 'build_command_c:make -j10'
-  echo 'build_command_d:make -j10'
-  echo 'build_command_e:make -j10'
-} >$bug_id.conf
+} >$bug_id-$pc.conf
+
+touch $bug_id-$pe.conf
+{
+  echo 'path_a:'$dir_name/$pa/drivers/usb/gadget/function
+  echo 'path_b:'$dir_name/$pb/drivers/usb/gadget/function
+  echo 'path_c:'$dir_name/$pe/drivers/usb/gadget/function
+  echo 'config_command_a:skip'
+  echo 'config_command_c:skip'
+  echo 'build_command_a:make -j10'
+  echo 'build_command_c:make -j10'
+} >$bug_id-$pe.conf
 
 cd /crochet
