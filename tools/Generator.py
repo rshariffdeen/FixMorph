@@ -22,6 +22,9 @@ def generate_vectors(file_extension, log_file, project):
         source_file = file_list.readline().strip()
         while source_file:
             # Parses it to get useful information and generate vectors
+            # if source_file != "/data/linux/3/v3_16/mm/hugetlb.c":
+            #     source_file = file_list.readline().strip()
+            #     continue
             try:
                 function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=True)
 
@@ -34,6 +37,7 @@ def generate_vectors(file_extension, log_file, project):
                 def_list = list()
                 decl_list = list()
                 for ast_node in ast_tree['children']:
+                    # print(ast_node)
                     node_type = str(ast_node["type"])
                     if node_type in ["VarDecl"]:
                         def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
@@ -42,7 +46,8 @@ def generate_vectors(file_extension, log_file, project):
                             if ast_node['file'] == source_file:
                                 enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["Macro"]:
-                        macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                        if 'value' in ast_node.keys():
+                            macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["TypedefDecl"]:
                         type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["RecordDecl"]:
@@ -52,8 +57,11 @@ def generate_vectors(file_extension, log_file, project):
                     elif node_type in ["FunctionDecl"]:
                         if ast_node['file'] == source_file:
                             function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                    elif node_type in ["EmptyDecl"]:
+                        continue
                     else:
-                        error_exit("unknown node type for code segmentation: " + str(node_type))
+                        Emitter.error("unknown node type for code segmentation: " + str(node_type))
+                        print(ast_node)
 
                 project.enum_list[source_file] = dict()
                 project.struct_list[source_file] = dict()
