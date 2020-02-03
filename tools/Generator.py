@@ -53,7 +53,8 @@ def generate_vectors(file_extension, log_file, project):
                         if ast_node['file'] == source_file:
                             function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     else:
-                        error_exit("unknown node type for code segmentation: " + str(node_type))
+                        Emitter.error("unknown node type for code segmentation: " + str(node_type))
+                        print(ast_node)
 
                 project.enum_list[source_file] = dict()
                 project.struct_list[source_file] = dict()
