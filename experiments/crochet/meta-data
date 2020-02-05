@@ -76,14 +76,6 @@
 
    {
     "category":"backporting",
-    "donor":"libzip",
-    "bug_name":"double-free",
-    "poc_path":"/poc/jasper/CVE-2017-12858.zip",
-    "cve_id":"CVE-2017-12858"
-  },
-
-   {
-    "category":"backporting",
     "donor":"libtiff",
     "bug_name":"buffer-overflow",
     "poc_path":"",
