@@ -9,7 +9,7 @@ from common.Utilities import execute_command, error_exit, find_files, get_file_e
 from tools import Emitter, Logger
 from ast import Vector, Parser, Generator as ASTGenerator
 from common.Utilities import error_exit, clean_parse
-from common import Definitions
+from common import Definitions, Values
 
 
 def generate_vectors(file_extension, log_file, project):
@@ -69,27 +69,35 @@ def generate_vectors(file_extension, log_file, project):
                 project.function_list[source_file] = dict()
                 project.macro_list[source_file] = dict()
 
-                for function_name, begin_line, finish_line in function_list:
-                    function_name = "func_" + function_name.split("(")[0]
-                    project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name, begin_line, finish_line, True)
+                if Values.IS_FUNCTION:
+                    Emitter.normal("\t\t\tgenerating function vectors")
+                    for function_name, begin_line, finish_line in function_list:
+                        function_name = "func_" + function_name.split("(")[0]
+                        project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name, begin_line, finish_line, True)
 
-                ASTGenerator.get_vars(project, source_file, definition_list)
+                    ASTGenerator.get_vars(project, source_file, definition_list)
 
-                for struct_name, begin_line, finish_line in struct_list:
-                    struct_name = "struct_" + struct_name.split(";")[0]
-                    project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name, begin_line, finish_line, True)
+                if Values.IS_STRUCT:
+                    Emitter.normal("\t\t\tgenerating struct vectors")
+                    for struct_name, begin_line, finish_line in struct_list:
+                        struct_name = "struct_" + struct_name.split(";")[0]
+                        project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name, begin_line, finish_line, True)
 
-                for macro_name, begin_line, finish_line in macro_list:
-                    macro_name = "macro_" + macro_name
-                    project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name, begin_line, finish_line, True)
+                if Values.IS_MACRO:
+                    Emitter.normal("\t\t\tgenerating macro vectors")
+                    for macro_name, begin_line, finish_line in macro_list:
+                        macro_name = "macro_" + macro_name
+                        project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name, begin_line, finish_line, True)
 
-                count = 0
-                for enum_name, begin_line, finish_line in enum_list:
-                    enum_name = "enum_" + enum_name.split(";")[0]
-                    if "anonymous" in enum_name:
-                        count = count + 1
-                        enum_name = "enum_" + str(count)
-                    project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name, begin_line, finish_line, True)
+                if Values.IS_ENUM:
+                    Emitter.normal("\t\t\tgenerating enum vectors")
+                    count = 0
+                    for enum_name, begin_line, finish_line in enum_list:
+                        enum_name = "enum_" + enum_name.split(";")[0]
+                        if "anonymous" in enum_name:
+                            count = count + 1
+                            enum_name = "enum_" + str(count)
+                        project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name, begin_line, finish_line, True)
 
             except Exception as e:
                 error_exit(e, "Unexpected error in parseAST with file:", source_file)

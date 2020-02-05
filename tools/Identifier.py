@@ -575,6 +575,7 @@ def identify_code_segment(diff_info, project):
             function_name = "func_" + function_name.split("(")[0]
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
+                    Values.IS_FUNCTION = True
                     if source_file not in project.function_list.keys():
                         project.function_list[source_file] = dict()
                     if function_name not in project.function_list[source_file]:
@@ -585,6 +586,7 @@ def identify_code_segment(diff_info, project):
             struct_name = "struct_" + struct_name.split(";")[0]
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
+                    Values.IS_STRUCT = True
                     if source_file not in project.struct_list.keys():
                         project.struct_list[source_file] = dict()
                     if struct_name not in project.struct_list[source_file]:
@@ -595,6 +597,7 @@ def identify_code_segment(diff_info, project):
             macro_name = "macro_" + macro_name
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
+                    Values.IS_MACRO = True
                     if source_file not in project.macro_list.keys():
                         project.macro_list[source_file] = dict()
                     if macro_name not in project.macro_list[source_file]:
@@ -605,6 +608,7 @@ def identify_code_segment(diff_info, project):
             enum_name = "enum_" + enum_name.split(";")[0]
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
+                    Values.IS_ENUM = True
                     if source_file not in project.enum_list.keys():
                         project.enum_list[source_file] = dict()
                     if enum_name not in project.enum_list[source_file]:

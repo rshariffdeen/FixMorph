@@ -14,8 +14,17 @@ clone_list = dict()
 def generate_target_vectors():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("Generating vector files for all code segments in Target")
-    Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C)
-    Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C)
+    gen_header = False
+    gen_source = False
+    for diff_file in Values.diff_info:
+        if ".c" in diff_file:
+            gen_source = True
+        elif ".h" in diff_file:
+            gen_header = True
+    if gen_header:
+        Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C)
+    if gen_source:
+        Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C)
 
 
 def find_clones():

@@ -89,3 +89,9 @@ interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
 
+IS_FUNCTION = False
+IS_STRUCT = False
+IS_ENUM = False
+IS_MACRO = False
+IS_TYPEDEF = False
+IS_TYPEDEC = False
