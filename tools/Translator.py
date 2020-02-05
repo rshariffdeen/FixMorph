@@ -1,7 +1,7 @@
 import sys
 from common import Definitions, Values
 from common.Utilities import execute_command, error_exit
-import Emitter, Logger
+from tools import Emitter, Logger
 from ast import Parser
 
 
