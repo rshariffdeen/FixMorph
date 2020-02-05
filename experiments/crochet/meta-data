@@ -47,9 +47,6 @@
   },
 
 
-
-
-
   {
     "category":"backporting",
     "donor":"openjpeg",
@@ -57,6 +54,8 @@
     "poc_path":"/poc/jasper/CVE-2017-12982.bmp",
     "cve_id":"CVE-2017-12982"
   },
+
+
 
   {
     "category":"backporting",
