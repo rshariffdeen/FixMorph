@@ -44,5 +44,13 @@
     "bug_name":"int-overflow",
     "poc_path":"/poc/jasper/CVE-2016-9387.jp2",
     "cve_id":"CVE-2016-9387"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"openjpeg",
+    "bug_name":"buffer-overflow",
+    "poc_path":"/poc/jasper/CVE-2017-12982.bmp",
+    "cve_id":"CVE-2017-12982"
   }
 ]

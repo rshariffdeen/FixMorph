@@ -40,10 +40,21 @@ def create_patch_dir():
 
 def create_output_dir():
     conf_file_name = Values.FILE_CONFIGURATION.split("/")[-1]
-    dir_name = conf_file_name.replace(".conf", "")
+    project_name = Values.FILE_CONFIGURATION.split("/")[-3]
+    dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
     Definitions.DIRECTORY_OUTPUT = Definitions.DIRECTORY_OUTPUT_BASE + "/" + dir_name
     if not os.path.isdir(Definitions.DIRECTORY_OUTPUT):
         create_command = "mkdir " + Definitions.DIRECTORY_OUTPUT
+        execute_command(create_command)
+
+
+def create_log_dir():
+    conf_file_name = Values.FILE_CONFIGURATION.split("/")[-1]
+    project_name = Values.FILE_CONFIGURATION.split("/")[-3]
+    dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
+    Definitions.DIRECTORY_LOG = Definitions.DIRECTORY_LOG_BASE + "/" + dir_name
+    if not os.path.isdir(Definitions.DIRECTORY_LOG):
+        create_command = "mkdir " + Definitions.DIRECTORY_LOG
         execute_command(create_command)
 
 
@@ -62,6 +73,7 @@ def create_directories():
     create_patch_dir()
     create_output_dir()
     create_fuzz_dir()
+    create_log_dir()
 
 
 def create_files():

@@ -3,16 +3,12 @@
 import sys
 import os
 
-# ----------------- Functions --------------------------------
-def getBugID():
-    for arg in sys.argv:
-        if "--conf=" in arg:
-            return '/' + str(arg).replace(".conf", '').split('/')[-1]
 
 # ------------------- Directories --------------------
 
 DIRECTORY_MAIN = os.getcwd()
-DIRECTORY_LOG = DIRECTORY_MAIN + "/logs" + getBugID()
+DIRECTORY_LOG_BASE = DIRECTORY_MAIN + "/logs"
+DIRECTORY_LOG = ""
 DIRECTORY_OUTPUT_BASE = DIRECTORY_MAIN + "/output"
 DIRECTORY_OUTPUT = ""
 DIRECTORY_TMP = DIRECTORY_MAIN + "/tmp"
