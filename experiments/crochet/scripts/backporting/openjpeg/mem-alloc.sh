@@ -1,5 +1,5 @@
 project_name=openjpeg
-bug_id=CVE-2017-12982
+bug_id=mem-alloc
 dir_name=$1/$project_name/$bug_id
 pa=openjpeg-2.2.0
 pb=openjpeg-2.3.0

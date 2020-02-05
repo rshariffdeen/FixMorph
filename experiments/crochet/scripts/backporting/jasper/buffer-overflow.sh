@@ -1,5 +1,5 @@
 project_name=jasper
-bug_id=CVE-2016-9560
+bug_id=buffer-overflow
 dir_name=$1/$project_name/$bug_id
 pa=jasper-1.900.25
 pb=jasper-1.900.26

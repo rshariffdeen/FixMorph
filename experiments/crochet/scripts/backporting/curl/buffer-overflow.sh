@@ -1,5 +1,5 @@
 project_name=curl
-bug_id=CVE-2018-0500
+bug_id=buffer-overflow
 dir_name=$1/$project_name/$bug_id
 pa=curl-7.60.0
 pb=curl-7.61.0
