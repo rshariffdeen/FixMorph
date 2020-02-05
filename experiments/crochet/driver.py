@@ -128,7 +128,7 @@ def run():
             directory_name = "backport/" + str(experiment_item[KEY_DONOR])
             CONF_TOOL_PARAMS = " --backport "
         deploy_path = CONF_DATA_PATH + "/" + directory_name + "/" + bug_name + "/"
-        deployed_conf_path = deploy_path + "/" + conf_file_name
+        deployed_conf_path = deploy_path + conf_file_name
         print("\t[META-DATA] category: " + category)
         print("\t[META-DATA] project: " + directory_name)
         print("\t[META-DATA] bug ID: " + bug_name)
