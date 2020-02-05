@@ -207,7 +207,7 @@ def weave_functions(missing_function_list, modified_source_list):
     return missing_header_list, missing_macro_list, modified_source_list
 
 
-def weave_code(file_a, file_b, file_c, instruction_list):
+def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
     missing_function_list = dict()
     missing_var_list = dict()
     missing_macro_list = dict()
@@ -300,5 +300,8 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     # c5 = "cp " + output_file + " " + file_c + ";"
     # execute_command(c5)
 
+    if file_d not in modified_source_list:
+        modified_source_list.append(file_d)
+
     Emitter.success("\n\tSuccessful transformation")
-    return missing_function_list, missing_macro_list
+    return missing_function_list, missing_macro_list, modified_source_list
