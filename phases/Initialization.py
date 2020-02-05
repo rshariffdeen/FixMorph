@@ -44,7 +44,7 @@ def create_output_dir():
     dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
     Definitions.DIRECTORY_OUTPUT = Definitions.DIRECTORY_OUTPUT_BASE + "/" + dir_name
     if not os.path.isdir(Definitions.DIRECTORY_OUTPUT):
-        create_command = "mkdir " + Definitions.DIRECTORY_OUTPUT
+        create_command = "mkdir -p " + Definitions.DIRECTORY_OUTPUT
         execute_command(create_command)
 
 
@@ -54,7 +54,7 @@ def create_log_dir():
     dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
     Definitions.DIRECTORY_LOG = Definitions.DIRECTORY_LOG_BASE + "/" + dir_name
     if not os.path.isdir(Definitions.DIRECTORY_LOG):
-        create_command = "mkdir " + Definitions.DIRECTORY_LOG
+        create_command = "mkdir -p " + Definitions.DIRECTORY_LOG
         execute_command(create_command)
 
 
@@ -62,10 +62,10 @@ def create_fuzz_dir():
     input_dir = Definitions.DIRECTORY_OUTPUT + "/fuzz-input"
     output_dir = Definitions.DIRECTORY_OUTPUT + "/fuzz-output"
     if not os.path.isdir(input_dir):
-        create_command = "mkdir " + input_dir
+        create_command = "mkdir -p " + input_dir
         execute_command(create_command)
     if not os.path.isdir(output_dir):
-        create_command = "mkdir " + output_dir
+        create_command = "mkdir -p " + output_dir
         execute_command(create_command)
 
 
