@@ -492,8 +492,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 elif txt_target_node_b in map_bd.keys():
                     target_node = map_bd[txt_target_node_b]
                 else:
-                    Emitter.warning("Warning: node for insertion not" + \
-                                  " found. Skipping INSERT operation.")
+                    Emitter.warning("Warning: node for insertion not found. Skipping INSERT operation.")
 
                 try:
                     if offset != 0:
@@ -530,8 +529,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                                     offset = target_node.children.index(next_child_node_c)
 
                             else:
-                                Emitter.warning("Failed at locating match" + \
-                                              " for " + previous_child_node_a)
+                                Emitter.warning("Failed at locating match for " + previous_child_node_a)
                                 Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 previous_child_node_a = id_from_string(previous_child_node_a)
