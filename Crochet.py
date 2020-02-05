@@ -12,8 +12,6 @@ from common.Utilities import error_exit, create_base_directories
 def first_run_check():
     create_base_directories()
     Initialization.read_conf()
-    Initialization.create_directories()
-    Initialization.create_files()
 
 
 def run():

@@ -39,27 +39,15 @@ def create_patch_dir():
 
 
 def create_output_dir():
-    conf_file_name = Values.FILE_CONFIGURATION.split("/")[-1]
-    project_name = Values.FILE_CONFIGURATION.split("/")[-3]
-    dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
-    Definitions.DIRECTORY_OUTPUT = Definitions.DIRECTORY_OUTPUT_BASE + "/" + dir_name
     if not os.path.isdir(Definitions.DIRECTORY_OUTPUT):
         create_command = "mkdir -p " + Definitions.DIRECTORY_OUTPUT
         execute_command(create_command)
 
 
 def create_log_dir():
-    conf_file_name = Values.FILE_CONFIGURATION.split("/")[-1]
-    project_name = Values.FILE_CONFIGURATION.split("/")[-3]
-    dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
-    Definitions.DIRECTORY_LOG = Definitions.DIRECTORY_LOG_BASE + "/" + dir_name
     if not os.path.isdir(Definitions.DIRECTORY_LOG):
         create_command = "mkdir -p " + Definitions.DIRECTORY_LOG
         execute_command(create_command)
-    Definitions.FILE_ERROR_LOG = Definitions.DIRECTORY_LOG + "/log-error"
-    Definitions.FILE_LAST_LOG = Definitions.DIRECTORY_LOG + "/log-latest"
-    Definitions.FILE_MAKE_LOG = Definitions.DIRECTORY_LOG + "/log-make"
-    Definitions.FILE_COMMAND_LOG = Definitions.DIRECTORY_LOG + "/log-command"
 
 
 def create_fuzz_dir():
@@ -171,6 +159,17 @@ def read_conf():
     with open(Values.FILE_CONFIGURATION, 'r') as conf_file:
         configuration_list = [i.strip() for i in conf_file.readlines()]
 
+    # create log files and other directories
+    conf_file_name = Values.FILE_CONFIGURATION.split("/")[-1]
+    project_name = Values.FILE_CONFIGURATION.split("/")[-3]
+    dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
+    Definitions.DIRECTORY_OUTPUT = Definitions.DIRECTORY_OUTPUT_BASE + "/" + dir_name
+    Definitions.DIRECTORY_LOG = Definitions.DIRECTORY_LOG_BASE + "/" + dir_name
+    Definitions.FILE_ERROR_LOG = Definitions.DIRECTORY_LOG + "/log-error"
+    Definitions.FILE_LAST_LOG = Definitions.DIRECTORY_LOG + "/log-latest"
+    Definitions.FILE_MAKE_LOG = Definitions.DIRECTORY_LOG + "/log-make"
+    Definitions.FILE_COMMAND_LOG = Definitions.DIRECTORY_LOG + "/log-command"
+
     for configuration in configuration_list:
         if Definitions.CONF_PATH_A in configuration:
             Values.PATH_A = configuration.replace(Definitions.CONF_PATH_A, '')
@@ -218,6 +217,8 @@ def initialize():
     Emitter.title("Initializing project for Transfer")
     Emitter.sub_title("loading configuration")
     load_values()
+    create_directories()
+    create_files()
     Emitter.sub_title("set environment")
     set_env_value()
 
