@@ -46,11 +46,80 @@
     "cve_id":"CVE-2016-9387"
   },
 
+
+
   {
     "category":"backporting",
     "donor":"openjpeg",
-    "bug_name":"buffer-overflow",
+    "bug_name":"mem-alloc",
     "poc_path":"/poc/jasper/CVE-2017-12982.bmp",
     "cve_id":"CVE-2017-12982"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"jasper",
+    "bug_name":"buffer-overflow",
+    "poc_path":"",
+    "cve_id":"CVE-2016-9560"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"curl",
+    "bug_name":"buffer-overflow",
+    "poc_path":"",
+    "cve_id":"CVE-2018-0500"
+  },
+
+   {
+    "category":"backporting",
+    "donor":"libzip",
+    "bug_name":"double-free",
+    "poc_path":"/poc/jasper/CVE-2017-12858.zip",
+    "cve_id":"CVE-2017-12858"
+  },
+
+   {
+    "category":"backporting",
+    "donor":"libtiff",
+    "bug_name":"buffer-overflow",
+    "poc_path":"",
+    "cve_id":"CVE-2016-5314"
+  },
+
+   {
+    "category":"backporting",
+    "donor":"libming",
+    "bug_name":"int-overflow",
+    "poc_path":"",
+    "cve_id":"CVE-2017-9989"
+  },
+
+   {
+    "category":"backporting",
+    "donor":"imageworsener",
+    "bug_name":"mem-read",
+    "poc_path":"/poc/jasper/CVE-2017-9203.bmp",
+    "cve_id":"CVE-2017-9203"
+  },
+
+
+
+   {
+    "category":"backporting",
+    "donor":"libarchive",
+    "bug_name":"heap-overflow",
+    "poc_path":"",
+    "cve_id":"CVE-2016-8689"
+  },
+
+   {
+    "category":"backporting",
+    "donor":"wavpack",
+    "bug_name":"buffer-overflow",
+    "poc_path":"",
+    "cve_id":"CVE-2018-7254"
   }
+
 ]
