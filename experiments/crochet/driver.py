@@ -60,13 +60,13 @@ def setup(script_path, script_name, conf_path, deploy_conf_path):
     execute_command(copy_command)
 
 
-def evaluate(conf_path, bug_name):
+def evaluate(conf_path, bug_name, dir_name):
     global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME, DIR_LOGS
     print("\t[INFO]running evaluation")
     log_path = str(conf_path).replace(".conf", ".log")
     tool_command = "{ cd " + CONF_TOOL_PATH + ";" + CONF_TOOL_NAME + " --conf=" + conf_path + " "+ CONF_TOOL_PARAMS + ";} 2> " + FILE_ERROR_LOG
     execute_command(tool_command)
-    copy_log = "{ cp " + CONF_TOOL_PATH + "/logs/" + bug_name + "/log-latest " + log_path + ";} 2> " + FILE_ERROR_LOG
+    copy_log = "{ cp " + CONF_TOOL_PATH + "/logs/" + dir_name + "-" + bug_name + "/log-latest " + log_path + ";} 2> " + FILE_ERROR_LOG
     execute_command(copy_log)
 
 
@@ -133,7 +133,7 @@ def run():
         print("\t[META-DATA] project: " + directory_name)
         print("\t[META-DATA] bug ID: " + bug_name)
         setup(script_path, script_name, conf_file_path, deployed_conf_path)
-        evaluate(deployed_conf_path, bug_name)
+        evaluate(deployed_conf_path, bug_name, directory_name)
         index = index + 1
 
 
