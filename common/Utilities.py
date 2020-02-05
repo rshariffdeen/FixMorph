@@ -37,7 +37,7 @@ def load_state():
 
 def create_base_directories():
     if not os.path.isdir(Definitions.DIRECTORY_LOG_BASE):
-        os.makedirs(Definitions.DIRECTORY_LOG)
+        os.makedirs(Definitions.DIRECTORY_LOG_BASE)
 
     if not os.path.isdir(Definitions.DIRECTORY_OUTPUT_BASE):
         os.makedirs(Definitions.DIRECTORY_OUTPUT_BASE)
