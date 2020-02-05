@@ -104,9 +104,9 @@ def emit_var_map(var_map):
 
 
 def emit_ast_script(ast_script):
-    write("\t\tAST Script:", WHITE)
+    write("\tAST Script:", WHITE)
     for line in ast_script:
-        special("\t\t\t " + line.strip())
+        special("\t\t " + line.strip())
 
 
 def warning(message):
