@@ -26,22 +26,6 @@ def generate_edit_script(file_a, file_b, output_file):
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
 
 
-# def generate_script_for_header_files(files_list_to_patch):
-#     generated_script_list = dict()
-#     script_file_ab = "output/diff_script_AB"
-#     for (file_a, file_c, var_map) in files_list_to_patch:
-#         file_b = file_a.replace(Values.Project_A.path, Values.Project_B.path)
-#         if not os.path.isfile(file_b):
-#             error_exit("Error: File not found.", file_b)
-#         # Generate edit scripts for diff and matching
-#         generate_edit_script(file_a, file_b, script_file_ab)
-#         original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
-#
-#         generated_data = (original_script, inserted_node_list, map_ab)
-#         generated_script_list[(file_a, file_b, file_c)] = generated_data
-#     Values.generated_script_for_header_files = generated_script_list
-
-
 def generate_script_for_files(file_list_to_patch):
     global generated_script_list
     generated_source_list = list()
@@ -74,9 +58,6 @@ def generate_script_for_files(file_list_to_patch):
 
         except Exception as e:
             error_exit("something went wrong with extraction phase")
-
-
-
 
 
 def safe_exec(function_def, title, *args):
