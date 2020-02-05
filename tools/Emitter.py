@@ -104,7 +104,6 @@ def emit_var_map(var_map):
 
 
 def emit_ast_script(ast_script):
-    write("\tAST Script:", WHITE)
     for line in ast_script:
         special("\t\t " + line.strip())
 

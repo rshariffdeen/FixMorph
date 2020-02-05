@@ -65,10 +65,10 @@ def transplant_code():
     global file_index, missing_function_list, missing_macro_list
     for file_list, generated_data in Values.translated_script_for_files.items():
         Emitter.sub_sub_title(file_list[2])
-        Emitter.special("\tOriginal AST script")
+        Emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
         Emitter.emit_ast_script(original_script)
-        Emitter.special("\tGenerated AST script")
+        Emitter.highlight("\tGenerated AST script")
         translated_script = generated_data[0]
         Emitter.emit_ast_script(translated_script)
         identified_missing_function_list, identified_missing_macro_list = Weaver.weave_code(file_list[0], file_list[1], file_list[2], translated_script)
