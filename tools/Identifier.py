@@ -18,7 +18,7 @@ STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint
 
 def identify_missing_labels(ast_map, ast_node, source_path_b, source_path_d, skip_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\tidentifying missing labels")
+    Emitter.normal("\t\tanalysing for missing labels")
     missing_label_list = list()
     label_list = Extractor.extract_label_node_list(ast_node)
     return missing_label_list
@@ -26,7 +26,7 @@ def identify_missing_labels(ast_map, ast_node, source_path_b, source_path_d, ski
 
 def identify_missing_functions(ast_map_b, ast_node, source_path_b, source_path_d, ast_map_c):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\t\tidentifying missing function calls")
+    Emitter.normal("\t\tanalysing for missing function calls")
     missing_function_list = dict()
     call_list = Extractor.extract_call_node_list(ast_node)
     function_list = Extractor.extract_function_node_list(ast_map_c)
@@ -68,7 +68,7 @@ def identify_missing_functions(ast_map_b, ast_node, source_path_b, source_path_d
 
 def identify_missing_var(function_node_a, function_node_b, insert_node_b, skip_list, source_path_b, var_map):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\t\tidentifying missing variables")
+    Emitter.normal("\t\t\tanalysing for missing variables")
     missing_var_list = dict()
     ref_list = Extractor.extract_reference_node_list(insert_node_b)
     dec_list = Extractor.extract_decl_list(function_node_a)
@@ -118,7 +118,7 @@ def identify_missing_var(function_node_a, function_node_b, insert_node_b, skip_l
 
 def identify_missing_data_types(insert_node_b, var_info, target_path, ast_node_b, ast_node_c, source_path_b):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\t\tidentifying missing data-types")
+    Emitter.normal("\t\t\tanalysing for missing data-types")
     missing_data_type_list = dict()
     type_loc_node_list = Extractor.extract_typeloc_node_list(insert_node_b)
     # print(type_loc_node_list)
