@@ -4,7 +4,7 @@ dir_name=$1/backport/$project_name/$bug_id
 
 project_url=https://github.com/nih-at/libzip.git
 pa=$project_name-1.3.0
-pb=$project_name-1.2.1
+pb=$project_name-1.3.1
 pc=$project_name-1.2.0
 
 pa_commit=f0b8dda

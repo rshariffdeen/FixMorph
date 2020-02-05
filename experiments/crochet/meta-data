@@ -111,6 +111,45 @@
     "bug_name":"buffer-overflow",
     "poc_path":"",
     "cve_id":"CVE-2018-7254"
-  }
+  },
 
+  {
+    "category":"backporting",
+    "donor":"curl",
+    "bug_name":"info-leak",
+    "poc_path":"",
+    "cve_id":"CVE-2018-1000007"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"curl",
+    "bug_name":"injection",
+    "poc_path":"",
+    "cve_id":"CVE-2016-8615"
+  },
+
+  {
+    "category":"backporting",
+    "donor":"imageworsener",
+    "bug_name":"buffer-overflow",
+    "poc_path":"",
+    "cve_id":"CVE-2017-7962"
+  },
+
+   {
+    "category":"backporting",
+    "donor":"mupdf",
+    "bug_name":"buffer-overflow",
+    "poc_path":"",
+    "cve_id":"CVE-2017-6060"
+  },
+
+    {
+    "category":"backporting",
+    "donor":"libzip",
+    "bug_name":"use-after-free",
+    "poc_path":"",
+    "cve_id":"CVE-2017-12858"
+  }
 ]

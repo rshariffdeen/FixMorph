@@ -1,4 +1,4 @@
-bug_id=CVE-2017-6060
+bug_id=buffer-overflow
 project_name=mupdf
 dir_name=$1/backport/$project_name/$bug_id
 dir_name_docker=/data/backport/$project_name/$bug_id

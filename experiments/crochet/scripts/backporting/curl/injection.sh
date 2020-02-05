@@ -1,5 +1,5 @@
 project_name=curl
-bug_id=CVE-2016-8615
+bug_id=injection
 dir_name=$1/$project_name/$bug_id
 pa=curl-7.50.0
 pb=curl-7.51.0
@@ -31,14 +31,3 @@ git checkout $pb_commit
 
 cd ../$pc
 git checkout $pc_commit
-
-cd $dir_name
-touch $bug_id.conf
-{
-  echo 'path_a:'$dir_name/$pa
-  echo 'path_b:'$dir_name/$pb
-  echo 'path_c:'$dir_name/$pc
-} >$bug_id.conf
-
-cd /crochet
-python3 Crochet.py --conf=$dir_name/$bug_id.conf | sed 's/\x1b\[[0-9;]*m//g' | tee /crochet/results/$bug_id.txt
