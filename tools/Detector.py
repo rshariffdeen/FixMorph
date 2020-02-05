@@ -233,14 +233,21 @@ def detect_function_clones():
 
 def detect_clones():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.sub_sub_title("Finding clone structures in Target")
-    struct_clones = detect_struct_clones()
-    # print(struct_clones)
-    Emitter.sub_sub_title("Finding clone enum in Target")
-    enum_clones = detect_enum_clones()
-    # print(enum_clones)
-    Emitter.sub_sub_title("Finding clone functions in Target")
-    function_clones = detect_function_clones()
+    struct_clones = list()
+    enum_clones = list()
+    function_clones = list()
+    if Values.IS_STRUCT:
+        Emitter.sub_sub_title("Finding clone structures in Target")
+        struct_clones = detect_struct_clones()
+        # print(struct_clones)
+    if Values.IS_ENUM:
+        Emitter.sub_sub_title("Finding clone enum in Target")
+        enum_clones = detect_enum_clones()
+        # print(enum_clones)
+    if Values.IS_FUNCTION:
+        Emitter.sub_sub_title("Finding clone functions in Target")
+        function_clones = detect_function_clones()
+        # print(function_clones)
     clone_list = struct_clones + enum_clones + function_clones
     return clone_list
 
