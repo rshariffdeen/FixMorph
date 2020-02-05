@@ -79,8 +79,6 @@
     "cve_id":"CVE-2016-5314"
   },
 
-
-
    {
     "category":"backporting",
     "donor":"libming",
@@ -88,6 +86,9 @@
     "poc_path":"",
     "cve_id":"CVE-2017-9989"
   },
+
+
+
 
    {
     "category":"backporting",
