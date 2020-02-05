@@ -63,11 +63,6 @@
     "cve_id":"CVE-2016-9560"
   },
 
-
-
-
-
-
   {
     "category":"backporting",
     "donor":"curl",
@@ -75,6 +70,9 @@
     "poc_path":"",
     "cve_id":"CVE-2018-0500"
   },
+
+
+
 
    {
     "category":"backporting",
