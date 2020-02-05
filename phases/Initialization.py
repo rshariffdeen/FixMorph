@@ -7,7 +7,7 @@ import sys
 from common.Utilities import execute_command
 from entity import Project
 from common import Definitions, Values
-from tools import Emitter
+from tools import Emitter, Logger
 
 
 def load_standard_list():
@@ -89,6 +89,7 @@ def create_files():
     open(Definitions.FILE_PROJECT_C, 'a').close()
     Definitions.FILE_PROJECT_D = Definitions.DIRECTORY_OUTPUT + "/project-D"
     open(Definitions.FILE_PROJECT_D, 'a').close()
+    Logger.create()
 
 
 def read_conf():
