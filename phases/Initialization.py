@@ -5,6 +5,7 @@
 import os
 import sys
 import time
+import subprocess
 from common.Utilities import execute_command
 from entity import Project
 from common import Definitions, Values
@@ -48,7 +49,8 @@ def create_output_dir():
 def create_log_dir():
     if not os.path.isdir(Definitions.DIRECTORY_LOG):
         create_command = "mkdir -p " + Definitions.DIRECTORY_LOG
-        execute_command(create_command)
+        process = subprocess.Popen([create_command], stdout=subprocess.PIPE, shell=True)
+        (output, error) = process.communicate()
 
 
 def create_fuzz_dir():
@@ -63,10 +65,11 @@ def create_fuzz_dir():
 
 
 def create_directories():
+    create_log_dir()
     create_patch_dir()
     create_output_dir()
     create_fuzz_dir()
-    create_log_dir()
+
 
 
 def create_files():
