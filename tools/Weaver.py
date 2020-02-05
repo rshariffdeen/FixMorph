@@ -42,7 +42,7 @@ def execute_ast_transformation(source_path_b, source_path_d, file_info):
 
 
 def show_patch(file_a, file_b, file_c, file_d, index):
-    Emitter.special("Original Patch")
+    Emitter.highlight("\tOriginal Patch")
     original_patch_file_name = Definitions.DIRECTORY_OUTPUT + index + "-original-patch"
     generated_patch_file_name = Definitions.DIRECTORY_OUTPUT + index + "-generated-patch"
     diff_command = "diff -ENZBbwr " + file_a + " " + file_b + " > " + original_patch_file_name
@@ -50,17 +50,17 @@ def show_patch(file_a, file_b, file_c, file_d, index):
     with open(original_patch_file_name, 'r') as diff:
         diff_line = diff.readline().strip()
         while diff_line:
-            Emitter.special("\t" + diff_line)
+            Emitter.special("\t\t" + diff_line)
             diff_line = diff.readline().strip()
 
-    Emitter.special("Generated Patch")
+    Emitter.highlight("\tGenerated Patch")
     diff_command = "diff -ENZBbwr " + file_c + " " + file_d + " > " + generated_patch_file_name
     # print(diff_command)
     execute_command(diff_command)
     with open(generated_patch_file_name, 'r') as diff:
         diff_line = diff.readline().strip()
         while diff_line:
-            Emitter.special("\t" + diff_line)
+            Emitter.special("\t\t" + diff_line)
             diff_line = diff.readline().strip()
 
 

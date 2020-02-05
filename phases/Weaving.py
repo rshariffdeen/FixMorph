@@ -123,6 +123,7 @@ def weave():
             safe_exec(transplant_missing_macros, "transplanting macros")
         if missing_header_list:
             safe_exec(transplant_missing_header, "transplanting header files")
+        print(modified_source_list)
         safe_exec(Fixer.check, "correcting syntax errors", modified_source_list)
     else:
         Emitter.special("\n\t-skipping this phase-")
