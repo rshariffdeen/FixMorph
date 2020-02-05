@@ -46,11 +46,11 @@ def verify_behavior():
         total_fixes += fixes
 
     Emitter.sub_sub_title("Summary")
-    Emitter.normal("\t\tTotal test: " + str(100 * int(ITERATION_COUNT)))
-    Emitter.normal("\t\tTotal test that passed only in Pd: " + str(total_fixes))
-    Emitter.normal("\t\tTotal test that failed only in Pd: " + str(total_errors))
-    Emitter.normal("\t\tAverage test that passed only in Pd: " + str(total_fixes/int(ITERATION_COUNT)))
-    Emitter.normal("\t\tAverage test that failed only in Pd: " + str(total_errors/int(ITERATION_COUNT)))
+    Emitter.statistics("\t\tTotal test: " + str(100 * int(ITERATION_COUNT)))
+    Emitter.statistics("\t\tTotal test that passed only in Pd: " + str(total_fixes))
+    Emitter.statistics("\t\tTotal test that failed only in Pd: " + str(total_errors))
+    Emitter.statistics("\t\tAverage test that passed only in Pd: " + str(total_fixes/int(ITERATION_COUNT)))
+    Emitter.statistics("\t\tAverage test that failed only in Pd: " + str(total_errors/int(ITERATION_COUNT)))
 
 
 
