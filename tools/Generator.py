@@ -70,7 +70,7 @@ def generate_vectors(file_extension, log_file, project):
                 project.macro_list[source_file] = dict()
 
                 if Values.IS_FUNCTION:
-                    Emitter.normal("\t\t\tgenerating function vectors")
+                    # Emitter.normal("\t\t\tgenerating function vectors")
                     for function_name, begin_line, finish_line in function_list:
                         function_name = "func_" + function_name.split("(")[0]
                         project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name, begin_line, finish_line, True)
@@ -78,19 +78,19 @@ def generate_vectors(file_extension, log_file, project):
                     ASTGenerator.get_vars(project, source_file, definition_list)
 
                 if Values.IS_STRUCT:
-                    Emitter.normal("\t\t\tgenerating struct vectors")
+                    # Emitter.normal("\t\t\tgenerating struct vectors")
                     for struct_name, begin_line, finish_line in struct_list:
                         struct_name = "struct_" + struct_name.split(";")[0]
                         project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name, begin_line, finish_line, True)
 
                 if Values.IS_MACRO:
-                    Emitter.normal("\t\t\tgenerating macro vectors")
+                    # Emitter.normal("\t\t\tgenerating macro vectors")
                     for macro_name, begin_line, finish_line in macro_list:
                         macro_name = "macro_" + macro_name
                         project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name, begin_line, finish_line, True)
 
                 if Values.IS_ENUM:
-                    Emitter.normal("\t\t\tgenerating enum vectors")
+                    # Emitter.normal("\t\t\tgenerating enum vectors")
                     count = 0
                     for enum_name, begin_line, finish_line in enum_list:
                         enum_name = "enum_" + enum_name.split(";")[0]

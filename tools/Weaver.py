@@ -254,17 +254,17 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     execute_command(backup_command)
 
     # We apply the patch using the script and crochet-patch
-    execute_ast_transformation(file_b, file_d, (FILE_EMPTY, script_file_name, FILE_EMPTY))
-    # patch_command = Definitions.PATCH_COMMAND + " -s=" + Definitions.PATCH_SIZE + \
-    #      " -script=" + script_file_name + " -source=" + file_a + \
-    #      " -destination=" + file_b + " -target=" + file_c
-    # if file_c[-1] == "h":
-    #     patch_command += " --"
-    # patch_command += " 2> output/errors > " + output_file + "; "
-    # patch_command += "cp " + output_file + " " + file_d
-    #
-    # # print(patch_command)
-    # execute_command(patch_command)
+    # execute_ast_transformation(file_b, file_d, (FILE_EMPTY, script_file_name, FILE_EMPTY))
+    patch_command = Definitions.PATCH_COMMAND + " -s=" + Definitions.PATCH_SIZE + \
+         " -script=" + script_file_name + " -source=" + file_a + \
+         " -destination=" + file_b + " -target=" + file_c
+    if file_c[-1] == "h":
+        patch_command += " --"
+    patch_command += " 2> output/errors > " + output_file + "; "
+    patch_command += "cp " + output_file + " " + file_d
+
+    # print(patch_command)
+    execute_command(patch_command)
 
     # We fix basic syntax errors that could have been introduced by the patch
     fix_command = Definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
