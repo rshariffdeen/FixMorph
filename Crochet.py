@@ -6,11 +6,11 @@ import time
 from tools import Emitter, Logger
 from phases import Initialization, Building, Differencing, Segmentation, Detection, Mapping, Extraction, Translation, Weaving, Verify
 from common import Definitions
-from common.Utilities import error_exit, create_directories
+from common.Utilities import error_exit, create_base_directories
 
 
 def first_run_check():
-    create_directories()
+    create_base_directories()
 
 
 def run():

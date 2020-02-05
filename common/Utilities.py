@@ -35,8 +35,8 @@ def load_state():
     Values.Project_D = pickle.load(open(Definitions.FILE_PROJECT_D, 'rb'))
 
 
-def create_directories():
-    if not os.path.isdir(Definitions.DIRECTORY_LOG):
+def create_base_directories():
+    if not os.path.isdir(Definitions.DIRECTORY_LOG_BASE):
         os.makedirs(Definitions.DIRECTORY_LOG)
 
     if not os.path.isdir(Definitions.DIRECTORY_OUTPUT_BASE):
