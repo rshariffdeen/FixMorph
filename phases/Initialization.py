@@ -4,6 +4,7 @@
 
 import os
 import sys
+import time
 from common.Utilities import execute_command
 from entity import Project
 from common import Definitions, Values
@@ -163,12 +164,16 @@ def read_conf():
     conf_file_name = Values.FILE_CONFIGURATION.split("/")[-1]
     project_name = Values.FILE_CONFIGURATION.split("/")[-3]
     dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
+
     Definitions.DIRECTORY_OUTPUT = Definitions.DIRECTORY_OUTPUT_BASE + "/" + dir_name
     Definitions.DIRECTORY_LOG = Definitions.DIRECTORY_LOG_BASE + "/" + dir_name
     Definitions.FILE_ERROR_LOG = Definitions.DIRECTORY_LOG + "/log-error"
     Definitions.FILE_LAST_LOG = Definitions.DIRECTORY_LOG + "/log-latest"
     Definitions.FILE_MAKE_LOG = Definitions.DIRECTORY_LOG + "/log-make"
     Definitions.FILE_COMMAND_LOG = Definitions.DIRECTORY_LOG + "/log-command"
+    log_file_name = "log-" + str(time.time())
+    log_file_path = Definitions.DIRECTORY_LOG + "/" + log_file_name
+    Definitions.FILE_MAIN_LOG = log_file_path
 
     for configuration in configuration_list:
         if Definitions.CONF_PATH_A in configuration:
