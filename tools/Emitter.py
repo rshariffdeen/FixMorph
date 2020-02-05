@@ -100,12 +100,12 @@ def program_output(output_message):
 def emit_var_map(var_map):
     write("\t\tVar Map:", WHITE)
     for var_a in var_map:
-        highlight("\t\t\t " + var_a + " ==> " + var_map[var_a])
+        highlight("\t\t\t" + var_a + " ==> " + var_map[var_a])
 
 
 def emit_ast_script(ast_script):
     for line in ast_script:
-        special("\t\t " + line.strip())
+        special("\t\t" + line.strip())
 
 
 def warning(message):

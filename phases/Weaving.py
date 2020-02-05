@@ -35,30 +35,35 @@ def safe_exec(function_def, title, *args):
 def transplant_missing_header():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list, missing_header_list
-    modified_source_list = Weaver.weave_headers(missing_header_list, modified_source_list)
+    if missing_header_list:
+        modified_source_list = Weaver.weave_headers(missing_header_list, modified_source_list)
 
 
 def transplant_missing_macros():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list, missing_macro_list
-    modified_source_list = Weaver.weave_definitions(missing_macro_list, modified_source_list)
+    if missing_macro_list:
+        modified_source_list = Weaver.weave_definitions(missing_macro_list, modified_source_list)
 
 
 def transplant_missing_data_types():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list, missing_data_type_list
-    modified_source_list = Weaver.weave_data_type(missing_data_type_list, modified_source_list)
+    if missing_data_type_list:
+        modified_source_list = Weaver.weave_data_type(missing_data_type_list, modified_source_list)
 
 
 def transplant_missing_functions():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global missing_header_list, missing_macro_list, modified_source_list
-    missing_header_list_func, \
-    missing_macro_list_func, modified_source_list = Weaver.weave_functions(missing_function_list,
-                                                                           modified_source_list)
 
-    missing_macro_list = Merger.merge_macro_info(missing_macro_list, missing_macro_list_func)
-    missing_header_list = Merger.merge_header_info(missing_header_list, missing_header_list_func)
+    if missing_function_list:
+        missing_header_list_func, \
+        missing_macro_list_func, modified_source_list = Weaver.weave_functions(missing_function_list,
+                                                                               modified_source_list)
+
+        missing_macro_list = Merger.merge_macro_info(missing_macro_list, missing_macro_list_func)
+        missing_header_list = Merger.merge_header_info(missing_header_list, missing_header_list_func)
 
 
 def transplant_code():

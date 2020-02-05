@@ -214,7 +214,7 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     missing_header_list = dict()
     missing_data_type_list = dict()
 
-    Emitter.normal("\t\ttransplanting code")
+    Emitter.normal("\t[action] transplanting code")
 
     ast_map_a = Generator.get_ast_json(file_a)
     ast_map_b = Generator.get_ast_json(file_b)
