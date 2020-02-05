@@ -88,8 +88,6 @@
   },
 
 
-
-
    {
     "category":"backporting",
     "donor":"imageworsener",
@@ -97,6 +95,7 @@
     "poc_path":"/poc/jasper/CVE-2017-9203.bmp",
     "cve_id":"CVE-2017-9203"
   },
+
 
 
 
