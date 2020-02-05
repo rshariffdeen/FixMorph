@@ -26,7 +26,7 @@ def generate_vectors(file_extension, log_file, project):
             #     source_file = file_list.readline().strip()
             #     continue
             try:
-                function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=True)
+                function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=False)
 
                 ast_tree = generate_ast_json(source_file)
                 enum_list = list()
