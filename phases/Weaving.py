@@ -57,13 +57,12 @@ def transplant_missing_functions():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global missing_header_list, missing_macro_list, modified_source_list
 
-    if missing_function_list:
-        missing_header_list_func, \
-        missing_macro_list_func, modified_source_list = Weaver.weave_functions(missing_function_list,
+    missing_header_list_func, \
+    missing_macro_list_func, modified_source_list = Weaver.weave_functions(missing_function_list,
                                                                                modified_source_list)
 
-        missing_macro_list = Merger.merge_macro_info(missing_macro_list, missing_macro_list_func)
-        missing_header_list = Merger.merge_header_info(missing_header_list, missing_header_list_func)
+    missing_macro_list = Merger.merge_macro_info(missing_macro_list, missing_macro_list_func)
+    missing_header_list = Merger.merge_header_info(missing_header_list, missing_header_list_func)
 
 
 def transplant_code():
@@ -110,15 +109,20 @@ def save_values():
 
 
 def weave():
-
+    global missing_header_list, missing_macro_list, modified_source_list, missing_function_list
+    global missing_data_type_list
     Emitter.title("Applying transformation")
     load_values()
     if not Values.SKIP_WEAVE:
         safe_exec(transplant_code, "transplanting code")
-        safe_exec(transplant_missing_functions, "transplanting functions")
-        safe_exec(transplant_missing_data_types, "transplanting data structures")
-        safe_exec(transplant_missing_macros, "transplanting macros")
-        safe_exec(transplant_missing_header, "transplanting header files")
+        if missing_function_list:
+            safe_exec(transplant_missing_functions, "transplanting functions")
+        if missing_data_type_list:
+            safe_exec(transplant_missing_data_types, "transplanting data structures")
+        if missing_macro_list:
+            safe_exec(transplant_missing_macros, "transplanting macros")
+        if missing_header_list:
+            safe_exec(transplant_missing_header, "transplanting header files")
         safe_exec(Fixer.check, "correcting syntax errors", modified_source_list)
     else:
         Emitter.special("\n\t-skipping this phase-")
