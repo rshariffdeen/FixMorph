@@ -56,6 +56,10 @@ def create_log_dir():
     if not os.path.isdir(Definitions.DIRECTORY_LOG):
         create_command = "mkdir -p " + Definitions.DIRECTORY_LOG
         execute_command(create_command)
+    Definitions.FILE_ERROR_LOG = Definitions.DIRECTORY_LOG + "/log-error"
+    Definitions.FILE_LAST_LOG = Definitions.DIRECTORY_LOG + "/log-latest"
+    Definitions.FILE_MAKE_LOG = Definitions.DIRECTORY_LOG + "/log-make"
+    Definitions.FILE_COMMAND_LOG = Definitions.DIRECTORY_LOG + "/log-command"
 
 
 def create_fuzz_dir():
