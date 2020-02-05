@@ -116,7 +116,7 @@ def load_values():
 
 def save_values():
     Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
-    Values.generated_script_for_c_files = generated_script_list
+    Values.generated_script_files = generated_script_list
     save_current_state()
 
 
@@ -125,7 +125,6 @@ def extract():
     # Using all previous structures to transplant patch
     load_values()
     if not Values.SKIP_EXTRACTION:
-        # safe_exec(generate_script_for_header_files, "generating script for header files", Values.header_file_list_to_patch)
         safe_exec(generate_script_for_files, "generating script for files", Values.file_list_to_patch)
         save_values()
     else:

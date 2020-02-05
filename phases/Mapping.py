@@ -68,12 +68,12 @@ def get_mapping(map_file_name):
 
 
 def load_values():
-    if not Values.generated_script_for_c_files:
+    if not Values.generated_script_files:
         script_info = dict()
         script_list = Reader.read_json(Definitions.FILE_SCRIPT_INFO)
         for (vec_path_info, vec_info) in script_list:
             script_info[(vec_path_info[0], vec_path_info[1], vec_path_info[2])] = vec_info
-        Values.generated_script_for_c_files = script_info
+        Values.generated_script_files = script_info
 
     Definitions.FILE_MAP_INFO = Definitions.DIRECTORY_OUTPUT + "/map-info"
 
@@ -98,10 +98,10 @@ def map():
         #         Values.variable_map[file_list] = variable_map
         #
         Emitter.sub_title("Variable mapping for C files")
-        if len(Values.generated_script_for_c_files) == 0:
+        if len(Values.generated_script_files) == 0:
             Emitter.normal("\t -nothing-to-do")
         else:
-            for file_list, generated_data in Values.generated_script_for_c_files.items():
+            for file_list, generated_data in Values.generated_script_files.items():
                 map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
                 generate_map(file_list[0], file_list[2], map_file_name)
                 variable_map = get_mapping(map_file_name)
