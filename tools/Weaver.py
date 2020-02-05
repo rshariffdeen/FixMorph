@@ -214,7 +214,7 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     missing_header_list = dict()
     missing_data_type_list = dict()
 
-    Emitter.normal("\t[action] transplanting code")
+
 
     ast_map_a = Generator.get_ast_json(file_a)
     ast_map_b = Generator.get_ast_json(file_b)
@@ -226,7 +226,10 @@ def weave_code(file_a, file_b, file_c, instruction_list):
     script_file_name = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_script"
     syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_syntax_errors"
     with open(script_file_name, 'w') as script_file:
+        count = 0
         for instruction in instruction_list:
+            count = count + 1
+            Emitter.normal("\t[action] transplanting code segment " + str(count))
             if "Insert" in instruction:
                 insert_node_id = instruction.split("(")[1].split(")")[0]
                 inserting_node = Finder.search_ast_node_by_id(ast_map_b, int(insert_node_id))

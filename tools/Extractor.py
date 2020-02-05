@@ -25,7 +25,7 @@ def extract_child_id_list(ast_node):
 
 def extract_macro_definitions(source_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\textracting macro definitions from\n\t\t" + str(source_path))
+    Emitter.information("\t\t[info] extracting macro definitions from\n\t\t" + str(source_path))
     extract_command = "clang -E -dD -dM " + source_path + " > " + FILE_MACRO_DEF
     execute_command(extract_command)
     with open(FILE_MACRO_DEF, "r") as macro_file:
@@ -231,7 +231,7 @@ def extract_typeloc_node_list(ast_node):
 
 def extract_macro_definition(ast_node, source_file, target_file):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\t\t\textracting macro definitions")
+    Emitter.information("\t\t[info]extracting macro definitions")
     macro_list = dict()
     node_type = str(ast_node['type'])
     # print(ast_node)
