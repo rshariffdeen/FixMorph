@@ -155,7 +155,7 @@ def check_syntax_errors(modified_source_list):
         if ret_code != 0:
             fix_syntax_errors(source_file)
         else:
-            Emitter.normal("\tno syntax errors")
+            Emitter.normal("\t\tno syntax errors")
 
 
 def set_values():
