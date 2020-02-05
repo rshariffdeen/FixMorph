@@ -145,7 +145,7 @@ def read_conf():
             elif "Crochet.py" in arg:
                 continue
             else:
-                Emitter.error("Invalid argument: " + arg)
+                Emitter.normal("Invalid argument: " + arg)
                 Emitter.help()
                 exit()
     else:
@@ -153,7 +153,7 @@ def read_conf():
         exit()
 
     if not os.path.exists(Values.FILE_CONFIGURATION):
-        Emitter.error("[NOT FOUND] Configuration file " + Values.FILE_CONFIGURATION)
+        Emitter.normal("[NOT FOUND] Configuration file " + Values.FILE_CONFIGURATION)
         exit()
 
     with open(Values.FILE_CONFIGURATION, 'r') as conf_file:
