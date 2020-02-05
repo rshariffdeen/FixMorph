@@ -48,7 +48,7 @@ def sub_sub_title(sub_title):
 
 def command(message):
     if Values.DEBUG:
-        message = "running command\n\t" + message
+        message = "[COMMAND] " + message
         write(message, ROSE)
     Logger.command(message)
 
