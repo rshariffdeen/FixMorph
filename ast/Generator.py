@@ -153,8 +153,8 @@ def generate_ast_script(source_a, source_b, outfile_path, dump_matches=False):
         extra_args = " -dump-matches "
     generate_command = APP_AST_DIFF + " -s=" + Values.AST_DIFF_SIZE + extra_args
     generate_command += source_a + " " + source_b
-    if source_a[-1] == "h":
-        generate_command += " --"
+
+    generate_command += " --"
     generate_command += " 2> " + Definitions.FILE_AST_DIFF_ERROR
     if dump_matches:
         generate_command += " | grep -P '^Match ' | grep -P '^Match '"

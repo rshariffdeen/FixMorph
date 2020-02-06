@@ -14,8 +14,7 @@ generated_script_list = dict()
 
 def generate_edit_script(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
-    name_b = file_b.split("/")[-1]
-    Emitter.normal("Generating edit script: " + name_a + Definitions.TO + name_b + "...")
+    Emitter.normal("\t" + name_a)
     try:
         extra_arg = " --"
         command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches " + \
@@ -100,11 +99,11 @@ def save_values():
 
 
 def extract():
-    Emitter.title("Generating GumTree script for patch")
+    Emitter.title("Generating AST for context matching")
     # Using all previous structures to transplant patch
     load_values()
     if not Values.SKIP_EXTRACTION:
-        safe_exec(generate_script_for_files, "generating script for files", Values.file_list_to_patch)
+        safe_exec(generate_script_for_files, "generating AST map", Values.file_list_to_patch)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

@@ -15,7 +15,7 @@ def collect_instruction_list(ast_script, script_file_path):
     inserted_node_list = list()
     map_ab = dict()
 
-    with open(script_file_path,'r') as script_file:
+    with open(script_file_path, 'r') as script_file:
         script_line_list = script_file.readlines()
         for script_line in script_line_list:
             line = script_line.split(" ")
