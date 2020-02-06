@@ -20,17 +20,15 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
     # intelligently generate vectors
     regex = None
     if Values.BACKPORT:
-        for file_path in diff_file_list:
-            file_name = file_path.split("/")[-1][:-2]
+        for source_loc in diff_file_list:
+            source_path, line_number = source_loc.split(":")
+            file_name = source_path.split("/")[-1][:-2]
             if regex is None:
                 regex = file_name
             else:
                 regex = regex + "\|" + file_name
 
     find_files(project.path, file_extension, log_file, regex)
-
-
-
 
     with open(log_file, 'r') as file_list:
         source_file = file_list.readline().strip()
