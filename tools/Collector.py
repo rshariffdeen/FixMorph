@@ -49,11 +49,11 @@ def collect_instruction_list(ast_script, script_file_path):
             instruction = line[0]
             content = " ".join(line[1:])
         # Update nodeA to nodeB (only care about value)
-        if instruction == Definitions.UPDATE:
+        if instruction == Definitions.UPDATE or instruction == Definitions.REPLACE:
             try:
                 node_a, node_b = clean_parse(content, Definitions.TO)
                 if "TypeLoc" not in node_a:
-                    instruction_list.append((instruction, node_a, node_b))
+                    instruction_list.append((Definitions.UPDATE, node_a, node_b))
             except Exception as e:
                 error_exit(e, "Something went wrong in UPDATE.")
         # Delete nodeA
