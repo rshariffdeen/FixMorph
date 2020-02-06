@@ -167,13 +167,13 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
                 merged_ast_script.append(script_line)
             inserted_node_list.append(node_id_a)
         elif "Delete" in script_line:
-            node_id = int((script_line.split("(")[1]).split(")")[0])
-            node = Finder.search_ast_node_by_id(ast_node_a, node_id)
-            child_id_list = Extractor.extract_child_id_list(node)
-            deleted_node_list = deleted_node_list + child_id_list
-            if node_id not in deleted_node_list:
-                deleted_node_list.append(node_id)
-                merged_ast_script.append(script_line)
+            # node_id = int((script_line.split("(")[1]).split(")")[0])
+            # node = Finder.search_ast_node_by_id(ast_node_a, node_id)
+            # child_id_list = Extractor.extract_child_id_list(node)
+            # deleted_node_list = deleted_node_list + child_id_list
+            # if node_id not in deleted_node_list:
+            #     deleted_node_list.append(node_id)
+            merged_ast_script.append(script_line)
         elif "Move" in script_line:
             # print(script_line)
             move_position = int((script_line.split(" at ")[1]))
