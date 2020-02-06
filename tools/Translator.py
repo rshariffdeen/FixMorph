@@ -255,8 +255,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         translated_instruction_list.append(instruction)
 
                 else:
-                    Emitter.warning("Warning: Match for " + str(txt_delete_node_a) + \
-                                  "not found. Skipping DELETE instruction.")
+                    Emitter.warning("Warning: Match for " + str(txt_delete_node_a) + "not found. Skipping DELETE instruction.")
             except Exception as e:
                 error_exit(e, "Something went wrong with DELETE.")
             # Move nodeA to nodeB at pos -> Move nodeC to nodeD at pos
@@ -791,9 +790,9 @@ def translate_script_list(generated_script_list):
         modified_script.sort(key=cmp_to_key(order_comp))
         modified_script = rewrite_as_script(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        variable_map = Values.variable_map[file_list]
+        map_ac = Values.ast_map[file_list]
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
-                                                     generated_data[2], variable_map)
+                                                     generated_data[2], map_ac)
         translated_script_list[file_list] = (translated_script, original_script)
     return translated_script_list
 

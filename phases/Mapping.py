@@ -8,7 +8,7 @@ from tools import Emitter, Reader, Writer, Logger, Mapper
 def generate_map():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_title("Variable mapping")
-    Values.variable_map = Mapper.generate(Values.generated_script_files)
+    Values.ast_map = Mapper.generate(Values.generated_script_files)
 
 
 def load_values():
@@ -43,7 +43,7 @@ def safe_exec(function_def, title, *args):
 
 
 def save_values():
-    Writer.write_map_info(Values.variable_map, Definitions.FILE_MAP_INFO)
+    Writer.write_map_info(Values.ast_map, Definitions.FILE_MAP_INFO)
     save_current_state()
 
 

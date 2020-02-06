@@ -34,12 +34,12 @@ def safe_exec(function_def, title, *args):
 
 def load_values():
     load_state()
-    if not Values.variable_map:
+    if not Values.ast_map:
         map_info = dict()
         map_list = Reader.read_json(Definitions.FILE_MAP_INFO)
         for (file_path_info, node_map) in map_list:
             map_info[(file_path_info[0], file_path_info[1], file_path_info[2])] = node_map
-        Values.variable_map = map_info
+        Values.ast_map = map_info
 
     Definitions.FILE_TRANSLATED_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/trans-script-info"
 

@@ -65,7 +65,7 @@ silence_emitter = False
 file_list_to_patch = []
 generated_script_files = dict()
 translated_script_for_files = dict()
-variable_map = dict()
+ast_map = dict()
 
 diff_info = dict()
 
