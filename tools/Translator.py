@@ -777,7 +777,7 @@ def get_instruction(instruction_data):
 
 def translate_script_list(generated_script_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    translated_script_list = list()
+    translated_script_list = dict()
     for file_list, generated_data in generated_script_list.items():
         json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
 
