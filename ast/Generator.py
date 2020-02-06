@@ -36,8 +36,7 @@ def generate_vector(file_path, f_or_struct, start_line, end_line, is_deckard=Tru
 def ast_dump(file_path, output_path, is_header=True):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dump_command = APP_AST_DIFF + " -ast-dump-json " + file_path
-    if file_path[-1] == "h":
-        dump_command += " --"
+    dump_command += " --"
     dump_command += " 2> output/errors_AST_dump > " + output_path
     return_code = execute_command(dump_command)
     Emitter.debug("return code:" + str(return_code))
