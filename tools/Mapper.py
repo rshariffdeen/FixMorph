@@ -82,13 +82,13 @@ def get_mapping(map_file_name):
 
 
 def generate(generated_script_files):
-    variable_map = dict()
+    variable_map_info = dict()
     if len(generated_script_files) == 0:
         Emitter.normal("\t -nothing-to-do")
     else:
         for file_list, generated_data in generated_script_files.items():
             map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
             generate_map(file_list[0], file_list[2], map_file_name)
-            variable_map = get_mapping(map_file_name)
-            variable_map[file_list] = variable_map
-    return variable_map
+            source_variable_map = get_mapping(map_file_name)
+            variable_map_info[file_list] = source_variable_map
+    return variable_map_info
