@@ -30,6 +30,7 @@ def generate_vectors(file_extension, log_file, project):
 
                 ast_tree = generate_ast_json(source_file)
                 if ast_tree is None:
+                    source_file = file_list.readline().strip()
                     continue
                 enum_list = list()
                 function_list = list()
