@@ -34,6 +34,7 @@ def generate_script_for_files(file_list_to_patch):
         vector_source_a = ""
         vector_source_b = ""
         vector_source_c = ""
+        ast_script = list()
         try:
             if "func_" in vec_path_a:
                 vector_source_a, vector_name_a = vec_path_a.split(".func_")
@@ -48,10 +49,14 @@ def generate_script_for_files(file_list_to_patch):
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                 vector_source_c, vector_name_c = vec_path_c.split(".enum_")
 
-            if vector_source_a in generated_source_list:
-                continue
-            generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
-            original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
+            for source_loc in Values.diff_info:
+                source_path, line_number = source_loc.split(":")
+                if source_path == vector_source_a:
+                    diff_info = Values.diff_info[source_loc]
+                    ast_script = ast_script + diff_info['ast-script']
+
+            #generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
+            original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(ast_script)
             generated_data = (original_script, inserted_node_list, map_ab)
             generated_script_list[(vector_source_a, vector_source_b, vector_source_c)] = generated_data
             generated_source_list.append(vector_source_a)
