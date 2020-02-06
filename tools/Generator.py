@@ -19,12 +19,13 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
 
     # intelligently generate vectors
     regex = None
-    for file_path in diff_file_list:
-        file_name = file_path.split("/")[-1][:-2]
-        if regex is None:
-            regex = file_name
-        else:
-            regex = regex + "\|" + file_name
+    if Values.BACKPORT:
+        for file_path in diff_file_list:
+            file_name = file_path.split("/")[-1][:-2]
+            if regex is None:
+                regex = file_name
+            else:
+                regex = regex + "\|" + file_name
 
     find_files(project.path, file_extension, log_file, regex)
 

@@ -60,7 +60,10 @@ def error_exit(*args):
 def find_files(src_path, extension, output, regex):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     # Save paths to all files in src_path with extension extension to output
-    find_command = "find " + src_path + " -name '" + extension + "' | grep '" + regex + "' > " + output
+    find_command = "find " + src_path + " -name '" + extension
+    if regex is not None:
+        find_command += "' | grep '" + regex + "' "
+    find_command += " > " + output
     execute_command(find_command)
 
 
