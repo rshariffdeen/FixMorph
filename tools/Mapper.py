@@ -24,9 +24,7 @@ def generate_map(file_a, file_b, output_file):
     name_b = file_b.split("/")[-1]
     Emitter.blue("Generating mapping: " + name_a + Definitions.TO + name_b + "...")
     try:
-        extra_arg = ""
-        if file_a[-2:] == ".h":
-            extra_arg = " --"
+        extra_arg = " --"
         command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches " + \
                   file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += "| grep '^Match ' "
@@ -83,24 +81,14 @@ def get_mapping(map_file_name):
     return node_map
 
 
-def generate():
-    Emitter.title("Variable Mapping")
-    Emitter.sub_title("Variable mapping for header files")
-    if len(Definitions.generated_script_for_header_files) == 0:
-        Emitter.blue("\t -nothing-to-do")
+def generate(generated_script_files):
+    variable_map = dict()
+    if len(generated_script_files) == 0:
+        Emitter.normal("\t -nothing-to-do")
     else:
-        for file_list, generated_data in Definitions.generated_script_for_header_files.items():
-            map_file_name = "output/diff_script_AC"
+        for file_list, generated_data in generated_script_files:
+            map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
             generate_map(file_list[0], file_list[2], map_file_name)
             variable_map = get_mapping(map_file_name)
-            Definitions.variable_map[file_list] = variable_map
-
-    Emitter.sub_title("Variable mapping for C files")
-    if len(Definitions.generated_script_for_c_files) == 0:
-        Emitter.blue("\t -nothing-to-do")
-    else:
-        for file_list, generated_data in Definitions.generated_script_for_c_files.items():
-            map_file_name = "output/diff_script_AC"
-            generate_map(file_list[0], file_list[2], map_file_name)
-            variable_map = get_mapping(map_file_name)
-            Definitions.variable_map[file_list] = variable_map
+            variable_map[file_list] = variable_map
+    return variable_map

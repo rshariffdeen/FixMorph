@@ -63,10 +63,7 @@ AST_DIFF_SIZE = "10"
 
 silence_emitter = False
 file_list_to_patch = []
-
-generated_script_for_header_files = dict()
 generated_script_files = dict()
-
 translated_script_for_files = dict()
 variable_map = dict()
 
