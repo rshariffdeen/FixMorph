@@ -12,12 +12,25 @@ from common.Utilities import error_exit, clean_parse
 from common import Definitions, Values
 
 
-def generate_vectors(file_extension, log_file, project):
+def generate_vectors(file_extension, log_file, project, diff_file_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tgenerating vectors for " + file_extension + " files in " + project.name + "...")
     # Generates an AST file for each file of extension ext
 
-    find_files(project.path, file_extension, log_file)
+    # intelligently generate vectors
+    regex = None
+    for file_path in diff_file_list:
+        file_name = file_path.split("/")[-1][:-2]
+        if regex is None:
+            regex = file_name
+        else:
+            regex = regex + "\|" + file_name
+
+    find_files(project.path, file_extension, log_file, regex)
+
+
+
+
     with open(log_file, 'r') as file_list:
         source_file = file_list.readline().strip()
         while source_file:

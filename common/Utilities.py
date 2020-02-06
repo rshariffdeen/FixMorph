@@ -57,10 +57,10 @@ def error_exit(*args):
     raise Exception("Error. Exiting...")
 
 
-def find_files(src_path, extension, output):
+def find_files(src_path, extension, output, regex):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     # Save paths to all files in src_path with extension extension to output
-    find_command = "find " + src_path + " -name '" + extension + "' > " + output
+    find_command = "find " + src_path + " -name '" + extension + "' | grep '" + regex + "' > " + output
     execute_command(find_command)
 
 

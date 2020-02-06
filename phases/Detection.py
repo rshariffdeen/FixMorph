@@ -16,15 +16,16 @@ def generate_target_vectors():
     Emitter.sub_sub_title("Generating vector files for all code segments in Target")
     gen_header = False
     gen_source = False
-    for diff_file in Values.diff_info:
+    diff_file_list = Values.diff_info.keys()
+    for diff_file in diff_file_list:
         if ".c" in diff_file:
             gen_source = True
         elif ".h" in diff_file:
             gen_header = True
     if gen_header:
-        Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C)
+        Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C, diff_file_list)
     if gen_source:
-        Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C)
+        Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C, diff_file_list)
 
 
 def find_clones():
