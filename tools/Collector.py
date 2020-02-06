@@ -15,10 +15,10 @@ def collect_instruction_list(ast_script, script_file_path):
     inserted_node_list = list()
     map_ab = dict()
 
-    with open(script_file_path, 'r') as script_file:
-        script_line_list = script_file.readlines()
-        for script_line in script_line_list:
-            line = script_line.split(" ")
+    with open(script_file_path, 'r') as script:
+        line = script.readline().strip()
+        while line:
+            line = line.split(" ")
             # Special case: Update and Move nodeA into nodeB2
             if len(line) > 3 and line[0] == Definitions.UPDATE and line[1] == Definitions.AND and \
                     line[2] == Definitions.MOVE:
@@ -35,7 +35,6 @@ def collect_instruction_list(ast_script, script_file_path):
                     map_ab[node_b] = node_a
                 except Exception as e:
                     error_exit(e, "Something went wrong in MATCH (AB).", line, instruction, content)
-
             # Update nodeA to nodeB (only care about value)
             elif instruction == Definitions.UPDATE:
                 try:
@@ -82,7 +81,7 @@ def collect_instruction_list(ast_script, script_file_path):
                     inserted_node_list.append(node_a)
                 except Exception as e:
                     error_exit(e, "Something went wrong in INSERT.")
-
+            line = script.readline().strip()
     # for line in ast_script:
     #     line = line.split(" ")
     #     # Special case: Update and Move nodeA into nodeB2
