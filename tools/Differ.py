@@ -107,7 +107,7 @@ def diff_line(diff_file_path, output_file):
                             diff_info[diff_loc]['new-lines'] = (start_b, end_b)
                             diff_info[diff_loc]['old-lines'] = (start_a, end_a)
                         elif operation == "delete":
-                            diff_info[diff_loc]['remove-lines'] = (start_a, end_a)
+                            diff_info[diff_loc]['old-lines'] = (start_a, end_a)
                         elif operation == "modify":
                             diff_info[diff_loc]['old-lines'] = (start_a, end_a)
                             diff_info[diff_loc]['new-lines'] = (start_b, end_b)
@@ -213,6 +213,16 @@ def diff_ast(diff_info, project_path_a, project_path_b, script_file_path):
                                                                info_b,
                                                                mapping_ba
                                                                )
+            elif operation == 'delete':
+                line_range_a = diff_loc_info['old-lines']
+                info_a = (source_path_a, line_range_a, ast_map_a)
+                info_b = (source_path_b, None, ast_map_b)
+                filtered_ast_script = Filter.filter_ast_script(ast_script,
+                                                               info_a,
+                                                               info_b,
+                                                               mapping_ba
+                                                               )
+
             if filtered_ast_script is None:
                 del diff_info[diff_loc]
                 continue

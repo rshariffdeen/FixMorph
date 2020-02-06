@@ -102,9 +102,11 @@ def filter_ast_script(ast_script, info_a, info_b, mapping_ba):
     source_path_b, line_range_b, ast_node_b = info_b
     filtered_ast_script = list()
     line_range_start_a, line_range_end_a = line_range_a
-    line_range_start_b, line_range_end_b = line_range_b
     line_numbers_a = set(range(int(line_range_start_a), int(line_range_end_a) + 1))
-    line_numbers_b = set(range(int(line_range_start_b), int(line_range_end_b) + 1))
+    if line_range_b is not None:
+        line_range_start_b, line_range_end_b = line_range_b
+        line_numbers_b = set(range(int(line_range_start_b), int(line_range_end_b) + 1))
+
     # print(ast_script)
     merged_ast_script = Merger.merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba)
     if merged_ast_script is None:
