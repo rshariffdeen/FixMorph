@@ -18,7 +18,7 @@ def collect_instruction_list(ast_script, script_file_path):
     with open(script_file_path, 'r') as script_file:
         script_line_list = script_file.readlines()
         for script_line in script_line_list:
-            script_line = script_line.strip()
+            script_line = script_line.strip().replace("\n", '')
             line = script_line.split(" ")
             # Special case: Update and Move nodeA into nodeB2
             if len(line) > 3 and line[0] == Definitions.UPDATE and line[1] == Definitions.AND and \
@@ -33,7 +33,7 @@ def collect_instruction_list(ast_script, script_file_path):
             if instruction == Definitions.MATCH:
                 try:
                     node_a, node_b = clean_parse(content, Definitions.TO)
-                    map_ab[node_b] = node_a
+                    map_ab[node_b] = str(node_a).strip()
                 except Exception as e:
                     error_exit(e, "Something went wrong in MATCH (AB).", line, instruction, content)
 
