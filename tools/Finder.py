@@ -32,7 +32,7 @@ def search_vector_list(project, extension, vec_type):
 
     Emitter.normal("\tanalysing vectors for " + vec_type + " segments in " + project.name + "...")
     filepath = "output/vectors_" + rxt + "_" + project.name
-    find_files(project.path, extension, filepath)
+    find_files(project.path, extension, filepath, None)
     with open(filepath, "r", errors='replace') as file:
         files = [vec.strip() for vec in file.readlines()]
     vecs = []
