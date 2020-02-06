@@ -36,7 +36,8 @@ def generate_vector(file_path, f_or_struct, start_line, end_line, is_deckard=Tru
 def ast_dump(file_path, output_path, is_header=True):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dump_command = APP_AST_DIFF + " -ast-dump-json " + file_path
-    dump_command += " --"
+    if file_path[-1] == 'h':
+        dump_command += " --"
     dump_command += " 2> output/errors_AST_dump > " + output_path
     return_code = execute_command(dump_command)
     Emitter.debug("return code:" + str(return_code))
@@ -152,8 +153,8 @@ def generate_ast_script(source_a, source_b, outfile_path, dump_matches=False):
         extra_args = " -dump-matches "
     generate_command = APP_AST_DIFF + " -s=" + Values.AST_DIFF_SIZE + extra_args
     generate_command += source_a + " " + source_b
-
-    generate_command += " --"
+    if source_a[-1] == 'h':
+        generate_command += " --"
     generate_command += " 2> " + Definitions.FILE_AST_DIFF_ERROR
     if dump_matches:
         generate_command += " | grep -P '^Match ' | grep -P '^Match '"

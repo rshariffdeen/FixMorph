@@ -96,7 +96,9 @@ def gen_temp_json(file_a, file_b, file_c):
 
 
 def ASTdump(file, output):
-    extra_arg = " --"
+    extra_arg = ""
+    if file[-1] == 'h':
+        extra_arg = " --"
     c = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -ast-dump-json " + \
         file + extra_arg + " 2> output/errors_AST_dump > " + output
     execute_command(c)
