@@ -1,6 +1,6 @@
 project_name=libming
 bug_id=int-overflow
-dir_name=$1/$project_name/$bug_id
+dir_name=$1/backport/$project_name/$bug_id
 pa=libming-0.4.7
 pb=libming-0.4.8
 pc=libming-0.4.6

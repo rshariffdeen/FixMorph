@@ -1,6 +1,6 @@
 project_name=imageworsener
 bug_id=mem-read
-dir_name=$1/$project_name/$bug_id
+dir_name=$1/backport/$project_name/$bug_id
 pa=imageworsener-1.3.1
 pb=imageworsener-1.3.2
 pc=imageworsener-1.2.0

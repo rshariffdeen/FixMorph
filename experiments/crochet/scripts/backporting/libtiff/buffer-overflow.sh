@@ -1,6 +1,6 @@
 project_name=libtiff
 bug_id=buffer-overflow
-dir_name=$1/$project_name/$bug_id
+dir_name=$1/backport/$project_name/$bug_id
 pa=libtiff-4.0.6
 pb=libtiff-4.0.7
 pc=libtiff-3.9.7

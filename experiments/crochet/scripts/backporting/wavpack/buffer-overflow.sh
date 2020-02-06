@@ -1,6 +1,6 @@
 project_name=wavpack
 bug_id=buffer-overflow
-dir_name=$1/$project_name/$bug_id
+dir_name=$1/backport/$project_name/$bug_id
 pa=wavpack-5.1.0
 pb=wavpack-master
 pc=wavpack-5.0.0

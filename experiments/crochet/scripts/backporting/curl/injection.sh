@@ -1,6 +1,6 @@
 project_name=curl
 bug_id=injection
-dir_name=$1/$project_name/$bug_id
+dir_name=$1/backport/$project_name/$bug_id
 pa=curl-7.50.0
 pb=curl-7.51.0
 pc=curl-7.48.0

@@ -145,7 +145,7 @@
     "cve_id":"CVE-2017-6060"
   },
 
-    {
+  {
     "category":"backporting",
     "donor":"libzip",
     "bug_name":"use-after-free",

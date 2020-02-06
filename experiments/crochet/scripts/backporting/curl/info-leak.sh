@@ -1,6 +1,6 @@
 project_name=curl
 bug_id=info-leak
-dir_name=$1/$project_name/$bug_id
+dir_name=$1/backport/$project_name/$bug_id
 pa=curl-7.57.0
 pb=curl-7.58.0
 pc=curl-7.53.0

@@ -1,6 +1,6 @@
 project_name=imageworsener
 bug_id=buffer-overflow
-dir_name=$1/$project_name/$bug_id
+dir_name=$1/backport/$project_name/$bug_id
 pa=imageworsener-1.3.0
 pb=imageworsener-1.3.1
 pc=imageworsener-0.9.4

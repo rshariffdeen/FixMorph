@@ -1,6 +1,6 @@
 project_name=openjpeg
 bug_id=mem-alloc
-dir_name=$1/$project_name/$bug_id
+dir_name=$1/backport/$project_name/$bug_id
 pa=openjpeg-2.2.0
 pb=openjpeg-2.3.0
 pc=openjpeg-2.1.2
