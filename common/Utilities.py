@@ -173,7 +173,7 @@ def clean_parse(content, separator):
     half = len(nodes) // 2
     node1 = separator.join(nodes[:half])
     node2 = separator.join(nodes[half:])
-    return [node1, node2]
+    return [node1.strip(), node2.strip()]
 
 
 def is_intersect(start, end, start2, end2):
