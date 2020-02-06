@@ -605,11 +605,16 @@ def identify_code_segment(diff_info, project):
                         project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name,
                                                                                      begin_line, finish_line, True)
 
+        count = 0
         for enum_name, begin_line, finish_line in enum_list:
             enum_name = "enum_" + enum_name.split(";")[0]
+            if "anonymous" in enum_name:
+                count = count + 1
+                enum_name = "enum_" + str(count)
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
                     Values.IS_ENUM = True
+
                     if source_file not in project.enum_list.keys():
                         project.enum_list[source_file] = dict()
                     if enum_name not in project.enum_list[source_file]:
