@@ -38,6 +38,7 @@ def collect_instruction_list(ast_script, script_file_path):
                     error_exit(e, "Something went wrong in MATCH (AB).", line, instruction, content)
 
     for line in ast_script:
+        line = line.replace("\n", '')
         line = line.split(" ")
         # Special case: Update and Move nodeA into nodeB2
         if len(line) > 3 and line[0] == Definitions.UPDATE and line[1] == Definitions.AND and \
