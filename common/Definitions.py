@@ -142,4 +142,5 @@ TO = " to "
 AT = " at "
 INTO = " into "
 AND = "and"
+WITH = " with "
 order = [DELETE, INSERT, UPDATE, UPDATEMOVE, MOVE]
