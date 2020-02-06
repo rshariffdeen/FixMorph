@@ -560,7 +560,8 @@ def identify_code_segment(diff_info, project):
             elif node_type in ["EnumConstantDecl", "EnumDecl"]:
                 enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["Macro"]:
-                macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                if 'value' in ast_node.keys():
+                    macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["TypedefDecl"]:
                 type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["RecordDecl"]:
