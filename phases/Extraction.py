@@ -29,6 +29,7 @@ def generate_edit_script(file_a, file_b, output_file):
 def generate_script_for_files(file_list_to_patch):
     global generated_script_list
     generated_source_list = list()
+    script_file_ab = Definitions.DIRECTORY_TMP + "/diff_script_AB"
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
         vector_source_a = ""
         vector_source_b = ""
@@ -57,8 +58,8 @@ def generate_script_for_files(file_list_to_patch):
                     diff_info = Values.diff_info[source_loc]
                     ast_script = ast_script + diff_info['ast-script']
 
-            #generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
-            original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(ast_script)
+            generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
+            original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(ast_script, script_file_ab)
             generated_data = (original_script, inserted_node_list, map_ab)
             generated_script_list[(vector_source_a, vector_source_b, vector_source_c)] = generated_data
             generated_source_list.append(vector_source_a)

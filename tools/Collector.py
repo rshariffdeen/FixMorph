@@ -10,10 +10,31 @@ from common import Definitions
 from common.Utilities import error_exit, clean_parse
 
 
-def collect_instruction_list(ast_script):
+def collect_instruction_list(ast_script, script_file_path):
     instruction_list = list()
     inserted_node_list = list()
     map_ab = dict()
+
+    with open(script_file_path,'r') as script_file:
+        script_line_list = script_file.readlines()
+        for script_line in script_line_list:
+            line = script_line.split(" ")
+            # Special case: Update and Move nodeA into nodeB2
+            if len(line) > 3 and line[0] == Definitions.UPDATE and line[1] == Definitions.AND and \
+                    line[2] == Definitions.MOVE:
+                instruction = Definitions.UPDATEMOVE
+                content = " ".join(line[3:])
+
+            else:
+                instruction = line[0]
+                content = " ".join(line[1:])
+            # Match nodeA to nodeB
+            if instruction == Definitions.MATCH:
+                try:
+                    node_a, node_b = clean_parse(content, Definitions.TO)
+                    map_ab[node_b] = node_a
+                except Exception as e:
+                    error_exit(e, "Something went wrong in MATCH (AB).", line, instruction, content)
 
     for line in ast_script:
         line = line.split(" ")
@@ -26,15 +47,8 @@ def collect_instruction_list(ast_script):
         else:
             instruction = line[0]
             content = " ".join(line[1:])
-        # Match nodeA to nodeB
-        if instruction == Definitions.MATCH:
-            try:
-                node_a, node_b = clean_parse(content, Definitions.TO)
-                map_ab[node_b] = node_a
-            except Exception as e:
-                error_exit(e, "Something went wrong in MATCH (AB).", line, instruction, content)
         # Update nodeA to nodeB (only care about value)
-        elif instruction == Definitions.UPDATE:
+        if instruction == Definitions.UPDATE:
             try:
                 node_a, node_b = clean_parse(content, Definitions.TO)
                 if "TypeLoc" not in node_a:
