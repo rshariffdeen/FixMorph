@@ -86,7 +86,7 @@ def generate(generated_script_files):
     if len(generated_script_files) == 0:
         Emitter.normal("\t -nothing-to-do")
     else:
-        for file_list, generated_data in generated_script_files:
+        for file_list, generated_data in generated_script_files.items():
             map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
             generate_map(file_list[0], file_list[2], map_file_name)
             variable_map = get_mapping(map_file_name)
