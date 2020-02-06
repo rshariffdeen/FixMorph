@@ -29,7 +29,6 @@ def generate_edit_script(file_a, file_b, output_file):
 def generate_script_for_files(file_list_to_patch):
     global generated_script_list
     generated_source_list = list()
-    script_file_ab = Definitions.DIRECTORY_TMP + "/diff_script_AB"
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
         vector_source_a = ""
         vector_source_b = ""
@@ -48,6 +47,9 @@ def generate_script_for_files(file_list_to_patch):
                 vector_source_a, vector_name_a = vec_path_a.split(".enum_")
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                 vector_source_c, vector_name_c = vec_path_c.split(".enum_")
+
+            if vector_source_a in generated_source_list:
+                continue
 
             for source_loc in Values.diff_info:
                 source_path, line_number = source_loc.split(":")
