@@ -29,6 +29,8 @@ def generate_vectors(file_extension, log_file, project):
                 function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=False)
 
                 ast_tree = generate_ast_json(source_file)
+                if ast_tree is None:
+                    continue
                 enum_list = list()
                 function_list = list()
                 macro_list = list()
