@@ -3,8 +3,8 @@ project_name=libsndfile
 dir_name=$1/backport/$project_name/$bug_id
 
 project_url=https://github.com/erikd/libsndfile.git
-pa=$project_name-1.0.29
-pb=$project_name-1.0.28
+pa=$project_name-1.0.28
+pb=$project_name-1.0.29
 pc=$project_name-1.0.26
 
 pa_commit=5206a9b

@@ -9,7 +9,7 @@ pc=$project_name-1.2.0
 
 pa_commit=f0b8dda
 pb_commit=2217022b7d
-pc_commit=rel-1-2
+pc_commit=rel-1-2-0
 
 
 mkdir -p $dir_name
