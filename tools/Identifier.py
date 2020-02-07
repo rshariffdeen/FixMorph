@@ -565,7 +565,9 @@ def identify_code_segment(diff_info, project):
             elif node_type in ["TypedefDecl"]:
                 type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["RecordDecl"]:
-                struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                if 'file' in ast_node.keys():
+                    if ast_node['file'] == source_file or ast_node['file'] == source_file.split("/")[-1]:
+                        struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["FunctionDecl"]:
                 if 'file' in ast_node.keys():
                     if ast_node['file'] == source_file or ast_node['file'] == source_file.split("/")[-1]:
