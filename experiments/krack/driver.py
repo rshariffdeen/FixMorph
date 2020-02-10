@@ -118,13 +118,9 @@ def run():
         script_name = bug_name + ".sh"
         conf_file_name = bug_name + ".conf"
         category = str(experiment_item[KEY_CATEGORY])
-        if category == "cross-program":
-            directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
+        directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
         script_path = DIR_SCRIPT + "/" + category + "/" + directory_name
         conf_file_path = DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
-        if category == "backporting":
-            directory_name = "backport/" + str(experiment_item[KEY_DONOR])
-            CONF_TOOL_PARAMS = " --backport "
         deploy_path = CONF_DATA_PATH + "/" + directory_name + "/" + bug_name + "/"
         deployed_conf_path = deploy_path + conf_file_name
         print("\t[META-DATA] category: " + category)
