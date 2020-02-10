@@ -118,10 +118,9 @@ def run():
         script_name = bug_name + ".sh"
         conf_file_name = bug_name + ".conf"
         category = str(experiment_item[KEY_CATEGORY])
-        directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
         script_path = DIR_SCRIPT + "/" + category + "/" + directory_name
         conf_file_path = DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
-        deploy_path = CONF_DATA_PATH + "/" + directory_name + "/" + bug_name + "/"
+        deploy_path = CONF_DATA_PATH + "/" + category + "/" + directory_name + "/" + bug_name + "/"
         deployed_conf_path = deploy_path + conf_file_name
         print("\t[META-DATA] category: " + category)
         print("\t[META-DATA] project: " + directory_name)
