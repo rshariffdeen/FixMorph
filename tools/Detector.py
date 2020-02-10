@@ -231,10 +231,37 @@ def detect_function_clones():
     return clone_list
 
 
+def detect_decl_clones():
+    extension = "*var*\.vec"
+    vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'global variable')
+    vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'global variable')
+    clone_list = []
+    factor = 2
+    UNKNOWN = "#UNKNOWN#"
+    candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
+    for vector_path_a in candidate_list_all:
+        candidate_list = candidate_list_all[vector_path_a]
+        vector_source_a, vector_name_a = vector_path_a.split(".var_")
+        vector_name_a = vector_name_a.replace(".vec", "")
+        best_candidate = candidate_list[0]
+        candidate_file_path = best_candidate[0]
+        candidate_source_path, candidate_name = candidate_file_path.split(".var_")
+        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
+        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, '')
+        candidate_name = candidate_name.replace(".vec", "")
+        candidate_distance = best_candidate[1]
+        Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
+        Emitter.success("\t\t\tFunction: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
+        clone_list.append((vector_path_a, candidate_file_path, None))
+    return clone_list
+
+
 def detect_clones():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     struct_clones = list()
     enum_clones = list()
+    decl_clones = list()
     function_clones = list()
     if Values.IS_STRUCT:
         Emitter.sub_sub_title("Finding clone structures in Target")
@@ -248,7 +275,11 @@ def detect_clones():
         Emitter.sub_sub_title("Finding clone functions in Target")
         function_clones = detect_function_clones()
         # print(function_clones)
-    clone_list = struct_clones + enum_clones + function_clones
+    if Values.IS_TYPEDEC:
+        Emitter.sub_sub_title("Finding clone variable declaration in Target")
+        decl_clones = detect_decl_clones()
+        # print(function_clones)
+    clone_list = struct_clones + enum_clones + function_clones + decl_clones
     return clone_list
 
 

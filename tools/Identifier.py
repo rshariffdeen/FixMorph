@@ -556,7 +556,9 @@ def identify_code_segment(diff_info, project):
         for ast_node in ast_tree['children']:
             node_type = str(ast_node["type"])
             if node_type in ["VarDecl"]:
-                def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                parent_id = int(ast_node['parent_id'])
+                if parent_id == 0:
+                    decl_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["EnumConstantDecl", "EnumDecl"]:
                 enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["Macro"]:
@@ -596,6 +598,17 @@ def identify_code_segment(diff_info, project):
                     if struct_name not in project.struct_list[source_file]:
                         project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name,
                                                                                       begin_line, finish_line, True)
+
+        for var_name, begin_line, finish_line in decl_list:
+            var_name = "var_" + var_name.split(";")[0]
+            for start_line, end_line in pertinent_lines:
+                if is_intersect(begin_line, finish_line, start_line, end_line):
+                    Values.IS_TYPEDEC = True
+                    if source_file not in project.decl_list.keys():
+                        project.decl_list[source_file] = dict()
+                    if var_name not in project.decl_list[source_file]:
+                        project.decl_list[source_file][var_name] = Vector.Vector(source_file, struct_name,
+                                                                                 begin_line, finish_line, True)
 
         for macro_name, begin_line, finish_line in macro_list:
             macro_name = "macro_" + macro_name

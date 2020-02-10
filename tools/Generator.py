@@ -55,7 +55,9 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                     # print(ast_node)
                     node_type = str(ast_node["type"])
                     if node_type in ["VarDecl"]:
-                        def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                        parent_id = int(ast_node['parent_id'])
+                        if parent_id == 0:
+                            decl_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["EnumConstantDecl", "EnumDecl"]:
                         if 'file' in ast_node.keys():
                             if ast_node['file'] == source_file or ast_node['file'] == source_file.split("/")[-1]:
@@ -97,6 +99,12 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                     for struct_name, begin_line, finish_line in struct_list:
                         struct_name = "struct_" + struct_name.split(";")[0]
                         project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name, begin_line, finish_line, True)
+
+                if Values.IS_TYPEDEC:
+                    # Emitter.normal("\t\t\tgenerating struct vectors")
+                    for var_name, begin_line, finish_line in decl_list:
+                        var_name = "var_" + var_name.split(";")[0]
+                        project.decl_list[source_file][var_name] = Vector.Vector(source_file, var_name, begin_line, finish_line, True)
 
                 if Values.IS_MACRO:
                     # Emitter.normal("\t\t\tgenerating macro vectors")
