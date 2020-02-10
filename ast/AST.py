@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import io
 import sys
 from tools import Logger
 
@@ -156,9 +157,12 @@ class AST:
 def load_from_file(file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global ast
-    with open(file_path, 'r') as ast_file:
-        ast = ast_file.readline()
-    object_ast = json.loads(ast)
+    # with open(file_path, 'r') as ast_file:
+    #     ast = ast_file.readline()
+    #
+    # object_ast = json.loads(ast)
+    with io.open(file_path, 'r', encoding='utf8', errors="ignore") as f:
+        object_ast = json.loads(f.read())
     AST(object_ast['root'])
     ast = [i for i in AST.nodes]
     AST.nodes = []
