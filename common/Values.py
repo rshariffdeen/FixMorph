@@ -59,7 +59,7 @@ ASAN_FLAG = ""
 KLEE_FLAG_A = ""
 KLEE_FLAG_C = ""
 FILE_CONFIGURATION = ""
-AST_DIFF_SIZE = "10"
+AST_DIFF_SIZE = "1000"
 
 silence_emitter = False
 file_list_to_patch = []
