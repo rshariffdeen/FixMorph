@@ -122,7 +122,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
                 if node_id_b == 0:
                     merged_ast_script.append(script_line)
                 continue
-            replace_node = Finder.search_ast_node_by_id(ast_node_b, node_id_a)
+            insert_node = Finder.search_ast_node_by_id(ast_node_b, node_id_a)
             # print(replace_node)
             target_node_id_a = mapping_ba[node_id_b]
             target_node = Finder.search_ast_node_by_id(ast_node_a, target_node_id_a)
@@ -137,34 +137,38 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             # print(del_parent_op)
             # print(ast_script)
             if del_op in ast_script:
-                replace_node_str = str(replace_node['type']) + "(" + str(node_id_a) + ")"
+                replace_node_str = str(insert_node['type']) + "(" + str(node_id_a) + ")"
                 target_node_str = str(possible_replacement_node['type']) + "(" + str(target_node_id_a) + ")"
                 script_line = "Replace " + target_node_str + " with " + replace_node_str
                 inserted_node_list.append(node_id_a)
             elif del_parent_op in ast_script:
-                replace_node_str = str(replace_node['type']) + "(" + str(node_id_a) + ")"
+                replace_node_str = str(insert_node['type']) + "(" + str(node_id_a) + ")"
                 # print(replace_node_str)
                 target_node_str = str(possible_replacement_node['type']) + "(" + str(target_node_id_a) + ")"
                 # print(target_node_str)
                 script_line = "Replace " + target_node_str + " with " + replace_node_str
                 # print(script_line)
-            elif len(target_node['children']) > insert_position:
-                possible_replacement_node = target_node['children'][insert_position]
-                # print(possible_replacement_node)
-                replacement_node_id = possible_replacement_node['id']
-                del_op = "Delete " + str(possible_replacement_node['type']) + "(" + str(replacement_node_id) + ")\n"
-                # print(del_op)
-                if del_op in ast_script:
-                    # print(del_op)
-                    replace_node_str = str(replace_node['type']) + "(" + str(node_id_a) + ")"
-                    target_node_str = str(possible_replacement_node['type']) + "(" + str(replacement_node_id) + ")"
-                    script_line = "Replace " + target_node_str + " with " +  replace_node_str
-                    # print(script_line)
-                    deleted_node_list.append(replacement_node_id)
-                    child_id_list = Extractor.extract_child_id_list(possible_replacement_node)
-                    deleted_node_list = deleted_node_list + child_id_list
+            # elif len(target_node['children']) > insert_position:
+            #     possible_replacement_node = target_node['children'][insert_position]
+            #     # print(possible_replacement_node)
+            #     replacement_node_id = possible_replacement_node['id']
+            #     del_op = "Delete " + str(possible_replacement_node['type']) + "(" + str(replacement_node_id) + ")\n"
+            #     # print(del_op)
+            #     if del_op in ast_script:
+            #         # print(del_op)
+            #         replace_node_str = str(insert_node['type']) + "(" + str(node_id_a) + ")"
+            #         target_node_str = str(possible_replacement_node['type']) + "(" + str(replacement_node_id) + ")"
+            #         script_line = "Replace " + target_node_str + " with " +  replace_node_str
+            #         # print(script_line)
+            #         deleted_node_list.append(replacement_node_id)
+            #         child_id_list = Extractor.extract_child_id_list(possible_replacement_node)
+            #         deleted_node_list = deleted_node_list + child_id_list
+
             if node_id_b not in inserted_node_list:
                 merged_ast_script.append(script_line)
+            # mark all child-ids as inserted since merging and avoid update
+            child_id_list = Extractor.extract_child_id_list(insert_node)
+            inserted_node_list = list(set(child_id_list + inserted_node_list))
             inserted_node_list.append(node_id_a)
         elif "Delete" in script_line:
             # node_id = int((script_line.split("(")[1]).split(")")[0])
@@ -178,14 +182,20 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             # print(script_line)
             move_position = int((script_line.split(" at ")[1]))
             move_node_str = (script_line.split(" into ")[0]).replace("Move ", "")
-            move_node_id = int((move_node_str.split("(")[1]).split(")")[0])
-            move_node_b = Finder.search_ast_node_by_id(ast_node_b, move_node_id)
-            move_node_a = Finder.search_ast_node_by_id(ast_node_a, move_node_id)
+            move_node_id_b = int((move_node_str.split("(")[1]).split(")")[0])
+            move_node_id_a = mapping_ba[move_node_id_b]
+            move_node_b = Finder.search_ast_node_by_id(ast_node_b, move_node_id_b)
+            move_node_a = Finder.search_ast_node_by_id(ast_node_a, move_node_id_a)
             move_node_type_b = move_node_b['type']
             move_node_type_a = move_node_a['type']
             if move_node_type_b == "CaseStmt":
                 continue
             target_node_id_b = int(((script_line.split(" into ")[1]).split("(")[1]).split(")")[0])
+
+            if move_node_id_b in inserted_node_list:
+                del_op = "Delete " + str(move_node_a['type']) + "(" + str(move_node_a['id']) + ")\n"
+                merged_ast_script.append(del_op)
+                continue
             if target_node_id_b in inserted_node_list:
                 continue
             # print(move_node_type_b)
@@ -234,9 +244,17 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             # print(script_line)
             # update_line = str(script_line).replace("Update", "Replace").replace(" to ", " with ")
             # print(update_line)
+            target_node_str = (script_line.split(" to ")[0]).replace("Update ", "")
+            target_node_id = int((target_node_str.split("(")[1]).split(")")[0])
+            target_node = Finder.search_ast_node_by_id(ast_node_a, target_node_id)
+            replace_node_str = script_line.split(" to ")[1]
+            replace_node_id = int((replace_node_str.split("(")[1]).split(")")[0])
+            replace_node = Finder.search_ast_node_by_id(ast_node_b, replace_node_id)
+
             if "TypeLoc" in script_line:
                 continue
-            merged_ast_script.append(script_line)
+            if replace_node_id not in inserted_node_list:
+                merged_ast_script.append(script_line)
 
     second_merged_ast_script = list()
     for script_line in merged_ast_script:
