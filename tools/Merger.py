@@ -238,9 +238,17 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             # print(script_line)
             # update_line = str(script_line).replace("Update", "Replace").replace(" to ", " with ")
             # print(update_line)
+            target_node_str = (script_line.split(" to ")[0]).replace("Update ", "")
+            target_node_id = int((target_node_str.split("(")[1]).split(")")[0])
+            target_node = Finder.search_ast_node_by_id(ast_node_a, target_node_id)
+            replace_node_str = script_line.split(" to ")[1]
+            replace_node_id = int((replace_node_str.split("(")[1]).split(")")[0])
+            replace_node = Finder.search_ast_node_by_id(ast_node_b, replace_node_id)
+
             if "TypeLoc" in script_line:
                 continue
-            merged_ast_script.append(script_line)
+            if replace_node_id not in inserted_node_list:
+                merged_ast_script.append(script_line)
 
     second_merged_ast_script = list()
     for script_line in merged_ast_script:
