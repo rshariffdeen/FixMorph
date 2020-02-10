@@ -607,7 +607,7 @@ def identify_code_segment(diff_info, project):
                     if source_file not in project.decl_list.keys():
                         project.decl_list[source_file] = dict()
                     if var_name not in project.decl_list[source_file]:
-                        project.decl_list[source_file][var_name] = Vector.Vector(source_file, struct_name,
+                        project.decl_list[source_file][var_name] = Vector.Vector(source_file, var_name,
                                                                                  begin_line, finish_line, True)
 
         for macro_name, begin_line, finish_line in macro_list:
