@@ -423,8 +423,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                     Emitter.warning([instruction.simple_print() for instruction in
                                                    target_node.children])
                             else:
-                                Emitter.warning("Failed at locating match" + \
-                                              " for " + previous_child_node_a)
+                                Emitter.warning("Failed at locating match for (update move) " + previous_child_node_a)
                                 Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 previous_child_node_a = id_from_string(previous_child_node_a)
@@ -528,7 +527,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                                     offset = target_node.children.index(next_child_node_c)
 
                             else:
-                                Emitter.warning("Failed at locating match for " + previous_child_node_a)
+                                Emitter.warning("Failed at locating match for(insert) " + previous_child_node_a)
                                 Emitter.warning("Trying to get pos anyway.")
                                 # This is more likely to be correct
                                 previous_child_node_a = id_from_string(previous_child_node_a)
@@ -571,6 +570,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         if target_node.line == None:
                             target_node.line = target_node.parent.line
                         if target_node not in inserted_node_list_d:
+                            if int(offset) > len(target_node['children']):
+                                offset = len(target_node['children'])
                             instruction = get_instruction((Definitions.INSERT, insert_node, target_node, offset))
                             translated_instruction_list.append(instruction)
             except Exception as e:
