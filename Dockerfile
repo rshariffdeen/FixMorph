@@ -64,8 +64,11 @@ RUN apt-get install -y \
     libdaemon-dev \
     libfreetype6-dev \
     libidn2-0-dev \
+    libjbig-dev \
+    libjbig2dec0-dev \
     libnl-3-dev \
     libnl-genl-3-dev \
+    libopenjp2-7-dev \
     libpopt-dev \
     libpulse-dev \
     libsoxr-dev \
