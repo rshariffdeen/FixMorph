@@ -1,0 +1,9 @@
+[
+  {
+    "category":"cross-program",
+    "donor":"hostap",
+    "target":"android",
+    "bug_name":"CVE-2017-13077",
+    "cve_id":"CVE-2017-13077"
+  }
+]
