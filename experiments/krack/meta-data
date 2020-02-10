@@ -1,6 +1,6 @@
 [
   {
-    "category":"cross-program",
+    "category":"fork",
     "donor":"hostap",
     "target":"android",
     "bug_name":"CVE-2017-13077",
