@@ -193,7 +193,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             if target_node_id_b in inserted_node_list:
                 continue
             if move_node_id in inserted_node_list:
-                del_op = "Delete " + str(move_node_b['type']) + "(" + str(move_node_b['id']) + ")\n"
+                del_op = "Delete " + str(move_node_a['type']) + "(" + str(move_node_a['id']) + ")\n"
                 merged_ast_script.append(del_op)
                 continue
             # print(move_node_type_b)
