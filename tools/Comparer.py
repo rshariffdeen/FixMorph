@@ -59,7 +59,25 @@ def compare_test_output(output_c, output_d):
                         else:
                             return 0
                 else:
-                    print(program_output_c)
-                    print(program_output_d)
-                    return -1
+                    if Oracle.any_runtime_error(program_output_c):
+                        if Oracle.any_runtime_error(program_output_d):
+                            program_output_c = "\n".join(program_output_c)
+                            program_output_d = "\n".join(program_output_d)
+                            runtime_error_count_c = program_output_c.count("runtime error")
+                            runtime_error_count_d = program_output_d.count("runtime error")
+                            # print(runtime_error_count_c, runtime_error_count_d)
+                            if runtime_error_count_d < runtime_error_count_c:
+                                return 1
+                            else:
+                                return 0
+                        else:
+                            return 1
+                    else:
+                        if Oracle.any_runtime_error(program_output_d):
+                            return -1
+                        else:
+                            return 0
+                    # print(program_output_c)
+                    # print(program_output_d)
+                    # return -1
 
