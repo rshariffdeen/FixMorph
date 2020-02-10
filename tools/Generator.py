@@ -85,6 +85,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                 project.struct_list[source_file] = dict()
                 project.function_list[source_file] = dict()
                 project.macro_list[source_file] = dict()
+                project.decl_list[source_file] = dict()
 
                 if Values.IS_FUNCTION:
                     # Emitter.normal("\t\t\tgenerating function vectors")
