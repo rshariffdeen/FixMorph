@@ -114,7 +114,7 @@ def run():
         experiment_name = "Experiment-" + str(index) + "\n-----------------------------"
         print(experiment_name)
         bug_name = str(experiment_item[KEY_BUG_NAME])
-        directory_name = str(experiment_item[KEY_DONOR])
+        directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
         script_name = bug_name + ".sh"
         conf_file_name = bug_name + ".conf"
         category = str(experiment_item[KEY_CATEGORY])
