@@ -180,7 +180,8 @@ def diff_ast(diff_info, project_path_a, project_path_b, script_file_path):
             ast_map_a = Generator.get_ast_json(source_path_a)
             ast_map_b = Generator.get_ast_json(source_path_b)
             mapping_ba = Mapper.map_ast_from_source(source_path_a, source_path_b, script_file_path)
-        except Exception:
+        except Exception as e:
+            print(e)
             Emitter.warning("\t\twarning: no AST generated")
             del grouped_line_info[source_path_a]
             continue
