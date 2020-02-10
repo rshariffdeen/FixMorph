@@ -182,9 +182,10 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             # print(script_line)
             move_position = int((script_line.split(" at ")[1]))
             move_node_str = (script_line.split(" into ")[0]).replace("Move ", "")
-            move_node_id = int((move_node_str.split("(")[1]).split(")")[0])
-            move_node_b = Finder.search_ast_node_by_id(ast_node_b, move_node_id)
-            move_node_a = Finder.search_ast_node_by_id(ast_node_a, move_node_id)
+            move_node_id_b = int((move_node_str.split("(")[1]).split(")")[0])
+            move_node_id_a = mapping_ba[move_node_id_b]
+            move_node_b = Finder.search_ast_node_by_id(ast_node_b, move_node_id_b)
+            move_node_a = Finder.search_ast_node_by_id(ast_node_a, move_node_id_a)
             move_node_type_b = move_node_b['type']
             move_node_type_a = move_node_a['type']
             if move_node_type_b == "CaseStmt":
@@ -192,7 +193,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             target_node_id_b = int(((script_line.split(" into ")[1]).split("(")[1]).split(")")[0])
             if target_node_id_b in inserted_node_list:
                 continue
-            if move_node_id in inserted_node_list:
+            if move_node_id_b in inserted_node_list:
                 del_op = "Delete " + str(move_node_a['type']) + "(" + str(move_node_a['id']) + ")\n"
                 merged_ast_script.append(del_op)
                 continue
