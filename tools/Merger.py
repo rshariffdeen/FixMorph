@@ -168,7 +168,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
                 merged_ast_script.append(script_line)
             # mark all child-ids as inserted since merging and avoid update
             child_id_list = Extractor.extract_child_id_list(insert_node)
-            inserted_node_list = child_id_list + inserted_node_list
+            inserted_node_list = list(set(child_id_list + inserted_node_list))
             inserted_node_list.append(node_id_a)
         elif "Delete" in script_line:
             # node_id = int((script_line.split("(")[1]).split(")")[0])
@@ -191,11 +191,12 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             if move_node_type_b == "CaseStmt":
                 continue
             target_node_id_b = int(((script_line.split(" into ")[1]).split("(")[1]).split(")")[0])
-            if target_node_id_b in inserted_node_list:
-                continue
+
             if move_node_id_b in inserted_node_list:
                 del_op = "Delete " + str(move_node_a['type']) + "(" + str(move_node_a['id']) + ")\n"
                 merged_ast_script.append(del_op)
+                continue
+            if target_node_id_b in inserted_node_list:
                 continue
             # print(move_node_type_b)
             # print(move_node_type_a)
