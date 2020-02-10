@@ -1,4 +1,4 @@
-bug_id=buffer-overflow
+bug_id=double-free
 project_name=mupdf
 dir_name=$1/backport/$project_name/$bug_id
 dir_name_docker=/data/backport/$project_name/$bug_id
@@ -13,7 +13,7 @@ pb_commit=06a012a4
 pc_commit=1.7
 
 
-mkdir $dir_name
+mkdir -p $dir_name
 cd $dir_name
 git clone $project_url $pa
 cp -rf $pa $pb

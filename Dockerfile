@@ -63,6 +63,7 @@ RUN apt-get install -y \
     libcrypto++-dev \
     libdaemon-dev \
     libfreetype6-dev \
+    libidn2-0-dev \
     libnl-3-dev \
     libnl-genl-3-dev \
     libpopt-dev \
