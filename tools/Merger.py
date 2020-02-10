@@ -190,7 +190,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             if move_node_type_b == "CaseStmt":
                 continue
             target_node_id_b = int(((script_line.split(" into ")[1]).split("(")[1]).split(")")[0])
-            if target_node_id_b in inserted_node_list:
+            if target_node_id_b or move_node_id in inserted_node_list:
                 continue
             # print(move_node_type_b)
             # print(move_node_type_a)
