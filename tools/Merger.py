@@ -122,7 +122,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
                 if node_id_b == 0:
                     merged_ast_script.append(script_line)
                 continue
-            replace_node = Finder.search_ast_node_by_id(ast_node_b, node_id_a)
+            insert_node = Finder.search_ast_node_by_id(ast_node_b, node_id_a)
             # print(replace_node)
             target_node_id_a = mapping_ba[node_id_b]
             target_node = Finder.search_ast_node_by_id(ast_node_a, target_node_id_a)
@@ -137,34 +137,38 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             # print(del_parent_op)
             # print(ast_script)
             if del_op in ast_script:
-                replace_node_str = str(replace_node['type']) + "(" + str(node_id_a) + ")"
+                replace_node_str = str(insert_node['type']) + "(" + str(node_id_a) + ")"
                 target_node_str = str(possible_replacement_node['type']) + "(" + str(target_node_id_a) + ")"
                 script_line = "Replace " + target_node_str + " with " + replace_node_str
                 inserted_node_list.append(node_id_a)
             elif del_parent_op in ast_script:
-                replace_node_str = str(replace_node['type']) + "(" + str(node_id_a) + ")"
+                replace_node_str = str(insert_node['type']) + "(" + str(node_id_a) + ")"
                 # print(replace_node_str)
                 target_node_str = str(possible_replacement_node['type']) + "(" + str(target_node_id_a) + ")"
                 # print(target_node_str)
                 script_line = "Replace " + target_node_str + " with " + replace_node_str
                 # print(script_line)
-            elif len(target_node['children']) > insert_position:
-                possible_replacement_node = target_node['children'][insert_position]
-                # print(possible_replacement_node)
-                replacement_node_id = possible_replacement_node['id']
-                del_op = "Delete " + str(possible_replacement_node['type']) + "(" + str(replacement_node_id) + ")\n"
-                # print(del_op)
-                if del_op in ast_script:
-                    # print(del_op)
-                    replace_node_str = str(replace_node['type']) + "(" + str(node_id_a) + ")"
-                    target_node_str = str(possible_replacement_node['type']) + "(" + str(replacement_node_id) + ")"
-                    script_line = "Replace " + target_node_str + " with " +  replace_node_str
-                    # print(script_line)
-                    deleted_node_list.append(replacement_node_id)
-                    child_id_list = Extractor.extract_child_id_list(possible_replacement_node)
-                    deleted_node_list = deleted_node_list + child_id_list
+            # elif len(target_node['children']) > insert_position:
+            #     possible_replacement_node = target_node['children'][insert_position]
+            #     # print(possible_replacement_node)
+            #     replacement_node_id = possible_replacement_node['id']
+            #     del_op = "Delete " + str(possible_replacement_node['type']) + "(" + str(replacement_node_id) + ")\n"
+            #     # print(del_op)
+            #     if del_op in ast_script:
+            #         # print(del_op)
+            #         replace_node_str = str(insert_node['type']) + "(" + str(node_id_a) + ")"
+            #         target_node_str = str(possible_replacement_node['type']) + "(" + str(replacement_node_id) + ")"
+            #         script_line = "Replace " + target_node_str + " with " +  replace_node_str
+            #         # print(script_line)
+            #         deleted_node_list.append(replacement_node_id)
+            #         child_id_list = Extractor.extract_child_id_list(possible_replacement_node)
+            #         deleted_node_list = deleted_node_list + child_id_list
+
             if node_id_b not in inserted_node_list:
                 merged_ast_script.append(script_line)
+            # mark all child-ids as inserted since merging and avoid update
+            child_id_list = Extractor.extract_child_id_list(insert_node)
+            inserted_node_list = child_id_list + inserted_node_list
             inserted_node_list.append(node_id_a)
         elif "Delete" in script_line:
             # node_id = int((script_line.split("(")[1]).split(")")[0])
