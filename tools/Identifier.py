@@ -602,7 +602,7 @@ def identify_code_segment(diff_info, project):
         for var_name, begin_line, finish_line in decl_list:
             var_name = "var_" + var_name.split(";")[0]
             var_type = (var_name.split("(")[1]).split(")")[0]
-            var_name = var_name + "_" + var_type
+            var_name = var_name.split("(")[0] + "_" + var_type
             for start_line, end_line in pertinent_lines:
                 if is_intersect(begin_line, finish_line, start_line, end_line):
                     Values.IS_TYPEDEC = True
