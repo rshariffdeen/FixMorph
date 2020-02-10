@@ -49,6 +49,10 @@ def generate_script_for_files(file_list_to_patch):
                 vector_source_a, vector_name_a = vec_path_a.split(".enum_")
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                 vector_source_c, vector_name_c = vec_path_c.split(".enum_")
+            elif "var_" in vec_path_a:
+                vector_source_a, vector_name_a = vec_path_a.split(".var_")
+                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+                vector_source_c, vector_name_c = vec_path_c.split(".var_")
 
             if vector_source_a in generated_source_list:
                 continue
