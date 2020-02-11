@@ -113,7 +113,7 @@ def filter_ast_script(ast_script, info_a, info_b, mapping_ba):
         return None
     # print(merged_ast_script)
     for script_line in merged_ast_script:
-        if "Insert" in script_line:
+        if "Insert" in script_line and line_range_b is not None:
             node_id_b = int(((script_line.split(" into ")[0]).split("(")[1]).split(")")[0])
             node_b = Finder.search_ast_node_by_id(ast_node_b, node_id_b)
             node_type_b = node_b['type']
@@ -133,7 +133,7 @@ def filter_ast_script(ast_script, info_a, info_b, mapping_ba):
             intersection = line_numbers_a.intersection(node_line_numbers)
             if intersection:
                 filtered_ast_script.append(script_line)
-        elif "Replace" in script_line:
+        elif "Replace" in script_line and line_range_b is not None:
             node_id_a = int(((script_line.split(" with ")[0]).split("(")[1]).split(")")[0])
             node_a = Finder.search_ast_node_by_id(ast_node_a, node_id_a)
             node_line_start = int(node_a['start line'])
