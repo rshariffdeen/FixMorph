@@ -3,6 +3,7 @@
 
 
 import sys
+import os
 from common.Utilities import execute_command, get_file_extension_list, error_exit
 from ast import Generator
 from tools import Mapper, Logger, Filter, Emitter
@@ -17,9 +18,18 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
 
     extensions = get_file_extension_list(project_path_a, output_ext_a)
     extensions = extensions.union(get_file_extension_list(project_path_b, output_ext_b))
+
+    if Values.VC == "git":
+        untracked_list_command = "cd " + Values.Project_A.path + ";"
+        untracked_list_command += "git ls-files --others --exclude-standard > " + output_ext
+        untracked_list_command += "cd " + Values.Project_B.path + ";"
+        untracked_list_command += "git ls-files --others --exclude-standard >> " + output_ext
+        execute_command(untracked_list_command)
+
     with open(output_ext, 'w') as exclusions:
         for pattern in extensions:
             exclusions.write(pattern + "\n")
+
     # TODO: Include cases where a file is added or removed
     diff_command = "diff -ENZBbwqr " + project_path_a + " " + project_path_b + " -X " \
                    + output_ext + "> " + output_diff_file + ";"

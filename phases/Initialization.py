@@ -221,6 +221,8 @@ def read_conf():
             Values.AST_DIFF_SIZE = configuration.replace(Definitions.CONF_DIFF_SIZE, '')
         elif Definitions.CONF_EXPLOIT_C in configuration:
             Values.EXPLOIT_C = configuration.replace(Definitions.CONF_EXPLOIT_C, '')
+        elif Definitions.CONF_VC in configuration:
+            Values.VC = configuration.replace(Definitions.CONF_VC, '')
 
 
 def initialize():
