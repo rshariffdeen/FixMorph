@@ -61,7 +61,7 @@ def generate_script_for_files(file_list_to_patch):
                 source_path, line_number = source_loc.split(":")
                 if source_path == vector_source_a:
                     diff_info = Values.diff_info[source_loc]
-                    ast_script = ast_script + diff_info['ast-script']
+                    ast_script = list(set(ast_script + diff_info['ast-script']))
 
             generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
             original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(ast_script, script_file_ab)
