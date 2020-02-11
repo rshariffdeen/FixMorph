@@ -570,8 +570,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         if target_node.line == None:
                             target_node.line = target_node.parent.line
                         if target_node not in inserted_node_list_d:
-                            if int(offset) > len(target_node['children']):
-                                offset = len(target_node['children'])
+                            if int(offset) > len(target_node.children):
+                                offset = len(target_node.children)
                             instruction = get_instruction((Definitions.INSERT, insert_node, target_node, offset))
                             translated_instruction_list.append(instruction)
             except Exception as e:
