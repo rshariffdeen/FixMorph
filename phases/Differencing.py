@@ -6,7 +6,7 @@ import sys
 import time
 from common.Utilities import error_exit, save_current_state
 from common import Definitions, Values
-from tools import Logger, Emitter, Differ, Writer, Merger
+from tools import Logger, Emitter, Differ, Writer, Merger, Generator
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -31,10 +31,13 @@ def analyse_source_diff():
                       Definitions.FILE_EXCLUDED_EXTENSIONS,
                       Values.PATH_A,
                       Values.PATH_B)
+
+    Emitter.sub_sub_title("analysing untracked files")
+    untracked_file_list = Generator.generate_untracked_file_list(Definitions.FILE_EXCLUDED_EXTENSIONS)
     Emitter.sub_sub_title("analysing header files")
-    diff_h_file_list = Differ.diff_h_files(Definitions.FILE_DIFF_H, Values.PATH_A)
+    diff_h_file_list = Differ.diff_h_files(Definitions.FILE_DIFF_H, Values.PATH_A, untracked_file_list)
     Emitter.sub_sub_title("analysing C/CPP source files")
-    diff_c_file_list = Differ.diff_c_files(Definitions.FILE_DIFF_C)
+    diff_c_file_list = Differ.diff_c_files(Definitions.FILE_DIFF_C, Values.PATH_A, untracked_file_list)
     Emitter.sub_sub_title("analysing changed code lines")
     diff_info_c = Differ.diff_line(diff_c_file_list, Definitions.FILE_TEMP_DIFF)
     diff_info_h = Differ.diff_line(diff_h_file_list, Definitions.FILE_TEMP_DIFF)

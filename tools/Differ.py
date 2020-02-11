@@ -39,10 +39,11 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
     execute_command(diff_command)
 
 
-def diff_h_files(diff_file_path, project_path_a):
+def diff_h_files(diff_file_path, project_path_a, untracked_file_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\textracting changed header files...")
     file_list = list()
+    filtered_file_list = list()
     with open(diff_file_path, 'r') as diff_file:
         diff_line = diff_file.readline().strip()
         while diff_line:
@@ -56,16 +57,21 @@ def diff_h_files(diff_file_path, project_path_a):
     Emitter.normal("\t\theader files:")
     if len(file_list) > 0:
         for h_file in file_list:
-            Emitter.normal("\t\t\t" + h_file[0])
+            file_a = h_file[0]
+            file_a_rel_path = file_a.replace(project_path_a, "")
+            if file_a_rel_path not in untracked_file_list:
+                Emitter.normal("\t\t\t" + file_a)
     else:
         Emitter.normal("\t\t\t-none-")
-    return file_list
+
+    return filtered_file_list
 
 
-def diff_c_files(diff_file_path):
+def diff_c_files(diff_file_path, project_path_a, untracked_file_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\textracting changed c/cpp files...")
     file_list = list()
+    filtered_file_list = list()
     with open(diff_file_path, 'r') as diff_file:
         diff_line = diff_file.readline().strip()
         while diff_line:
@@ -76,11 +82,14 @@ def diff_c_files(diff_file_path):
             diff_line = diff_file.readline().strip()
     Emitter.normal("\t\tsource files:")
     if len(file_list) > 0:
-        for source_file in file_list:
-            Emitter.normal("\t\t\t" + source_file[0])
+        for h_file in file_list:
+            file_a = h_file[0]
+            file_a_rel_path = file_a.replace(project_path_a, "")
+            if file_a_rel_path not in untracked_file_list:
+                Emitter.normal("\t\t\t" + file_a)
     else:
         Emitter.normal("\t\t\t-none-")
-    return file_list
+    return filtered_file_list
 
 
 def diff_line(diff_file_list, output_file):

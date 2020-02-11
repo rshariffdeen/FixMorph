@@ -12,6 +12,7 @@ from common.Utilities import error_exit, clean_parse
 from common import Definitions, Values
 
 
+
 def generate_vectors(file_extension, log_file, project, diff_file_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tgenerating vectors for " + file_extension + " files in " + project.name + "...")
@@ -144,3 +145,14 @@ def generate_ast_json(file_path):
     with io.open(json_file, 'r', encoding='utf8', errors="ignore") as f:
         ast_json = json.loads(f.read())
     return ast_json['root']
+
+
+def generate_untracked_file_list(output_file_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    file_list = list()
+    list_command = 'cd ' + Values.Project_A.path + ';'
+    list_command += 'git ls-files --others --exclude-standard > ' +  output_file_path
+    execute_command(list_command)
+    with open(output_file_path, 'r') as output_file:
+        file_list = output_file.readlines()
+    return file_list
