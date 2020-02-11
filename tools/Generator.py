@@ -154,5 +154,8 @@ def generate_untracked_file_list(output_file_path):
     list_command += 'git ls-files --others --exclude-standard > ' +  output_file_path
     execute_command(list_command)
     with open(output_file_path, 'r') as output_file:
-        file_list = output_file.readlines()
+        file_name = output_file.readline().strip()
+        while file_name:
+            file_list.append(file_name)
+            file_name = output_file.readline().strip()
     return file_list
