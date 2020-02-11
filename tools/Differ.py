@@ -88,8 +88,8 @@ def diff_line(diff_file_list, output_file):
     Emitter.normal("\t\tcollecting diff line information ...")
     diff_info = dict()
     for diff_file in diff_file_list:
-        file_a = diff_file[1]
-        file_b = diff_file[2]
+        file_a = diff_file[0]
+        file_b = diff_file[1]
         diff_command = "diff -ENBZbwr " + file_a + " " + file_b + " > " + output_file
         execute_command(diff_command)
         pertinent_lines_a = []
