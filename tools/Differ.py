@@ -84,7 +84,7 @@ def diff_c_files(diff_file_path, project_path_a, untracked_file_list):
     if len(file_list) > 0:
         for h_file in file_list:
             file_a = h_file[0]
-            file_a_rel_path = file_a.replace(project_path_a, "")
+            file_a_rel_path = file_a.replace(project_path_a, "")[1:]
             if file_a_rel_path not in untracked_file_list:
                 Emitter.normal("\t\t\t" + file_a)
     else:
