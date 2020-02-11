@@ -112,6 +112,8 @@ def read_conf():
                 Values.SKIP_RESTORE = True
             elif Definitions.ARG_BACKPORT in arg:
                 Values.BACKPORT = True
+            elif Definitions.ARG_FORK in arg:
+                Values.FORK = True
             elif Definitions.ARG_CONF_FILE in arg:
                 Values.FILE_CONFIGURATION = str(arg).replace(Definitions.ARG_CONF_FILE, '')
             elif Definitions.ARG_ONLY_VERIFY in arg:

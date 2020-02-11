@@ -20,6 +20,7 @@ SKIP_SLICE = False
 SKIP_RESTORE = False
 ONLY_VERIFY = False
 BACKPORT = False
+FORK = False
 SKIP_BUILD = False
 SKIP_DETECTION = False
 SKIP_VEC_GEN = False

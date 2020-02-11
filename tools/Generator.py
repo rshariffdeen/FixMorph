@@ -19,7 +19,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
 
     # intelligently generate vectors
     regex = None
-    if Values.BACKPORT:
+    if Values.BACKPORT or Values.FORK:
         for source_loc in diff_file_list:
             source_path, line_number = source_loc.split(":")
             file_name = source_path.split("/")[-1][:-2]

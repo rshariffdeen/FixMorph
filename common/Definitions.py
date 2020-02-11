@@ -101,6 +101,7 @@ KEY_DURATION_EXPLOIT_GENERATION = 'exploitation'
 ARG_CONF_FILE = "--conf="
 ARG_DEBUG = "--debug"
 ARG_BACKPORT = "--backport"
+ARG_FORK = "--fork"
 ARG_SKIP_WEAVE = "--skip-weave"
 ARG_SKIP_ANALYSE = "--skip-analyse"
 ARG_SKIP_SEGMENT = "--skip-segment"
