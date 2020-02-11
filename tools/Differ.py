@@ -50,88 +50,16 @@ def diff_h_files(diff_file_path, project_path_a):
             file_a = diff_line[1]
             file_b = diff_line[3]
             # ASTGenerator.parse_ast(file_a, project_path_a, is_deckard=True, is_header=True)
-            file_list.append(file_a)
+            file_list.append((file_a, file_b))
             diff_line = diff_file.readline().strip()
 
     Emitter.normal("\t\theader files:")
     if len(file_list) > 0:
         for h_file in file_list:
-            Emitter.normal("\t\t\t" + h_file)
+            Emitter.normal("\t\t\t" + h_file[0])
     else:
         Emitter.normal("\t\t\t-none-")
     return file_list
-
-
-def diff_line(diff_file_path, output_file):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\tcollecting diff line information ...")
-    diff_info = dict()
-    with open(diff_file_path, 'r') as diff_file:
-        diff_line = diff_file.readline().strip()
-        while diff_line:
-            diff_line = diff_line.split(" ")
-            file_a = diff_line[1]
-            file_b = diff_line[3]
-            diff_command = "diff -ENBZbwr " + file_a + " " + file_b + " > " + output_file
-            execute_command(diff_command)
-            pertinent_lines_a = []
-            pertinent_lines_b = []
-            with open(output_file, 'r') as temp_diff_file:
-                file_line = temp_diff_file.readline().strip()
-                Emitter.normal("\t\t\t" + file_a + ":")
-                while file_line:
-                    operation = ""
-                    # We only want lines starting with a line number
-                    if 48 <= ord(file_line[0]) <= 57:
-                        # add
-                        if 'a' in file_line:
-                            line_info = file_line.split('a')
-                            operation = "insert"
-                        # delete
-                        elif 'd' in file_line:
-                            line_info = file_line.split('d')
-                            operation = "delete"
-                        # change (delete + add)
-                        elif 'c' in file_line:
-                            line_info = file_line.split('c')
-                            operation = "modify"
-
-                        # range for file_a
-                        line_a = line_info[0].split(',')
-                        start_a = int(line_a[0])
-                        end_a = int(line_a[-1])
-
-                        # range for file_b
-                        line_b = line_info[1].split(',')
-                        start_b = int(line_b[0])
-                        end_b = int(line_b[-1])
-
-                        diff_loc = file_a + ":" + str(start_a)
-                        diff_info[diff_loc] = dict()
-                        diff_info[diff_loc]['operation'] = operation
-
-                        pertinent_lines_a.append((start_a, end_a))
-                        pertinent_lines_b.append((start_b, end_b))
-
-                        if operation == 'insert':
-                            diff_info[diff_loc]['new-lines'] = (start_b, end_b)
-                            diff_info[diff_loc]['old-lines'] = (start_a, end_a)
-                        elif operation == "delete":
-                            diff_info[diff_loc]['old-lines'] = (start_a, end_a)
-                        elif operation == "modify":
-                            diff_info[diff_loc]['old-lines'] = (start_a, end_a)
-                            diff_info[diff_loc]['new-lines'] = (start_b, end_b)
-
-                        Emitter.normal("\t\t\t\t" + operation + ": " + str(start_a) + "-" + str(end_a))
-                    file_line = temp_diff_file.readline().strip()
-            #
-            # try:
-            #     Generator.get_function_list_for_line_range(Values.Project_A, file_a, pertinent_lines_a)
-            #     Generator.get_function_list_for_line_range(Values.Project_B, file_b, pertinent_lines_b)
-            # except Exception as e:
-            #     error_exit(e, "Failed at finding affected functions.")
-            diff_line = diff_file.readline().strip()
-    return diff_info
 
 
 def diff_c_files(diff_file_path):
@@ -144,15 +72,84 @@ def diff_c_files(diff_file_path):
             diff_line = diff_line.split(" ")
             file_a = diff_line[1]
             file_b = diff_line[3]
-            file_list.append(file_a)
+            file_list.append((file_a, file_b))
             diff_line = diff_file.readline().strip()
     Emitter.normal("\t\tsource files:")
     if len(file_list) > 0:
         for source_file in file_list:
-            Emitter.normal("\t\t\t" + source_file)
+            Emitter.normal("\t\t\t" + source_file[0])
     else:
         Emitter.normal("\t\t\t-none-")
     return file_list
+
+
+def diff_line(diff_file_list, output_file):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.normal("\t\tcollecting diff line information ...")
+    diff_info = dict()
+    for diff_file in diff_file_list:
+        file_a = diff_file[1]
+        file_b = diff_file[2]
+        diff_command = "diff -ENBZbwr " + file_a + " " + file_b + " > " + output_file
+        execute_command(diff_command)
+        pertinent_lines_a = []
+        pertinent_lines_b = []
+        with open(output_file, 'r') as temp_diff_file:
+            file_line = temp_diff_file.readline().strip()
+            Emitter.normal("\t\t\t" + file_a + ":")
+            while file_line:
+                operation = ""
+                # We only want lines starting with a line number
+                if 48 <= ord(file_line[0]) <= 57:
+                    # add
+                    if 'a' in file_line:
+                        line_info = file_line.split('a')
+                        operation = "insert"
+                    # delete
+                    elif 'd' in file_line:
+                        line_info = file_line.split('d')
+                        operation = "delete"
+                    # change (delete + add)
+                    elif 'c' in file_line:
+                        line_info = file_line.split('c')
+                        operation = "modify"
+
+                    # range for file_a
+                    line_a = line_info[0].split(',')
+                    start_a = int(line_a[0])
+                    end_a = int(line_a[-1])
+
+                    # range for file_b
+                    line_b = line_info[1].split(',')
+                    start_b = int(line_b[0])
+                    end_b = int(line_b[-1])
+
+                    diff_loc = file_a + ":" + str(start_a)
+                    diff_info[diff_loc] = dict()
+                    diff_info[diff_loc]['operation'] = operation
+
+                    pertinent_lines_a.append((start_a, end_a))
+                    pertinent_lines_b.append((start_b, end_b))
+
+                    if operation == 'insert':
+                        diff_info[diff_loc]['new-lines'] = (start_b, end_b)
+                        diff_info[diff_loc]['old-lines'] = (start_a, end_a)
+                    elif operation == "delete":
+                        diff_info[diff_loc]['old-lines'] = (start_a, end_a)
+                    elif operation == "modify":
+                        diff_info[diff_loc]['old-lines'] = (start_a, end_a)
+                        diff_info[diff_loc]['new-lines'] = (start_b, end_b)
+
+                    Emitter.normal("\t\t\t\t" + operation + ": " + str(start_a) + "-" + str(end_a))
+                file_line = temp_diff_file.readline().strip()
+        #
+        # try:
+        #     Generator.get_function_list_for_line_range(Values.Project_A, file_a, pertinent_lines_a)
+        #     Generator.get_function_list_for_line_range(Values.Project_B, file_b, pertinent_lines_b)
+        # except Exception as e:
+        #     error_exit(e, "Failed at finding affected functions.")
+
+    return diff_info
 
 
 def get_ast_script(source_a, source_b, script_file_path):

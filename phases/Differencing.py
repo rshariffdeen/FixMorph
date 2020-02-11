@@ -32,12 +32,12 @@ def analyse_source_diff():
                       Values.PATH_A,
                       Values.PATH_B)
     Emitter.sub_sub_title("analysing header files")
-    Differ.diff_h_files(Definitions.FILE_DIFF_H, Values.PATH_A)
+    diff_h_file_list = Differ.diff_h_files(Definitions.FILE_DIFF_H, Values.PATH_A)
     Emitter.sub_sub_title("analysing C/CPP source files")
-    Differ.diff_c_files(Definitions.FILE_DIFF_C)
+    diff_c_file_list = Differ.diff_c_files(Definitions.FILE_DIFF_C)
     Emitter.sub_sub_title("analysing changed code lines")
-    diff_info_c = Differ.diff_line(Definitions.FILE_DIFF_H, Definitions.FILE_TEMP_DIFF)
-    diff_info_h = Differ.diff_line(Definitions.FILE_DIFF_C, Definitions.FILE_TEMP_DIFF)
+    diff_info_c = Differ.diff_line(diff_c_file_list, Definitions.FILE_TEMP_DIFF)
+    diff_info_h = Differ.diff_line(diff_h_file_list, Definitions.FILE_TEMP_DIFF)
     diff_info = Merger.merge_diff_info(diff_info_c, diff_info_h)
 
 
