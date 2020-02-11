@@ -61,7 +61,7 @@ def generate_script_for_files(file_list_to_patch):
                 source_path, line_number = source_loc.split(":")
                 if source_path == vector_source_a:
                     diff_info = Values.diff_info[source_loc]
-                    ast_script_loc =  diff_info['ast-script']
+                    ast_script_loc = diff_info['ast-script']
                     for script_line in ast_script_loc:
                         if script_line not in ast_script:
                             ast_script.append(script_line)
