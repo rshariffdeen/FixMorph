@@ -157,5 +157,5 @@ def generate_untracked_file_list(output_file_path):
         file_name = output_file.readline().strip()
         while file_name:
             file_list.append(file_name)
-            file_name = output_file.readline().strip()
+            file_name = output_file.readline().strip()[1:]
     return file_list
