@@ -398,8 +398,8 @@ def restore_all():
     restore_project(Values.Project_B.path)
     Emitter.normal("\t" + Values.Project_C.path)
     restore_project(Values.Project_C.path)
-    Emitter.normal("\t" + Values.Project_D.path)
-    restore_project(Values.Project_D.path)
+    # Emitter.normal("\t" + Values.Project_D.path)
+    # restore_project(Values.Project_D.path)
 
 
 def soft_restore_all():
