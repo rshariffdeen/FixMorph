@@ -42,6 +42,7 @@ for commit_id in commit_list:
             if tag_ref.tag.hexsha == tree_id:
                 tag_list.append(tag_ref.name)
 
+    commit_info[KEY_COMMIT_ID] = commit_id
     commit_info[KEY_PARENT_COMMIT] = parent_commit_id
     commit_info[KEY_FILE_LIST] = file_list
     commit_info[KEY_VERSION] = tag_list
