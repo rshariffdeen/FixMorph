@@ -60,15 +60,16 @@ def setup(base_dir_path, bug_id, commit_id_list):
     print("\t[INFO] creating directories for experiment")
     postfix_list = ['a', 'b', 'c']
     bug_dir = base_dir_path + "/" + str(bug_id)
-    dir_command = "mkdir -p " + bug_dir
-    execute_command(dir_command)
-    for i in range(0, 3):
-        dir_path = bug_dir + "/p" + postfix_list[i]
-        copy_command = "cp -rf " + REPO_PATH + " " + dir_path
-        execute_command(copy_command)
-        checkout_command = "cd " + dir_path + ";"
-        checkout_command += "git checkout " + commit_id_list[i] + " > /dev/null"
-        execute_command(checkout_command)
+    if not os.path.isdir(bug_dir):
+        dir_command = "mkdir -p " + bug_dir
+        execute_command(dir_command)
+        for i in range(0, 3):
+            dir_path = bug_dir + "/p" + postfix_list[i]
+            copy_command = "cp -rf " + REPO_PATH + " " + dir_path
+            execute_command(copy_command)
+            checkout_command = "cd " + dir_path + ";"
+            checkout_command += "git checkout " + commit_id_list[i] + " > /dev/null"
+            execute_command(checkout_command)
 
 
 def evaluate(conf_path):
