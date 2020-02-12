@@ -21,7 +21,7 @@ ARG_ONLY_SETUP = "--skip-setup"
 
 CONF_DATA_PATH = "/data"
 CONF_TOOL_PATH = "/crochet"
-CONF_TOOL_PARAMS = " --fork"
+CONF_TOOL_PARAMS = " --backport"
 CONF_TOOL_NAME = "python3 Crochet.py"
 CONF_DEBUG = False
 CONF_SKIP_SETUP = False
@@ -89,7 +89,7 @@ def clone_repo():
 def write_conf_file(dir_path, bug_id):
     print("\t[INFO] creating configuration")
     conf_file_name = str(bug_id) + ".conf"
-    conf_file_path = dir_path + "/" + conf_file_name
+    conf_file_path = dir_path + "/" + str(bug_id) + "/" + conf_file_name
     with open(conf_file_path, "w") as conf_file:
         content = "path_a:" + dir_path + "/pa\n"
         content += "path_b:" + dir_path + "/pb\n"
