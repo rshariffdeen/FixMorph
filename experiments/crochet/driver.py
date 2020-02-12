@@ -97,7 +97,8 @@ def read_arg():
                 CONF_DEBUG = True
             elif ARG_SKIP_SETUP in arg:
                 CONF_SKIP_SETUP = True
-
+            elif "driver.py" in arg:
+                continue
             else:
                 print("Usage: python driver [OPTIONS] ")
                 print("Options are:")

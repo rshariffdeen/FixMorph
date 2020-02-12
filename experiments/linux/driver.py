@@ -17,6 +17,7 @@ ARG_TOOL_NAME = "--tool-name="
 ARG_TOOL_PARAMS = "--tool-param="
 ARG_DEBUG_MODE = "--debug"
 ARG_SKIP_SETUP = "--skip-setup"
+ARG_ONLY_SETUP = "--skip-setup"
 
 CONF_DATA_PATH = "/data"
 CONF_TOOL_PATH = "/crochet"
@@ -24,6 +25,8 @@ CONF_TOOL_PARAMS = " --fork"
 CONF_TOOL_NAME = "python3 Crochet.py"
 CONF_DEBUG = False
 CONF_SKIP_SETUP = False
+CONF_ONLY_SETUP = False
+
 
 FILE_META_DATA = "meta-data"
 FILE_ERROR_LOG = "error-log"
@@ -79,7 +82,8 @@ def load_experiment():
 
 
 def read_arg():
-    global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_DEBUG, CONF_SKIP_SETUP
+    global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS
+    global CONF_TOOL_PATH, CONF_DEBUG, CONF_SKIP_SETUP, CONF_ONLY_SETUP
     print("[DRIVER] Reading configuration values")
     if len(sys.argv) > 1:
         for arg in sys.argv:
@@ -95,7 +99,10 @@ def read_arg():
                 CONF_DEBUG = True
             elif ARG_SKIP_SETUP in arg:
                 CONF_SKIP_SETUP = True
-
+            elif ARG_ONLY_SETUP in arg:
+                CONF_ONLY_SETUP = True
+            elif "driver.py" in arg:
+                continue
             else:
                 print("Usage: python driver [OPTIONS] ")
                 print("Options are:")
