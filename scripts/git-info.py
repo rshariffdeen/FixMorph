@@ -39,10 +39,15 @@ for commit_id in commit_list:
     with io.BytesIO(makefile.data_stream.read()) as f:
         content = f.readlines()
 
-    major_version = content[0].split(" = ")[1].replace("\n", '').strip()
-    minor_version = content[1].split(" = ")[1].replace("\n", '').strip()
-    sub_verison = content[2].split(" = ")[1].replace("\n", '').strip()
-    version = major_version + "." + minor_version + "." + sub_verison
+    version = ''
+    for i in range(0, 10):
+        if "=" not in str(content[i]):
+            continue
+        if "b'EXTRAVERSION" in content[i]:
+            break
+        version_type, version_num = str(content[i]).split(" = ")
+        if version_type in ["b'VERSION", "b'PATCHLEVEL", "b'SUBLEVEL", "b'EXTRAVERSION"]:
+            version = version + str(version_num).replace("\\n'", '').strip() + '.'
 
     commit_info[KEY_COMMIT_ID] = commit_id
     commit_info[KEY_PARENT_COMMIT] = parent_commit_id
