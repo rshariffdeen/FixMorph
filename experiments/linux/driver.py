@@ -59,7 +59,7 @@ def setup(base_dir_path, bug_id, commit_id_list):
     global FILE_ERROR_LOG, CONF_DATA_PATH
     print("\t[INFO] creating directories for experiment")
     postfix_list = ['a', 'b', 'c']
-    bug_dir = base_dir_path + "/" + bug_id
+    bug_dir = base_dir_path + "/" + str(bug_id)
     dir_command = "mkdir -p " + bug_dir
     execute_command(dir_command)
     for i in range(0, 3):
