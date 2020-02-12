@@ -67,7 +67,7 @@ def setup(base_dir_path, bug_id, commit_id_list):
         copy_command = "cp -rf " + REPO_PATH + " " + dir_path
         execute_command(copy_command)
         checkout_command = "cd " + dir_path + ";"
-        checkout_command += "git checkout " + commit_id_list['p'+postfix_list[i]]
+        checkout_command += "git checkout " + commit_id_list[i]
         execute_command(checkout_command)
 
 
@@ -153,9 +153,10 @@ def run():
         experiment_name = "Experiment-" + str(index) + "\n-----------------------------"
         print(experiment_name)
 
-        fix_parent = str(experiment_item[0])
-        fix_commit = str(experiment_item[1])
-        target_commit = str(experiment_item[2])
+        fix_parent = str(experiment_item['pa'])
+        fix_commit = str(experiment_item['pb'])
+        target_commit = str(experiment_item['pc'])
+        commit_list = (fix_parent, fix_commit, target_commit)
 
         print("\t[META-DATA] Pa: " + fix_parent)
         print("\t[META-DATA] Pb: " + fix_commit)
@@ -164,7 +165,7 @@ def run():
         conf_file_path = ''
 
         if not CONF_SKIP_SETUP:
-            setup(DIR_EXPERIMENT, index, experiment_item)
+            setup(DIR_EXPERIMENT, index, commit_list)
             conf_file_path = write_conf_file(DIR_EXPERIMENT, index)
 
         if not CONF_ONLY_SETUP:
