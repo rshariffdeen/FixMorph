@@ -16,13 +16,13 @@ ARG_TOOL_PATH = "--tool-path="
 ARG_TOOL_NAME = "--tool-name="
 ARG_TOOL_PARAMS = "--tool-param="
 ARG_DEBUG_MODE = "--debug"
-
+ARG_SKIP_SETUP = "--skip-setup"
 CONF_DATA_PATH = ""
 CONF_TOOL_PATH = ""
 CONF_TOOL_PARAMS = ""
 CONF_TOOL_NAME = ""
 CONF_DEBUG = False
-
+CONF_SKIP_SETUP = False
 FILE_META_DATA = "meta-data"
 FILE_ERROR_LOG = "error-log"
 
@@ -79,7 +79,7 @@ def load_experiment():
 
 
 def read_arg():
-    global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_DEBUG
+    global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_DEBUG, CONF_SKIP_SETUP
     print("[DRIVER] Reading configuration values")
     if len(sys.argv) > 1:
         for arg in sys.argv:
@@ -93,6 +93,9 @@ def read_arg():
                 CONF_TOOL_PARAMS = str(arg).replace(ARG_TOOL_PARAMS, "")
             elif ARG_DEBUG_MODE in arg:
                 CONF_DEBUG = True
+            elif ARG_SKIP_SETUP in arg:
+                CONF_SKIP_SETUP = True
+
 
     else:
         print("Usage: python driver [OPTIONS] ")
@@ -132,6 +135,8 @@ def run():
         print("\t[META-DATA] category: " + category)
         print("\t[META-DATA] project: " + directory_name)
         print("\t[META-DATA] bug ID: " + bug_name)
+        if not CONF_SKIP_SETUP:
+            setup(script_path, script_name, conf_file_path, deployed_conf_path)
         setup(script_path, script_name, conf_file_path, deployed_conf_path)
         evaluate(deployed_conf_path, bug_name)
         index = index + 1
