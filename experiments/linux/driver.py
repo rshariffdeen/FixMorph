@@ -38,6 +38,7 @@ DIR_SCRIPT = DIR_MAIN + "/scripts"
 DIR_CONF = DIR_MAIN + "/configuration"
 
 
+
 EXPERIMENT_ITEMS = list()
 REPO_URL = "https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux-stable"
 REPO_PATH = "/linux-stable"
@@ -55,24 +56,27 @@ def execute_command(command):
     (output, error) = process.communicate()
 
 
-def setup(script_path, script_name, conf_path, deploy_conf_path):
+def setup(base_dir_path, bug_id, commit_id_list):
     global FILE_ERROR_LOG, CONF_DATA_PATH
-    print("\t[INFO] running script for setup")
-    script_command = "{ cd " + script_path + "; bash " + script_name + " " + CONF_DATA_PATH + ";} 2> " + FILE_ERROR_LOG
-    execute_command(script_command)
-    print("\t[INFO] copying configuration")
-    copy_command = "{ cp " + conf_path + " " + deploy_conf_path + ";} 2> " + FILE_ERROR_LOG
-    execute_command(copy_command)
+    print("\t[INFO] creating directories for experiment")
+    postfix_list = ['a', 'b', 'c']
+    bug_dir = base_dir_path + "/" + bug_id
+    dir_command = "mkdir -p " + bug_dir
+    execute_command(dir_command)
+    for i in range(0, 3):
+        dir_path = bug_dir + "/p" + postfix_list[i]
+        copy_command = "cp -rf " + REPO_PATH + " " + dir_path
+        execute_command(copy_command)
+        checkout_command = "cd " + dir_path + ";"
+        checkout_command += "git checkout " + commit_id_list[i]
+        execute_command(checkout_command)
 
 
-def evaluate(conf_path, bug_name, dir_name):
+def evaluate(conf_path):
     global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME, DIR_LOGS
     print("\t[INFO]running evaluation")
-    log_path = str(conf_path).replace(".conf", ".log")
     tool_command = "{ cd " + CONF_TOOL_PATH + ";" + CONF_TOOL_NAME + " --conf=" + conf_path + " "+ CONF_TOOL_PARAMS + ";} 2> " + FILE_ERROR_LOG
     execute_command(tool_command)
-    copy_log = "{ cp " + CONF_TOOL_PATH + "/logs/" + dir_name + "-" + bug_name + "/log-latest " + log_path + ";} 2> " + FILE_ERROR_LOG
-    execute_command(copy_log)
 
 
 def clone_repo():
@@ -81,6 +85,18 @@ def clone_repo():
     if not os.path.isdir(REPO_PATH):
         print("[DRIVER] Cloning remote repository\n")
         execute_command(clone_command)
+
+
+def write_conf_file(dir_path, bug_id):
+    print("\t[INFO] creating configuration")
+    conf_file_name = str(bug_id) + ".conf"
+    conf_file_path = dir_path + "/" + conf_file_name
+    with open(conf_file_path, "w") as conf_file:
+        content = "path_a:" + dir_path + "/pa\n"
+        content += "path_b:" + dir_path + "/pb\n"
+        content += "path_c:" + dir_path + "/pc\n"
+        conf_file.write(content)
+    return conf_file_path
 
 
 def load_experiment():
@@ -132,25 +148,29 @@ def run():
     create_directories()
     clone_repo()
     index = 1
+
+    DIR_EXPERIMENT = CONF_DATA_PATH + "/backport/linux"
+
     for experiment_item in EXPERIMENT_ITEMS:
         experiment_name = "Experiment-" + str(index) + "\n-----------------------------"
         print(experiment_name)
-        bug_name = str(experiment_item[KEY_BUG_NAME])
-        directory_name = str(experiment_item[KEY_DONOR]) + "-" + str(experiment_item[KEY_TARGET])
-        script_name = bug_name + ".sh"
-        conf_file_name = bug_name + ".conf"
-        category = str(experiment_item[KEY_CATEGORY])
-        script_path = DIR_SCRIPT + "/" + category + "/" + directory_name
-        conf_file_path = DIR_CONF + "/" + category + "/" + directory_name + "/" + conf_file_name
-        deploy_path = CONF_DATA_PATH + "/" + category + "/" + directory_name + "/" + bug_name + "/"
-        deployed_conf_path = deploy_path + conf_file_name
-        print("\t[META-DATA] category: " + category)
-        print("\t[META-DATA] project: " + directory_name)
-        print("\t[META-DATA] bug ID: " + bug_name)
+
+        fix_parent = str(experiment_item[0])
+        fix_commit = str(experiment_item[1])
+        target_commit = str(experiment_item[2])
+
+        print("\t[META-DATA] Pa: " + fix_parent)
+        print("\t[META-DATA] Pb: " + fix_commit)
+        print("\t[META-DATA] Pc: " + target_commit)
+
+        conf_file_path = ''
+
         if not CONF_SKIP_SETUP:
-            setup(script_path, script_name, conf_file_path, deployed_conf_path)
+            setup(DIR_EXPERIMENT, index, experiment_item)
+            conf_file_path = write_conf_file(DIR_EXPERIMENT, index)
+
         if not CONF_ONLY_SETUP:
-            evaluate(deployed_conf_path, bug_name, directory_name)
+            evaluate(conf_file_path)
         index = index + 1
 
 
