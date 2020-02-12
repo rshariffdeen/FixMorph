@@ -38,7 +38,6 @@ DIR_SCRIPT = DIR_MAIN + "/scripts"
 DIR_CONF = DIR_MAIN + "/configuration"
 
 
-
 EXPERIMENT_ITEMS = list()
 REPO_URL = "https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux-stable"
 REPO_PATH = "/linux-stable"
@@ -144,11 +143,10 @@ def run():
     global EXPERIMENT_ITEMS, DIR_MAIN, CONF_DATA_PATH, CONF_TOOL_PARAMS
     print("[DRIVER] Running experiment driver")
     read_arg()
+    clone_repo()
     load_experiment()
     create_directories()
-    clone_repo()
     index = 1
-
     DIR_EXPERIMENT = CONF_DATA_PATH + "/backport/linux"
 
     for experiment_item in EXPERIMENT_ITEMS:
