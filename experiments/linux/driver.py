@@ -67,7 +67,7 @@ def setup(base_dir_path, bug_id, commit_id_list):
         copy_command = "cp -rf " + REPO_PATH + " " + dir_path
         execute_command(copy_command)
         checkout_command = "cd " + dir_path + ";"
-        checkout_command += "git checkout " + commit_id_list[i]
+        checkout_command += "git checkout " + commit_id_list[i] + " > /dev/null"
         execute_command(checkout_command)
 
 
@@ -86,10 +86,11 @@ def clone_repo():
         execute_command(clone_command)
 
 
-def write_conf_file(dir_path, bug_id):
+def write_conf_file(base_dir_path, bug_id):
     print("\t[INFO] creating configuration")
     conf_file_name = str(bug_id) + ".conf"
-    conf_file_path = dir_path + "/" + str(bug_id) + "/" + conf_file_name
+    dir_path = base_dir_path + "/" + str(bug_id)
+    conf_file_path = dir_path + "/" + conf_file_name
     with open(conf_file_path, "w") as conf_file:
         content = "path_a:" + dir_path + "/pa\n"
         content += "path_b:" + dir_path + "/pb\n"
