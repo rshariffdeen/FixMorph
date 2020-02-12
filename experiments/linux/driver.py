@@ -39,6 +39,8 @@ DIR_CONF = DIR_MAIN + "/configuration"
 
 
 EXPERIMENT_ITEMS = list()
+REPO_URL = "https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux-stable"
+REPO_PATH = "/linux-stable"
 
 
 def create_directories():
@@ -71,6 +73,14 @@ def evaluate(conf_path, bug_name, dir_name):
     execute_command(tool_command)
     copy_log = "{ cp " + CONF_TOOL_PATH + "/logs/" + dir_name + "-" + bug_name + "/log-latest " + log_path + ";} 2> " + FILE_ERROR_LOG
     execute_command(copy_log)
+
+
+def clone_repo():
+    global REPO_URL
+    clone_command = "git clone " + REPO_URL + " " + REPO_PATH
+    if not os.path.isdir(REPO_PATH):
+        print("[DRIVER] Cloning remote repository\n")
+        execute_command(clone_command)
 
 
 def load_experiment():
@@ -120,6 +130,7 @@ def run():
     read_arg()
     load_experiment()
     create_directories()
+    clone_repo()
     index = 1
     for experiment_item in EXPERIMENT_ITEMS:
         experiment_name = "Experiment-" + str(index) + "\n-----------------------------"
@@ -138,7 +149,8 @@ def run():
         print("\t[META-DATA] bug ID: " + bug_name)
         if not CONF_SKIP_SETUP:
             setup(script_path, script_name, conf_file_path, deployed_conf_path)
-        evaluate(deployed_conf_path, bug_name, directory_name)
+        if not CONF_ONLY_SETUP:
+            evaluate(deployed_conf_path, bug_name, directory_name)
         index = index + 1
 
 
