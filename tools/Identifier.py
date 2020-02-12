@@ -576,6 +576,8 @@ def identify_code_segment(diff_info, project):
                 if 'file' in ast_node.keys():
                     if ast_node['file'] == source_file or ast_node['file'] == source_file.split("/")[-1]:
                         function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+            elif node_type in ["EmptyDecl"]:
+                continue
             else:
                 error_exit("unknown node type for code segmentation: " + str(node_type))
 
