@@ -17,7 +17,7 @@ ARG_TOOL_NAME = "--tool-name="
 ARG_TOOL_PARAMS = "--tool-param="
 ARG_DEBUG_MODE = "--debug"
 ARG_SKIP_SETUP = "--skip-setup"
-ARG_ONLY_SETUP = "--skip-setup"
+ARG_ONLY_SETUP = "--only-setup"
 
 CONF_DATA_PATH = "/data"
 CONF_TOOL_PATH = "/crochet"
