@@ -17,12 +17,14 @@ ARG_TOOL_NAME = "--tool-name="
 ARG_TOOL_PARAMS = "--tool-param="
 ARG_DEBUG_MODE = "--debug"
 ARG_SKIP_SETUP = "--skip-setup"
-CONF_DATA_PATH = ""
-CONF_TOOL_PATH = ""
-CONF_TOOL_PARAMS = ""
-CONF_TOOL_NAME = ""
+
+CONF_DATA_PATH = "/data"
+CONF_TOOL_PATH = "/crochet"
+CONF_TOOL_PARAMS = " --backport"
+CONF_TOOL_NAME = "python3 Crochet.py"
 CONF_DEBUG = False
 CONF_SKIP_SETUP = False
+
 FILE_META_DATA = "meta-data"
 FILE_ERROR_LOG = "error-log"
 
@@ -96,15 +98,15 @@ def read_arg():
             elif ARG_SKIP_SETUP in arg:
                 CONF_SKIP_SETUP = True
 
-    else:
-        print("Usage: python driver [OPTIONS] ")
-        print("Options are:")
-        print("\t" + ARG_DATA_PATH + "\t| " + "directory for experiments")
-        print("\t" + ARG_TOOL_NAME + "\t| " + "name of the tool")
-        print("\t" + ARG_TOOL_PATH + "\t| " + "path of the tool")
-        print("\t" + ARG_TOOL_PARAMS + "\t| " + "parameters for the tool")
-        print("\t" + ARG_DEBUG_MODE + "\t| " + "enable debug mode")
-        exit()
+            else:
+                print("Usage: python driver [OPTIONS] ")
+                print("Options are:")
+                print("\t" + ARG_DATA_PATH + "\t| " + "directory for experiments")
+                print("\t" + ARG_TOOL_NAME + "\t| " + "name of the tool")
+                print("\t" + ARG_TOOL_PATH + "\t| " + "path of the tool")
+                print("\t" + ARG_TOOL_PARAMS + "\t| " + "parameters for the tool")
+                print("\t" + ARG_DEBUG_MODE + "\t| " + "enable debug mode")
+                exit()
 
 
 def run():
