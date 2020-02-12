@@ -67,7 +67,7 @@ def setup(base_dir_path, bug_id, commit_id_list):
         copy_command = "cp -rf " + REPO_PATH + " " + dir_path
         execute_command(copy_command)
         checkout_command = "cd " + dir_path + ";"
-        checkout_command += "git checkout " + commit_id_list[i]
+        checkout_command += "git checkout " + commit_id_list['p'+postfix_list[i]]
         execute_command(checkout_command)
 
 
@@ -80,7 +80,7 @@ def evaluate(conf_path):
 
 def clone_repo():
     global REPO_URL
-    clone_command = "git clone " + REPO_URL + " " + REPO_PATH
+    clone_command = "git clone " + REPO_URL + " " + REPO_PATH + " > /dev/null"
     if not os.path.isdir(REPO_PATH):
         print("[DRIVER] Cloning remote repository\n")
         execute_command(clone_command)
