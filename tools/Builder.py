@@ -158,7 +158,7 @@ def build_project(project_path, build_command=None):
             return
         elif Values.IS_LINUX_KERNEL:
             build_command = "bear " + build_command
-        if "--no-static" in build_command:
+        elif "--no-static" in build_command:
             c_flags_Nstatic = C_FLAGS.replace("-static", "")
             build_command = "bear make CFLAGS=" + c_flags_Nstatic + " "
             cxx_flags_Nstatic = CXX_FLAGS.replace("-static", "")
