@@ -12,7 +12,6 @@ from common.Utilities import error_exit, clean_parse
 from common import Definitions, Values
 
 
-
 def generate_vectors(file_extension, log_file, project, diff_file_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tgenerating vectors for " + file_extension + " files in " + project.name + "...")
@@ -76,11 +75,11 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                         if 'file' in ast_node.keys():
                             if ast_node['file'] == source_file or ast_node['file'] == source_file.split("/")[-1]:
                                 function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
-                    elif node_type in ["EmptyDecl"]:
+                    elif node_type in ["EmptyDecl", "FileScopeAsmDecl"]:
                         continue
                     else:
                         Emitter.error("unknown node type for code segmentation: " + str(node_type))
-                        print(ast_node)
+                        print(source_file, ast_node)
 
                 project.enum_list[source_file] = dict()
                 project.struct_list[source_file] = dict()
