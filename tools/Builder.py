@@ -173,7 +173,7 @@ def build_project(project_path, build_command=None):
     build_command = dir_command + build_command
     # print(build_command)
     ret_code = execute_command(build_command)
-    if int(ret_code) != 0:
+    if int(ret_code) != 0 and not Values.IS_LINUX_KERNEL:
         Emitter.error(build_command)
         error_exit("BUILD FAILED!!\nExit Code: " + str(ret_code))
 
