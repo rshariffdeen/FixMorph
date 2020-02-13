@@ -102,7 +102,7 @@ class AST:
 
     def get_code(self, file_path):
         Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-        with open(file_path, 'r') as source_file:
+        with open(file_path, 'r', encoding='utf8', errors="ignore") as source_file:
             source_code = "".join(source_file.readlines())
         return source_code[int(self.begin):int(self.end)]
 

@@ -98,7 +98,7 @@ class AST:
         return s
 
     def get_code(self, file):
-        with open(file, 'r', errors='replace') as f:
+        with open(file, 'r', encoding='utf8', errors="ignore") as f:
             source_code = "".join(f.readlines())
         return source_code[int(self.begin):int(self.end)]
 
@@ -152,7 +152,7 @@ class AST:
 def AST_from_file(file):
     global ast
 
-    with open(file, 'r', errors='replace') as ast_file:
+    with open(file, 'r', encoding='utf8', errors="ignore") as ast_file:
         ast = ast_file.readline()
     object_ast = json.loads(ast)
     AST(object_ast['root'])
