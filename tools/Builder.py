@@ -154,7 +154,7 @@ def build_project(project_path, build_command=None):
         build_command = "bear make CFLAGS=" + C_FLAGS + " "
         build_command += "CXXFLAGS=" + CXX_FLAGS + " > " + Definitions.FILE_MAKE_LOG
     else:
-        if build_command == "skip":
+        if build_command == "bear " + build_command:
             return
         elif Values.IS_LINUX_KERNEL:
             build_command = build_command + ";"
