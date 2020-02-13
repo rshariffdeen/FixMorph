@@ -153,6 +153,8 @@ def build_project(project_path, build_command=None):
         build_command = "bear make CFLAGS=" + C_FLAGS + " "
         build_command += "CXXFLAGS=" + CXX_FLAGS + " > " + Definitions.FILE_MAKE_LOG
     else:
+        if build_command == "skip":
+            return
         if "--no-static" in build_command:
             c_flags_Nstatic = C_FLAGS.replace("-static", "")
             build_command = "bear make CFLAGS=" + c_flags_Nstatic + " "
