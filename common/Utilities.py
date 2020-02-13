@@ -118,7 +118,7 @@ def show_partial_diff(source_path_a, source_path_b):
     output_file = Definitions.FILE_PARTIAL_PATCH
     diff_command = "diff -ENZBbwr " + source_path_a + " " + source_path_b + " > " + output_file
     execute_command(diff_command)
-    with open(output_file, 'r') as diff_file:
+    with open(output_file, 'r', encoding='utf8', errors="ignore") as diff_file:
         diff_line = diff_file.readline().strip()
         while diff_line:
             Emitter.special("\t\t\t" + diff_line)

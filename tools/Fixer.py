@@ -63,11 +63,11 @@ def replace_code(patch_code, source_path, line_number):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     content = ""
     if os.path.exists(source_path):
-        with open(source_path, 'r') as source_file:
+        with open(source_path, 'r', encoding='utf8', errors="ignore") as source_file:
             content = source_file.readlines()
             content[line_number-1] = patch_code
 
-    with open(source_path, 'w') as source_file:
+    with open(source_path, 'w', encoding='utf8', errors="ignore") as source_file:
         source_file.writelines(content)
 
 

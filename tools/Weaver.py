@@ -47,7 +47,7 @@ def show_patch(file_a, file_b, file_c, file_d, index):
     generated_patch_file_name = Definitions.DIRECTORY_OUTPUT + index + "-generated-patch"
     diff_command = "diff -ENZBbwr " + file_a + " " + file_b + " > " + original_patch_file_name
     execute_command(diff_command)
-    with open(original_patch_file_name, 'r') as diff:
+    with open(original_patch_file_name, 'r', encoding='utf8', errors="ignore") as diff:
         diff_line = diff.readline().strip()
         while diff_line:
             Emitter.special("\t\t" + diff_line)
@@ -57,7 +57,7 @@ def show_patch(file_a, file_b, file_c, file_d, index):
     diff_command = "diff -ENZBbwr " + file_c + " " + file_d + " > " + generated_patch_file_name
     # print(diff_command)
     execute_command(diff_command)
-    with open(generated_patch_file_name, 'r') as diff:
+    with open(generated_patch_file_name, 'r', encoding='utf8', errors="ignore") as diff:
         diff_line = diff.readline().strip()
         while diff_line:
             Emitter.special("\t\t" + diff_line)
