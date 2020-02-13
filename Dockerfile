@@ -55,6 +55,7 @@ RUN echo "Y" | pysmt-install  --z
 
 # Libraries for Experiments
 RUN apt-get install -y \
+    bc \
     gtk+-3.0 \
     libavahi-client-dev \
     libasound2-dev \
@@ -62,6 +63,7 @@ RUN apt-get install -y \
     libconfig-dev \
     libcrypto++-dev \
     libdaemon-dev \
+    libelf-dev \
     libfreetype6-dev \
     libidn2-0-dev \
     libjbig-dev \
