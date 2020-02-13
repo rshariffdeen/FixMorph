@@ -21,7 +21,7 @@ ARG_ONLY_SETUP = "--only-setup"
 
 CONF_DATA_PATH = "/data"
 CONF_TOOL_PATH = "/crochet"
-CONF_TOOL_PARAMS = " --backport --skip-build --skip-verify"
+CONF_TOOL_PARAMS = " --backport --linux-kernel"
 CONF_TOOL_NAME = "python3 Crochet.py"
 CONF_DEBUG = False
 CONF_SKIP_SETUP = False
