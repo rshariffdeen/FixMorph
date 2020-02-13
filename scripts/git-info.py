@@ -43,7 +43,7 @@ for commit_id in commit_list:
     for i in range(0, 10):
         if "=" not in str(content[i]):
             continue
-        if "b'EXTRAVERSION" in content[i]:
+        if "b'EXTRAVERSION" in str(content[i]):
             break
         version_type, version_num = str(content[i]).split(" = ")
         if version_type in ["b'VERSION", "b'PATCHLEVEL", "b'SUBLEVEL", "b'EXTRAVERSION"]:
