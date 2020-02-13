@@ -180,8 +180,10 @@ def run():
         print("\t[META-DATA] Pa: " + fix_parent)
         print("\t[META-DATA] Pb: " + fix_commit)
         print("\t[META-DATA] Pc: " + target_commit)
-        print("\t[META-DATA] Module-a: " + module_a)
-        print("\t[META-DATA] Module-c: " + module_c)
+        if module_a is not None:
+            print("\t[META-DATA] Module-a: " + module_a)
+        if module_c is not None:
+            print("\t[META-DATA] Module-c: " + module_c)
 
         conf_file_path = ''
 
