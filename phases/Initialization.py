@@ -148,6 +148,8 @@ def read_conf():
                 Values.SKIP_SEGMENT = True
             elif Definitions.ARG_SKIP_BUILD in arg:
                 Values.SKIP_BUILD = True
+            elif Definitions.ARG_LINUX_KERNEL in arg:
+                Values.IS_LINUX_KERNEL = True
             elif "Crochet.py" in arg:
                 continue
             else:

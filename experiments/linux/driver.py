@@ -96,8 +96,8 @@ def write_conf_file(base_dir_path, bug_id):
         content = "path_a:" + dir_path + "/pa\n"
         content += "path_b:" + dir_path + "/pb\n"
         content += "path_c:" + dir_path + "/pc\n"
-        content += "config_command_a:skip\n"
-        content += "config_command_c:skip\n"
+        content += "config_command_a:no | make oldconfig; make prepare\n"
+        content += "config_command_c:no | make oldconfig; make prepare\n"
         content += "build_command_a:skip\n"
         content += "build_command_c:skip\n"
         conf_file.write(content)

@@ -24,6 +24,8 @@ def config_project(project_path, is_llvm, custom_config_command=None):
     if custom_config_command is not None:
         if custom_config_command == "skip":
             return
+        elif Values.IS_LINUX_KERNEL:
+            config_command = custom_config_command
         else:
             if CC == "wllvm":
                 custom_config_command = remove_fsanitize(custom_config_command)
@@ -36,7 +38,6 @@ def config_project(project_path, is_llvm, custom_config_command=None):
                 config_command = custom_config_command + " "
                 config_command += "CC=" + CC + " "
                 config_command += "CXX=" + CXX + " "
-
 
             if "--cc=" in config_command:
                 config_command = config_command.replace("--cc=clang-7", "--cc=" + CC)
@@ -155,6 +156,8 @@ def build_project(project_path, build_command=None):
     else:
         if build_command == "skip":
             return
+        elif Values.IS_LINUX_KERNEL:
+            build_command = build_command + ";"
         if "--no-static" in build_command:
             c_flags_Nstatic = C_FLAGS.replace("-static", "")
             build_command = "bear make CFLAGS=" + c_flags_Nstatic + " "
