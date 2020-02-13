@@ -87,7 +87,7 @@ def clone_repo():
         execute_command(clone_command)
 
 
-def write_conf_file(base_dir_path, bug_id):
+def write_conf_file(base_dir_path, bug_id, module_a, module_c):
     print("\t[INFO] creating configuration")
     conf_file_name = str(bug_id) + ".conf"
     dir_path = base_dir_path + "/" + str(bug_id)
@@ -98,8 +98,8 @@ def write_conf_file(base_dir_path, bug_id):
         content += "path_c:" + dir_path + "/pc\n"
         content += "config_command_a:no | make oldconfig; make prepare\n"
         content += "config_command_c:no | make oldconfig; make prepare\n"
-        content += "build_command_a:skip\n"
-        content += "build_command_c:skip\n"
+        content += "build_command_a:make M=" + module_a + "\n"
+        content += "build_command_c:make M=" + module_c + "\n"
         conf_file.write(content)
     return conf_file_path
 
@@ -162,17 +162,21 @@ def run():
         fix_parent = str(experiment_item['pa'])
         fix_commit = str(experiment_item['pb'])
         target_commit = str(experiment_item['pc'])
+        module_a = str(experiment_item['ma'])
+        module_c = str(experiment_item['mc'])
         commit_list = (fix_parent, fix_commit, target_commit)
 
         print("\t[META-DATA] Pa: " + fix_parent)
         print("\t[META-DATA] Pb: " + fix_commit)
         print("\t[META-DATA] Pc: " + target_commit)
+        print("\t[META-DATA] Module-a: " + module_a)
+        print("\t[META-DATA] Module-c: " + module_c)
 
         conf_file_path = ''
 
         if not CONF_SKIP_SETUP:
             setup(DIR_EXPERIMENT, index, commit_list)
-            conf_file_path = write_conf_file(DIR_EXPERIMENT, index)
+            conf_file_path = write_conf_file(DIR_EXPERIMENT, index, module_a, module_c)
 
         if not CONF_ONLY_SETUP:
             evaluate(conf_file_path)
