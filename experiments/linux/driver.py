@@ -98,8 +98,15 @@ def write_conf_file(base_dir_path, bug_id, module_a, module_c):
         content += "path_c:" + dir_path + "/pc\n"
         content += "config_command_a:no | make oldconfig; make prepare\n"
         content += "config_command_c:no | make oldconfig; make prepare\n"
-        content += "build_command_a:make M=" + module_a + "\n"
-        content += "build_command_c:make M=" + module_c + "\n"
+        if module_a is None:
+            content += "build_command_a:skip\n"
+            content += "build_command_c:skip\n"
+        else:
+            content += "build_command_a:make M=" + module_a + "\n"
+            if module_c is None:
+                content += "build_command_c:make M=" + module_a + "\n"
+            else:
+                content += "build_command_c:make M=" + module_c + "\n"
         conf_file.write(content)
     return conf_file_path
 
@@ -162,8 +169,12 @@ def run():
         fix_parent = str(experiment_item['pa'])
         fix_commit = str(experiment_item['pb'])
         target_commit = str(experiment_item['pc'])
-        module_a = str(experiment_item['ma'])
-        module_c = str(experiment_item['mc'])
+        module_a = None
+        module_c = None
+        if 'ma' in experiment_item.keys():
+            module_a = str(experiment_item['ma'])
+        if 'mc' in experiment_item.keys():
+            module_c = str(experiment_item['mc'])
         commit_list = (fix_parent, fix_commit, target_commit)
 
         print("\t[META-DATA] Pa: " + fix_parent)
