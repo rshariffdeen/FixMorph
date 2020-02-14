@@ -87,7 +87,7 @@ def clone_repo():
         execute_command(clone_command)
 
 
-def write_conf_file(base_dir_path, bug_id, module_a, module_c):
+def write_conf_file(base_dir_path, bug_id, object_a, object_c):
     print("\t[INFO] creating configuration")
     conf_file_name = str(bug_id) + ".conf"
     dir_path = base_dir_path + "/" + str(bug_id)
@@ -98,15 +98,15 @@ def write_conf_file(base_dir_path, bug_id, module_a, module_c):
         content += "path_c:" + dir_path + "/pc\n"
         content += "config_command_a:make allyesconfig \n"
         content += "config_command_c:make allyesconfig \n"
-        if module_a is None:
+        if object_a is None:
             content += "build_command_a:skip\n"
             content += "build_command_c:skip\n"
         else:
-            content += "build_command_a:make M=" + module_a + "\n"
-            if module_c is None:
-                content += "build_command_c:make M=" + module_a + "\n"
+            content += "build_command_a:make " + object_a + "\n"
+            if object_c is None:
+                content += "build_command_c:make " + object_a + "\n"
             else:
-                content += "build_command_c:make M=" + module_c + "\n"
+                content += "build_command_c:make " + object_c + "\n"
         conf_file.write(content)
     return conf_file_path
 
