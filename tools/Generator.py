@@ -52,7 +52,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                 def_list = list()
                 decl_list = list()
                 source_file_pattern = [source_file, source_file.split("/")[-1],
-                                       source_file.replace(Values.Project_A.path, '')]
+                                       source_file.replace(Values.Project_C.path, '')]
                 for ast_node in ast_tree['children']:
                     # print(ast_node)
                     node_type = str(ast_node["type"])
