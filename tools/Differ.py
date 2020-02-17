@@ -7,7 +7,7 @@ import os
 from common.Utilities import execute_command, get_file_extension_list, error_exit
 from ast import Generator
 from tools import Mapper, Logger, Filter, Emitter
-from common import Values
+from common import Values, Definitions
 
 
 def diff_files(output_diff_file, output_c_diff, output_h_diff,
@@ -18,12 +18,12 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
 
     extensions = get_file_extension_list(project_path_a, output_ext_a)
     extensions = extensions.union(get_file_extension_list(project_path_b, output_ext_b))
-
+    untrack_file = Definitions.FILE_GIT_UNTRACKED_FILES
     if Values.VC == "git":
         untracked_list_command = "cd " + Values.Project_A.path + ";"
-        untracked_list_command += "git ls-files --others  > " + output_ext + ";"
+        untracked_list_command += "git ls-files --others  > " + untrack_file + ";"
         untracked_list_command += "cd " + Values.Project_B.path + ";"
-        untracked_list_command += "git ls-files --others  >> " + output_ext
+        untracked_list_command += "git ls-files --others  >> " + untrack_file
         execute_command(untracked_list_command)
 
     with open(output_ext, 'w') as exclusions:
@@ -31,8 +31,9 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
             exclusions.write(pattern + "\n")
 
     # TODO: Include cases where a file is added or removed
-    diff_command = "diff -ENZBbwqr " + project_path_a + " " + project_path_b + " -X " \
-                   + output_ext + "> " + output_diff_file + ";"
+    diff_command = "diff -ENZBbwqr " + project_path_a + " " + project_path_b
+    diff_command += " -X " + output_ext + " | grep -v -f " + untrack_file
+    diff_command += " > " + output_diff_file + ";"
     diff_command += "cat " + output_diff_file + "| grep -P '\.c and ' > " + output_c_diff + ";"
     diff_command += "cat " + output_diff_file + "| grep -P '\.h and ' > " + output_h_diff
     # print(diff_command)
