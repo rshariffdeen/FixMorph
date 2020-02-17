@@ -51,7 +51,7 @@ class Vector:
                 if int(end_line) > max_line:
                     # TODO: This shouldn't happen!
                     Emitter.error(current)
-                    error_exit("Deckard failed. The following file not generated:", self.vector_path)
+                    error_exit("Deckard failed. Requested line exceed file size. The following file not generated:", self.vector_path)
                     return None
             self.start_line = start_line
             self.end_line = end_line

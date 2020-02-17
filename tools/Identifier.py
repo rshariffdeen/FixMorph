@@ -557,18 +557,24 @@ def identify_code_segment(diff_info, project):
         for ast_node in ast_tree['children']:
             node_type = str(ast_node["type"])
             if node_type in ["VarDecl"]:
-                parent_id = int(ast_node['parent_id'])
-                if parent_id == 0:
-                    decl_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                if 'file' in ast_node.keys():
+                    if ast_node['file'] in source_file_pattern:
+                        parent_id = int(ast_node['parent_id'])
+                        if parent_id == 0:
+                            decl_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["EnumConstantDecl", "EnumDecl"]:
                 if 'file' in ast_node.keys():
                     if ast_node['file'] in source_file_pattern:
                         enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["Macro"]:
-                if 'value' in ast_node.keys():
-                    macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                if 'file' in ast_node.keys():
+                    if ast_node['file'] in source_file_pattern:
+                        if 'value' in ast_node.keys():
+                            macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["TypedefDecl"]:
-                type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                if 'file' in ast_node.keys():
+                    if ast_node['file'] in source_file_pattern:
+                        type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
             elif node_type in ["RecordDecl"]:
                 if 'file' in ast_node.keys():
                     if ast_node['file'] in source_file_pattern:
