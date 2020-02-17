@@ -47,6 +47,8 @@ def analyse_source_diff():
 def analyse_ast_diff():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global diff_info
+    if not diff_info:
+        error_exit("no files modified in diff")
     diff_info = Differ.diff_ast(diff_info,
                                 Values.PATH_A,
                                 Values.PATH_B,
