@@ -301,14 +301,17 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
                 inserted_node_list[node_id_b] = [node_id_a]
                 second_merged_ast_script.append(script_line)
             else:
+                is_duplicate = False
                 for inserted_node_id in inserted_node_list_target:
                     inserted_node = Finder.search_ast_node_by_id(ast_node_b, inserted_node_id)
-                    if not ((inserted_node['type'] == new_insert_node['type']) and \
-                        (inserted_node['file'] == new_insert_node['file']) and \
+                    if (inserted_node['type'] == new_insert_node['type']) and \
                         (inserted_node['start line'] == new_insert_node['start line'])and \
-                        (inserted_node['parent_id'] == new_insert_node['parent_id'])):
-                        inserted_node_list[node_id_b].append(node_id_a)
-                        second_merged_ast_script.append(script_line)
+                        (inserted_node['parent_id'] == new_insert_node['parent_id']):
+                        is_duplicate = True
+                        break
+                if not is_duplicate:
+                    inserted_node_list[node_id_b].append(node_id_a)
+                    second_merged_ast_script.append(script_line)
 
         else:
             second_merged_ast_script.append(script_line)
