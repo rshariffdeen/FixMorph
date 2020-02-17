@@ -107,6 +107,7 @@ def write_conf_file(base_dir_path, bug_id, object_a, object_c):
                 content += "build_command_c:make " + object_a + "\n"
             else:
                 content += "build_command_c:make " + object_c + "\n"
+        content += "version-control:git\n"
         conf_file.write(content)
     return conf_file_path
 
