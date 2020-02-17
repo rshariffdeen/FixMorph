@@ -535,6 +535,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                 parent = previous_child_node_a.parent
                                 if parent is not None:
                                     offset = parent.children.index(previous_child_node_a)
+                                    target_node = json_ast_dump[Values.Project_A.name][parent.id]
                                     offset += 1
 
                         elif offset + 1 < len(target_node_b.children):
