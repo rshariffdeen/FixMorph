@@ -298,6 +298,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
                 inserted_node_list[node_id_b] = list()
             inserted_node_list_target = inserted_node_list[node_id_b]
             if not inserted_node_list_target:
+                inserted_node_list[node_id_b] = [node_id_a]
                 second_merged_ast_script.append(script_line)
             else:
                 for inserted_node_id in inserted_node_list_target:
