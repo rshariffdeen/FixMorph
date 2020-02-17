@@ -51,6 +51,8 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                 type_def_list = list()
                 def_list = list()
                 decl_list = list()
+                source_file_pattern = [source_file, source_file.split("/")[-1],
+                                       source_file.replace(Values.Project_A.path, '')]
                 for ast_node in ast_tree['children']:
                     # print(ast_node)
                     node_type = str(ast_node["type"])
@@ -60,7 +62,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                             decl_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["EnumConstantDecl", "EnumDecl"]:
                         if 'file' in ast_node.keys():
-                            if ast_node['file'] == source_file or ast_node['file'] == source_file.split("/")[-1]:
+                            if ast_node['file'] in source_file_pattern:
                                 enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["Macro"]:
                         if 'value' in ast_node.keys():
@@ -69,11 +71,11 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                         type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["RecordDecl"]:
                         if 'file' in ast_node.keys():
-                            if ast_node['file'] == source_file or ast_node['file'] == source_file.split("/")[-1]:
+                            if ast_node['file'] in source_file_pattern:
                                 struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["FunctionDecl"]:
                         if 'file' in ast_node.keys():
-                            if ast_node['file'] == source_file or ast_node['file'] == source_file.split("/")[-1]:
+                            if ast_node['file'] in source_file_pattern:
                                 function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
                     elif node_type in ["EmptyDecl", "FileScopeAsmDecl"]:
                         continue
