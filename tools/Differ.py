@@ -21,9 +21,9 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
 
     if Values.VC == "git":
         untracked_list_command = "cd " + Values.Project_A.path + ";"
-        untracked_list_command += "git ls-files --others --exclude-standard > " + output_ext
+        untracked_list_command += "git ls-files --others  > " + output_ext + ";"
         untracked_list_command += "cd " + Values.Project_B.path + ";"
-        untracked_list_command += "git ls-files --others --exclude-standard >> " + output_ext
+        untracked_list_command += "git ls-files --others  >> " + output_ext
         execute_command(untracked_list_command)
 
     with open(output_ext, 'w') as exclusions:
