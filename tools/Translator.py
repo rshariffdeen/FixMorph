@@ -583,6 +583,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
 def simplify_patch(instruction_AB, match_BA, ASTlists):
     modified_AB = []
     inserted = []
+    insert_pos_list = dict()
     # Emitter.white("Original script from Pa to Pb")
     for i in instruction_AB:
         inst = i[0]
@@ -646,8 +647,15 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeB2 = id_from_string(i[2])
             nodeB2 = ASTlists[Values.Project_B.name][nodeB2]
             pos = i[3]
+            adjusted_post = int(pos)
             # Emitter.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
+            if nodeB2 not in insert_pos_list.keys():
+                insert_pos_list[nodeB2] = dict()
+            inserted_pos_node_list = insert_pos_list[nodeB2]
+            if int(pos) - 1 in insert_pos_list.keys():
+                adjusted_post = inserted_pos_node_list[int(pos) - 1]
+            inserted_pos_node_list[pos] = adjusted_post
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, pos))
     return modified_AB
