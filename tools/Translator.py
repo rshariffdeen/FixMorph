@@ -651,10 +651,10 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             adjusted_post = int(pos)
             # Emitter.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
-            if nodeB2 not in insert_pos_list.keys():
-                insert_pos_list[nodeB2] = dict()
-            inserted_pos_node_list = insert_pos_list[nodeB2]
-            if int(pos) - 1 in insert_pos_list.keys():
+            if nodeB2.id not in insert_pos_list.keys():
+                insert_pos_list[nodeB2.id] = dict()
+            inserted_pos_node_list = insert_pos_list[nodeB2.id]
+            if int(pos) - 1 in inserted_pos_node_list.keys():
                 adjusted_post = inserted_pos_node_list[int(pos) - 1]
             inserted_pos_node_list[pos] = adjusted_post
             if nodeB2 not in inserted:
