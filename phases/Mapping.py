@@ -7,7 +7,6 @@ from tools import Emitter, Reader, Writer, Logger, Mapper
 
 def generate_map():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.sub_title("Variable mapping")
     Values.ast_map = Mapper.generate(Values.generated_script_files)
 
 
