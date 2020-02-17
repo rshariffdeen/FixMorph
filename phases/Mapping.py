@@ -50,6 +50,8 @@ def save_values():
 def map():
     Emitter.title("Variable Mapping")
     load_values()
+    if not Values.generated_script_files:
+        error_exit("no ast to map")
     if not Values.SKIP_MAPPING:
         safe_exec(generate_map, 'deriving variable/data-structure mapping')
         save_values()
