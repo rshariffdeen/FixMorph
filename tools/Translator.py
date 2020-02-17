@@ -648,17 +648,17 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeB2 = id_from_string(i[2])
             nodeB2 = ASTlists[Values.Project_B.name][nodeB2]
             pos = i[3]
-            adjusted_post = int(pos)
+            adjusted_pos = int(pos)
             # Emitter.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
             if nodeB2.id not in insert_pos_list.keys():
                 insert_pos_list[nodeB2.id] = dict()
             inserted_pos_node_list = insert_pos_list[nodeB2.id]
             if int(pos) - 1 in inserted_pos_node_list.keys():
-                adjusted_post = inserted_pos_node_list[int(pos) - 1]
-            inserted_pos_node_list[int(pos)] = adjusted_post
+                adjusted_pos = inserted_pos_node_list[int(pos) - 1]
+            inserted_pos_node_list[int(pos)] = adjusted_pos
             if nodeB2 not in inserted:
-                modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, pos))
+                modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
     return modified_AB
 
 
