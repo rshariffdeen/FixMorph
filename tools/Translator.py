@@ -656,7 +656,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             inserted_pos_node_list = insert_pos_list[nodeB2.id]
             if int(pos) - 1 in inserted_pos_node_list.keys():
                 adjusted_post = inserted_pos_node_list[int(pos) - 1]
-            inserted_pos_node_list[pos] = adjusted_post
+            inserted_pos_node_list[int(pos)] = adjusted_post
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, pos))
     return modified_AB
