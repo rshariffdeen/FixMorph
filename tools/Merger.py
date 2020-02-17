@@ -297,13 +297,16 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             if node_id_b not in inserted_node_list:
                 inserted_node_list[node_id_b] = list()
             inserted_node_list_target = inserted_node_list[node_id_b]
-            for inserted_node_id in inserted_node_list_target:
-                inserted_node = Finder.search_ast_node_by_id(ast_node_b, inserted_node_id)
-                if (inserted_node['type'] != new_insert_node['type']) and \
-                    (inserted_node['file'] != new_insert_node['file']) and \
-                    (inserted_node['start line'] != new_insert_node['start line'])and \
-                    (inserted_node['parent_id'] != new_insert_node['parent_id']):
-                    second_merged_ast_script.append(script_line)
+            if not inserted_node_list_target:
+                second_merged_ast_script.append(script_line)
+            else:
+                for inserted_node_id in inserted_node_list_target:
+                    inserted_node = Finder.search_ast_node_by_id(ast_node_b, inserted_node_id)
+                    if (inserted_node['type'] != new_insert_node['type']) and \
+                        (inserted_node['file'] != new_insert_node['file']) and \
+                        (inserted_node['start line'] != new_insert_node['start line'])and \
+                        (inserted_node['parent_id'] != new_insert_node['parent_id']):
+                        second_merged_ast_script.append(script_line)
 
         else:
             second_merged_ast_script.append(script_line)
