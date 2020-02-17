@@ -86,6 +86,8 @@ def verify():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Patch Verification")
     set_values()
+    if not Values.MODIFIED_SOURCE_LIST:
+        error_exit("no modified sources to verify")
     if not Values.SKIP_VERIFY:
         safe_exec(verify_compilation, "verifying compilation")
         if Values.PATH_POC:

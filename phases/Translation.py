@@ -11,6 +11,8 @@ translated_script_list = dict()
 def translate_scripts():
     global translated_script_list
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    if not Values.generated_script_files:
+        error_exit("nothing to translate")
     translated_script_list = Translator.translate_script_list(Values.generated_script_files)
 
 

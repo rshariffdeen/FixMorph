@@ -67,6 +67,8 @@ def transplant_missing_functions():
 
 def transplant_code():
     global file_index, missing_function_list, missing_macro_list, modified_source_list
+    if not Values.translated_script_for_files:
+        error_exit("nothing to transplant")
     for file_list, generated_data in Values.translated_script_for_files.items():
         Emitter.sub_sub_title(file_list[2])
         Emitter.highlight("\tOriginal AST script")
@@ -104,8 +106,9 @@ def load_values():
 
 
 def save_values():
+    global modified_source_list
     # Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
-    # Values.generated_script_for_c_files = generated_script_list
+    Values.MODIFIED_SOURCE_LIST = modified_source_list
     save_current_state()
 
 
@@ -125,5 +128,6 @@ def weave():
         if missing_header_list:
             safe_exec(transplant_missing_header, "transplanting header files")
         safe_exec(Fixer.check, "correcting syntax errors", modified_source_list)
+        save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")
