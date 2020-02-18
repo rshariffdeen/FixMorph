@@ -54,9 +54,10 @@ def execute_command(command):
 
 def setup(script_path, script_name, conf_path, deploy_conf_path):
     global FILE_ERROR_LOG, CONF_DATA_PATH
-    print("\t[INFO] running script for setup")
-    script_command = "{ cd " + script_path + "; bash " + script_name + " " + CONF_DATA_PATH + ";} 2> " + FILE_ERROR_LOG
-    execute_command(script_command)
+    if not os.path.isfile(deploy_conf_path):
+        print("\t[INFO] running script for setup")
+        script_command = "{ cd " + script_path + "; bash " + script_name + " " + CONF_DATA_PATH + ";} 2> " + FILE_ERROR_LOG
+        execute_command(script_command)
     print("\t[INFO] copying configuration")
     copy_command = "{ cp " + conf_path + " " + deploy_conf_path + ";} 2> " + FILE_ERROR_LOG
     execute_command(copy_command)
