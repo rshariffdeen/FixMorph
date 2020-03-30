@@ -152,7 +152,7 @@ def build_project(project_path, build_command=None):
     dir_command = "cd " + project_path + ";"
     if build_command is None:
         build_command = "bear make CFLAGS=" + C_FLAGS + " "
-        build_command += "CXXFLAGS=" + CXX_FLAGS + " > " + Definitions.FILE_MAKE_LOG
+        build_command += "CXXFLAGS=" + CXX_FLAGS
     else:
         if build_command == "skip":
             return
@@ -162,7 +162,7 @@ def build_project(project_path, build_command=None):
             c_flags_Nstatic = C_FLAGS.replace("-static", "")
             build_command = "bear make CFLAGS=" + c_flags_Nstatic + " "
             cxx_flags_Nstatic = CXX_FLAGS.replace("-static", "")
-            build_command += "CXXFLAGS=" + cxx_flags_Nstatic + " > " + Definitions.FILE_MAKE_LOG
+            build_command += "CXXFLAGS=" + cxx_flags_Nstatic
         else:
             if not os.path.isfile(project_path + "/compile_commands.json"):
                 build_command = build_command.replace("make", "bear make")
@@ -170,7 +170,7 @@ def build_project(project_path, build_command=None):
                 build_command = remove_fsanitize(build_command)
             if "-j" not in build_command:
                 build_command = apply_flags(build_command)
-    build_command = dir_command + build_command
+    build_command = dir_command + build_command + " > " + Definitions.FILE_MAKE_LOG + " 2>&1"
     # print(build_command)
     ret_code = execute_command(build_command)
     if int(ret_code) != 0:
