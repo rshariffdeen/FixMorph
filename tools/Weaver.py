@@ -38,6 +38,9 @@ def execute_ast_transformation(source_path_b, source_path_d, file_info):
         execute_command(move_command)
     else:
         error_exit("\t AST transformation FAILED")
+
+    if os.stat(source_path_d).st_size == 0:
+        error_exit("\t AST transformation FAILED")
     return ret_code
 
 
