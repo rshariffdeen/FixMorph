@@ -16,7 +16,7 @@ def generate_target_vectors():
     Emitter.sub_sub_title("Generating vector files for all code segments in Target")
     gen_header = False
     gen_source = False
-    diff_file_list = Values.diff_info.keys()
+    diff_file_list = Values.original_diff_info.keys()
     for diff_file in diff_file_list:
         if ".c" in diff_file:
             gen_source = True
@@ -36,8 +36,8 @@ def find_clones():
 
 
 def load_values():
-    if not Values.diff_info:
-        Values.diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
+    if not Values.original_diff_info:
+        Values.original_diff_info = Reader.read_json(Definitions.FILE_ORIG_DIFF_INFO)
         load_state()
     Definitions.FILE_CLONE_INFO = Definitions.DIRECTORY_OUTPUT + "/clone-info"
 

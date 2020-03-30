@@ -35,8 +35,8 @@ def safe_exec(function_def, title, *args):
 
 
 def load_values():
-    if not Values.diff_info:
-        Values.diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
+    if not Values.original_diff_info:
+        Values.original_diff_info = Reader.read_json(Definitions.FILE_ORIG_DIFF_INFO)
         load_state()
 
 
@@ -49,7 +49,7 @@ def segment():
     Emitter.title("Segmentation of Code")
     load_values()
     if not Values.SKIP_SEGMENT:
-        safe_exec(segment_code, "identifying segments", Values.diff_info)
+        safe_exec(segment_code, "identifying segments", Values.original_diff_info)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

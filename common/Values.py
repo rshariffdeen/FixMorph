@@ -75,7 +75,8 @@ generated_script_files = dict()
 translated_script_for_files = dict()
 ast_map = dict()
 
-diff_info = dict()
+original_diff_info = dict()
+ported_diff_info = dict()
 
 Pa = None
 Pb = None

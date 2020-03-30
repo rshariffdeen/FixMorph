@@ -8,24 +8,16 @@ from common import Definitions, Values
 from ast import Vector, Parser
 from tools import Logger, Emitter, Detector, Writer, Generator, Reader
 
-clone_list = dict()
+FILE_EXCLUDED_EXTENSIONS = ""
+FILE_EXCLUDED_EXTENSIONS_A = ""
+FILE_EXCLUDED_EXTENSIONS_B = ""
+FILE_DIFF_C = ""
+FILE_DIFF_H = ""
+FILE_DIFF_ALL = ""
+FILE_AST_SCRIPT = ""
+FILE_AST_DIFF_ERROR = ""
 
-
-def generate_target_vectors():
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.sub_sub_title("Generating vector files for all code segments in Target")
-    gen_header = False
-    gen_source = False
-    diff_file_list = Values.diff_info.keys()
-    for diff_file in diff_file_list:
-        if ".c" in diff_file:
-            gen_source = True
-        elif ".h" in diff_file:
-            gen_header = True
-    if gen_header:
-        Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C, diff_file_list)
-    if gen_source:
-        Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C, diff_file_list)
+ported_diff_info = dict()
 
 
 def find_clones():
@@ -36,15 +28,19 @@ def find_clones():
 
 
 def load_values():
-    if not Values.diff_info:
-        Values.diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
+    global FILE_DIFF_C, FILE_DIFF_H, FILE_DIFF_ALL
+    global FILE_AST_SCRIPT, FILE_AST_DIFF_ERROR
+    global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
+
+    if not Values.original_diff_info:
+        Values.original_diff_info = Reader.read_json(Definitions.FILE_ORIG_DIFF_INFO)
         load_state()
-    Definitions.FILE_CLONE_INFO = Definitions.DIRECTORY_OUTPUT + "/clone-info"
+
+    Definitions.FILE_PORT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/port-diff-info"
 
 
 def save_values():
-    Writer.write_clone_list(clone_list, Definitions.FILE_CLONE_INFO)
-    Values.file_list_to_patch = clone_list
+    Writer.write_as_json(ported_diff_info, Definitions.FILE_PORT_DIFF_INFO)
     save_current_state()
 
 
@@ -70,7 +66,7 @@ def safe_exec(function_def, title, *args):
 
 def analyse():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.title("Classification Analysis")
+    Emitter.title("Ported Patch Analysis")
     load_values()
     if not Values.SKIP_ANALYSE:
         if not Values.SKIP_VEC_GEN:

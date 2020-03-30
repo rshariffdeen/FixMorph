@@ -34,10 +34,6 @@ def run():
     time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] = str(time.time() - time_start)
 
     time_start = time.time()
-    Analysis.analyse()
-    time_info[Definitions.KEY_DURATION_CLASSIFICATION] = str(time.time() - time_start)
-
-    time_start = time.time()
     Segmentation.segment()
     time_info[Definitions.KEY_DURATION_SEGMENTATION] = str(time.time() - time_start)
 
@@ -60,6 +56,10 @@ def run():
     time_start = time.time()
     Weaving.weave()
     time_info[Definitions.KEY_DURATION_TRANSPLANTATION] = str(time.time() - time_start)
+
+    time_start = time.time()
+    Analysis.analyse()
+    time_info[Definitions.KEY_DURATION_CLASSIFICATION] = str(time.time() - time_start)
 
     time_check = time.time()
     Verify.verify()

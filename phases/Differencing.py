@@ -80,11 +80,11 @@ def load_values():
     global FILE_AST_SCRIPT, FILE_AST_DIFF_ERROR
     global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
 
-    Definitions.FILE_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/diff-info"
+    Definitions.FILE_ORIG_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/diff-info"
 
 
 def save_values():
-    Writer.write_as_json(diff_info, Definitions.FILE_DIFF_INFO)
+    Writer.write_as_json(diff_info, Definitions.FILE_ORIG_DIFF_INFO)
     save_current_state()
 
 
