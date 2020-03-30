@@ -30,6 +30,8 @@ def load_values():
     Values.Project_B = Project.Project(Values.PATH_B, "Pb")
     Values.Project_C = Project.Project(Values.PATH_C, "Pc")
     Values.Project_D = Project.Project(Values.PATH_C + "-patch", "Pd")
+    if Values.PATH_E:
+        Values.Project_E = Project.Project(Values.PATH_E, "Pe")
     load_standard_list()
 
 
@@ -71,7 +73,6 @@ def create_directories():
     create_fuzz_dir()
 
 
-
 def create_files():
     Definitions.FILE_PROJECT_A = Definitions.DIRECTORY_OUTPUT + "/project-A"
     open(Definitions.FILE_PROJECT_A, 'a').close()
@@ -81,6 +82,9 @@ def create_files():
     open(Definitions.FILE_PROJECT_C, 'a').close()
     Definitions.FILE_PROJECT_D = Definitions.DIRECTORY_OUTPUT + "/project-D"
     open(Definitions.FILE_PROJECT_D, 'a').close()
+    if Values.PATH_E:
+        Definitions.FILE_PROJECT_E = Definitions.DIRECTORY_OUTPUT + "/project-E"
+        open(Definitions.FILE_PROJECT_E, 'a').close()
     Logger.create()
 
 
@@ -91,7 +95,7 @@ def read_conf():
             if Definitions.ARG_DEBUG in arg:
                 Values.DEBUG = True
             elif Definitions.ARG_SKIP_ANALYSE in arg:
-                Values.SKIP_ANALYSE = True
+                Values.SKIP_DIFF = True
             elif Definitions.ARG_SKIP_SEGMENT in arg:
                 Values.SKIP_SEGMENT = True
             elif Definitions.ARG_SKIP_DETECTION in arg:
@@ -106,6 +110,8 @@ def read_conf():
                 Values.SKIP_WEAVE = True
             elif Definitions.ARG_SKIP_VERIFY in arg:
                 Values.SKIP_VERIFY = True
+            elif Definitions.ARG_SKIP_ANALYSE in arg:
+                Values.SKIP_ANALYSE = True
             elif Definitions.ARG_SKIP_TRANSLATION in arg:
                 Values.SKIP_TRANSLATION = True
             elif Definitions.ARG_SKIP_RESTORE in arg:
@@ -121,7 +127,7 @@ def read_conf():
                 Values.SKIP_RESTORE = True
                 Values.SKIP_BUILD = True
                 Values.SKIP_WEAVE = True
-                Values.SKIP_ANALYSE = True
+                Values.SKIP_DIFF = True
                 Values.SKIP_MAPPING = True
                 Values.SKIP_EXTRACTION = True
                 Values.SKIP_TRANSLATION = True
@@ -130,7 +136,18 @@ def read_conf():
             elif Definitions.ARG_ONLY_BUILD in arg:
                 Values.SKIP_VERIFY = True
                 Values.SKIP_WEAVE = True
-                Values.SKIP_ANALYSE = True
+                Values.SKIP_DIFF = True
+                Values.SKIP_MAPPING = True
+                Values.SKIP_EXTRACTION = True
+                Values.SKIP_TRANSLATION = True
+                Values.SKIP_DETECTION = True
+                Values.SKIP_SEGMENT = True
+            elif Definitions.ARG_ONLY_ANALYSE in arg:
+                Values.ONLY_ANALYSE = True
+                Values.SKIP_VERIFY = True
+                Values.SKIP_RESTORE = True
+                Values.SKIP_BUILD = True
+                Values.SKIP_DIFF = True
                 Values.SKIP_MAPPING = True
                 Values.SKIP_EXTRACTION = True
                 Values.SKIP_TRANSLATION = True
@@ -140,7 +157,7 @@ def read_conf():
                 Values.SKIP_VERIFY = True
                 Values.SKIP_RESTORE = True
                 Values.SKIP_BUILD = True
-                Values.SKIP_ANALYSE = True
+                Values.SKIP_DIFF = True
                 Values.SKIP_MAPPING = True
                 Values.SKIP_EXTRACTION = True
                 Values.SKIP_TRANSLATION = True
@@ -197,6 +214,12 @@ def read_conf():
                 Values.PATH_C = Values.PATH_C.replace("$HOME$", Definitions.DIRECTORY_MAIN)
             if str(Values.PATH_C)[-1] == "/":
                 Values.PATH_C = Values.PATH_C[:-1]
+        elif Definitions.CONF_PATH_E in configuration:
+            Values.PATH_E = configuration.replace(Definitions.CONF_PATH_E, '')
+            if "$HOME$" in Values.PATH_E:
+                Values.PATH_E = Values.PATH_E.replace("$HOME$", Definitions.DIRECTORY_MAIN)
+            if str(Values.PATH_E)[-1] == "/":
+                Values.PATH_E = Values.PATH_E[:-1]
         elif Definitions.CONF_PATH_POC in configuration:
             Values.PATH_POC = configuration.replace(Definitions.CONF_PATH_POC, '')
             if "$HOME$" in Values.PATH_POC:

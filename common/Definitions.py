@@ -47,6 +47,7 @@ FILE_PROJECT_A = ""
 FILE_PROJECT_B = ""
 FILE_PROJECT_C = ""
 FILE_PROJECT_D = ""
+FILE_PROJECT_E = ""
 
 
 FILE_EXCLUDED_EXTENSIONS = DIRECTORY_TMP + "/excluded-extensions"
@@ -64,6 +65,7 @@ FILE_FIND_RESULT = DIRECTORY_TMP + "/find_tmp"
 CONF_PATH_A = "path_a:"
 CONF_PATH_B = "path_b:"
 CONF_PATH_C = "path_c:"
+CONF_PATH_E = "path_e:"
 CONF_PATH_POC = "path_poc:"
 CONF_EXPLOIT_A = "exploit_command_a:"
 CONF_CONFIG_COMMAND_A = "config_command_a:"
@@ -85,6 +87,7 @@ CONF_VC = "version-control:"
 KEY_DURATION_TOTAL = 'run-time'
 KEY_DURATION_INITIALIZATION = 'initialization'
 KEY_DURATION_BUILD_ANALYSIS = "build-analysis"
+KEY_DURATION_CLASSIFICATION = "class-analysis"
 KEY_DURATION_DIFF_ANALYSIS = 'diff-analysis'
 KEY_DURATION_SEGMENTATION = 'segmentation'
 KEY_DURATION_CLONE_ANALYSIS = "clone-analysis"
@@ -119,6 +122,7 @@ ARG_SKIP_DETECTION = "--skip-detection"
 ARG_SKIP_EXTRACTION = "--skip-extraction"
 ARG_SKIP_MAPPING = "--skip-mapping"
 ARG_SKIP_TRANSLATION = "--skip-trans"
+ARG_ONLY_ANALYSE = "--only-analyse"
 
 # ----------------- TOOLS --------------------------------
 TOOL_VECGEN = "third-party/deckard/cvecgen_fail "

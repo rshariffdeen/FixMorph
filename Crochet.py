@@ -4,7 +4,7 @@
 
 import time
 from tools import Emitter, Logger
-from phases import Initialization, Building, Differencing, Segmentation, Detection, Mapping, Extraction, Translation, Weaving, Verify
+from phases import Initialization, Building, Differencing, Segmentation, Detection, Mapping, Extraction, Translation, Weaving, Verify, Analysis
 from common import Definitions
 from common.Utilities import error_exit, create_base_directories
 
@@ -32,6 +32,10 @@ def run():
     time_start = time.time()
     Differencing.diff()
     time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] = str(time.time() - time_start)
+
+    time_start = time.time()
+    Analysis.analyse()
+    time_info[Definitions.KEY_DURATION_CLASSIFICATION] = str(time.time() - time_start)
 
     time_start = time.time()
     Segmentation.segment()
