@@ -36,7 +36,7 @@ def safe_exec(function_def, title, *args):
 
 def load_values():
     if not Values.original_diff_info:
-        Values.original_diff_info = Reader.read_json(Definitions.FILE_ORIG_DIFF_INFO)
+        Values.original_diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
         load_state()
 
 
