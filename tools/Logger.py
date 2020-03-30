@@ -22,15 +22,15 @@ def create():
 
 def log(log_message):
     if "COMMAND" in log_message:
-        if os.path.isfile(Definitions.FILE_COMMAND_LOG):
-            with open(Definitions.FILE_COMMAND_LOG, 'a') as log_file:
-                log_file.write(log_message)
-    if os.path.isfile(Definitions.FILE_MAIN_LOG):
-        with open(Definitions.FILE_MAIN_LOG, 'a') as log_file:
+        # if os.path.isfile(Definitions.FILE_COMMAND_LOG):
+        with open(Definitions.FILE_COMMAND_LOG, 'a') as log_file:
             log_file.write(log_message)
-    if os.path.isfile(Definitions.FILE_LAST_LOG):
-        with open(Definitions.FILE_LAST_LOG, 'a') as log_file:
-            log_file.write(log_message)
+    # if os.path.isfile(Definitions.FILE_MAIN_LOG):
+    with open(Definitions.FILE_MAIN_LOG, 'a') as log_file:
+        log_file.write(log_message)
+    # if os.path.isfile(Definitions.FILE_LAST_LOG):
+    with open(Definitions.FILE_LAST_LOG, 'a') as log_file:
+        log_file.write(log_message)
 
 
 def information(message):
