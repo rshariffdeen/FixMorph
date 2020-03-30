@@ -205,6 +205,13 @@ def build_all():
     else:
         build_project(Values.Project_D.path, Values.BUILD_COMMAND_C)
 
+    if Values.PATH_E:
+        Emitter.normal("\t" + Values.Project_E.path)
+        if not Values.BUILD_COMMAND_C:
+            build_project(Values.Project_E.path)
+        else:
+            build_project(Values.Project_E.path, Values.BUILD_COMMAND_C)
+
 
 def config_all(is_llvm=False):
     Emitter.sub_sub_title("configuring projects")
@@ -232,6 +239,13 @@ def config_all(is_llvm=False):
         config_project(Values.Project_D.path, is_llvm)
     else:
         config_project(Values.Project_D.path, is_llvm, Values.CONFIG_COMMAND_C)
+
+    if Values.PATH_E:
+        Emitter.normal("\t" + Values.Project_E.path)
+        if not Values.CONFIG_COMMAND_C:
+            config_project(Values.Project_E.path, is_llvm)
+        else:
+            config_project(Values.Project_E.path, is_llvm, Values.CONFIG_COMMAND_C)
 
 
 def build_normal():
@@ -405,6 +419,9 @@ def restore_all():
     restore_project(Values.Project_C.path)
     Emitter.normal("\t" + Values.Project_D.path)
     restore_project(Values.Project_D.path)
+    if Values.PATH_E:
+        Emitter.normal("\t" + Values.Project_E.path)
+        restore_project(Values.Project_E.path)
 
 
 def soft_restore_all():
@@ -417,6 +434,9 @@ def soft_restore_all():
     soft_restore_project(Values.Project_C.path)
     Emitter.normal("\t" + Values.Project_D.path)
     soft_restore_project(Values.Project_D.path)
+    if Values.PATH_E:
+        Emitter.normal("\t" + Values.Project_E.path)
+        soft_restore_project(Values.Project_E.path)
 
 
 def clean_project(project_path):
@@ -441,3 +461,7 @@ def clean_all():
 
     Emitter.normal("\t" + Values.Project_D.path)
     clean_project(Values.Project_D.path)
+
+    if Values.PATH_E:
+        Emitter.normal("\t" + Values.Project_E.path)
+        clean_project(Values.Project_E.path)
