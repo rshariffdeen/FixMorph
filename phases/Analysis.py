@@ -71,10 +71,12 @@ def save_values():
     Writer.write_as_json(original_diff_info, Definitions.FILE_ORIG_DIFF_INFO)
     for path_a in original_diff_info:
         path_b = path_a.replace(Values.Project_A.path, Values.Project_B.path)
-        Writer.write_source_diff(path_a, path_b, Definitions.FILE_ORIG_DIFF)
+        diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + Definitions.FILE_ORIG_DIFF
+        execute_command(diff_command)
     for path_c in ported_diff_info:
-        path_e = path_c.replace(Values.Project_C.path, Values.Project_B.path)
-        Writer.write_source_diff(path_c, path_e, Definitions.FILE_PORT_DIFF)
+        path_e = path_c.replace(Values.Project_C.path, Values.Project_E.path)
+        diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + Definitions.FILE_PORT_DIFF
+        execute_command(diff_command)
     save_current_state()
 
 

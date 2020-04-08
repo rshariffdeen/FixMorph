@@ -7,6 +7,7 @@ import json
 from tools import Logger
 from common.Utilities import execute_command
 
+
 def write_as_json(data_list, output_file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     content = json.dumps(data_list)
@@ -73,7 +74,3 @@ def write_map_info(map_info, output_file_path):
         out_file.writelines(content)
 
 
-def write_source_diff(source_path_a, source_path_b, output_file):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    diff_command = "diff -ENZBbwr " + source_path_a + " " + source_path_b + " >> " + output_file
-    execute_command(diff_command)
