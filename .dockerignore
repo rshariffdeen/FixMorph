@@ -1,0 +1,6 @@
+.git
+output/
+logs/
+Dockerfile
+.gitignore
+.idea
