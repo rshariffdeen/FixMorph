@@ -1,6 +1,7 @@
 .git
 output/
 logs/
+experiment/
 Dockerfile
 .gitignore
 .idea
