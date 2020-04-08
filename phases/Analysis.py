@@ -69,11 +69,19 @@ def load_values():
 def save_values():
     Writer.write_as_json(ported_diff_info, Definitions.FILE_PORT_DIFF_INFO)
     Writer.write_as_json(original_diff_info, Definitions.FILE_ORIG_DIFF_INFO)
+    file_list_a = set()
+    file_list_c = set()
     for path_a in original_diff_info:
+        path_a = path_a.split(":")[0]
+        file_list_a.add(path_a)
+    for path_a in file_list_a:
         path_b = path_a.replace(Values.Project_A.path, Values.Project_B.path)
         diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + Definitions.FILE_ORIG_DIFF
         execute_command(diff_command)
     for path_c in ported_diff_info:
+        path_c = path_c.split(":")[0]
+        file_list_c.add(path_c)
+    for path_c in file_list_c:
         path_e = path_c.replace(Values.Project_C.path, Values.Project_E.path)
         diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + Definitions.FILE_PORT_DIFF
         execute_command(diff_command)
