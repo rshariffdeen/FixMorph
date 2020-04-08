@@ -102,9 +102,9 @@ def analyse():
                                        Values.PATH_A, Values.PATH_B)
         original_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Original Patch",
                                        Values.PATH_A, Values.PATH_B, original_diff_info)
-        ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
+        ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
                                      Values.PATH_C, Values.PATH_E)
-        ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Original Patch",
+        ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
                                      Values.PATH_C, Values.PATH_E, original_diff_info)
         save_values()
     else:
