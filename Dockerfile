@@ -3,6 +3,7 @@ MAINTAINER Ridwan Shariffdeen <ridwan@comp.nus.edu.sg>
 
 RUN apt-get update && apt-get install -y \
     autoconf \
+    apt-transport-https \
     autoconf-archive \
     autogen \
     bison \
