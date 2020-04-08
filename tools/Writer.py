@@ -5,7 +5,6 @@
 import sys
 import json
 from tools import Logger
-from common.Utilities import execute_command
 
 
 def write_as_json(data_list, output_file_path):
