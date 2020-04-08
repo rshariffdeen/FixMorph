@@ -111,9 +111,9 @@ def extract():
     Emitter.title("Generating AST for context matching")
     # Using all previous structures to transplant patch
     load_values()
-    if not Values.file_list_to_patch:
-        error_exit("no clone file detected to generate AST")
     if not Values.SKIP_EXTRACTION:
+        if not Values.file_list_to_patch:
+            error_exit("no clone file detected to generate AST")
         safe_exec(generate_script_for_files, "generating AST map", Values.file_list_to_patch)
         save_values()
     else:
