@@ -57,7 +57,7 @@ RUN echo "Y" | pysmt-install  --z
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
-ADD $PWD /crochet
+RUN https://github.com/rshariffdeen/crochet.git /crochet
 
 
 # Tidy up the container
