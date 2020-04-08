@@ -62,11 +62,19 @@ def load_values():
     global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
     Definitions.FILE_ORIG_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/orig-diff-info"
     Definitions.FILE_PORT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/port-diff-info"
+    Definitions.FILE_ORIG_DIFF = Definitions.DIRECTORY_OUTPUT + "/orig-diff"
+    Definitions.FILE_PORT_DIFF = Definitions.DIRECTORY_OUTPUT + "/port-diff"
 
 
 def save_values():
     Writer.write_as_json(ported_diff_info, Definitions.FILE_PORT_DIFF_INFO)
     Writer.write_as_json(original_diff_info, Definitions.FILE_ORIG_DIFF_INFO)
+    for path_a in original_diff_info:
+        path_b = path_a.replace(Values.Project_A.path, Values.Project_B.path)
+        Writer.write_source_diff(path_a, path_b, Definitions.FILE_ORIG_DIFF)
+    for path_c in ported_diff_info:
+        path_e = path_c.replace(Values.Project_C.path, Values.Project_B.path)
+        Writer.write_source_diff(path_c, path_e, Definitions.FILE_PORT_DIFF)
     save_current_state()
 
 
@@ -106,6 +114,7 @@ def analyse():
                                      Values.PATH_C, Values.PATH_E)
         ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
                                      Values.PATH_C, Values.PATH_E, ported_diff_info)
+
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

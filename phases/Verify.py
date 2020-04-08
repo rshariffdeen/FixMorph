@@ -53,8 +53,6 @@ def verify_behavior():
     Emitter.statistics("\t\tAverage test that failed only in Pd: " + str(total_errors/int(ITERATION_COUNT)))
 
 
-
-
 def safe_exec(function_def, title, *args):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     start_time = time.time()
