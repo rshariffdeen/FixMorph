@@ -4,10 +4,13 @@
 
 import sys
 import os
+import io
+import json
 from common.Utilities import execute_command, get_file_extension_list, error_exit
 from ast import Generator
 from tools import Mapper, Logger, Filter, Emitter
 from common import Values, Definitions
+from git import Repo
 
 
 def diff_files(output_diff_file, output_c_diff, output_h_diff,
@@ -19,10 +22,41 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
     extensions = get_file_extension_list(project_path_a, output_ext_a)
     extensions = extensions.union(get_file_extension_list(project_path_b, output_ext_b))
     untrack_file = Definitions.FILE_GIT_UNTRACKED_FILES
+
+    if Values.IS_LINUX_KERNEL:
+        repo = Repo(project_path_b)
+        patch_commit = repo.head.commit
+        parent_commit = patch_commit.parents[0]
+        diff_list = parent_commit.diff(patch_commit)
+        file_list = list()
+        c_file_list = list()
+        h_file_list = list()
+        for diff in diff_list:
+            file_list.append(diff.a_path)
+        for file_path in file_list:
+            if file_path[-1] == 'c':
+                c_file_list.append(file_path)
+            else:
+                h_file_list.append(file_path)
+
+        with open(output_c_diff, 'w') as c_diff:
+            for path_a in c_file_list:
+                if project_path_a not in path_a:
+                    path_a = project_path_a + "/" + path_a
+                path_b = path_a.replace(project_path_a, project_path_b)
+                c_diff.write("Files " + path_a + " and " + path_b + " differ")
+
+        with open(output_h_diff, 'w') as h_diff:
+            for path_a in h_file_list:
+                if project_path_a not in path_a:
+                    path_a = project_path_a + "/" + path_a
+                path_b = path_a.replace(project_path_a, project_path_b)
+                h_diff.write("Files " + path_a + " and " + path_b + " differ")
+        return
     if Values.VC == "git":
-        untracked_list_command = "cd " + Values.Project_A.path + ";"
+        untracked_list_command = "cd " + project_path_a + ";"
         untracked_list_command += "git ls-files --others  > " + untrack_file + ";"
-        untracked_list_command += "cd " + Values.Project_B.path + ";"
+        untracked_list_command += "cd " + project_path_b + ";"
         untracked_list_command += "git ls-files --others  >> " + untrack_file
         execute_command(untracked_list_command)
 
