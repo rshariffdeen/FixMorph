@@ -19,6 +19,7 @@ FILE_AST_DIFF_ERROR = ""
 
 ported_diff_info = dict()
 original_diff_info = dict()
+transplanted_diff_info = dict()
 
 
 def analyse_source_diff(path_a, path_b):
@@ -62,13 +63,16 @@ def load_values():
     global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
     Definitions.FILE_ORIG_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/orig-diff-info"
     Definitions.FILE_PORT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/port-diff-info"
+    Definitions.FILE_TRANSPLANT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/transplant-diff-info"
     Definitions.FILE_ORIG_DIFF = Definitions.DIRECTORY_OUTPUT + "/orig-diff"
     Definitions.FILE_PORT_DIFF = Definitions.DIRECTORY_OUTPUT + "/port-diff"
+    Definitions.FILE_TRANSPLANT_DIFF = Definitions.DIRECTORY_OUTPUT + "/transplant-diff"
 
 
 def save_values():
     Writer.write_as_json(ported_diff_info, Definitions.FILE_PORT_DIFF_INFO)
     Writer.write_as_json(original_diff_info, Definitions.FILE_ORIG_DIFF_INFO)
+    Writer.write_as_json(transplanted_diff_info, Definitions.FILE_TRANSPLANT_DIFF_INFO)
     file_list_a = set()
     file_list_c = set()
     for path_a in original_diff_info:
@@ -85,6 +89,11 @@ def save_values():
         path_e = path_c.replace(Values.Project_C.path, Values.Project_E.path)
         diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + Definitions.FILE_PORT_DIFF
         execute_command(diff_command)
+    if not Values.ONLY_ANALYSE:
+        for path_c in file_list_c:
+            path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
+            diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + Definitions.FILE_TRANSPLANT_DIFF
+            execute_command(diff_command)
     save_current_state()
 
 
@@ -110,7 +119,7 @@ def safe_exec(function_def, title, *args):
 
 def analyse():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global original_diff_info, ported_diff_info
+    global original_diff_info, ported_diff_info, transplanted_diff_info
     Emitter.title("Ported Patch Analysis")
     load_values()
     if not Values.PATH_E:
@@ -124,6 +133,12 @@ def analyse():
                                      Values.PATH_C, Values.PATH_E)
         ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
                                      Values.PATH_C, Values.PATH_E, ported_diff_info)
+
+        if not Values.ONLY_ANALYSE:
+            transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
+                                         Values.PATH_C, Values.PATH_D)
+            transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
+                                         Values.PATH_C, Values.PATH_D, transplanted_diff_info)
 
         save_values()
     else:
