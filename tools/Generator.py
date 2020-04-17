@@ -154,11 +154,11 @@ def generate_ast_json(file_path):
     return ast_json['root']
 
 
-def generate_untracked_file_list(output_file_path):
+def generate_untracked_file_list(output_file_path, project_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     file_list = list()
     Emitter.normal("\t\texcluding untracked files...")
-    list_command = 'cd ' + Values.Project_A.path + ';'
+    list_command = 'cd ' + project_path+ ';'
     list_command += 'git ls-files --others --exclude-standard > ' +  output_file_path
     execute_command(list_command)
     Emitter.normal("\t\tuntracked files:")

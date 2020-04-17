@@ -40,7 +40,7 @@ def analyse_source_diff():
                       Values.PATH_B)
 
     Emitter.sub_sub_title("analysing untracked files")
-    untracked_file_list = Generator.generate_untracked_file_list(Definitions.FILE_EXCLUDED_EXTENSIONS)
+    untracked_file_list = Generator.generate_untracked_file_list(Definitions.FILE_EXCLUDED_EXTENSIONS, Values.PATH_A)
     Emitter.sub_sub_title("analysing header files")
     diff_h_file_list = Differ.diff_h_files(Definitions.FILE_DIFF_H, Values.PATH_A, untracked_file_list)
     Emitter.sub_sub_title("analysing C/CPP source files")
