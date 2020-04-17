@@ -253,8 +253,7 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
                                                                              file_d
                                                                              ))
 
-                if not (Values.IS_LINUX_KERNEL and missing_function_list_source):
-                    script_file.write(instruction + "\n")
+            script_file.write(instruction + "\n")
 
     output_file = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
     backup_command = ""
