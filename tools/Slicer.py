@@ -27,5 +27,7 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
                 ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
 
     # print(ast_script)
-    Transformer.transform_source_file(source_path, ast_script)
+    output_file_name = "." + segment_code + "." + segment_identifier + ".slice"
+    output_file_path = source_path + output_file_name
+    Transformer.transform_source_file(source_path, ast_script, output_file_path)
 

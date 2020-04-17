@@ -9,7 +9,7 @@ from ast import Generator as ASTGenerator
 from tools import Extractor, Oracle, Logger, Filter, Emitter
 
 
-def transform_source_file(source_path, ast_script):
+def transform_source_file(source_path, ast_script, output_file=None):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     with open(Definitions.FILE_AST_SCRIPT, "w") as script_file:
         for script_line in ast_script:
@@ -23,8 +23,9 @@ def transform_source_file(source_path, ast_script):
 
     if source_path[-1] == 'h':
         transform_command += " --"
-    transform_command += " 2> output/errors > " + Definitions.FILE_TEMP_TRANSFORM + ";"
-    transform_command += "cp " + Definitions.FILE_TEMP_TRANSFORM + " " + source_path
-
-    # print(patch_command)
+    if not output_file:
+        output_file = Definitions.FILE_TEMP_TRANSFORM
+    transform_command += " 2> output/errors > " + output_file
+    if not output_file:
+        transform_command += "; cp " + Definitions.FILE_TEMP_TRANSFORM + " " + source_path
     execute_command(transform_command)

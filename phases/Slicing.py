@@ -9,9 +9,10 @@ from common import Values
 from tools import Logger, Emitter, Slicer
 
 
-def remove_code(file_list_to_patch):
+def slice_code(file_list_to_patch):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("slicing unrelated segments")
+
+    Emitter.sub_sub_title("slicing unrelated segments")
 
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
         vector_source_a = ""
@@ -21,6 +22,7 @@ def remove_code(file_list_to_patch):
         segment_code = ""
         vector_name_a = ""
         vector_name_c = ""
+
         try:
             if "func_" in vec_path_a:
                 vector_source_a, vector_name_a = vec_path_a.split(".func_")
@@ -80,5 +82,5 @@ def slice():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Slicing Source Files")
     if not Values.SKIP_SLICE:
-        safe_exec(remove_code, "slicing segments not in diff", Values.file_list_to_patch)
+        safe_exec(slice_code, "slice segments", Values.file_list_to_patch)
 
