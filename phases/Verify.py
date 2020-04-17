@@ -100,6 +100,6 @@ def verify():
         if Values.PATH_POC:
             safe_exec(verify_exploit, "verifying exploit")
             safe_exec(verify_behavior, "verifying differential behavior")
-            safe_exec(commit_changes, "committing changes to git")
+        safe_exec(commit_changes, "committing changes to git")
     else:
         Emitter.special("\n\t-skipping this phase-")
