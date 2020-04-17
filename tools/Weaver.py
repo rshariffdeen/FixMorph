@@ -28,24 +28,6 @@ def execute_ast_transformation(script_path, source_file_info):
     file_a, file_b, file_c, file_d = source_file_info
     Emitter.normal("\t\texecuting AST transformation")
 
-    parameters = " -s=" + Definitions.PATCH_SIZE
-    parameters += " -script=" + script_path + " -source=" + file_a
-    parameters += " -destination=" + file_b + " -target=" + file_c
-
-    patch_command = Definitions.PATCH_COMMAND + parameters + " > " + FILE_TEMP_FIX
-
-    ret_code = int(execute_command(patch_command))
-
-    if ret_code == 0:
-        move_command = "cp " + FILE_TEMP_FIX + " " + source_path_d
-        show_partial_diff(source_path_d, FILE_TEMP_FIX)
-        execute_command(move_command)
-    else:
-        error_exit("\t AST transformation FAILED")
-
-    if os.stat(source_path_d).st_size == 0:
-        error_exit("\t AST transformation FAILED")
-
     output_file = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
     backup_command = ""
     # We add file_c into our dict (changes) to be able to backup and copy it
@@ -58,17 +40,20 @@ def execute_ast_transformation(script_path, source_file_info):
     # print(backup_command)
     execute_command(backup_command)
 
-    # We apply the patch using the script and crochet-patch
-    # execute_ast_transformation(file_b, file_d, (FILE_EMPTY, script_file_name, FILE_EMPTY))
+    parameters = " -s=" + Definitions.PATCH_SIZE
+    parameters += " -script=" + script_path + " -source=" + file_a
+    parameters += " -destination=" + file_b + " -target=" + file_c
 
+    patch_command = Definitions.PATCH_COMMAND + parameters + " > " + FILE_TEMP_FIX
 
-    if file_c[-1] == 'h':
-        patch_command += " --"
-    patch_command += " 2> output/errors > " + output_file + "; "
-    patch_command += "cp " + output_file + " " + file_d
+    ret_code = int(execute_command(patch_command))
 
-    # print(patch_command)
-    execute_command(patch_command)
+    if ret_code == 0:
+        move_command = "cp " + FILE_TEMP_FIX + " " + file_d
+        show_partial_diff(file_d, FILE_TEMP_FIX)
+        execute_command(move_command)
+    else:
+        error_exit("\t AST transformation FAILED")
 
     if os.stat(file_d).st_size == 0:
         error_exit("\t AST transformation FAILED")
@@ -287,7 +272,8 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
 
             script_file.write(instruction + "\n")
 
-
+    file_info = file_a, file_b, file_c, file_d
+    execute_ast_transformation(script_file, file_info)
     # We fix basic syntax errors that could have been introduced by the patch
     fix_command = Definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
 
