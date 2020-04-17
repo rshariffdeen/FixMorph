@@ -226,8 +226,8 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
     file_d = str(file_c).replace(Values.Project_C.path, Values.Project_D.path)
 
     # Check for an edit script
-    script_file_name = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_script"
-    syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_syntax_errors"
+    script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_script"
+    syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_syntax_errors"
     with open(script_file_name, 'w') as script_file:
         count = 0
         for instruction in instruction_list:
