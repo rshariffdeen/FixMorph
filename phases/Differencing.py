@@ -94,7 +94,7 @@ def diff():
     load_values()
     if not Values.SKIP_DIFF:
         safe_exec(analyse_source_diff, "analysing source diff")
-        safe_exec(analyse_ast_diff, "analysing ast diff")
+        # safe_exec(analyse_ast_diff, "analysing ast diff")
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")
