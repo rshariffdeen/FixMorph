@@ -98,6 +98,20 @@ def insert_code(patch_code, source_path, line_number):
         source_file.writelines(content)
 
 
+def insert_code_range(patch_code, source_path, line_number):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    content = ""
+
+    if os.path.exists(source_path):
+        with open(source_path, 'r') as source_file:
+            content = source_file.readlines()
+
+    updated_content = content[:line_number-1] + patch_code + content[line_number:]
+
+    with open(source_path, 'w') as source_file:
+        source_file.writelines(updated_content)
+
+
 def delete_code(source_path, start_line, end_line):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     content = ""
@@ -353,7 +367,7 @@ def weave_slice(slice_info):
             slice_file, end_line_source, start_line_slice, end_line_slice = weave_list[start_line_source]
             slice_code = get_code_range(slice_file, start_line_slice, end_line_slice)
             delete_code(source_file_d, start_line_source, end_line_source)
-            insert_code(slice_code, source_file_d, start_line_source)
+            insert_code_range(slice_code, source_file_d, start_line_source)
 
         source_file_a = source_file_b.replace(Values.PATH_B, Values.PATH_A)
         show_patch(source_file_c, source_file_d)
