@@ -1,7 +1,7 @@
 import time
 import sys
 from common import Values, Definitions
-from common.Utilities import error_exit, save_current_state, load_state
+from common.Utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import Emitter, Weaver, Reader, Logger, Fixer, Merger
 
 file_index = 1
@@ -70,7 +70,21 @@ def transplant_code():
     if not Values.translated_script_for_files:
         error_exit("nothing to transplant")
     for file_list, generated_data in Values.translated_script_for_files.items():
-        Emitter.sub_sub_title(file_list[2])
+        slice_file_a = file_list[0]
+        slice_file_b = file_list[1]
+        slice_file_c = file_list[2]
+        vector_source_a = get_source_name_from_slice(slice_file_a)
+        vector_source_b = get_source_name_from_slice(slice_file_b)
+        vector_source_c = get_source_name_from_slice(slice_file_c)
+
+        backup_file_orig(vector_source_a)
+        backup_file_orig(vector_source_b)
+        backup_file_orig(vector_source_c)
+        replace_file(slice_file_a, vector_source_a)
+        replace_file(slice_file_b, vector_source_b)
+        replace_file(slice_file_c, vector_source_c)
+
+        Emitter.sub_sub_title(vector_source_c)
         Emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
         Emitter.emit_ast_script(original_script)
@@ -78,7 +92,11 @@ def transplant_code():
         translated_script = generated_data[0]
         Emitter.emit_ast_script(translated_script)
         identified_missing_function_list, \
-        identified_missing_macro_list, modified_source_list = Weaver.weave_code(file_list[0], file_list[1], file_list[2], translated_script, modified_source_list)
+        identified_missing_macro_list, modified_source_list = Weaver.weave_code(vector_source_a,
+                                                                                vector_source_b,
+                                                                                vector_source_c,
+                                                                                translated_script,
+                                                                                modified_source_list)
         file_index += 1
         if missing_function_list:
             if identified_missing_function_list:
@@ -91,6 +109,10 @@ def transplant_code():
                 missing_macro_list = Merger.merge_macro_info(missing_macro_list, identified_missing_macro_list)
         else:
             missing_macro_list = identified_missing_macro_list
+
+        restore_file_orig(vector_source_a)
+        restore_file_orig(vector_source_b)
+        restore_file_orig(vector_source_c)
 
 
 def load_values():
