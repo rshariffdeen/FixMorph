@@ -72,6 +72,7 @@ def load_values():
     Definitions.FILE_TRANSPLANT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/transplant-diff-info"
     Definitions.FILE_ORIG_DIFF = Definitions.DIRECTORY_OUTPUT + "/orig-diff"
     Definitions.FILE_PORT_DIFF = Definitions.DIRECTORY_OUTPUT + "/port-diff"
+    Definitions.FILE_COMPARISON_RESULT = Definitions.DIRECTORY_OUTPUT + "/comparison-result"
     Definitions.FILE_TRANSPLANT_DIFF = Definitions.DIRECTORY_OUTPUT + "/transplant-diff"
 
 
@@ -95,11 +96,17 @@ def save_values():
         path_e = path_c.replace(Values.Project_C.path, Values.Project_E.path)
         diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + Definitions.FILE_PORT_DIFF
         execute_command(diff_command)
-    if not Values.ONLY_ANALYSE:
-        for path_c in file_list_c:
-            path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
-            diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + Definitions.FILE_TRANSPLANT_DIFF
-            execute_command(diff_command)
+    for path_c in file_list_c:
+        path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
+        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + Definitions.FILE_TRANSPLANT_DIFF
+        execute_command(diff_command)
+    with open(Definitions.FILE_COMPARISON_RESULT) as result_file:
+        if transplanted_diff_info == ported_diff_info:
+            result = "IDENTICAL"
+        else:
+            result = "NOT-IDENTICAL"
+        result_file.write(result)
+
     save_current_state()
 
 
@@ -143,9 +150,7 @@ def compare():
         transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
                                          Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
 
-        print(ported_diff_info)
-        print(transplanted_diff_info)
-
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")
+
