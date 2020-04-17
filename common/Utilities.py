@@ -198,7 +198,7 @@ def restore_file_orig(file_path):
     execute_command(restore_command)
 
 
-def get_souce_name_from_slice(slice_path):
+def get_source_name_from_slice(slice_path):
     if ".c." in slice_path:
         source_path = slice_path.split(".c.")[0] + ".c"
     else:

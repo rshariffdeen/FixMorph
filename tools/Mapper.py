@@ -1,5 +1,5 @@
 from common import Definitions
-from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_souce_name_from_slice
+from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import Emitter, Logger
 from ast import Generator
 import sys
@@ -92,8 +92,8 @@ def generate(generated_script_files):
         for file_list, generated_data in generated_script_files.items():
             slice_file_a = file_list[0]
             slice_file_c = file_list[2]
-            vector_source_a = get_souce_name_from_slice(slice_file_a)
-            vector_source_c = get_souce_name_from_slice(slice_file_c)
+            vector_source_a = get_source_name_from_slice(slice_file_a)
+            vector_source_c = get_source_name_from_slice(slice_file_c)
 
             backup_file_orig(vector_source_a)
             backup_file_orig(vector_source_c)

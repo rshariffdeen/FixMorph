@@ -1,6 +1,6 @@
 import sys
 from common import Definitions, Values
-from common.Utilities import execute_command, error_exit
+from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import Emitter, Logger
 from ast import Parser
 
@@ -790,6 +790,20 @@ def translate_script_list(generated_script_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     translated_script_list = dict()
     for file_list, generated_data in generated_script_list.items():
+        slice_file_a = file_list[0]
+        slice_file_b = file_list[1]
+        slice_file_c = file_list[2]
+        vector_source_a = get_source_name_from_slice(slice_file_a)
+        vector_source_b = get_source_name_from_slice(slice_file_b)
+        vector_source_c = get_source_name_from_slice(slice_file_c)
+
+        backup_file_orig(vector_source_a)
+        backup_file_orig(vector_source_b)
+        backup_file_orig(vector_source_c)
+        replace_file(slice_file_a, vector_source_a)
+        replace_file(slice_file_b, vector_source_b)
+        replace_file(slice_file_c, vector_source_c)
+
         json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
 
         original_script = list()
@@ -806,5 +820,8 @@ def translate_script_list(generated_script_list):
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                      generated_data[2], map_ac)
         translated_script_list[file_list] = (translated_script, original_script)
+        restore_file_orig(vector_source_a)
+        restore_file_orig(vector_source_b)
+        restore_file_orig(vector_source_c)
     return translated_script_list
 
