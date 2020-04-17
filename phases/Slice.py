@@ -80,5 +80,5 @@ def slice():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Slicing Source Files")
     if not Values.SKIP_SLICE:
-        safe_exec(remove_code, "slicing segments not in diff")
+        safe_exec(remove_code, "slicing segments not in diff", Values.file_list_to_patch)
 
