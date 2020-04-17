@@ -104,7 +104,7 @@ def save_values():
         if transplanted_diff_info == ported_diff_info:
             result = "IDENTICAL"
         else:
-            result = "NOT-IDENTICAL"
+            result = "DIFFERENT"
         result_file.write(result)
 
     save_current_state()
