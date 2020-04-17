@@ -15,7 +15,7 @@ def transform_source_file(source_path, ast_script, output_file):
         for script_line in ast_script:
             if script_line != ast_script[-1]:
                 script_line = script_line + "\n"
-            script_file.write(ast_script)
+            script_file.write(script_line)
 
     transform_command = Definitions.PATCH_COMMAND + " -s=" + Definitions.PATCH_SIZE + \
          " -script=" + Definitions.FILE_AST_SCRIPT + " -source=" + source_path + \
