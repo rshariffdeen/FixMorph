@@ -804,7 +804,7 @@ def translate_script_list(generated_script_list):
         replace_file(slice_file_c, vector_source_c)
 
         Emitter.sub_sub_title("Generating AST in JSON")
-        json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
+        json_ast_dump = gen_temp_json(vector_source_a, vector_source_b, vector_source_c)
 
         original_script = list()
         for instruction in generated_data[0]:
