@@ -264,7 +264,7 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
         count = 0
         for instruction in instruction_list:
             count = count + 1
-            Emitter.normal("\t[action]transplanting code segment " + str(count))
+            # Emitter.normal("\t[action]transplanting code segment " + str(count))
             if "Insert" in instruction:
                 insert_node_id = instruction.split("(")[1].split(")")[0]
                 inserting_node = Finder.search_ast_node_by_id(ast_map_b, int(insert_node_id))
