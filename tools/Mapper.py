@@ -22,7 +22,7 @@ def map_ast_from_source(source_a, source_b, script_file_path):
 def generate_map(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
-    Emitter.normal("\t\t" + name_a + Definitions.TO + name_b + "...")
+    Emitter.normal("\t\t" + file_a + Definitions.TO + file_b + "...")
     try:
         extra_arg = ""
         if file_a[-1] == 'h':
