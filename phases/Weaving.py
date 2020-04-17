@@ -174,6 +174,7 @@ def weave():
     load_values()
     if not Values.SKIP_WEAVE:
         safe_exec(transplant_code, "transforming slices")
+        safe_exec(weave_slices(), "weaving slices")
         if missing_function_list:
             safe_exec(transplant_missing_functions, "transplanting functions")
         if missing_data_type_list:
