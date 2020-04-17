@@ -84,7 +84,6 @@ def cmp_to_key(mycmp):
 
 
 def gen_temp_json(file_a, file_b, file_c):
-    Emitter.normal("Generating JSON temp files for each pertinent file...")
     ASTlists = dict()
     try:
         gen_json(file_a, Values.Project_A.name, ASTlists)
@@ -105,7 +104,7 @@ def ASTdump(file, output):
 
 
 def gen_json(file, name, ASTlists):
-    Emitter.normal("\t\tClang AST parse " + file + " in " + name + "...")
+    Emitter.normal("\t\tClang AST parse " + file + " in " + name)
     json_file = "output/json_" + name
     ASTdump(file, json_file)
     ASTlists[name] = Parser.AST_from_file(json_file)
@@ -804,6 +803,7 @@ def translate_script_list(generated_script_list):
         replace_file(slice_file_b, vector_source_b)
         replace_file(slice_file_c, vector_source_c)
 
+        Emitter.sub_sub_title("Generating AST in JSON")
         json_ast_dump = gen_temp_json(file_list[0], file_list[1], file_list[2])
 
         original_script = list()
