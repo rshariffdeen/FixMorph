@@ -122,7 +122,7 @@ def debug(message):
 def start():
     Logger.create()
     now = datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)");
-    write("\n\n" + "#"*100 + "\n\n\tCrochet - Horizontal Code Edit Transfer\n\tTest conducted on: " + now + "\n\n" + "#"*100, BLUE)
+    write("\n\n" + "#"*100 + "\n\n\tCrochet - Vertical Code Edit Transfer\n\tTest conducted on: " + now + "\n\n" + "#"*100, BLUE)
 
 
 def end(time_info):
