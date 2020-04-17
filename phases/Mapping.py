@@ -24,7 +24,7 @@ def load_values():
 def safe_exec(function_def, title, *args):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     start_time = time.time()
-    Emitter.sub_title(title)
+    Emitter.sub_title("Starting " + title + "...")
     description = title[0].lower() + title[1:]
     try:
         Logger.information("running " + str(function_def))
@@ -53,7 +53,7 @@ def map():
     if not Values.SKIP_MAPPING:
         if not Values.generated_script_files:
             error_exit("no ast to map")
-        safe_exec(generate_map, 'deriving variable/data-structure mapping')
+        safe_exec(generate_map, 'derivation of variable/data-structure map')
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

@@ -181,3 +181,27 @@ def clean_parse(content, separator):
 
 def is_intersect(start, end, start2, end2):
     return not (end2 < start or start2 > end)
+
+
+def backup_file_orig(file_path):
+    backup_command = "cp " + file_path + " " + file_path + ".orig"
+    execute_command(backup_command)
+
+
+def replace_file(file_a, file_b):
+    replace_command = "cp " + file_a + " " + file_b
+    execute_command(replace_command)
+
+
+def restore_file_orig(file_path):
+    restore_command = "cp " + file_path + ".orig " + file_path
+    execute_command(restore_command)
+
+
+def get_souce_name_from_slice(slice_path):
+    if ".c." in slice_path:
+        source_path = slice_path.split(".c.")[0] + ".c"
+    else:
+        source_path = slice_path.split(".h.")[0] + ".h"
+    return source_path
+

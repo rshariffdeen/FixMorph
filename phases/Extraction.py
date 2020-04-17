@@ -5,7 +5,7 @@
 import os
 import time
 from common import Definitions, Values
-from common.Utilities import execute_command, error_exit, save_current_state
+from common.Utilities import execute_command, error_exit, save_current_state, backup_file_orig, restore_file_orig, replace_file
 from tools import Emitter, Collector, Reader, Writer, Slicer
 from ast import Vector
 
@@ -14,7 +14,7 @@ generated_script_list = dict()
 
 def generate_edit_script(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
-    Emitter.normal("\t" + name_a)
+    Emitter.normal("\t\t\tgenerating transformation script")
     try:
         extra_arg = ""
         if file_a[-1] == 'h':
@@ -25,21 +25,6 @@ def generate_edit_script(file_a, file_b, output_file):
         execute_command(command, False)
     except Exception as e:
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
-
-
-def backup_file(file_path):
-    backup_command = "cp " + file_path + " " + file_path + ".orig"
-    execute_command(backup_command)
-
-
-def replace_file(file_a, file_b):
-    replace_command = "cp " + file_a + " " + file_b
-    execute_command(replace_command)
-
-
-def restore_file(file_path):
-    restore_command = "cp " + file_path + ".orig " + file_path
-    execute_command(restore_command)
 
 
 def generate_script_for_files(file_list_to_patch):
@@ -57,17 +42,19 @@ def generate_script_for_files(file_list_to_patch):
             if vector_source_a in generated_source_list:
                 continue
 
+            Emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
+
             slice_file_a = vector_source_a + "." + segment_code + "." + vector_name_a.replace(".vec", "") + ".slice"
             slice_file_b = vector_source_b + "." + segment_code + "." + vector_name_b.replace(".vec", "") + ".slice"
             slice_file_c = vector_source_c + "." + segment_code + "." + vector_name_c.replace(".vec", "") + ".slice"
 
-            backup_file(vector_source_a)
-            backup_file(vector_source_b)
+            backup_file_orig(vector_source_a)
+            backup_file_orig(vector_source_b)
             replace_file(slice_file_a, vector_source_a)
             replace_file(slice_file_b, vector_source_b)
             generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
-            restore_file(vector_source_a)
-            restore_file(vector_source_b)
+            restore_file_orig(vector_source_a)
+            restore_file_orig(vector_source_b)
 
             original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
             generated_data = (original_script, inserted_node_list, map_ab)
@@ -116,7 +103,7 @@ def extract():
     if not Values.SKIP_EXTRACTION:
         if not Values.file_list_to_patch:
             error_exit("no clone file detected to generate AST")
-        safe_exec(generate_script_for_files, "extraction of AST mapping", Values.file_list_to_patch)
+        safe_exec(generate_script_for_files, "extraction of AST transformation", Values.file_list_to_patch)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")
