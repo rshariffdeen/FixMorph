@@ -102,7 +102,7 @@ def delete_code(source_path, start_line, end_line):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     content = ""
     if os.path.exists(source_path):
-        with open(source_path, 'r') as source_file:
+        with open(source_path, 'r+') as source_file:
             content = source_file.readlines()
             source_file.seek(0)
             source_file.truncate()
