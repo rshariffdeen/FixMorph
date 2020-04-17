@@ -157,12 +157,17 @@ def generate_ast_json(file_path):
 def generate_untracked_file_list(output_file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     file_list = list()
+    Emitter.normal("\t\texcluding untracked files...")
     list_command = 'cd ' + Values.Project_A.path + ';'
     list_command += 'git ls-files --others --exclude-standard > ' +  output_file_path
     execute_command(list_command)
+    Emitter.normal("\t\tuntracked files:")
     with open(output_file_path, 'r') as output_file:
         file_name = output_file.readline().strip()
         while file_name:
+            Emitter.normal("\t\t\t" + file_name)
             file_list.append(file_name)
             file_name = output_file.readline().strip()
+    if not file_list:
+        Emitter.normal("\t\t\t-none-")
     return file_list

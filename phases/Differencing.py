@@ -6,7 +6,7 @@ import sys
 import time
 from common.Utilities import error_exit, save_current_state
 from common import Definitions, Values
-from tools import Logger, Emitter, Differ, Writer, Merger, Generator
+from tools import Logger, Emitter, Differ, Writer, Merger, Generator, Identifier
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -18,6 +18,13 @@ FILE_AST_SCRIPT = ""
 FILE_AST_DIFF_ERROR = ""
 
 diff_info = dict()
+
+
+def segment_code():
+    global diff_info
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.sub_sub_title("identifying modified segments")
+    Identifier.identify_code_segment(diff_info, Values.Project_A)
 
 
 def analyse_source_diff():
@@ -39,8 +46,14 @@ def analyse_source_diff():
     Emitter.sub_sub_title("analysing C/CPP source files")
     diff_c_file_list = Differ.diff_c_files(Definitions.FILE_DIFF_C, Values.PATH_A, untracked_file_list)
     Emitter.sub_sub_title("analysing changed code lines")
-    diff_info_c = Differ.diff_line(diff_c_file_list, Definitions.FILE_TEMP_DIFF)
-    diff_info_h = Differ.diff_line(diff_h_file_list, Definitions.FILE_TEMP_DIFF)
+    diff_info_c = dict()
+    diff_info_h = dict()
+    if diff_c_file_list:
+        Emitter.normal("\t\tcollecting diff line information for C/CPP files")
+        diff_info_c = Differ.diff_line(diff_c_file_list, Definitions.FILE_TEMP_DIFF)
+    if diff_h_file_list:
+        Emitter.normal("\t\tcollecting diff line information for header files")
+        diff_info_h = Differ.diff_line(diff_h_file_list, Definitions.FILE_TEMP_DIFF)
     diff_info = Merger.merge_diff_info(diff_info_c, diff_info_h)
 
 
@@ -94,7 +107,7 @@ def diff():
     load_values()
     if not Values.SKIP_DIFF:
         safe_exec(analyse_source_diff, "analysing source diff")
-        # safe_exec(analyse_ast_diff, "analysing ast diff")
+        safe_exec(segment_code, "segmentation of code")
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

@@ -131,7 +131,6 @@ def diff_c_files(diff_file_path, project_path_a, untracked_file_list):
 
 def diff_line(diff_file_list, output_file):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\tcollecting diff line information ...")
     diff_info = dict()
     for diff_file in diff_file_list:
         file_a = diff_file[0]
