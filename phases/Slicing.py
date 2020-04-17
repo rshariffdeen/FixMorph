@@ -49,6 +49,8 @@ def slice_code(file_list_to_patch):
             vector_name_d = vector_name_a.replace(Values.PATH_C, Values.Project_D.path)
             vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
 
+            Emitter.normal("\t\t" + segment_code + vector_name_a.replace(".vec", ""))
+
             Slicer.slice_source_file(vector_source_a, segment_code, vector_name_a.replace(".vec", ""), Values.PATH_A)
             Slicer.slice_source_file(vector_source_b, segment_code, vector_name_b.replace(".vec", ""), Values.PATH_B)
             Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""), Values.PATH_C)
