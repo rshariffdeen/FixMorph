@@ -27,6 +27,21 @@ def generate_edit_script(file_a, file_b, output_file):
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
 
 
+def backup_file(file_path):
+    backup_command = "cp " + file_path + " " + file_path + ".orig"
+    execute_command(backup_command)
+
+
+def replace_file(file_a, file_b):
+    replace_command = "cp " + file_a + " " + file_b
+    execute_command(replace_command)
+
+
+def restore_file(file_path):
+    restore_command = "cp " + file_path + ".orig " + file_path
+    execute_command(restore_command)
+
+
 def generate_script_for_files(file_list_to_patch):
     global generated_script_list
     generated_source_list = list()
@@ -46,7 +61,14 @@ def generate_script_for_files(file_list_to_patch):
             slice_file_b = vector_source_b + "." + segment_code + "." + vector_name_b.replace(".vec", "") + ".slice"
             slice_file_c = vector_source_c + "." + segment_code + "." + vector_name_c.replace(".vec", "") + ".slice"
 
-            generate_edit_script(slice_file_a, slice_file_b, script_file_ab)
+            backup_file(vector_source_a)
+            backup_file(vector_source_b)
+            replace_file(slice_file_a, vector_source_a)
+            replace_file(slice_file_b, vector_source_b)
+            generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
+            restore_file(vector_source_a)
+            restore_file(vector_source_b)
+
             original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
             generated_data = (original_script, inserted_node_list, map_ab)
             generated_script_list[(slice_file_a, slice_file_b, slice_file_c)] = generated_data
