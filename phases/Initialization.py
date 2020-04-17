@@ -169,6 +169,28 @@ def read_conf():
                 Values.SKIP_BUILD = True
             elif Definitions.ARG_LINUX_KERNEL in arg:
                 Values.IS_LINUX_KERNEL = True
+            elif Definitions.ARG_ONLY_COMPARISON in arg:
+                Values.SKIP_VERIFY = True
+                Values.SKIP_WEAVE = True
+                Values.SKIP_BUILD = True
+                Values.SKIP_DIFF = True
+                Values.SKIP_MAPPING = True
+                Values.SKIP_EXTRACTION = True
+                Values.SKIP_TRANSLATION = True
+                Values.SKIP_DETECTION = True
+                Values.SKIP_SEGMENT = True
+                Values.SKIP_SUMMARY = True
+            elif Definitions.ARG_ONLY_SUMMARIZE in arg:
+                Values.SKIP_VERIFY = True
+                Values.SKIP_WEAVE = True
+                Values.SKIP_DIFF = True
+                Values.SKIP_MAPPING = True
+                Values.SKIP_EXTRACTION = True
+                Values.SKIP_TRANSLATION = True
+                Values.SKIP_DETECTION = True
+                Values.SKIP_BUILD = True
+                Values.SKIP_COMPARE = True
+                Values.SKIP_SEGMENT = True
             elif "Crochet.py" in arg:
                 continue
             else:
