@@ -299,7 +299,7 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
     #     format_command += " --"
     # format_command += " > " + output_file + "; "
     # execute_command(format_command)
-    show_patch(file_a, file_b, file_c, file_d, str(file_index))
+    # show_patch(file_a, file_b, file_c, file_d, str(file_index))
     #
     # c5 = "cp " + output_file + " " + file_c + ";"
     # execute_command(c5)

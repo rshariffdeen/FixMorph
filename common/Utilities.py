@@ -114,7 +114,7 @@ def reset_git(source_directory):
 
 def show_partial_diff(source_path_a, source_path_b):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\tTransplanted Code:")
+    Emitter.highlight("\tTransplanted Code")
     output_file = Definitions.FILE_PARTIAL_PATCH
     diff_command = "diff -ENZBbwr " + source_path_a + " " + source_path_b + " > " + output_file
     execute_command(diff_command)
