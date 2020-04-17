@@ -35,43 +35,30 @@ def generate_script_for_files(file_list_to_patch):
         vector_source_a = ""
         vector_source_b = ""
         vector_source_c = ""
-        vector_source_d = ""
-        segment_code = ""
-        vector_name_a = ""
-        vector_name_c = ""
+
         try:
             if "func_" in vec_path_a:
                 vector_source_a, vector_name_a = vec_path_a.split(".func_")
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                 vector_source_c, vector_name_c = vec_path_c.split(".func_")
-                segment_code = 'func'
+
             elif "struct_" in vec_path_a:
                     vector_source_a, vector_name_a = vec_path_a.split(".struct_")
                     vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                     vector_source_c, vector_name_c = vec_path_c.split(".struct_")
-                    segment_code = 'struct'
+
             elif "enum_" in vec_path_a:
                 vector_source_a, vector_name_a = vec_path_a.split(".enum_")
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                 vector_source_c, vector_name_c = vec_path_c.split(".enum_")
-                segment_code = 'enum'
+
             elif "var_" in vec_path_a:
                 vector_source_a, vector_name_a = vec_path_a.split(".var_")
                 vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
                 vector_source_c, vector_name_c = vec_path_c.split(".var_")
-                segment_code = 'var'
-
-            vector_name_b = vector_name_a.replace(Values.PATH_A, Values.PATH_B)
-            vector_name_d = vector_name_a.replace(Values.PATH_C, Values.Project_D.path)
-            vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
 
             if vector_source_a in generated_source_list:
                 continue
-
-            Slicer.slice_source_file(vector_source_a, segment_code, vector_name_a.replace(".vec", ""), Values.PATH_A)
-            Slicer.slice_source_file(vector_source_b, segment_code, vector_name_b.replace(".vec", ""), Values.PATH_B)
-            Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""), Values.PATH_C)
-            Slicer.slice_source_file(vector_source_d, segment_code, vector_name_d.replace(".vec", ""), Values.Project_D.path)
 
             generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
             original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)

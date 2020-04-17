@@ -4,7 +4,7 @@
 
 import time
 from tools import Emitter, Logger
-from phases import Initialization, Building, Differencing, Segmentation, Detection, Mapping, Extraction, Translation, Weaving, Verify, Analysis
+from phases import Initialization, Building, Differencing, Segmentation, Detection, Mapping, Extraction, Translation, Weaving, Verify, Analysis, Slice
 from common import Definitions
 from common.Utilities import error_exit, create_base_directories
 
@@ -40,6 +40,10 @@ def run():
     time_start = time.time()
     Detection.detect()
     time_info[Definitions.KEY_DURATION_CLONE_ANALYSIS] = str(time.time() - time_start)
+
+    time_start = time.time()
+    Slice.slice()
+    time_info[Definitions.KEY_DURATION_SLICE] = str(time.time() - time_start)
 
     time_start = time.time()
     Extraction.extract()

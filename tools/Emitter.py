@@ -133,6 +133,7 @@ def end(time_info):
     statistics("Class Analysis: " + time_info[Definitions.KEY_DURATION_CLASSIFICATION] + " seconds")
     statistics("Segmentation: " + time_info[Definitions.KEY_DURATION_SEGMENTATION] + " seconds")
     statistics("Clone Analysis: " + time_info[Definitions.KEY_DURATION_CLONE_ANALYSIS] + " seconds")
+    statistics("Slicing: " + time_info[Definitions.KEY_DURATION_SLICE] + " seconds")
     statistics("AST Analysis: " + time_info[Definitions.KEY_DURATION_EXTRACTION] + " seconds")
     statistics("Map Generation: " + time_info[Definitions.KEY_DURATION_MAP_GENERATION] + " seconds")
     statistics("Translation: " + time_info[Definitions.KEY_DURATION_TRANSLATION] + " seconds")
