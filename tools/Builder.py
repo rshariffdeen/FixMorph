@@ -384,7 +384,7 @@ def build_llvm():
 def restore_project(project_path):
     restore_command = "cd " + project_path + ";"
     if os.path.exists(project_path + "/.git") or Values.VC == 'git':
-        restore_command += "git clean -fd; git reset --hard HEAD; git revert HEAD~1"
+        restore_command += "git clean -fd; git reset --hard HEAD"
     elif os.path.exists(project_path + "/.svn"):
         restore_command += "svn revert -R .; svn status --no-ignore | grep '^\?' | sed 's/^\?     //'  | xargs rm -rf"
     elif os.path.exists(project_path + "/.hg"):
@@ -398,7 +398,7 @@ def restore_project(project_path):
 def soft_restore_project(project_path):
     restore_command = "cd " + project_path + ";"
     if os.path.exists(project_path + "/.git") or Values.VC == 'git':
-        restore_command += "git reset --hard HEAD; git revert HEAD~1"
+        restore_command += "git reset --hard HEAD"
     elif os.path.exists(project_path + "/.svn"):
         restore_command += "svn revert -R .; "
     elif os.path.exists(project_path + "/.hg"):
