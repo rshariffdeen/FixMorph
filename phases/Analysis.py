@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 
 
-import time, sys
+import time
+import sys
+import os
+import io
+import json
 from git import Repo
 from common.Utilities import execute_command, error_exit, save_current_state, load_state
 from common import Definitions, Values
@@ -141,6 +145,19 @@ def get_ast_line_numbers(file_path):
     return number_list
 
 
+def get_ast_json(file_path):
+    json_file = file_path + ".AST"
+    dump_command = "crochet-diff -ast-dump-json " + file_path
+    if file_path[-1] == 'h':
+        dump_command += " --"
+    dump_command += " 2> output/errors_AST_dump > " + json_file
+    if os.stat(json_file).st_size == 0:
+        return None
+    with io.open(json_file, 'r', encoding='utf8', errors="ignore") as f:
+        ast_json = json.loads(f.read())
+    return ast_json['root']
+
+
 def get_variable_list(path_a):
     var_list = list()
     if Values.PATH_A in path_a:
@@ -149,6 +166,9 @@ def get_variable_list(path_a):
         path_b = path_a.replace(Values.PATH_C, Values.PATH_E)
 
     ast_script = get_ast_script(path_a, path_b)
+    ast_a = get_ast_json(path_a)
+    ast_b = get_ast_json(path_b)
+
 
 
     return var_list
@@ -201,7 +221,6 @@ def is_file_path_change(file_list_a, file_list_b):
         relative_path_list_a.add(path_a.replace(Values.PATH_A, ""))
     for path_b in file_list_b:
         relative_path_list_b.add(path_b.replace(Values.PATH_C, ""))
-
     return not (relative_path_list_b == relative_path_list_a)
 
 

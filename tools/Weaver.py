@@ -282,6 +282,9 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
     # print(patch_command)
     execute_command(patch_command)
 
+    if os.stat(file_d).st_size == 0:
+        error_exit("\t AST transformation FAILED")
+
     # We fix basic syntax errors that could have been introduced by the patch
     fix_command = Definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
 
