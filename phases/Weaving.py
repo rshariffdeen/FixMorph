@@ -73,11 +73,11 @@ def transplant_code():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
-        slice_file_d = slice_file_c.replace(Values.PATH_C, not Values.Project_D.path)
+        slice_file_d = slice_file_c.replace(Values.PATH_C, Values.Project_D.path)
         vector_source_a = get_source_name_from_slice(slice_file_a)
         vector_source_b = get_source_name_from_slice(slice_file_b)
         vector_source_c = get_source_name_from_slice(slice_file_c)
-        vector_source_d = vector_source_c.replace(Values.PATH_C, not Values.Project_D.path)
+        vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
 
         backup_file_orig(vector_source_a)
         backup_file_orig(vector_source_b)
