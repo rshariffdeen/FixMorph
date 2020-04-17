@@ -273,7 +273,7 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
             script_file.write(instruction + "\n")
 
     file_info = file_a, file_b, file_c, file_d
-    execute_ast_transformation(script_file, file_info)
+    execute_ast_transformation(script_file_name, file_info)
     # We fix basic syntax errors that could have been introduced by the patch
     fix_command = Definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
 
