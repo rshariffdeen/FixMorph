@@ -120,6 +120,7 @@ def transplant_code():
         restore_file_orig(vector_source_a)
         restore_file_orig(vector_source_b)
         restore_file_orig(vector_source_c)
+        replace_file(vector_source_d, slice_file_d)
         restore_file_orig(vector_source_d)
 
 
