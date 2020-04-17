@@ -84,7 +84,10 @@ def transplant_code():
         replace_file(slice_file_b, vector_source_b)
         replace_file(slice_file_c, vector_source_c)
 
-        Emitter.sub_sub_title(vector_source_c)
+        segment_type = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
+        segment_identifier = slice_file_c.split("." + segment_type + ".")[-1]
+
+        Emitter.sub_sub_title("transforming " + segment_identifier + " in " + vector_source_c)
         Emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
         Emitter.emit_ast_script(original_script)
