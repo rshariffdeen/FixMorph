@@ -68,7 +68,6 @@ def end(time_duration):
     output("Initialization: " + time_duration[Definitions.KEY_DURATION_INITIALIZATION] + " seconds")
     output("Build: " + time_duration[Definitions.KEY_DURATION_BUILD_ANALYSIS] + " seconds")
     output("Diff Analysis: " + time_duration[Definitions.KEY_DURATION_DIFF_ANALYSIS] + " seconds")
-    output("Class Analysis: " + time_duration[Definitions.KEY_DURATION_CLASSIFICATION] + " seconds")
     output("Slicing: " + time_duration[Definitions.KEY_DURATION_SLICE] + " seconds")
     output("Clone Analysis: " + time_duration[Definitions.KEY_DURATION_CLONE_ANALYSIS] + " seconds")
     output("AST Analysis: " + time_duration[Definitions.KEY_DURATION_EXTRACTION] + " seconds")
@@ -76,6 +75,8 @@ def end(time_duration):
     output("Translation: " + time_duration[Definitions.KEY_DURATION_TRANSLATION] + " seconds")
     output("Transplantation: " + time_duration[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
     output("Verification: " + time_duration[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
+    output("Comparison: " + time_duration[Definitions.KEY_DURATION_COMPARISON] + " seconds")
+    output("Summarizing: " + time_duration[Definitions.KEY_DURATION_SUMMARIZATION] + " seconds")
     output("\nCrochet finished successfully after " + time_duration[Definitions.KEY_DURATION_TOTAL] + " seconds\n")
     copyfile(Definitions.FILE_MAIN_LOG, Definitions.DIRECTORY_OUTPUT + "/main-log")
 

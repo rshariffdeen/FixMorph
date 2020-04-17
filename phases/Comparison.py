@@ -261,7 +261,7 @@ def classify():
     is_translated = has_namespace_changed(orig_file_list, ported_file_list)
 
 
-def analyse():
+def compare():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global original_diff_info, ported_diff_info, transplanted_diff_info
     Emitter.title("Ported Patch Analysis")

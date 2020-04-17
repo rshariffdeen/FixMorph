@@ -130,7 +130,6 @@ def end(time_info):
     statistics("Initialization: " + time_info[Definitions.KEY_DURATION_INITIALIZATION] + " seconds")
     statistics("Build Analysis: " + time_info[Definitions.KEY_DURATION_BUILD_ANALYSIS] + " seconds")
     statistics("Diff Analysis: " + time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] + " seconds")
-    statistics("Class Analysis: " + time_info[Definitions.KEY_DURATION_CLASSIFICATION] + " seconds")
     statistics("Clone Analysis: " + time_info[Definitions.KEY_DURATION_CLONE_ANALYSIS] + " seconds")
     statistics("Slicing: " + time_info[Definitions.KEY_DURATION_SLICE] + " seconds")
     statistics("AST Analysis: " + time_info[Definitions.KEY_DURATION_EXTRACTION] + " seconds")
@@ -138,6 +137,8 @@ def end(time_info):
     statistics("Translation: " + time_info[Definitions.KEY_DURATION_TRANSLATION] + " seconds")
     statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
     statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
+    statistics("Comparison: " + time_info[Definitions.KEY_DURATION_COMPARISON] + " seconds")
+    statistics("Summarizing: " + time_info[Definitions.KEY_DURATION_SUMMARIZATION] + " seconds")
     success("\nCrochet finished successfully after " + time_info[Definitions.KEY_DURATION_TOTAL] + " seconds\n")
 
 
