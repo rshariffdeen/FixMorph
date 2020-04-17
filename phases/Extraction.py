@@ -63,7 +63,7 @@ def generate_script_for_files(file_list_to_patch):
             if vector_source_a in generated_source_list:
                 continue
 
-            Slicer.slice_source_file(vector_source_a,segment_code, vector_name_a.replace(".vec", ""))
+            Slicer.slice_source_file(vector_source_a, segment_code, vector_name_a.replace(".vec", ""), Values.PATH_A)
 
             for source_loc in Values.original_diff_info:
                 source_path, line_number = source_loc.split(":")
