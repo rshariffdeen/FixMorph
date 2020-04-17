@@ -35,9 +35,10 @@ def generate_script_for_files(file_list_to_patch):
         vector_source_a = ""
         vector_source_b = ""
         vector_source_c = ""
+        vector_source_d = ""
         segment_code = ""
-        ast_script = list()
         vector_name_a = ""
+        vector_name_c = ""
         try:
             if "func_" in vec_path_a:
                 vector_source_a, vector_name_a = vec_path_a.split(".func_")
@@ -60,22 +61,19 @@ def generate_script_for_files(file_list_to_patch):
                 vector_source_c, vector_name_c = vec_path_c.split(".var_")
                 segment_code = 'var'
 
+            vector_name_b = vector_name_a.replace(Values.PATH_A, Values.PATH_B)
+            vector_name_d = vector_name_a.replace(Values.PATH_C, Values.Project_D.path)
+
             if vector_source_a in generated_source_list:
                 continue
 
             Slicer.slice_source_file(vector_source_a, segment_code, vector_name_a.replace(".vec", ""), Values.PATH_A)
-
-            for source_loc in Values.original_diff_info:
-                source_path, line_number = source_loc.split(":")
-                if source_path == vector_source_a:
-                    diff_info = Values.original_diff_info[source_loc]
-                    ast_script_loc = diff_info['ast-script']
-                    for script_line in ast_script_loc:
-                        if script_line not in ast_script:
-                            ast_script.append(script_line)
+            Slicer.slice_source_file(vector_source_b, segment_code, vector_name_b.replace(".vec", ""), Values.PATH_B)
+            Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""), Values.PATH_C)
+            Slicer.slice_source_file(vector_source_d, segment_code, vector_name_d.replace(".vec", ""), Values.Project_D.path)
 
             generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
-            original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(ast_script, script_file_ab)
+            original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
             generated_data = (original_script, inserted_node_list, map_ab)
             generated_script_list[(vector_source_a, vector_source_b, vector_source_c)] = generated_data
             generated_source_list.append(vector_source_a)
