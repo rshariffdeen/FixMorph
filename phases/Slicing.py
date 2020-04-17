@@ -15,35 +15,12 @@ def slice_code(file_list_to_patch):
     Emitter.sub_sub_title("slicing unrelated segments")
 
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
-        vector_source_a = ""
-        vector_source_b = ""
-        vector_source_c = ""
-        vector_source_d = ""
-        segment_code = ""
-        vector_name_a = ""
-        vector_name_c = ""
-
+        segment_code = vec_path_a.split("_")[0]
         try:
-            if "func_" in vec_path_a:
-                vector_source_a, vector_name_a = vec_path_a.split(".func_")
-                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                vector_source_c, vector_name_c = vec_path_c.split(".func_")
-                segment_code = 'func'
-            elif "struct_" in vec_path_a:
-                vector_source_a, vector_name_a = vec_path_a.split(".struct_")
-                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                vector_source_c, vector_name_c = vec_path_c.split(".struct_")
-                segment_code = 'struct'
-            elif "enum_" in vec_path_a:
-                vector_source_a, vector_name_a = vec_path_a.split(".enum_")
-                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                vector_source_c, vector_name_c = vec_path_c.split(".enum_")
-                segment_code = 'enum'
-            elif "var_" in vec_path_a:
-                vector_source_a, vector_name_a = vec_path_a.split(".var_")
-                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                vector_source_c, vector_name_c = vec_path_c.split(".var_")
-                segment_code = 'var'
+            split_regex = "." + segment_code + "_"
+            vector_source_a, vector_name_a = vec_path_a.split(split_regex)
+            vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+            vector_source_c, vector_name_c = vec_path_c.split(split_regex)
 
             vector_name_b = vector_name_a.replace(Values.PATH_A, Values.PATH_B)
             vector_name_d = vector_name_a.replace(Values.PATH_C, Values.Project_D.path)

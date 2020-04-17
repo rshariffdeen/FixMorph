@@ -32,38 +32,24 @@ def generate_script_for_files(file_list_to_patch):
     generated_source_list = list()
     script_file_ab = Definitions.DIRECTORY_TMP + "/diff_script_AB"
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
-        vector_source_a = ""
-        vector_source_b = ""
-        vector_source_c = ""
-
+        segment_code = vec_path_a.split("_")[0]
         try:
-            if "func_" in vec_path_a:
-                vector_source_a, vector_name_a = vec_path_a.split(".func_")
-                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                vector_source_c, vector_name_c = vec_path_c.split(".func_")
-
-            elif "struct_" in vec_path_a:
-                    vector_source_a, vector_name_a = vec_path_a.split(".struct_")
-                    vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                    vector_source_c, vector_name_c = vec_path_c.split(".struct_")
-
-            elif "enum_" in vec_path_a:
-                vector_source_a, vector_name_a = vec_path_a.split(".enum_")
-                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                vector_source_c, vector_name_c = vec_path_c.split(".enum_")
-
-            elif "var_" in vec_path_a:
-                vector_source_a, vector_name_a = vec_path_a.split(".var_")
-                vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
-                vector_source_c, vector_name_c = vec_path_c.split(".var_")
-
+            split_regex = "." + segment_code + "_"
+            vector_source_a, vector_name_a = vec_path_a.split(split_regex)
+            vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+            vector_source_c, vector_name_c = vec_path_c.split(split_regex)
+            vector_name_b = vector_name_a.replace(Values.PATH_A, Values.PATH_B)
             if vector_source_a in generated_source_list:
                 continue
 
-            generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
+            slice_file_a = vector_source_a + "." + segment_code + "." + vector_name_a.replace(".vec", "") + ".slice"
+            slice_file_b = vector_source_b + "." + segment_code + "." + vector_name_b.replace(".vec", "") + ".slice"
+            slice_file_c = vector_source_c + "." + segment_code + "." + vector_name_c.replace(".vec", "") + ".slice"
+
+            generate_edit_script(slice_file_a, slice_file_b, script_file_ab)
             original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
             generated_data = (original_script, inserted_node_list, map_ab)
-            generated_script_list[(vector_source_a, vector_source_b, vector_source_c)] = generated_data
+            generated_script_list[(slice_file_a, slice_file_b, slice_file_c)] = generated_data
             generated_source_list.append(vector_source_a)
 
         except Exception as e:
@@ -102,13 +88,13 @@ def save_values():
 
 
 def extract():
-    Emitter.title("Generating AST for context matching")
+    Emitter.title("Extract AST Transformation")
     # Using all previous structures to transplant patch
     load_values()
     if not Values.SKIP_EXTRACTION:
         if not Values.file_list_to_patch:
             error_exit("no clone file detected to generate AST")
-        safe_exec(generate_script_for_files, "generating AST map", Values.file_list_to_patch)
+        safe_exec(generate_script_for_files, "extraction of AST mapping", Values.file_list_to_patch)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")
