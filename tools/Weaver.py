@@ -26,7 +26,7 @@ def restore_files():
 def execute_ast_transformation(script_path, source_file_info):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     file_a, file_b, file_c, file_d = source_file_info
-    Emitter.normal("\t\texecuting AST transformation")
+    Emitter.normal("\t[action] executing AST transformation")
 
     output_file = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
     backup_command = ""
