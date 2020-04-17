@@ -370,5 +370,4 @@ def weave_slice(slice_info):
             insert_code_range(slice_code, source_file_d, start_line_source)
 
         source_file_a = source_file_b.replace(Values.PATH_B, Values.PATH_A)
-        show_patch(source_file_c, source_file_d, segment_identifier)
         show_patch(source_file_a, source_file_b, source_file_c, source_file_d, segment_identifier)
