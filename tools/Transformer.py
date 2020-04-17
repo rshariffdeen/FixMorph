@@ -12,7 +12,10 @@ from tools import Extractor, Oracle, Logger, Filter, Emitter
 def transform_source_file(source_path, ast_script, output_file):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     with open(Definitions.FILE_AST_SCRIPT, "w") as script_file:
-        script_file.writelines(ast_script)
+        for script_line in ast_script:
+            if script_line != ast_script[-1]:
+                script_line = script_line + "\n"
+            script_file.writeline(ast_script)
 
     transform_command = Definitions.PATCH_COMMAND + " -s=" + Definitions.PATCH_SIZE + \
          " -script=" + Definitions.FILE_AST_SCRIPT + " -source=" + source_path + \
