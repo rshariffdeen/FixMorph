@@ -1,7 +1,8 @@
 from common import Definitions, Values
-from common.Utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff
+from common.Utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
 from tools import Emitter, Logger, Finder, Extractor, Identifier
 from ast import Generator
+
 import os
 import sys
 
@@ -93,6 +94,19 @@ def insert_code(patch_code, source_path, line_number):
             existing_statement = content[line_number]
             content[line_number] = patch_code + existing_statement
 
+    with open(source_path, 'w') as source_file:
+        source_file.writelines(content)
+
+
+def delete_code(source_path, start_line, end_line):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    content = ""
+    if os.path.exists(source_path):
+        with open(source_path, 'r') as source_file:
+            content = source_file.readlines()
+            source_file.seek(0)
+            source_file.truncate()
+    del content[start_line-1:end_line]
     with open(source_path, 'w') as source_file:
         source_file.writelines(content)
 
@@ -309,3 +323,38 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
 
     Emitter.success("\n\tSuccessful transformation")
     return missing_function_list, missing_macro_list, modified_source_list
+
+
+def weave_slice(slice_info):
+    for source_file_d, source_file_b in slice_info:
+        source_file_c = source_file_d.replace(Values.Project_D.path, Values.PATH_C)
+        Emitter.normal("\t\t" + source_file_d)
+        slice_list = slice_info[source_file_d]
+        weave_list = dict()
+        for slice_file in slice_list:
+            segment_code = slice_file.replace(source_file_d + ".", "").split(".")[0]
+            segment_identifier = slice_file.split("." + segment_code + ".")[-1].replace(".slice", "")
+            Emitter.normal("\t\t\tweaving slice " + segment_identifier)
+            segment_type = Values.segment_map[segment_code]
+            backup_file_orig(source_file_c)
+            replace_file(slice_file, source_file_c)
+            ast_tree_slice = Generator.get_ast_json(source_file_c)
+            restore_file_orig(source_file_c)
+            ast_tree_source = Generator.get_ast_json(source_file_c)
+            segment_node_slice = Finder.search_node(ast_tree_slice, segment_type, segment_identifier)
+            segment_node_source = Finder.search_node(ast_tree_source, segment_type, segment_identifier)
+            start_line_source = int(segment_node_source['start line'])
+            end_line_source = int(segment_node_source['end line'])
+            start_line_slice = int(segment_node_slice['start line'])
+            end_line_slice = int(segment_node_slice['end line'])
+            weave_list[start_line_source] = (slice_file, end_line_source, start_line_slice, end_line_slice)
+
+        for start_line_source in reversed(sorted(weave_list.keys())):
+            slice_file, end_line_source, start_line_slice, end_line_slice = weave_list[start_line_source]
+            slice_code = get_code_range(slice_file, start_line_slice, end_line_slice)
+            delete_code(source_file_d, start_line_source, end_line_source)
+            insert_code(slice_code, source_file_d, start_line_source)
+
+        source_file_a = source_file_b.replace(Values.PATH_B, Values.PATH_A)
+        show_patch(source_file_c, source_file_d)
+        show_patch(source_file_a, source_file_b, source_file_c, source_file_d, segment_identifier)

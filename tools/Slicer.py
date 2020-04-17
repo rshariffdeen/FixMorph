@@ -3,18 +3,16 @@
 
 
 import sys
-from common import Definitions
+from common import Values
 from common.Utilities import get_code, error_exit
 from ast import Generator as ASTGenerator
 from tools import Extractor, Oracle, Logger, Filter, Emitter, Transformer
-
-segment_map = {"func": "FunctionDecl"}
 
 
 def slice_source_file(source_path, segment_code, segment_identifier, project_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     ast_tree = ASTGenerator.get_ast_json(source_path)
-    segment_type = segment_map[segment_code]
+    segment_type = Values.segment_map[segment_code]
     ast_script = list()
     source_relative_path = source_path.replace(project_path, ".")
 

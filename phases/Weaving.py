@@ -143,13 +143,37 @@ def save_values():
     save_current_state()
 
 
+def weave_slices():
+    global file_index, missing_function_list, missing_macro_list, modified_source_list
+    if not Values.translated_script_for_files:
+        error_exit("no slice to weave")
+    slice_info = dict()
+    for file_list, generated_data in Values.translated_script_for_files.items():
+        slice_file_a = file_list[0]
+        slice_file_b = file_list[1]
+        slice_file_c = file_list[2]
+        slice_file_d = slice_file_c.replace(Values.PATH_C, Values.Project_D.path)
+        vector_source_a = get_source_name_from_slice(slice_file_a)
+        vector_source_b = get_source_name_from_slice(slice_file_b)
+        vector_source_c = get_source_name_from_slice(slice_file_c)
+        vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
+        segment_type = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
+        segment_identifier = slice_file_c.split("." + segment_type + ".")[-1].replace(".slice", "")
+        if vector_source_d not in slice_info:
+            slice_info[(vector_source_d, vector_source_b)] = list()
+        slice_info[(vector_source_d, vector_source_b)].append(slice_file_d)
+
+    Emitter.sub_sub_title("weaving slices into source file")
+    Weaver.weave_slice(slice_info)
+
+
 def weave():
     global missing_header_list, missing_macro_list, modified_source_list, missing_function_list
     global missing_data_type_list
     Emitter.title("Applying transformation")
     load_values()
     if not Values.SKIP_WEAVE:
-        safe_exec(transplant_code, "transplanting code")
+        safe_exec(transplant_code, "transforming slices")
         if missing_function_list:
             safe_exec(transplant_missing_functions, "transplanting functions")
         if missing_data_type_list:

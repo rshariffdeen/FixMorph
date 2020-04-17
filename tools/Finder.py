@@ -115,6 +115,17 @@ def search_function_node_by_name(ast_node, function_name):
     return function_node
 
 
+def search_node(ast_tree, node_type, node_identifier):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    for ast_node in ast_tree['children']:
+        ast_node_type = ast_node['type']
+        if ast_node_type == node_type:
+            ast_node_identifier = ast_node['identifier']
+            # print(child_node_identifier, function_name)
+            if ast_node_identifier == node_identifier:
+                return ast_node
+
+
 def search_function_node_by_loc(ast_node, line_number, source_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     file_name = source_path.split("/")[-1]

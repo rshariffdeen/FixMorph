@@ -95,6 +95,8 @@ interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
 
+segment_map = {"func": "FunctionDecl"}
+
 IS_FUNCTION = False
 IS_STRUCT = False
 IS_ENUM = False
