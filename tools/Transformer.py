@@ -20,7 +20,7 @@ def transform_source_file(source_path, ast_script, output_file):
 
     if source_path[-1] == 'h':
         transform_command += " --"
-    transform_command += " 2> output/errors > " + output_file + "; "
+    transform_command += " 2> output/errors > " + output_file
     # transform_command += "cp " + output_file + " " + file_d
 
     # print(patch_command)

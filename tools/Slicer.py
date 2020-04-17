@@ -6,7 +6,7 @@ import sys
 from common import Definitions
 from common.Utilities import get_code, error_exit
 from ast import Generator as ASTGenerator
-from tools import Extractor, Oracle, Logger, Filter, Emitter
+from tools import Extractor, Oracle, Logger, Filter, Emitter, Transformer
 
 segment_map = {"func": "FunctionDecl"}
 
@@ -29,4 +29,5 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
     with open(Definitions.FILE_AST_SCRIPT, "w") as script_file:
         script_file.writelines(ast_script)
     # print(ast_script)
+    Transformer.transform_source_file(source_path, Definitions.FILE_AST_SCRIPT, Definitions.FILE_TEMP_TRANSFORM)
 
