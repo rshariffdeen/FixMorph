@@ -94,7 +94,7 @@ def read_conf():
         for arg in sys.argv:
             if Definitions.ARG_DEBUG in arg:
                 Values.DEBUG = True
-            elif Definitions.ARG_SKIP_SUMMARY in arg:
+            elif Definitions.ARG_SKIP_DIFFERENCE in arg:
                 Values.SKIP_DIFF = True
             elif Definitions.ARG_SKIP_SEGMENT in arg:
                 Values.SKIP_SEGMENT = True
