@@ -597,7 +597,7 @@ def identify_code_segment(diff_info, project):
                     if source_file not in project.function_list.keys():
                         project.function_list[source_file] = dict()
                     if function_name not in project.function_list[source_file]:
-                        Emitter.normal("\t\t\tFunction: " + function_name)
+                        Emitter.normal("\t\t\tFunction: " + function_name.replace("func_", ""))
                         project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name,
                                                                                           begin_line, finish_line, True)
 
@@ -609,7 +609,7 @@ def identify_code_segment(diff_info, project):
                     if source_file not in project.struct_list.keys():
                         project.struct_list[source_file] = dict()
                     if struct_name not in project.struct_list[source_file]:
-                        Emitter.normal("\t\t\tStruct: " + struct_name)
+                        Emitter.normal("\t\t\tStruct: " + struct_name.replace("struct_", ""))
                         project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name,
                                                                                       begin_line, finish_line, True)
 
@@ -623,7 +623,7 @@ def identify_code_segment(diff_info, project):
                     if source_file not in project.decl_list.keys():
                         project.decl_list[source_file] = dict()
                     if var_name not in project.decl_list[source_file]:
-                        Emitter.normal("\t\t\tVariable: " + var_name)
+                        Emitter.normal("\t\t\tVariable: " + var_name.replace("var_", ""))
                         project.decl_list[source_file][var_name] = Vector.Vector(source_file, var_name,
                                                                                  begin_line, finish_line, True)
 
@@ -635,7 +635,7 @@ def identify_code_segment(diff_info, project):
                     if source_file not in project.macro_list.keys():
                         project.macro_list[source_file] = dict()
                     if macro_name not in project.macro_list[source_file]:
-                        Emitter.normal("\t\t\tMacro: " + macro_name)
+                        Emitter.normal("\t\t\tMacro: " + macro_name.replace("macro_", ""))
                         project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name,
                                                                                      begin_line, finish_line, True)
 
@@ -652,6 +652,6 @@ def identify_code_segment(diff_info, project):
                     if source_file not in project.enum_list.keys():
                         project.enum_list[source_file] = dict()
                     if enum_name not in project.enum_list[source_file]:
-                        Emitter.normal("\t\t\tEnum: " + enum_name)
+                        Emitter.normal("\t\t\tEnum: " + enum_name.replace("enum_", ""))
                         project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name,
                                                                                      begin_line, finish_line, True)
