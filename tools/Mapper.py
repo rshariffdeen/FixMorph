@@ -22,7 +22,7 @@ def map_ast_from_source(source_a, source_b, script_file_path):
 def generate_map(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
-    Emitter.normal("Generating mapping: " + name_a + Definitions.TO + name_b + "...")
+    Emitter.normal("\t\t" + name_a + Definitions.TO + name_b + "...")
     try:
         extra_arg = ""
         if file_a[-1] == 'h':
@@ -32,6 +32,7 @@ def generate_map(file_a, file_b, output_file):
         command += "| grep '^Match ' "
         command += " > " + output_file
         execute_command(command, False)
+        Emitter.normal("\t\t\tmap generated")
     except Exception as e:
         error_exit(e, "Unexpected fail at generating map: " + output_file)
 
