@@ -100,7 +100,7 @@ def save_values():
         path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
         diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + Definitions.FILE_TRANSPLANT_DIFF
         execute_command(diff_command)
-    with open(Definitions.FILE_COMPARISON_RESULT) as result_file:
+    with open(Definitions.FILE_COMPARISON_RESULT, 'w') as result_file:
         if transplanted_diff_info == ported_diff_info:
             result = "IDENTICAL"
         else:
