@@ -4,7 +4,7 @@
 
 import sys
 import time
-from common.Utilities import error_exit
+from common.Utilities import error_exit, execute_command
 from common import Values, Definitions
 from tools import Logger, Emitter, Verifier, Fuzzer
 
@@ -30,6 +30,14 @@ def verify_exploit():
                          FILE_EXPLOIT_OUTPUT,
                          Definitions.crash_word_list
                          )
+
+
+def commit_changes():
+    commit_command = "cd " + Values.Project_D.path + ";"
+    commit_command += "git add *.c;"
+    commit_command += "git add *.h;"
+    commit_command += "git commit -m 'committing transplantation'"
+    execute_command(commit_command)
 
 
 def verify_behavior():
@@ -92,5 +100,6 @@ def verify():
         if Values.PATH_POC:
             safe_exec(verify_exploit, "verifying exploit")
             safe_exec(verify_behavior, "verifying differential behavior")
+            safe_exec(commit_changes, "committing changes to git")
     else:
         Emitter.special("\n\t-skipping this phase-")
