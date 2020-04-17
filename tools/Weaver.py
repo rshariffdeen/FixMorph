@@ -329,7 +329,7 @@ def weave_slice(slice_info):
     for source_file_d, source_file_b in slice_info:
         source_file_c = source_file_d.replace(Values.Project_D.path, Values.PATH_C)
         Emitter.normal("\t\t" + source_file_d)
-        slice_list = slice_info[source_file_d]
+        slice_list = slice_info[(source_file_d, source_file_b)]
         weave_list = dict()
         for slice_file in slice_list:
             segment_code = slice_file.replace(source_file_d + ".", "").split(".")[0]
