@@ -15,7 +15,7 @@ def slice_source_file(source_path, segment_code, segment_identifier):
     ast_tree = ASTGenerator.get_ast_json(source_path)
     segment_type = segment_map[segment_code]
     ast_script = list()
-    for ast_node in ast_tree:
+    for ast_node in ast_tree['children']:
         node_id = ast_node['id']
         node_type = ast_node['type']
         if node_type == segment_type:
