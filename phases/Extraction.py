@@ -63,6 +63,7 @@ def generate_script_for_files(file_list_to_patch):
 
             vector_name_b = vector_name_a.replace(Values.PATH_A, Values.PATH_B)
             vector_name_d = vector_name_a.replace(Values.PATH_C, Values.Project_D.path)
+            vector_source_d = vector_source_d.replace(Values.PATH_C, Values.Project_D.path)
 
             if vector_source_a in generated_source_list:
                 continue
