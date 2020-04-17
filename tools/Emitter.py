@@ -150,7 +150,7 @@ def help():
 
     print("Skip Phases\n-----------------------\n")
     print("\t" + Definitions.ARG_SKIP_BUILD + "\t| " + "skip build")
-    print("\t" + Definitions.ARG_SKIP_ANALYSE + "\t| " + "skip diff analysis")
+    print("\t" + Definitions.ARG_SKIP_SUMMARY + "\t| " + "skip diff analysis")
     print("\t" + Definitions.ARG_SKIP_VEC_GEN + "\t| " + "disable vector generation")
     print("\t" + Definitions.ARG_SKIP_DETECTION + "\t| " + "skip clone analysis")
     print("\t" + Definitions.ARG_SKIP_EXTRACTION + "\t| " + "skip AST analysis")

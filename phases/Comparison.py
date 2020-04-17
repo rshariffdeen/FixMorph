@@ -129,7 +129,7 @@ def compare():
     Emitter.title("Comparison with Manual Porting")
     load_values()
 
-    if not Values.SKIP_ANALYSE:
+    if not Values.SKIP_COMPARE:
         if not Values.PATH_E:
             error_exit("Path E is missing in configuration")
 

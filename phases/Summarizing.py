@@ -267,19 +267,10 @@ def summarize():
     Emitter.title("Ported Patch Analysis")
     load_values()
 
-    if not Values.SKIP_ANALYSE:
+    if not Values.SKIP_SUMMARY:
         if not Values.PATH_E:
             error_exit("Path E is missing in configuration")
         classify()
-
-        original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
-                                       Values.PATH_A, Values.PATH_B)
-        original_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Original Patch",
-                                       Values.PATH_A, Values.PATH_B, original_diff_info)
-        ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
-                                     Values.PATH_C, Values.PATH_E)
-        ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
-                                     Values.PATH_C, Values.PATH_E, ported_diff_info)
 
         if not Values.ONLY_ANALYSE:
             transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
