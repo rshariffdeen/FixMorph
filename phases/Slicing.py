@@ -15,7 +15,7 @@ def slice_code(file_list_to_patch):
     Emitter.sub_sub_title("slicing unrelated segments")
 
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
-        segment_code = vec_path_a.split("_")[0].split(".")[-1]
+        segment_code = vec_path_a.split(".")[-2].split("_")[0]
         try:
             split_regex = "." + segment_code + "_"
             vector_source_a, vector_name_a = vec_path_a.split(split_regex)
