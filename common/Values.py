@@ -96,7 +96,7 @@ interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
 
-segment_map = {"func": "FunctionDecl"}
+segment_map = {"func": "FunctionDecl", "var": "VarDecl",  "enum": "EnumDecl", "macro": "Macro", "struct": "RecordDecl",   }
 
 IS_FUNCTION = False
 IS_STRUCT = False
