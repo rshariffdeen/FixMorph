@@ -88,6 +88,70 @@ def create_files():
     Logger.create()
 
 
+def read_conf_file():
+    Emitter.normal("\treading configuration file")
+    if not os.path.exists(Values.FILE_CONFIGURATION):
+        Emitter.normal("[NOT FOUND] Configuration file " + Values.FILE_CONFIGURATION)
+        exit()
+
+    with open(Values.FILE_CONFIGURATION, 'r') as conf_file:
+        configuration_list = [i.strip() for i in conf_file.readlines()]
+
+    for configuration in configuration_list:
+        if Definitions.CONF_PATH_A in configuration:
+            Values.PATH_A = configuration.replace(Definitions.CONF_PATH_A, '')
+            if "$HOME$" in Values.PATH_A:
+                Values.PATH_A = Values.PATH_A.replace("$HOME$", Definitions.DIRECTORY_MAIN)
+        elif Definitions.CONF_PATH_B in configuration:
+            Values.PATH_B = configuration.replace(Definitions.CONF_PATH_B, '')
+            if "$HOME$" in Values.PATH_B:
+                Values.PATH_B = Values.PATH_B.replace("$HOME$", Definitions.DIRECTORY_MAIN)
+        elif Definitions.CONF_PATH_C in configuration:
+            Values.PATH_C = configuration.replace(Definitions.CONF_PATH_C, '')
+            if "$HOME$" in Values.PATH_C:
+                Values.PATH_C = Values.PATH_C.replace("$HOME$", Definitions.DIRECTORY_MAIN)
+            if str(Values.PATH_C)[-1] == "/":
+                Values.PATH_C = Values.PATH_C[:-1]
+        elif Definitions.CONF_PATH_E in configuration:
+            Values.PATH_E = configuration.replace(Definitions.CONF_PATH_E, '')
+            if "$HOME$" in Values.PATH_E:
+                Values.PATH_E = Values.PATH_E.replace("$HOME$", Definitions.DIRECTORY_MAIN)
+            if str(Values.PATH_E)[-1] == "/":
+                Values.PATH_E = Values.PATH_E[:-1]
+        elif Definitions.CONF_PATH_POC in configuration:
+            Values.PATH_POC = configuration.replace(Definitions.CONF_PATH_POC, '')
+            if "$HOME$" in Values.PATH_POC:
+                Values.PATH_POC = Values.PATH_POC.replace("$HOME$", Definitions.DIRECTORY_MAIN)
+        elif Definitions.CONF_FLAGS_A in configuration:
+            Values.BUILD_FLAGS_A = configuration.replace(Definitions.CONF_FLAGS_A, '')
+        elif Definitions.CONF_FLAGS_C in configuration:
+            Values.BUILD_FLAGS_C = configuration.replace(Definitions.CONF_FLAGS_C, '')
+        elif Definitions.CONF_CONFIG_COMMAND_A in configuration:
+            Values.CONFIG_COMMAND_A = configuration.replace(Definitions.CONF_CONFIG_COMMAND_A, '')
+        elif Definitions.CONF_CONFIG_COMMAND_C in configuration:
+            Values.CONFIG_COMMAND_C = configuration.replace(Definitions.CONF_CONFIG_COMMAND_C, '')
+        elif Definitions.CONF_BUILD_COMMAND_A in configuration:
+            Values.BUILD_COMMAND_A = configuration.replace(Definitions.CONF_BUILD_COMMAND_A, '')
+        elif Definitions.CONF_BUILD_COMMAND_C in configuration:
+            Values.BUILD_COMMAND_C = configuration.replace(Definitions.CONF_BUILD_COMMAND_C, '')
+        elif Definitions.CONF_ASAN_FLAG in configuration:
+            Values.ASAN_FLAG = configuration.replace(Definitions.CONF_ASAN_FLAG, '')
+        elif Definitions.CONF_KLEE_FLAGS_A in configuration:
+            Values.KLEE_FLAG_A = configuration.replace(Definitions.CONF_KLEE_FLAGS_A, '')
+        elif Definitions.CONF_KLEE_FLAGS_C in configuration:
+            Values.KLEE_FLAG_C = configuration.replace(Definitions.CONF_KLEE_FLAGS_C, '')
+        elif Definitions.CONF_DIFF_SIZE in configuration:
+            Values.AST_DIFF_SIZE = configuration.replace(Definitions.CONF_DIFF_SIZE, '')
+        elif Definitions.CONF_EXPLOIT_C in configuration:
+            Values.EXPLOIT_C = configuration.replace(Definitions.CONF_EXPLOIT_C, '')
+        elif Definitions.CONF_VC in configuration:
+            Values.VC = configuration.replace(Definitions.CONF_VC, '')
+
+
+def reading_phase_settings():
+    Emitter.normal("\treading phase configuration")
+
+
 def read_conf():
     Emitter.normal("\treading configuration values")
     if len(sys.argv) > 1:
@@ -201,12 +265,7 @@ def read_conf():
         Emitter.help()
         exit()
 
-    if not os.path.exists(Values.FILE_CONFIGURATION):
-        Emitter.normal("[NOT FOUND] Configuration file " + Values.FILE_CONFIGURATION)
-        exit()
-
-    with open(Values.FILE_CONFIGURATION, 'r') as conf_file:
-        configuration_list = [i.strip() for i in conf_file.readlines()]
+    read_conf_file()
 
     # create log files and other directories
     conf_file_name = Values.FILE_CONFIGURATION.split("/")[-1]
@@ -222,56 +281,6 @@ def read_conf():
     log_file_name = "log-" + str(time.time())
     log_file_path = Definitions.DIRECTORY_LOG + "/" + log_file_name
     Definitions.FILE_MAIN_LOG = log_file_path
-
-    for configuration in configuration_list:
-        if Definitions.CONF_PATH_A in configuration:
-            Values.PATH_A = configuration.replace(Definitions.CONF_PATH_A, '')
-            if "$HOME$" in Values.PATH_A:
-                Values.PATH_A = Values.PATH_A.replace("$HOME$", Definitions.DIRECTORY_MAIN)
-        elif Definitions.CONF_PATH_B in configuration:
-            Values.PATH_B = configuration.replace(Definitions.CONF_PATH_B, '')
-            if "$HOME$" in Values.PATH_B:
-                Values.PATH_B = Values.PATH_B.replace("$HOME$", Definitions.DIRECTORY_MAIN)
-        elif Definitions.CONF_PATH_C in configuration:
-            Values.PATH_C = configuration.replace(Definitions.CONF_PATH_C, '')
-            if "$HOME$" in Values.PATH_C:
-                Values.PATH_C = Values.PATH_C.replace("$HOME$", Definitions.DIRECTORY_MAIN)
-            if str(Values.PATH_C)[-1] == "/":
-                Values.PATH_C = Values.PATH_C[:-1]
-        elif Definitions.CONF_PATH_E in configuration:
-            Values.PATH_E = configuration.replace(Definitions.CONF_PATH_E, '')
-            if "$HOME$" in Values.PATH_E:
-                Values.PATH_E = Values.PATH_E.replace("$HOME$", Definitions.DIRECTORY_MAIN)
-            if str(Values.PATH_E)[-1] == "/":
-                Values.PATH_E = Values.PATH_E[:-1]
-        elif Definitions.CONF_PATH_POC in configuration:
-            Values.PATH_POC = configuration.replace(Definitions.CONF_PATH_POC, '')
-            if "$HOME$" in Values.PATH_POC:
-                Values.PATH_POC = Values.PATH_POC.replace("$HOME$", Definitions.DIRECTORY_MAIN)
-        elif Definitions.CONF_FLAGS_A in configuration:
-            Values.BUILD_FLAGS_A = configuration.replace(Definitions.CONF_FLAGS_A, '')
-        elif Definitions.CONF_FLAGS_C in configuration:
-            Values.BUILD_FLAGS_C = configuration.replace(Definitions.CONF_FLAGS_C, '')
-        elif Definitions.CONF_CONFIG_COMMAND_A in configuration:
-            Values.CONFIG_COMMAND_A = configuration.replace(Definitions.CONF_CONFIG_COMMAND_A, '')
-        elif Definitions.CONF_CONFIG_COMMAND_C in configuration:
-            Values.CONFIG_COMMAND_C = configuration.replace(Definitions.CONF_CONFIG_COMMAND_C, '')
-        elif Definitions.CONF_BUILD_COMMAND_A in configuration:
-            Values.BUILD_COMMAND_A = configuration.replace(Definitions.CONF_BUILD_COMMAND_A, '')
-        elif Definitions.CONF_BUILD_COMMAND_C in configuration:
-            Values.BUILD_COMMAND_C = configuration.replace(Definitions.CONF_BUILD_COMMAND_C, '')
-        elif Definitions.CONF_ASAN_FLAG in configuration:
-            Values.ASAN_FLAG = configuration.replace(Definitions.CONF_ASAN_FLAG, '')
-        elif Definitions.CONF_KLEE_FLAGS_A in configuration:
-            Values.KLEE_FLAG_A = configuration.replace(Definitions.CONF_KLEE_FLAGS_A, '')
-        elif Definitions.CONF_KLEE_FLAGS_C in configuration:
-            Values.KLEE_FLAG_C = configuration.replace(Definitions.CONF_KLEE_FLAGS_C, '')
-        elif Definitions.CONF_DIFF_SIZE in configuration:
-            Values.AST_DIFF_SIZE = configuration.replace(Definitions.CONF_DIFF_SIZE, '')
-        elif Definitions.CONF_EXPLOIT_C in configuration:
-            Values.EXPLOIT_C = configuration.replace(Definitions.CONF_EXPLOIT_C, '')
-        elif Definitions.CONF_VC in configuration:
-            Values.VC = configuration.replace(Definitions.CONF_VC, '')
 
 
 def initialize():

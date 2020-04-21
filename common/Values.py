@@ -95,8 +95,10 @@ STYLE_FORMAT_COMMAND = "clang-format -style=LLVM "
 interesting = ["VarDecl", "DeclRefExpr", "ParmVarDecl", "TypedefDecl",
                "FieldDecl", "EnumDecl", "EnumConstantDecl", "RecordDecl"]
 
+phase_conf = {"Build": 1, "Differencing": 1, "Detection": 1, "Slicing": 1, "Extraction": 1,
+              "Mapping": 1, "Translation": 1, "Weaving": 1, "Verify": 1, "Compare": 1, "Summarize": 1}
 
-segment_map = {"func": "FunctionDecl", "var": "VarDecl",  "enum": "EnumDecl", "macro": "Macro", "struct": "RecordDecl",   }
+segment_map = {"func": "FunctionDecl", "var": "VarDecl",  "enum": "EnumDecl", "macro": "Macro", "struct": "RecordDecl"}
 
 IS_FUNCTION = False
 IS_STRUCT = False
