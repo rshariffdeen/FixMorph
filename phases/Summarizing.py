@@ -254,7 +254,8 @@ def has_namespace_changed(file_list_a, file_list_b):
 
 def get_summary_of_ast_transformation(ast_script):
     summary_info = dict()
-    for ast_action in ast_script:
+    for file_path in ast_script:
+        ast_action = ast_script[file_path]
         if "Insert" in ast_action:
             transformation = "Insert"
             node_type = ast_action.split(" ")[1].split("(")[0]
