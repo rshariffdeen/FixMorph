@@ -12,7 +12,7 @@ from common.Utilities import execute_command, error_exit, save_current_state, lo
 from common import Definitions, Values
 from ast import Vector, Parser
 import difflib
-from tools import Logger, Emitter, Detector, Writer, Generator, Reader, Differ, Merger
+from tools import Logger, Emitter, Detector, Writer, Generator, Solver, Differ, Merger
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -280,10 +280,45 @@ def get_summary_of_ast_transformation(ast_script_list):
                 if node_type not in summary_info[transformation]["list"]:
                     summary_info[transformation]["list"][node_type] = 0
                 summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
+            else:
+                error_exit("Unimplemented section in summarizing ast")
     return summary_info
 
 
-def has_patch_evolved(file_list_b, file_list_x, path_b, path_x):
+def compare_ast_summaries(summary_a, summary_b):
+    if summary_a == summary_b:
+        return False, False, None
+    is_yield = False
+    is_prune = False
+    summary_list = list()
+
+    for transformation in summary_a:
+        count_a = int(summary_a[transformation]['count'])
+        count_b = int(summary_b[transformation]['count'])
+        if count_a < count_b:
+            is_prune = True
+        if count_a > count_b:
+            is_yield = True
+        node_list_a = summary_a[transformation]['list']
+        node_list_b = summary_b[transformation]['list']
+        node_type_list = list(set(node_list_a.keys() + node_list_b.keys()))
+        for node_type in node_type_list:
+            if node_type not in node_list_b:
+                    summary_list.append("Pruning of " + str(node_type))
+            elif node_type not in node_list_a:
+                    summary_list.append("Addition of " + str(node_type))
+            else:
+                node_count_a = node_list_a[node_type]
+                node_count_b = node_list_b[node_type]
+                if node_count_a < node_count_b:
+                    summary_list.append("Addition of " + str(node_type))
+                else:
+                    summary_list.append("Pruning of " + str(node_type))
+
+    return is_yield, is_prune, summary_list
+
+
+def has_patch_evolved(file_list_b, file_list_x, path_b, path_x, source_map):
     yielded = False
     pruned = False
     ast_script_list_b = dict()
@@ -300,26 +335,45 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x):
     print(ast_script_list_b)
     print(ast_script_list_x)
 
-    summary_ast_b = get_summary_of_ast_transformation(ast_script_list_b)
-    print(summary_ast_b)
+    summary_ast_list_b = get_summary_of_ast_transformation(ast_script_list_b)
+    print(summary_ast_list_b)
 
-    summary_ast_x = get_summary_of_ast_transformation(ast_script_list_x)
-    print(summary_ast_x)
+    summary_ast_list_x = get_summary_of_ast_transformation(ast_script_list_x)
+    print(summary_ast_list_x)
+    for file_b in summary_ast_list_b:
+        summary_b = summary_ast_list_b[file_b]
+        file_x = source_map[file_b]
+        summary_x = summary_ast_list_x[file_x]
+        comparison = compare_ast_summaries(summary_b, summary_x)
 
     return yielded, pruned
+
+
+def get_file_name_map(file_list_a, file_list_b):
+    mapping = dict()
+    for file_a in file_list_a:
+        min_distance = 1000
+        candidate_mapping = None
+        for file_b in file_list_b:
+            l_distance = Solver.levenshtein_distance(file_a, file_b)
+            if l_distance < min_distance:
+                min_distance = l_distance
+                candidate_mapping = file_b
+        mapping[file_a] = candidate_mapping
+    return mapping
 
 
 def classify_porting(path_a, path_b):
     orig_file_list = get_diff_files(path_a)
     ported_file_list = get_diff_files(path_b)
-
+    map_file_list = get_file_name_map(orig_file_list, ported_file_list)
     is_path_change = is_file_path_change(orig_file_list, ported_file_list, path_a, path_b)
     print(is_path_change)
 
     # is_covered = is_coverage(orig_file_list, ported_file_list)
     # print(is_covered)
 
-    has_evolved = has_patch_evolved(orig_file_list, ported_file_list, path_a, path_b)
+    has_evolved = has_patch_evolved(orig_file_list, ported_file_list, path_a, path_b, map_file_list)
     print(has_evolved)
 
     is_translated = has_namespace_changed(orig_file_list, ported_file_list)
