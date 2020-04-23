@@ -252,13 +252,41 @@ def has_namespace_changed(file_list_a, file_list_b):
     return not (var_list_a == var_list_b)
 
 
+def has_patch_evolved(file_list_b, file_list_x, path_b, path_x):
+    yielded = False
+    pruned = False
+    ast_script_list_b = dict()
+    ast_script_list_x = dict()
+    for file_path_b in file_list_b:
+        file_path_a = file_path_b.replace(path_b, Values.PATH_A)
+        ast_script_b = get_ast_script(file_path_a, file_path_b)
+        ast_script_list_b[file_list_b] = ast_script_b
+
+    for file_path_x in file_list_x:
+        file_path_c = file_path_x.replace(path_x, Values.PATH_C)
+        ast_script_x = get_ast_script(file_path_c, file_path_x)
+        ast_script_list_x[file_path_x] = ast_script_x
+    print(ast_script_list_b)
+    print(ast_script_list_x)
+    return yielded, pruned
+
+
 def classify_porting(path_a, path_b):
     orig_file_list = get_diff_files(path_a)
     ported_file_list = get_diff_files(path_b)
 
     is_path_change = is_file_path_change(orig_file_list, ported_file_list, path_a, path_b)
-    is_covered = is_coverage(orig_file_list, ported_file_list)
+    print(is_path_change)
+
+    # is_covered = is_coverage(orig_file_list, ported_file_list)
+    # print(is_covered)
+
+    has_evolved = has_patch_evolved()
+    print(has_evolved)
+
     is_translated = has_namespace_changed(orig_file_list, ported_file_list)
+    print(is_translated)
+
 
 
 def summarize():
