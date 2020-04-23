@@ -287,7 +287,7 @@ def get_summary_of_ast_transformation(ast_script_list):
 
 def compare_ast_summaries(summary_a, summary_b):
     if summary_a == summary_b:
-        return False, False, None
+        return False, False, list()
     is_yield = False
     is_prune = False
     summary_list = list()
@@ -345,6 +345,7 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x, source_map):
         file_x = source_map[file_b]
         summary_x = summary_ast_list_x[file_x]
         comparison = compare_ast_summaries(summary_b, summary_x)
+        print(comparison)
 
     return yielded, pruned
 
