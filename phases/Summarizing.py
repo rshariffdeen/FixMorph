@@ -370,7 +370,7 @@ def check_header_files(file_mapping, path_x):
     is_pruned = False
     summary_list = list()
     for file_b in file_mapping:
-        file_x = file_mapping[file_a]
+        file_x = file_mapping[file_b]
         if file_b[-1] == "c":
             file_a = file_b.replace(Values.PATH_B, Values.PATH_A)
             header_list_a = extract_header_files(file_a)
