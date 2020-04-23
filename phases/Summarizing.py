@@ -252,6 +252,35 @@ def has_namespace_changed(file_list_a, file_list_b):
     return not (var_list_a == var_list_b)
 
 
+def get_summary_of_ast_transformation(ast_script):
+    summary_info = dict()
+    for ast_action in ast_script:
+        if "Insert" in ast_action:
+            transformation = "Insert"
+            node_type = ast_action.split(" ")[1].split("(")[0]
+            if transformation not in summary_info:
+                summary_info[transformation] = dict()
+                summary_info[transformation]["count"] = 0
+                summary_info[transformation]["list"] = dict()
+            summary_info[transformation]["count"] = summary_info[transformation]["count"] + 1
+            if node_type not in summary_info[transformation]["list"]:
+                summary_info[transformation]["list"][node_type] = 0
+            summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
+
+        elif "Update" in ast_action:
+            transformation = "Update"
+            node_type = ast_action.split(" ")[1].split("(")[0]
+            if transformation not in summary_info:
+                summary_info[transformation] = dict()
+                summary_info[transformation]["count"] = 0
+                summary_info[transformation]["list"] = dict()
+            summary_info[transformation]["count"] = summary_info[transformation]["count"] + 1
+            if node_type not in summary_info[transformation]["list"]:
+                summary_info[transformation]["list"][node_type] = 0
+            summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
+    return summary_info
+
+
 def has_patch_evolved(file_list_b, file_list_x, path_b, path_x):
     yielded = False
     pruned = False
@@ -268,6 +297,13 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x):
         ast_script_list_x[file_path_x] = ast_script_x
     print(ast_script_list_b)
     print(ast_script_list_x)
+
+    summary_ast_b = get_summary_of_ast_transformation(ast_script_list_b)
+    print(summary_ast_b)
+
+    summary_ast_x = get_summary_of_ast_transformation(ast_script_list_x)
+    print(summary_ast_x)
+
     return yielded, pruned
 
 
