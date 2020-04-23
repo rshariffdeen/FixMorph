@@ -170,7 +170,6 @@ def get_variable_list(path_a):
     ast_b = get_ast_json(path_b)
 
 
-
     return var_list
 
 
@@ -210,7 +209,7 @@ def get_diff_files(project_path):
     diff_list = parent_commit.diff(patch_commit)
     file_list = list()
     for diff in diff_list:
-        file_list.append(diff.a_path)
+        file_list.append(project_path + "/" + diff.a_path)
     return file_list
 
 
@@ -253,9 +252,10 @@ def has_namespace_changed(file_list_a, file_list_b):
     return not (var_list_a == var_list_b)
 
 
-def classify():
-    orig_file_list = get_diff_files(Values.PATH_B)
-    ported_file_list = get_diff_files(Values.PATH_E)
+def classify_porting(path_a, path_b):
+    orig_file_list = get_diff_files(path_a)
+    ported_file_list = get_diff_files(path_b)
+
     is_path_change = is_file_path_change(orig_file_list, ported_file_list)
     is_covered = is_coverage(orig_file_list, ported_file_list)
     is_translated = has_namespace_changed(orig_file_list, ported_file_list)
@@ -270,7 +270,8 @@ def summarize():
     if not Values.SKIP_SUMMARY:
         if not Values.PATH_E:
             error_exit("Path E is missing in configuration")
-        classify()
+
+        classify_porting(Values.PATH_B, Values.Project_D.path)
 
         if not Values.ONLY_ANALYSE:
             transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
