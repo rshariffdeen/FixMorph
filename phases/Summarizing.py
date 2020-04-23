@@ -252,33 +252,34 @@ def has_namespace_changed(file_list_a, file_list_b):
     return not (var_list_a == var_list_b)
 
 
-def get_summary_of_ast_transformation(ast_script):
+def get_summary_of_ast_transformation(ast_script_list):
     summary_info = dict()
-    for file_path in ast_script:
-        ast_action = ast_script[file_path]
-        if "Insert" in ast_action:
-            transformation = "Insert"
-            node_type = ast_action.split(" ")[1].split("(")[0]
-            if transformation not in summary_info:
-                summary_info[transformation] = dict()
-                summary_info[transformation]["count"] = 0
-                summary_info[transformation]["list"] = dict()
-            summary_info[transformation]["count"] = summary_info[transformation]["count"] + 1
-            if node_type not in summary_info[transformation]["list"]:
-                summary_info[transformation]["list"][node_type] = 0
-            summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
+    for file_path in ast_script_list:
+        ast_script = ast_script_list[file_path]
+        for ast_action in ast_script:
+            if "Insert" in ast_action:
+                transformation = "Insert"
+                node_type = ast_action.split(" ")[1].split("(")[0]
+                if transformation not in summary_info:
+                    summary_info[transformation] = dict()
+                    summary_info[transformation]["count"] = 0
+                    summary_info[transformation]["list"] = dict()
+                summary_info[transformation]["count"] = summary_info[transformation]["count"] + 1
+                if node_type not in summary_info[transformation]["list"]:
+                    summary_info[transformation]["list"][node_type] = 0
+                summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
 
-        elif "Update" in ast_action:
-            transformation = "Update"
-            node_type = ast_action.split(" ")[1].split("(")[0]
-            if transformation not in summary_info:
-                summary_info[transformation] = dict()
-                summary_info[transformation]["count"] = 0
-                summary_info[transformation]["list"] = dict()
-            summary_info[transformation]["count"] = summary_info[transformation]["count"] + 1
-            if node_type not in summary_info[transformation]["list"]:
-                summary_info[transformation]["list"][node_type] = 0
-            summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
+            elif "Update" in ast_action:
+                transformation = "Update"
+                node_type = ast_action.split(" ")[1].split("(")[0]
+                if transformation not in summary_info:
+                    summary_info[transformation] = dict()
+                    summary_info[transformation]["count"] = 0
+                    summary_info[transformation]["list"] = dict()
+                summary_info[transformation]["count"] = summary_info[transformation]["count"] + 1
+                if node_type not in summary_info[transformation]["list"]:
+                    summary_info[transformation]["list"][node_type] = 0
+                summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
     return summary_info
 
 
