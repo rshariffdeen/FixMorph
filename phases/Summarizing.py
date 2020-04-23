@@ -281,7 +281,7 @@ def classify_porting(path_a, path_b):
     # is_covered = is_coverage(orig_file_list, ported_file_list)
     # print(is_covered)
 
-    has_evolved = has_patch_evolved()
+    has_evolved = has_patch_evolved(orig_file_list, ported_file_list, path_a, path_b)
     print(has_evolved)
 
     is_translated = has_namespace_changed(orig_file_list, ported_file_list)
