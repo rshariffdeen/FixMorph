@@ -282,6 +282,7 @@ def get_summary_of_ast_transformation(ast_script_list):
                     summary_info[transformation]["list"][node_type] = 0
                 summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
             else:
+                print(ast_script)
                 error_exit("Unimplemented section in summarizing ast")
         summary_info_list[file_path] = summary_info
     return summary_info_list
@@ -325,6 +326,7 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x, source_map):
     pruned = False
     ast_script_list_b = dict()
     ast_script_list_x = dict()
+    summary_ast_list = list()
     for file_path_b in file_list_b:
         file_path_a = file_path_b.replace(path_b, Values.PATH_A)
         ast_script_b = get_ast_script(file_path_a, file_path_b)
@@ -334,22 +336,76 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x, source_map):
         file_path_c = file_path_x.replace(path_x, Values.PATH_C)
         ast_script_x = get_ast_script(file_path_c, file_path_x)
         ast_script_list_x[file_path_x] = ast_script_x
-    print(ast_script_list_b)
-    print(ast_script_list_x)
+    # print(ast_script_list_b)
+    # print(ast_script_list_x)
 
     summary_ast_list_b = get_summary_of_ast_transformation(ast_script_list_b)
-    print(summary_ast_list_b)
+    # print(summary_ast_list_b)
 
     summary_ast_list_x = get_summary_of_ast_transformation(ast_script_list_x)
-    print(summary_ast_list_x)
+    # print(summary_ast_list_x)
     for file_b in summary_ast_list_b:
         summary_b = summary_ast_list_b[file_b]
         file_x = source_map[file_b]
         summary_x = summary_ast_list_x[file_x]
         comparison = compare_ast_summaries(summary_b, summary_x)
-        print(comparison)
+        any_yield, any_prune, summary = comparison
+        yielded = yielded or any_yield
+        pruned = pruned or any_prune
+        summary_ast_list = summary_ast_list + summary
 
-    return yielded, pruned
+    return yielded, pruned, summary_ast_list
+
+
+def extract_header_files(file_path):
+    extract_command = "cat " + file_path + " | grep '#include' > /tmp/headers"
+    execute_command(extract_command)
+    with open("/tmp/headers", "r") as result_file:
+        header_list = result_file.readlines()
+        return header_list
+
+
+def check_header_files(file_mapping, path_x):
+    is_yielded = False
+    is_pruned = False
+    summary_list = list()
+    for file_b in file_mapping:
+        file_x = file_mapping[file_a]
+        if file_b[-1] == "c":
+            file_a = file_b.replace(Values.PATH_B, Values.PATH_A)
+            header_list_a = extract_header_files(file_a)
+            header_list_b = extract_header_files(file_b)
+            additional_header_list_b = list(set(header_list_b) - set(header_list_a))
+            deleted_header_list_b = list(set(header_list_a) - set(header_list_b))
+            file_c = file_x.replace(path_x, Values.PATH_C)
+            header_list_c = extract_header_files(file_c)
+            header_list_x = extract_header_files(file_x)
+            additional_header_list_x = list(set(header_list_x) - set(header_list_c))
+            deleted_header_list_x = list(set(header_list_c) - set(header_list_x))
+
+            if len(additional_header_list_b) < len(additional_header_list_x):
+                header_file_list = list(set(additional_header_list_b) - set(additional_header_list_x))
+                is_yielded = True
+                for header_file in header_file_list:
+                    summary_list.append("additional header file included in " + file_x + ":" + header_file)
+            elif len(additional_header_list_b) > len(additional_header_list_x):
+                is_pruned = True
+                header_file_list = list(set(additional_header_list_x) - set(additional_header_list_b))
+                for header_file in header_file_list:
+                    summary_list.append("header file inclusion dropped in " + file_x + ":" + header_file)
+
+            if len(deleted_header_list_b) < len(deleted_header_list_x):
+                header_file_list = list(set(deleted_header_list_b) - set(deleted_header_list_x))
+                is_yielded = True
+                for header_file in header_file_list:
+                    summary_list.append("additional header file removed in " + file_x + ":" + header_file)
+            elif len(deleted_header_list_b) > len(deleted_header_list_x):
+                is_pruned = True
+                header_file_list = list(set(deleted_header_list_x) - set(deleted_header_list_b))
+                for header_file in header_file_list:
+                    summary_list.append("header file inclusion retained in " + file_x + ":" + header_file)
+
+    return is_yielded, is_pruned, summary_list
 
 
 def get_file_name_map(file_list_a, file_list_b):
@@ -367,6 +423,11 @@ def get_file_name_map(file_list_a, file_list_b):
 
 
 def classify_porting(path_a, path_b):
+    is_yielded = False
+    is_pruned = False
+    is_translated = False
+    summary_list = list()
+
     orig_file_list = get_diff_files(path_a)
     ported_file_list = get_diff_files(path_b)
     map_file_list = get_file_name_map(orig_file_list, ported_file_list)
@@ -376,12 +437,25 @@ def classify_porting(path_a, path_b):
     # is_covered = is_coverage(orig_file_list, ported_file_list)
     # print(is_covered)
 
-    has_evolved = has_patch_evolved(orig_file_list, ported_file_list, path_a, path_b, map_file_list)
-    print(has_evolved)
+    evolution_result = has_patch_evolved(orig_file_list, ported_file_list, path_a, path_b, map_file_list)
+    any_yield, any_prune, ast_summary = evolution_result
+    print(any_yield, any_prune, ast_summary)
+    is_yielded = is_yielded or any_yield
+    is_pruned = is_pruned or any_prune
+    summary_list = summary_list + ast_summary
+
+    header_check_result = check_header_files(map_file_list, path_b)
+    any_yield, any_prune, header_summary = header_check_result
+    print(any_yield, any_prune, header_summary)
+    is_yielded = is_yielded or any_yield
+    is_pruned = is_pruned or any_prune
+    summary_list = summary_list + header_summary
+
 
     is_translated = has_namespace_changed(orig_file_list, ported_file_list)
     print(is_translated)
 
+    print(is_yielded, is_pruned, summary_list)
 
 
 def summarize():
