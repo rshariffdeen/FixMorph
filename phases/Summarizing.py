@@ -213,13 +213,13 @@ def get_diff_files(project_path):
     return file_list
 
 
-def is_file_path_change(file_list_a, file_list_b):
+def is_file_path_change(file_list_a, file_list_b, project_path_a, project_path_b):
     relative_path_list_a = set()
     relative_path_list_b = set()
     for path_a in file_list_a:
-        relative_path_list_a.add(path_a.replace(Values.PATH_A, ""))
+        relative_path_list_a.add(path_a.replace(project_path_a, ""))
     for path_b in file_list_b:
-        relative_path_list_b.add(path_b.replace(Values.PATH_C, ""))
+        relative_path_list_b.add(path_b.replace(project_path_b, ""))
     return not (relative_path_list_b == relative_path_list_a)
 
 
@@ -256,7 +256,7 @@ def classify_porting(path_a, path_b):
     orig_file_list = get_diff_files(path_a)
     ported_file_list = get_diff_files(path_b)
 
-    is_path_change = is_file_path_change(orig_file_list, ported_file_list)
+    is_path_change = is_file_path_change(orig_file_list, ported_file_list, path_a, path_b)
     is_covered = is_coverage(orig_file_list, ported_file_list)
     is_translated = has_namespace_changed(orig_file_list, ported_file_list)
 
