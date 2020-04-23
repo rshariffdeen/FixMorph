@@ -253,8 +253,9 @@ def has_namespace_changed(file_list_a, file_list_b):
 
 
 def get_summary_of_ast_transformation(ast_script_list):
-    summary_info = dict()
+    summary_info_list = dict()
     for file_path in ast_script_list:
+        summary_info = dict()
         ast_script = ast_script_list[file_path]
         for ast_action in ast_script:
             if "Insert" in ast_action:
@@ -282,7 +283,8 @@ def get_summary_of_ast_transformation(ast_script_list):
                 summary_info[transformation]["list"][node_type] = summary_info[transformation]["list"][node_type] + 1
             else:
                 error_exit("Unimplemented section in summarizing ast")
-    return summary_info
+        summary_info_list[file_path] = summary_info
+    return summary_info_list
 
 
 def compare_ast_summaries(summary_a, summary_b):
