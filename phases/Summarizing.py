@@ -260,7 +260,7 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x):
     for file_path_b in file_list_b:
         file_path_a = file_path_b.replace(path_b, Values.PATH_A)
         ast_script_b = get_ast_script(file_path_a, file_path_b)
-        ast_script_list_b[file_list_b] = ast_script_b
+        ast_script_list_b[file_path_b] = ast_script_b
 
     for file_path_x in file_list_x:
         file_path_c = file_path_x.replace(path_x, Values.PATH_C)
