@@ -587,6 +587,7 @@ def identify_code_segment(diff_info, project):
             elif node_type in ["EmptyDecl"]:
                 continue
             else:
+                print(ast_node)
                 error_exit("unknown node type for code segmentation: " + str(node_type))
 
         for function_name, begin_line, finish_line in function_list:
