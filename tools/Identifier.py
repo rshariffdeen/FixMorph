@@ -674,8 +674,8 @@ def identify_definition_segment(diff_info, project):
         source_file_b = source_file_a.replace(Values.PATH_A, Values.PATH_B)
         header_list_a = Extractor.extract_header_list(source_file_a)
         header_list_b = Extractor.extract_header_list(source_file_b)
-        added_header_list = header_list_b - header_list_a
-        removed_header_list = header_list_a - header_list_b
+        added_header_list = list(set(header_list_b) - set(header_list_a))
+        removed_header_list = list(set(header_list_a) - set(header_list_b))
         project.header_list[source_file_a] = dict()
         project.header_list[source_file_a]['added'] = added_header_list
         project.header_list[source_file_a]['removed'] = removed_header_list
