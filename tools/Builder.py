@@ -381,10 +381,13 @@ def build_llvm():
     build_all()
 
 
-def restore_project(project_path):
+def restore_project(project_path, commit_id=None):
     restore_command = "cd " + project_path + ";"
     if os.path.exists(project_path + "/.git") or Values.VC == 'git':
-        restore_command += "git clean -fd; git reset --hard HEAD"
+        if commit_id:
+            restore_command += "git clean -fd; git reset --hard HEAD; git checkout " + commit_id
+        else:
+            restore_command += "git clean -fd; git reset --hard HEAD"
     elif os.path.exists(project_path + "/.svn"):
         restore_command += "svn revert -R .; svn status --no-ignore | grep '^\?' | sed 's/^\?     //'  | xargs rm -rf"
     elif os.path.exists(project_path + "/.hg"):
@@ -416,7 +419,7 @@ def restore_all():
     Emitter.normal("\t" + Values.Project_B.path)
     restore_project(Values.Project_B.path)
     Emitter.normal("\t" + Values.Project_C.path)
-    restore_project(Values.Project_C.path)
+    restore_project(Values.Project_C.path, Values.COMMIT_C)
     Emitter.normal("\t" + Values.Project_D.path)
     restore_project(Values.Project_D.path)
     if Values.PATH_E:
