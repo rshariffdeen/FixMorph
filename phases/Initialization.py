@@ -118,6 +118,16 @@ def read_conf_file():
                 Values.PATH_E = Values.PATH_E.replace("$HOME$", Definitions.DIRECTORY_MAIN)
             if str(Values.PATH_E)[-1] == "/":
                 Values.PATH_E = Values.PATH_E[:-1]
+
+        elif Definitions.CONF_COMMIT_A in configuration:
+            Values.COMMIT_A = configuration.replace(Definitions.CONF_COMMIT_A, '')
+        elif Definitions.CONF_COMMIT_B in configuration:
+            Values.COMMIT_B = configuration.replace(Definitions.CONF_COMMIT_B, '')
+        elif Definitions.CONF_COMMIT_C in configuration:
+            Values.COMMIT_C = configuration.replace(Definitions.CONF_COMMIT_C, '')
+        elif Definitions.CONF_COMMIT_E in configuration:
+            Values.COMMIT_E = configuration.replace(Definitions.CONF_COMMIT_E, '')
+
         elif Definitions.CONF_PATH_POC in configuration:
             Values.PATH_POC = configuration.replace(Definitions.CONF_PATH_POC, '')
             if "$HOME$" in Values.PATH_POC:
