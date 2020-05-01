@@ -681,6 +681,6 @@ def identify_definition_segment(diff_info, project):
         project.header_list[source_file_a]['removed'] = removed_header_list
         for header_file in added_header_list:
             Emitter.success("\t\t\tAdded: " + header_file)
-        for header_file in added_header_list:
+        for header_file in removed_header_list:
             Emitter.success("\t\t\tRemoved: " + header_file)
 
