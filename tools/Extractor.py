@@ -569,6 +569,7 @@ def extract_header_list(source_path):
     header_list = list()
     output_file_path = Definitions.DIRECTORY_TMP + "/header-list"
     extract_command = "cat " + source_path + " | grep '#include' > " + output_file_path
+    execute_command(extract_command)
     with open(output_file_path, 'r') as output_file:
         header_list = output_file.readlines()
     return header_list
