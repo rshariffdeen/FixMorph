@@ -9,9 +9,25 @@ from common import Values
 from tools import Logger, Emitter, Slicer
 
 
+def fix_definitions(file_list_to_patch):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.sub_sub_title("fixing changed definitions")
+    for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
+        segment_code = vec_path_a.split(".")[-2].split("_")[0]
+        try:
+            split_regex = "." + segment_code + "_"
+            vector_source_a, vector_name_a = vec_path_a.split(split_regex)
+            vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+
+            Emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
+
+
+        except Exception as e:
+            error_exit("something went wrong with slicing phase")
+
+
 def slice_code(file_list_to_patch):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-
     Emitter.sub_sub_title("slicing unrelated segments")
 
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
@@ -35,6 +51,29 @@ def slice_code(file_list_to_patch):
 
         except Exception as e:
             error_exit("something went wrong with slicing phase")
+
+
+def revert_definitions(file_list_to_patch):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.sub_sub_title("fixing changed definitions")
+    for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
+        segment_code = vec_path_a.split(".")[-2].split("_")[0]
+        try:
+            split_regex = "." + segment_code + "_"
+            vector_source_a, vector_name_a = vec_path_a.split(split_regex)
+            vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+            vector_source_c, vector_name_c = vec_path_c.split(split_regex)
+
+            vector_name_b = vector_name_a.replace(Values.PATH_A, Values.PATH_B)
+            vector_name_d = vector_name_a.replace(Values.PATH_C, Values.Project_D.path)
+            vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
+
+            Emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
+
+
+        except Exception as e:
+            error_exit("something went wrong with slicing phase")
+
 
 
 def safe_exec(function_def, title, *args):
