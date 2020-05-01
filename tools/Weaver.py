@@ -101,7 +101,7 @@ def insert_code(patch_code, source_path, line_number):
 def insert_code_range(patch_code, source_path, line_number):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     content = ""
-    Emitter.information("inserting code at line" + line_number + " in " + source_path)
+    Emitter.information("inserting code at line" + str(line_number) + " in " + source_path)
     if os.path.exists(source_path):
         with open(source_path, 'r') as source_file:
             content = source_file.readlines()
@@ -115,7 +115,7 @@ def insert_code_range(patch_code, source_path, line_number):
 def delete_code(source_path, start_line, end_line):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     content = ""
-    Emitter.information("deleting lines " + start_line + "-" + end_line + " in " + source_path)
+    Emitter.information("deleting lines " + str(start_line) + "-" + str(end_line) + " in " + source_path)
     if os.path.exists(source_path):
         with open(source_path, 'r+') as source_file:
             content = source_file.readlines()
