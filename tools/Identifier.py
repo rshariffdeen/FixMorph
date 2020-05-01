@@ -554,6 +554,7 @@ def identify_code_segment(diff_info, project):
         type_def_list = list()
         def_list = list()
         decl_list = list()
+        asm_list = list()
         source_file_pattern = [source_file, source_file.split("/")[-1], source_file.replace(Values.Project_A.path, '')]
         for ast_node in ast_tree['children']:
             node_type = str(ast_node["type"])
@@ -584,7 +585,7 @@ def identify_code_segment(diff_info, project):
                 if 'file' in ast_node.keys():
                     if ast_node['file'] in source_file_pattern:
                         function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
-            elif node_type in ["EmptyDecl"]:
+            elif node_type in ["EmptyDecl", "FileScopeAsmDecl"]:
                 continue
             else:
                 print(ast_node)
@@ -656,3 +657,4 @@ def identify_code_segment(diff_info, project):
                         Emitter.success("\t\t\tEnum: " + enum_name.replace("enum_", ""))
                         project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name,
                                                                                      begin_line, finish_line, True)
+
