@@ -563,3 +563,12 @@ def extract_project_path(source_path):
     elif Values.PATH_C in source_path:
         return Values.PATH_C
 
+
+def extract_header_list(source_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    header_list = list()
+    output_file_path = Definitions.DIRECTORY_TMP + "/header-list"
+    extract_command = "cat " + source_path + " | grep '#include' > " + output_file_path
+    with open(output_file_path, 'r') as output_file:
+        header_list = output_file.readlines()
+    return header_list

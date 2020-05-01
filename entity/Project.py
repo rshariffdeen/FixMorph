@@ -22,3 +22,5 @@ class Project:
         self.decl_list = dict()
         self.enum_list = dict()
         self.type_def_list = dict()
+        self.header_list = dict()
+        self.definition_list = dict()

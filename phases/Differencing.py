@@ -23,6 +23,8 @@ diff_info = dict()
 def segment_code():
     global diff_info
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.sub_sub_title("identifying modified definitions")
+    Identifier.identify_definition_segment(diff_info, Values.Project_A)
     Emitter.sub_sub_title("identifying modified segments")
     Identifier.identify_code_segment(diff_info, Values.Project_A)
 

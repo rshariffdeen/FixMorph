@@ -658,3 +658,29 @@ def identify_code_segment(diff_info, project):
                         project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name,
                                                                                      begin_line, finish_line, True)
 
+
+def identify_definition_segment(diff_info, project):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    grouped_line_info = dict()
+    for source_loc in diff_info:
+        source_file, start_line = source_loc.split(":")
+        diff_line_info = diff_info[source_loc]
+        if source_file not in grouped_line_info:
+            grouped_line_info[source_file] = list()
+        grouped_line_info[source_file].append(diff_line_info['old-lines'])
+
+    for source_file_a in grouped_line_info:
+        Emitter.normal("\t\t" + source_file_a)
+        source_file_b = source_file_a.replace(Values.PATH_A, Values.PATH_B)
+        header_list_a = Extractor.extract_header_list(source_file_a)
+        header_list_b = Extractor.extract_header_list(source_file_b)
+        added_header_list = header_list_b - header_list_a
+        removed_header_list = header_list_a - header_list_b
+        project.header_list[source_file_a] = dict()
+        project.header_list[source_file_a]['added'] = added_header_list
+        project.header_list[source_file_a]['removed'] = removed_header_list
+        for header_file in added_header_list:
+            Emitter.success("\t\t\tAdded: " + header_file)
+        for header_file in added_header_list:
+            Emitter.success("\t\t\tRemoved: " + header_file)
+
