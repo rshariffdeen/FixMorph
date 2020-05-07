@@ -33,6 +33,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
         find_files(project.path, file_extension, log_file, regex)
 
         while os.stat(log_file).st_size == 0:
+            source_dir = source_dir[:-1]
             regex = source_dir
             find_files(project.path, file_extension, log_file, regex)
             if "/" not in source_dir:
