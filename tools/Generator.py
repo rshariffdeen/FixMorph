@@ -25,7 +25,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
             source_path, line_number = source_loc.split(":")
             file_name = source_path.split("/")[-1][:-2]
             source_dir = source_path[:str(source_path).find(file_name)]
-            source_dir = source_dir.replace(Values.PATH_A, "")
+            source_dir = source_dir.replace(Values.PATH_A, "")[1:]
             if regex is None:
                 regex = file_name
             else:
