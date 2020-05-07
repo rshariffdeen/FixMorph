@@ -198,7 +198,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
                 script_line = "Replace " + str(move_node_id_a) + " with " + str(target_node_id_b)
                 merged_ast_script.append(script_line)
                 for script_line in merged_ast_script:
-                    if target_node_id_b in script_line and "Insert" in script_line:
+                    if str(target_node_id_b) in script_line and "Insert" in script_line:
                         merged_ast_script.remove(script_line)
                 continue
             # if target_node_id_b in inserted_node_list:
