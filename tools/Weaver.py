@@ -64,8 +64,8 @@ def execute_ast_transformation(script_path, source_file_info):
 
 def show_patch(file_a, file_b, file_c, file_d, index):
     Emitter.highlight("\tOriginal Patch")
-    original_patch_file_name = Definitions.DIRECTORY_OUTPUT + index + "-original-patch"
-    generated_patch_file_name = Definitions.DIRECTORY_OUTPUT + index + "-generated-patch"
+    original_patch_file_name = Definitions.DIRECTORY_OUTPUT + "/" + index + "-original-patch"
+    generated_patch_file_name = Definitions.DIRECTORY_OUTPUT + "/" + index + "-generated-patch"
     diff_command = "diff -ENZBbwr " + file_a + " " + file_b + " > " + original_patch_file_name
     execute_command(diff_command)
     with open(original_patch_file_name, 'r', encoding='utf8', errors="ignore") as diff:
@@ -101,7 +101,7 @@ def insert_code(patch_code, source_path, line_number):
 def insert_code_range(patch_code, source_path, line_number):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     content = ""
-    Emitter.information("inserting code at line" + str(line_number) + " in " + source_path)
+    Emitter.information("inserting code at line " + str(line_number) + " in " + source_path)
     if os.path.exists(source_path):
         with open(source_path, 'r') as source_file:
             content = source_file.readlines()
