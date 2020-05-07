@@ -123,7 +123,11 @@ def search_node(ast_tree, node_type, node_identifier):
             ast_node_identifier = ast_node['identifier']
             # print(child_node_identifier, function_name)
             if ast_node_identifier == node_identifier:
-                return ast_node
+                if node_type == "FunctionDecl":
+                    if ast_node['start line'] != ast_node['end line']:
+                        return ast_node
+                else:
+                    return ast_node
 
 
 def search_function_node_by_loc(ast_node, line_number, source_path):
