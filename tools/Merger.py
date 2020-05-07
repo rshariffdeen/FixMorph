@@ -193,8 +193,13 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
             target_node_id_b = int(((script_line.split(" into ")[1]).split("(")[1]).split(")")[0])
 
             if target_node_id_b in inserted_node_list or move_node_id_b in inserted_node_list:
-                del_op = "Delete " + str(move_node_a['type']) + "(" + str(move_node_a['id']) + ")\n"
-                merged_ast_script.append(del_op)
+                # script_line = "Delete " + str(move_node_a['type']) + "(" + str(move_node_a['id']) + ")\n"
+                # if move_node_type_a == "BinaryOperator":
+                script_line = "Replace " + move_node_id_a + " with " + target_node_id_b
+                merged_ast_script.append(script_line)
+                for script_line in merged_ast_script:
+                    if target_node_id_b in script_line and "Insert" in script_line:
+                        merged_ast_script.remove(script_line)
                 continue
             # if target_node_id_b in inserted_node_list:
             #     continue
