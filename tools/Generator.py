@@ -29,6 +29,8 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                 regex = regex + "\|" + file_name
 
     find_files(project.path, file_extension, log_file, regex)
+    if os.stat(log_file).st_size == 0:
+        find_files(project.path, file_extension, log_file, None)
 
     with open(log_file, 'r') as file_list:
         source_file = file_list.readline().strip()
