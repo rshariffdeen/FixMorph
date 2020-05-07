@@ -20,15 +20,28 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
     # intelligently generate vectors
     regex = None
     if Values.BACKPORT or Values.FORK:
+        source_dir = None
         for source_loc in diff_file_list:
             source_path, line_number = source_loc.split(":")
             file_name = source_path.split("/")[-1][:-2]
+            source_dir = source_path[:str(source_path).find(file_name)]
+            source_dir = source_dir.replace(Values.PATH_A, "")
             if regex is None:
                 regex = file_name
             else:
                 regex = regex + "\|" + file_name
+        find_files(project.path, file_extension, log_file, regex)
 
-    find_files(project.path, file_extension, log_file, regex)
+        while os.stat(log_file).st_size == 0:
+            regex = source_dir
+            find_files(project.path, file_extension, log_file, regex)
+            if "/" not in source_dir:
+                break
+            last_sub_dir = source_dir.split("/")[-1]
+            source_dir = source_dir[:source_dir.find(last_sub_dir)]
+
+    else:
+        find_files(project.path, file_extension, log_file, regex)
     if os.stat(log_file).st_size == 0:
         find_files(project.path, file_extension, log_file, None)
 
