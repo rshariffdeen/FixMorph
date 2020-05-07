@@ -41,8 +41,8 @@ def collect_instruction_list(script_file_path):
             elif instruction == Definitions.UPDATE:
                 try:
                     node_a, node_b = clean_parse(content, Definitions.TO)
-                    if "TypeLoc" not in node_a:
-                        instruction_list.append((instruction, node_a, node_b))
+                    # if "TypeLoc" not in node_a:
+                    instruction_list.append((instruction, node_a, node_b))
                 except Exception as e:
                     error_exit(e, "Something went wrong in UPDATE.")
                     # Delete nodeA
