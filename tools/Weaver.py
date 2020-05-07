@@ -51,7 +51,7 @@ def execute_ast_transformation(script_path, source_file_info):
 
     if ret_code == 0:
         move_command = "cp " + FILE_TEMP_FIX + " " + file_d
-        show_partial_diff(file_d, FILE_TEMP_FIX)
+        show_partial_diff(file_c, file_d)
         execute_command(move_command)
     else:
         error_exit("\t AST transformation FAILED")
