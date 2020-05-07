@@ -218,6 +218,7 @@ def detect_function_clones():
         vector_source_a, vector_name_a = vector_path_a.split(".func_")
         vector_name_a = vector_name_a.replace(".vec", "")
         best_candidate = None
+        # TODO: use name distance as well
         for candidate_path, distance in candidate_list:
             if vector_name_a in candidate_path:
                 best_candidate = (candidate_path, distance)
