@@ -143,7 +143,7 @@ def get_file_list(dir_name):
 
 def get_code(source_path, line_number):
     if os.path.exists(source_path):
-        with open(source_path, 'r') as source_file:
+        with open(source_path, 'r', encoding='utf8', errors="ignore") as source_file:
             content = source_file.readlines()
             # print(len(content))
             return content[line_number-1]
@@ -152,7 +152,7 @@ def get_code(source_path, line_number):
 
 def get_code_range(source_path, start_line, end_line):
     if os.path.exists(source_path):
-        with open(source_path, 'r') as source_file:
+        with open(source_path, 'r', encoding='utf8', errors="ignore") as source_file:
             content = source_file.readlines()
             # print(len(content))
             return content[start_line-1:end_line]
