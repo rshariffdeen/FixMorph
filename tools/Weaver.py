@@ -107,7 +107,7 @@ def insert_code_range(patch_code, source_path, line_number):
             content = source_file.readlines()
 
     updated_content = content[:line_number-1] + patch_code + content[line_number:]
-    print(set(updated_content) - set(content))
+    # print(set(updated_content) - set(content))
     with open(source_path, 'w') as source_file:
         source_file.writelines(updated_content)
 
@@ -123,7 +123,7 @@ def delete_code(source_path, start_line, end_line):
             source_file.truncate()
     original_content = content
     del content[start_line-1:end_line]
-    print(set(original_content) - set(content))
+    # print(set(original_content) - set(content))
     with open(source_path, 'w') as source_file:
         source_file.writelines(content)
 
