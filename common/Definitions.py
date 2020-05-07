@@ -168,4 +168,4 @@ AT = " at "
 INTO = " into "
 AND = "and"
 WITH = " with "
-order = [DELETE, INSERT, UPDATE, UPDATEMOVE, MOVE]
+order = [DELETE, INSERT, REPLACE, UPDATE, UPDATEMOVE, MOVE]

@@ -235,6 +235,33 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
             except Exception as e:
                 error_exit(e, "Something went wrong with UPDATE.")
 
+        elif operation == Definitions.REPLACE:
+            try:
+                txt_target_node_a = instruction[1]
+                txt_update_node = instruction[2]
+                target_node = "?"
+                update_node_id = id_from_string(txt_update_node)
+                if int(update_node_id) in update_list_d:
+                    continue
+                update_node = json_ast_dump[Values.Project_B.name][update_node_id]
+
+                if txt_target_node_a in map_ac.keys():
+                    txt_target_node = map_ac[txt_target_node_a]
+                    target_node_id = id_from_string(txt_target_node)
+                    target_node = json_ast_dump[Values.Project_C.name][target_node_id]
+
+                    if target_node.line is None:
+                        target_node.line = target_node.parent.line
+                    instruction = get_instruction((Definitions.REPLACE, target_node, update_node))
+                    translated_instruction_list.append(instruction)
+
+                else:
+                    Emitter.warning(
+                        "Warning: Match for " + str(txt_target_node_a) + "not found. Skipping UPDATE instruction.")
+
+            except Exception as e:
+                error_exit(e, "Something went wrong with UPDATE.")
+
         # Delete nodeA -> Delete nodeC
         elif operation == Definitions.DELETE:
             try:
@@ -343,7 +370,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         if target_node.line is None:
                             target_node.line = target_node.parent.line
                         if target_node in inserted_node_list_d:
-                            instruction = get_instruction((Definitions.DELETE, move_node))
+                            instruction = get_instruction((Definitions.REPLACE, move_node, target_node))
                             translated_instruction_list.append(instruction)
                         else:
                             instruction = get_instruction((Definitions.MOVE, move_node, target_node, offset))
@@ -618,7 +645,10 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     nodeA = match_BA[i[1]]
                     nodeA = id_from_string(nodeA)
                     nodeA = ASTlists[Values.Project_A.name][nodeA]
-                    modified_AB.append((Definitions.DELETE, nodeA))
+                    modified_AB.append((Definitions.REPLACE, nodeA, nodeB2))
+                    for instruction in modified_AB:
+                        if instruction[0] == Definitions.INSERT and instruction[1] == nodeB2:
+                            modified_AB.remove(instruction)
                 else:
                     Emitter.warning("Warning: node " + str(nodeB1) + \
                                   "could not be matched. " + \
@@ -731,6 +761,10 @@ def rewrite_as_script(modified_script):
             nodeA = i[1].simple_print()
             nodeB = i[2].simple_print()
             instruction_AB.append((Definitions.UPDATE, nodeA, nodeB))
+        elif inst == Definitions.REPLACE:
+            nodeA = i[1].simple_print()
+            nodeB = i[2].simple_print()
+            instruction_AB.append((Definitions.REPLACE, nodeA, nodeB))
         elif inst == Definitions.INSERT:
             nodeB1 = i[1].simple_print()
             nodeB2 = i[2].simple_print()
@@ -761,6 +795,11 @@ def get_instruction(instruction_data):
         nodeC = instruction_data[1]
         nodeD = instruction_data[2]
         instruction = Definitions.UPDATE + " " + nodeC.simple_print() + Definitions.TO + nodeD.simple_print()
+
+    elif operation == Definitions.REPLACE:
+        nodeC = instruction_data[1]
+        nodeD = instruction_data[2]
+        instruction = Definitions.REPLACE + " " + nodeC.simple_print() + Definitions.WITH + nodeD.simple_print()
 
     elif operation == Definitions.DELETE:
         nodeC = instruction_data[1]
