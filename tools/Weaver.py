@@ -106,7 +106,7 @@ def insert_code_range(patch_code, source_path, line_number):
         with open(source_path, 'r') as source_file:
             content = source_file.readlines()
 
-    updated_content = content[:line_number-1] + patch_code + content[line_number:]
+    updated_content = content[:line_number-1] + patch_code + content[line_number-1:]
     # print(set(updated_content) - set(content))
     with open(source_path, 'w') as source_file:
         source_file.writelines(updated_content)
