@@ -217,7 +217,16 @@ def detect_function_clones():
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".func_")
         vector_name_a = vector_name_a.replace(".vec", "")
-        best_candidate = candidate_list[0]
+        best_candidate = None
+        for candidate_path, distance in candidate_list:
+            if vector_name_a in candidate_path:
+                best_candidate = (candidate_path, distance)
+        if not best_candidate:
+            for candidate_path, distance in candidate_list:
+                if not best_candidate:
+                    best_candidate = (candidate_path, distance)
+                if distance < best_candidate[1]:
+                    best_candidate = (candidate_path, distance)
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split(".func_")
         vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
