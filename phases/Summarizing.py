@@ -458,12 +458,12 @@ def classify_porting(path_a, path_b):
     print(is_yielded, is_pruned, summary_list)
 
 
-def segment_code(diff_info):
+def segment_code(diff_info, project):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("identifying modified definitions")
-    Identifier.identify_definition_segment(diff_info, Values.Project_A)
+    Identifier.identify_definition_segment(diff_info, project)
     Emitter.sub_sub_title("identifying modified segments")
-    Identifier.identify_code_segment(diff_info, Values.Project_A)
+    Identifier.identify_code_segment(diff_info, project)
 
 
 def summarize():
@@ -479,11 +479,11 @@ def summarize():
         # classify_porting(Values.PATH_B, Values.Project_D.path)
 
         original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
-                                           Values.PATH_C, Values.Project_D.path)
-        segment_code(original_diff_info)
+                                           Values.PATH_A, Values.PATH_B)
+        segment_code(original_diff_info, Values.Project_A)
         ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
                                            Values.PATH_C, Values.Project_D.path)
-        segment_code(ported_diff_info)
+        segment_code(ported_diff_info, Values.Project_C)
 
         save_values()
     else:

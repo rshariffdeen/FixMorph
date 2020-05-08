@@ -555,7 +555,7 @@ def identify_code_segment(diff_info, project):
         def_list = list()
         decl_list = list()
         asm_list = list()
-        source_file_pattern = [source_file, source_file.split("/")[-1], source_file.replace(Values.Project_A.path, '')]
+        source_file_pattern = [source_file, source_file.split("/")[-1], source_file.replace(project.path, '')]
         for ast_node in ast_tree['children']:
             node_type = str(ast_node["type"])
             if node_type in ["VarDecl"]:
