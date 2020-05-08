@@ -104,12 +104,12 @@ def save_values():
 
 
 def clear_values(project):
-    project.header_list = list()
-    project.function_list = list()
-    project.struct_list = list()
-    project.macro_list = list()
-    project.def_list = list()
-    project.enum_list = list()
+    project.header_list = dict()
+    project.function_list = dict()
+    project.struct_list = dict()
+    project.macro_list = dict()
+    project.def_list = dict()
+    project.enum_list = dict()
 
 
 def safe_exec(function_def, title, *args):
