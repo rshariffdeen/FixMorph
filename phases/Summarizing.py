@@ -482,7 +482,7 @@ def summarize():
                                            Values.PATH_A, Values.PATH_B)
         segment_code(original_diff_info, Values.Project_A)
         ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
-                                           Values.PATH_C, Values.Project_D.path)
+                                           Values.PATH_C, Values.PATH_E)
         segment_code(ported_diff_info, Values.Project_C)
 
         save_values()
