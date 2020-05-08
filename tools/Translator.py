@@ -860,6 +860,8 @@ def translate_script_list(generated_script_list):
         map_ac = Values.ast_map[file_list]
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                      generated_data[2], map_ac)
+        if not translated_script:
+            error_exit("failed to translate AST transformation")
         translated_script_list[file_list] = (translated_script, original_script)
         restore_file_orig(vector_source_a)
         restore_file_orig(vector_source_b)
