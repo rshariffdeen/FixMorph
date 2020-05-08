@@ -12,7 +12,7 @@ from common.Utilities import execute_command, error_exit, save_current_state, lo
 from common import Definitions, Values
 from ast import Vector, Parser
 import difflib
-from tools import Logger, Emitter, Detector, Writer, Generator, Reader, Differ, Merger
+from tools import Logger, Emitter, Identifier, Writer, Generator, Reader, Differ, Merger
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -157,13 +157,13 @@ def compare():
 
         ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
                                      Values.PATH_C, Values.PATH_E)
-        ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
-                                     Values.PATH_C, Values.PATH_E, ported_diff_info)
+        # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
+        #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
 
         transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
                                          Values.PATH_C, Values.Project_D.path)
-        transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
-                                         Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
+        # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
+        #                                  Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
 
         save_values()
     else:

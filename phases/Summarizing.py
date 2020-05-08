@@ -12,7 +12,7 @@ from common.Utilities import execute_command, error_exit, save_current_state, lo
 from common import Definitions, Values
 from ast import Vector, Parser
 import difflib
-from tools import Logger, Emitter, Detector, Writer, Generator, Solver, Differ, Merger
+from tools import Logger, Emitter, Identifier, Writer, Generator, Solver, Differ, Merger
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -458,6 +458,14 @@ def classify_porting(path_a, path_b):
     print(is_yielded, is_pruned, summary_list)
 
 
+def segment_code(diff_info):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.sub_sub_title("identifying modified definitions")
+    Identifier.identify_definition_segment(diff_info, Values.Project_A)
+    Emitter.sub_sub_title("identifying modified segments")
+    Identifier.identify_code_segment(diff_info, Values.Project_A)
+
+
 def summarize():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global original_diff_info, ported_diff_info, transplanted_diff_info
@@ -468,13 +476,14 @@ def summarize():
         if not Values.PATH_E:
             error_exit("Path E is missing in configuration")
 
-        classify_porting(Values.PATH_B, Values.Project_D.path)
+        # classify_porting(Values.PATH_B, Values.Project_D.path)
 
-        if not Values.ONLY_ANALYSE:
-            transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
-                                         Values.PATH_C, Values.Project_D.path)
-            transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
-                                         Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
+        original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
+                                           Values.PATH_C, Values.Project_D.path)
+        segment_code(original_diff_info)
+        ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
+                                           Values.PATH_C, Values.Project_D.path)
+        segment_code(ported_diff_info)
 
         save_values()
     else:
