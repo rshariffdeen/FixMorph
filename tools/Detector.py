@@ -176,6 +176,7 @@ def detect_struct_clones():
         Emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
+        Values.VECTOR_MAP[vector_path_a] = candidate_file_path
     return clone_list
 
 
@@ -202,6 +203,7 @@ def detect_enum_clones():
         Emitter.success("\t\t\tEnum Definition: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
+        Values.VECTOR_MAP[vector_path_a] = candidate_file_path
     return clone_list
 
 
@@ -238,6 +240,7 @@ def detect_function_clones():
         Emitter.success("\t\t\tFunction: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
+        Values.VECTOR_MAP[vector_path_a] = candidate_file_path
     return clone_list
 
 
@@ -264,6 +267,7 @@ def detect_decl_clones():
         Emitter.success("\t\t\tDeclaration: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
+        Values.VECTOR_MAP[vector_path_a] = candidate_file_path
     return clone_list
 
 

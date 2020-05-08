@@ -40,10 +40,12 @@ def load_values():
         Values.original_diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
         load_state()
     Definitions.FILE_CLONE_INFO = Definitions.DIRECTORY_OUTPUT + "/clone-info"
+    Definitions.FILE_VECTOR_MAP = Definitions.DIRECTORY_OUTPUT + "/vector-map"
 
 
 def save_values():
     Writer.write_clone_list(clone_list, Definitions.FILE_CLONE_INFO)
+    Writer.write_as_json(Values.VECTOR_MAP, Definitions.FILE_VECTOR_MAP)
     Values.file_list_to_patch = clone_list
     save_current_state()
 
