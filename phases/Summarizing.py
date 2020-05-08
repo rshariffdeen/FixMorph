@@ -103,6 +103,15 @@ def save_values():
     save_current_state()
 
 
+def clear_values(project):
+    project.header_list = list()
+    project.function_list = list()
+    project.struct_list = list()
+    project.macro_list = list()
+    project.def_list = list()
+    project.enum_list = list()
+
+
 def safe_exec(function_def, title, *args):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     start_time = time.time()
@@ -477,10 +486,12 @@ def summarize():
             error_exit("Path E is missing in configuration")
 
         # classify_porting(Values.PATH_B, Values.Project_D.path)
-
+        clear_values(Values.Project_A)
         original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
                                            Values.PATH_A, Values.PATH_B)
         segment_code(original_diff_info, Values.Project_A)
+
+        clear_values(Values.Project_C)
         ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
                                            Values.PATH_C, Values.PATH_E)
         segment_code(ported_diff_info, Values.Project_C)
