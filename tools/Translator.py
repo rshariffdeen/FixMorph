@@ -613,6 +613,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
 def simplify_patch(instruction_AB, match_BA, ASTlists):
     modified_AB = []
     inserted = []
+    deleted = []
     insert_pos_list = dict()
     Emitter.sub_sub_title("Simplifying transformation script")
     # Emitter.white("Original script from Pa to Pb")
@@ -621,6 +622,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
         if inst == Definitions.DELETE:
             nodeA = id_from_string(i[1])
             nodeA = ASTlists[Values.Project_A.name][nodeA]
+            deleted.append(nodeA)
             # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
             modified_AB.append((Definitions.DELETE, nodeA))
         elif inst == Definitions.UPDATE:
@@ -684,12 +686,23 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             adjusted_pos = int(pos)
             # Emitter.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
+
             if nodeB2.id not in insert_pos_list.keys():
                 insert_pos_list[nodeB2.id] = dict()
             inserted_pos_node_list = insert_pos_list[nodeB2.id]
             if int(pos) - 1 in inserted_pos_node_list.keys():
                 adjusted_pos = inserted_pos_node_list[int(pos) - 1]
             inserted_pos_node_list[int(pos)] = adjusted_pos
+
+            if len(nodeB2.children) > adjusted_pos:
+                check_node = nodeB2.children[adjusted_pos]
+                check_node_id = check_node.id
+                if check_node_id in deleted:
+                    modified_AB.append((Definitions.REPLACE, check_node, nodeB1))
+                    for instruction in modified_AB:
+                        if instruction[0] == Definitions.DELETE and instruction[1] == check_node:
+                            modified_AB.remove(instruction)
+                    continue
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
     return modified_AB
