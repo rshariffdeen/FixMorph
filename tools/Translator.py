@@ -623,8 +623,23 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeA = id_from_string(i[1])
             deleted.append(nodeA)
             nodeA = ASTlists[Values.Project_A.name][nodeA]
+            parentA = ASTlists[Values.Project_A.name][nodeA.parent_id]
+            index = None
+            iterator = 0
+            for child in parentA.children:
+                if child == nodeA:
+                    index = iterator
+                iterator = iterator + 1
+            is_replace = False
+            for instruction in modified_AB:
+                if instruction[0] == Definitions.INSERT and instruction[2] == parentA and instruction[3] == index:
+                        modified_AB.remove(instruction)
+                        is_replace = True
+                        modified_AB.append((Definitions.REPLACE, nodeA, instruction[2]))
+                        break
             # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
-            modified_AB.append((Definitions.DELETE, nodeA))
+            if not is_replace:
+                modified_AB.append((Definitions.DELETE, nodeA))
         elif inst == Definitions.UPDATE:
             nodeA = id_from_string(i[1])
             nodeA = ASTlists[Values.Project_A.name][nodeA]
@@ -694,15 +709,6 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 adjusted_pos = inserted_pos_node_list[int(pos) - 1]
             inserted_pos_node_list[int(pos)] = adjusted_pos
 
-            if len(nodeB2.children) > adjusted_pos:
-                check_node = nodeB2.children[adjusted_pos]
-                check_node_id = check_node.id
-                if check_node_id in deleted:
-                    modified_AB.append((Definitions.REPLACE, check_node, nodeB1))
-                    for instruction in modified_AB:
-                        if instruction[0] == Definitions.DELETE and instruction[1] == check_node:
-                            modified_AB.remove(instruction)
-                    continue
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
     return modified_AB
