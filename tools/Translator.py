@@ -614,6 +614,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
     modified_AB = []
     inserted = []
     deleted = []
+    replaced = []
     insert_pos_list = dict()
     Emitter.sub_sub_title("Simplifying transformation script")
     # Emitter.white("Original script from Pa to Pb")
@@ -625,6 +626,8 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeA = ASTlists[Values.Project_A.name][nodeA]
             is_replace = False
             if nodeA.parent_id:
+                if nodeA.parent_id in replaced:
+                    continue
                 parentA = ASTlists[Values.Project_A.name][int(nodeA.parent_id)]
                 index = None
                 iterator = 0
@@ -638,6 +641,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                             modified_AB.remove(instruction)
                             is_replace = True
                             modified_AB.append((Definitions.REPLACE, nodeA, instruction[1]))
+                            replaced.append(nodeA.id)
                             break
             # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
             if not is_replace:
