@@ -1,6 +1,6 @@
 from common import Definitions
 from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
-from tools import Emitter, Logger, Finder
+from tools import Emitter, Logger, Finder, Converter
 from ast import Generator
 import sys
 
@@ -142,9 +142,18 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
         if ast_node_a:
             if 'identifier' in ast_node_a:
                 value_a = ast_node_a['identifier']
+                node_type_a = ast_node_a['type']
+                if node_type_a in ["MemberExpr"]:
+                    value_a, var_type, auxilary_list = Converter.convert_member_expr(ast_node_a)
+                elif node_type_a == "ArraySubscriptExpr":
+                    value_a, var_type, auxilary_list = Converter.convert_array_subscript(ast_node_a)
                 if ast_node_c:
                     if 'identifier' in ast_node_c:
                         value_c = ast_node_c['identifier']
+                        if node_type_a in ["MemberExpr"]:
+                            value_c, var_type, auxilary_list = Converter.convert_member_expr(ast_node_a)
+                        elif node_type_a == "ArraySubscriptExpr":
+                            value_c, var_type, auxilary_list = Converter.convert_array_subscript(ast_node_a)
                         if value_a not in var_map:
                             var_map[value_a] = dict()
                         if value_c not in var_map[value_a]:
@@ -162,6 +171,6 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                 max_score = candidate_score
         refined_var_map[value_a] = best_candidate
 
-    print(var_map)
+    print(refined_var_map)
     return refined_var_map
 
