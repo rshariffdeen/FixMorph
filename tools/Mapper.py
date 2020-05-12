@@ -1,6 +1,6 @@
 from common import Definitions
 from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
-from tools import Emitter, Logger
+from tools import Emitter, Logger, Finder
 from ast import Generator
 import sys
 
@@ -102,9 +102,67 @@ def generate(generated_script_files):
 
             map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
             generate_map(vector_source_a, vector_source_c, map_file_name)
+            ast_node_map = get_mapping(map_file_name)
+            var_map = derive_var_map(ast_node_map, file_list)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
 
-            source_variable_map = get_mapping(map_file_name)
-            variable_map_info[file_list] = source_variable_map
+            variable_map_info[file_list] = dict()
+            variable_map_info[file_list]['ast-map'] = ast_node_map
+            variable_map_info[file_list]['var-map'] = var_map
     return variable_map_info
+
+
+def derive_var_map(ast_node_map, file_list ):
+    var_map = dict()
+    refined_var_map = dict()
+    source_a, source_b, source_c = file_list
+
+    ast_tree_a = Generator.get_ast_json(source_a)
+    ast_tree_c = Generator.get_ast_json(source_c)
+
+    neighbor_ast = None
+    neighbor_ast_range = None
+    neighbor_type, neighbor_name, slice = str(source_a).split("/")[-1].split(".c.")[-1].split(".")
+    if neighbor_type == "func":
+        neighbor_ast = Finder.search_function_node_by_name(ast_tree_a, neighbor_name)
+
+    if neighbor_ast:
+        neighbor_ast_range = (int(neighbor_ast['begin']), int(neighbor_ast['end']))
+
+    for ast_node_txt_a in ast_node_map:
+        ast_node_txt_c = ast_node_map[ast_node_txt_a]
+        ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
+        ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
+        ast_node_a = Finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+        ast_node_c = Finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+        value_score = 1
+        if ast_node_a:
+            if ast_node_id_a in range(neighbor_ast_range[0], neighbor_ast_range[1]):
+                value_score = 100
+        if ast_node_a:
+            if 'identifier' in ast_node_a:
+                value_a = ast_node_a['identifier']
+                if ast_node_c:
+                    if 'identifier' in ast_node_c:
+                        value_c = ast_node_c['identifier']
+                        if value_a not in var_map:
+                            var_map[value_a] = dict()
+                        if value_c not in var_map[value_a]:
+                            var_map[value_a][value_c] = value_score
+                        else:
+                            var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
+    for value_a in var_map:
+        candidate_list = var_map[value_a]
+        max_score = 0
+        best_candidate = None
+        for candidate in candidate_list:
+            candidate_score = candidate_list[candidate]
+            if max_score < candidate_score:
+                best_candidate = candidate
+                max_score = candidate_score
+        refined_var_map[value_a] = best_candidate
+
+    print(var_map)
+    return refined_var_map
+
