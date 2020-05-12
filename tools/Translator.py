@@ -621,8 +621,8 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
         inst = i[0]
         if inst == Definitions.DELETE:
             nodeA = id_from_string(i[1])
-            nodeA = ASTlists[Values.Project_A.name][nodeA]
             deleted.append(nodeA)
+            nodeA = ASTlists[Values.Project_A.name][nodeA]
             # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
             modified_AB.append((Definitions.DELETE, nodeA))
         elif inst == Definitions.UPDATE:
