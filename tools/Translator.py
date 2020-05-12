@@ -653,6 +653,11 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeB = id_from_string(i[2])
             nodeB = ASTlists[Values.Project_B.name][nodeB]
             # Emitter.white("\t" + Common.UPDATE + " - " + str(nodeA) + " - " + str(nodeB))
+
+            if nodeA.parent_id:
+                if nodeA.parent_id in replaced:
+                    replaced.append(nodeA.id)
+                    continue
             modified_AB.append((Definitions.UPDATE, nodeA, nodeB))
         elif inst == Definitions.MOVE:
             nodeB1 = id_from_string(i[1])
