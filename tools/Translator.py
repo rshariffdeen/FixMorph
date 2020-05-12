@@ -627,6 +627,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             is_replace = False
             if nodeA.parent_id:
                 if nodeA.parent_id in replaced:
+                    replaced.append(nodeA.id)
                     continue
                 parentA = ASTlists[Values.Project_A.name][int(nodeA.parent_id)]
                 index = None
