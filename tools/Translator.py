@@ -623,20 +623,22 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeA = id_from_string(i[1])
             deleted.append(nodeA)
             nodeA = ASTlists[Values.Project_A.name][nodeA]
-            parentA = ASTlists[Values.Project_A.name][nodeA.parent_id]
-            index = None
-            iterator = 0
-            for child in parentA.children:
-                if child == nodeA:
-                    index = iterator
-                iterator = iterator + 1
             is_replace = False
-            for instruction in modified_AB:
-                if instruction[0] == Definitions.INSERT and instruction[2] == parentA and instruction[3] == index:
-                        modified_AB.remove(instruction)
-                        is_replace = True
-                        modified_AB.append((Definitions.REPLACE, nodeA, instruction[1]))
-                        break
+            if nodeA.parent_id:
+                parentA = ASTlists[Values.Project_A.name][int(nodeA.parent_id)]
+                index = None
+                iterator = 0
+                for child in parentA.children:
+                    if child == nodeA:
+                        index = iterator
+                    iterator = iterator + 1
+
+                for instruction in modified_AB:
+                    if instruction[0] == Definitions.INSERT and instruction[2] == parentA and instruction[3] == index:
+                            modified_AB.remove(instruction)
+                            is_replace = True
+                            modified_AB.append((Definitions.REPLACE, nodeA, instruction[1]))
+                            break
             # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
             if not is_replace:
                 modified_AB.append((Definitions.DELETE, nodeA))

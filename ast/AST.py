@@ -58,7 +58,7 @@ class AST:
             self.type = dict_ast['type']
         if 'file' in dict_ast.keys():
             self.file = dict_ast['file']
-        if 'parent' in dict_ast.keys():
+        if 'parent_id' in dict_ast.keys():
             self.parent_id = dict_ast['parent_id']
         if 'children' in dict_ast.keys():
             for i in dict_ast['children']:
