@@ -103,7 +103,7 @@ def generate(generated_script_files):
             map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
             generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
-            var_map = derive_var_map(ast_node_map, file_list)
+            var_map = derive_var_map(ast_node_map, vector_source_a, vector_source_c)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
 
@@ -113,10 +113,9 @@ def generate(generated_script_files):
     return variable_map_info
 
 
-def derive_var_map(ast_node_map, file_list ):
+def derive_var_map(ast_node_map, source_a, source_c):
     var_map = dict()
     refined_var_map = dict()
-    source_a, source_b, source_c = file_list
 
     ast_tree_a = Generator.get_ast_json(source_a)
     ast_tree_c = Generator.get_ast_json(source_c)
