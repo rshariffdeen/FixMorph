@@ -103,7 +103,7 @@ def generate(generated_script_files):
             map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
             generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
-            var_map = derive_var_map(ast_node_map, vector_source_a, vector_source_c)
+            var_map = derive_var_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
 
@@ -113,7 +113,7 @@ def generate(generated_script_files):
     return variable_map_info
 
 
-def derive_var_map(ast_node_map, source_a, source_c):
+def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
     var_map = dict()
     refined_var_map = dict()
 
@@ -122,7 +122,7 @@ def derive_var_map(ast_node_map, source_a, source_c):
 
     neighbor_ast = None
     neighbor_ast_range = None
-    neighbor_type, neighbor_name, slice = str(source_a).split("/")[-1].split(".c.")[-1].split(".")
+    neighbor_type, neighbor_name, slice = str(slice_file_a).split("/")[-1].split(".c.")[-1].split(".")
     if neighbor_type == "func":
         neighbor_ast = Finder.search_function_node_by_name(ast_tree_a, neighbor_name)
 
