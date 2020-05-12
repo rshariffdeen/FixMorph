@@ -635,7 +635,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if instruction[0] == Definitions.INSERT and instruction[2] == parentA and instruction[3] == index:
                         modified_AB.remove(instruction)
                         is_replace = True
-                        modified_AB.append((Definitions.REPLACE, nodeA, instruction[2]))
+                        modified_AB.append((Definitions.REPLACE, nodeA, instruction[1]))
                         break
             # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
             if not is_replace:
