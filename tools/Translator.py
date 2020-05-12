@@ -666,7 +666,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     nodeA = ASTlists[Values.Project_A.name][nodeA]
                     modified_AB.append((Definitions.REPLACE, nodeA, nodeB2))
                     for instruction in modified_AB:
-                        if instruction[0] == Definitions.INSERT and instruction[1] == nodeB2:
+                        if instruction[0] == Definitions.INSERT and instruction[1].id == nodeB2.id:
                             modified_AB.remove(instruction)
                 else:
                     Emitter.warning("Warning: node " + str(nodeB1) + \
