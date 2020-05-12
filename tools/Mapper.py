@@ -171,6 +171,6 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                 max_score = candidate_score
         refined_var_map[value_a] = best_candidate
 
-    print(refined_var_map)
+    # print(refined_var_map)
     return refined_var_map
 
