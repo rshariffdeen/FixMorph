@@ -634,7 +634,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     iterator = iterator + 1
 
                 for instruction in modified_AB:
-                    if instruction[0] == Definitions.INSERT and instruction[2] == parentA and instruction[3] == index:
+                    if instruction[0] == Definitions.INSERT and instruction[2].id == parentA.id and int(instruction[3]) == index:
                             modified_AB.remove(instruction)
                             is_replace = True
                             modified_AB.append((Definitions.REPLACE, nodeA, instruction[1]))
