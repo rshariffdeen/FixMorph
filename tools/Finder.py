@@ -124,7 +124,7 @@ def search_node(ast_tree, node_type, node_identifier):
             # print(child_node_identifier, function_name)
             if ast_node_identifier == node_identifier:
                 if node_type == "FunctionDecl":
-                    if str(ast_node['file'])[:-2] == ".h":
+                    if str(ast_node['file'])[-2:] == ".h":
                         continue
                     if ast_node['start line'] != ast_node['end line']:
                         return ast_node
