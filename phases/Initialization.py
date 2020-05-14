@@ -277,6 +277,8 @@ def read_conf():
                 Values.SKIP_BUILD = True
             elif Definitions.ARG_LINUX_KERNEL in arg:
                 Values.IS_LINUX_KERNEL = True
+            elif Definitions.ARG_BREAK_WEAVE in arg:
+                Values.BREAK_WEAVE = True
             elif Definitions.ARG_ONLY_COMPARISON in arg:
                 Values.SKIP_VERIFY = True
                 Values.SKIP_WEAVE = True

@@ -60,6 +60,9 @@ def execute_ast_transformation(script_path, source_file_info):
     if os.stat(file_d).st_size == 0:
         error_exit("\t AST transformation FAILED")
 
+    if Values.BREAK_WEAVE:
+        exit()
+
     return ret_code
 
 

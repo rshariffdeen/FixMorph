@@ -143,6 +143,7 @@ ARG_SKIP_EXTRACTION = "--skip-extraction"
 ARG_SKIP_MAPPING = "--skip-mapping"
 ARG_SKIP_TRANSLATION = "--skip-trans"
 ARG_ONLY_ANALYSE = "--only-analyse"
+ARG_BREAK_WEAVE = "--break-weave"
 
 # ----------------- TOOLS --------------------------------
 TOOL_VECGEN = "third-party/deckard/cvecgen_fail "
