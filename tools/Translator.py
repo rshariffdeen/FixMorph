@@ -614,6 +614,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
     modified_AB = []
     inserted = []
     deleted = []
+    updated = []
     replaced = []
     insert_pos_list = dict()
     Emitter.sub_sub_title("Simplifying transformation script")
@@ -658,6 +659,10 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if nodeA.parent_id in replaced:
                     replaced.append(nodeA.id)
                     continue
+
+            if nodeA.value == nodeB.value:
+                continue
+
             modified_AB.append((Definitions.UPDATE, nodeA, nodeB))
         elif inst == Definitions.MOVE:
             nodeB1 = id_from_string(i[1])
