@@ -663,6 +663,13 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             if nodeA.value == nodeB.value:
                 continue
 
+            if nodeB.parent_id in updated:
+                updated.append(nodeB.id)
+                continue
+
+            if nodeB.type != "BinaryOperator":
+                updated.append(nodeB.id)
+
             modified_AB.append((Definitions.UPDATE, nodeA, nodeB))
         elif inst == Definitions.MOVE:
             nodeB1 = id_from_string(i[1])
