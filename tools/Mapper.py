@@ -31,7 +31,7 @@ def generate_map(file_a, file_b, output_file):
         if Values.DONOR_REQUIRE_MACRO:
             command += " " + Values.DONOR_PRE_PROCESS_MACRO + " "
         if Values.TARGET_REQUIRE_MACRO:
-            command += " " + Values.TARGET_REQUIRE_MACRO + " "
+            command += " " + Values.TARGET_PRE_PROCESS_MACRO + " "
         command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += "| grep '^Match ' "
         command += " > " + output_file
