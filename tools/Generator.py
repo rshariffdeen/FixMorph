@@ -37,6 +37,9 @@ def find_source_file(diff_file_list, project, log_file):
                 list_files.append(new_path)
                 break
 
+        if not list_files:
+            iterate_path(source_path, project, source_path[-2:], log_file)
+
         # file_name = source_path.split("/")[-1][:-2]
         # source_dir = source_path[:str(source_path).find(file_name)]
         # source_dir = source_dir.replace(Values.PATH_A, "")[1:]
@@ -46,19 +49,31 @@ def find_source_file(diff_file_list, project, log_file):
         #     regex = regex + "\|" + file_name
 
     # print(list_files)
-    with open(log_file, 'w') as out_file:
-        out_file.writelines(list_files)
+    if list_files:
+        with open(log_file, 'w') as out_file:
+            out_file.writelines(list_files)
 
-    # find_files(project.path, file_extension, log_file, regex)
-    #
-    # while os.stat(log_file).st_size == 0:
-    #     source_dir = source_dir[:-1]
-    #     regex = source_dir
-    #     find_files(project.path, file_extension, log_file, regex)
-    #     if "/" not in source_dir:
-    #         break
-    #     last_sub_dir = source_dir.split("/")[-1]
-    #     source_dir = source_dir[:source_dir.find(last_sub_dir)]
+
+def iterate_path(source_path, project, file_extension, log_file):
+    regex = None
+    file_name = source_path.split("/")[-1][:-2]
+    source_dir = source_path[:str(source_path).find(file_name)]
+    source_dir = source_dir.replace(Values.PATH_A, "")[1:]
+    if regex is None:
+        regex = file_name
+    else:
+        regex = regex + "\|" + file_name
+
+    find_files(project.path, file_extension, log_file, regex)
+
+    while os.stat(log_file).st_size == 0:
+        source_dir = source_dir[:-1]
+        regex = source_dir
+        find_files(project.path, file_extension, log_file, regex)
+        if "/" not in source_dir:
+            break
+        last_sub_dir = source_dir.split("/")[-1]
+        source_dir = source_dir[:source_dir.find(last_sub_dir)]
 
 
 def generate_segmentation(source_file, use_macro=False):
