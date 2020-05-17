@@ -114,3 +114,6 @@ IS_MACRO = False
 IS_TYPEDEF = False
 IS_TYPEDEC = False
 VECTOR_MAP = dict()
+
+PRE_PROCESS_MACRO = ""
+USE_PREPROCESS = False

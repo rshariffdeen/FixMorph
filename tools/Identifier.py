@@ -547,6 +547,7 @@ def identify_code_segment(diff_info, project):
         Emitter.normal("\t\t" + source_file)
         pertinent_lines = grouped_line_info[source_file]
         ast_tree = Gen.generate_ast_json(source_file)
+
         enum_list = list()
         function_list = list()
         macro_list = list()

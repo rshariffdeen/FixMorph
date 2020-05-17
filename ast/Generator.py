@@ -33,9 +33,12 @@ def generate_vector(file_path, f_or_struct, start_line, end_line, is_deckard=Tru
     return v
 
 
-def ast_dump(file_path, output_path, is_header=True):
+def ast_dump(file_path, output_path, is_header=True, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    dump_command = APP_AST_DIFF + " -ast-dump-json " + file_path
+    dump_command = APP_AST_DIFF + " -ast-dump-json "
+    if use_macro:
+        dump_command += " " + Values.PRE_PROCESS_MACRO + "  "
+    dump_command += file_path
     if file_path[-1] == 'h':
         dump_command += " --"
     dump_command += " 2> output/errors_AST_dump > " + output_path
@@ -57,10 +60,10 @@ def get_ast_json(file_path):
     return ast_json['root']
 
 
-def generate_json(file_path):
+def generate_json(file_path, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
-    ast_dump(file_path, json_file)
+    ast_dump(file_path, json_file, False, use_macro)
     return AST.load_from_file(json_file)
 
 
@@ -81,7 +84,7 @@ def convert_to_llvm(file_path):
         restore_file(file_path, backup_name)
 
 
-def parse_ast(file_path, use_deckard=True):
+def parse_ast(file_path, use_deckard=True, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     # convert_to_llvm(file_path)
     # Save functions here
@@ -92,7 +95,7 @@ def parse_ast(file_path, use_deckard=True):
     if any(skip_word in str(file_path).lower() for skip_word in skip_name_list):
         return function_lines, dict_file
     try:
-        ast = generate_json(file_path)
+        ast = generate_json(file_path, use_macro)
     except Exception as exception:
         # print(exception)
         Emitter.warning("\t\t[warning] failed parsing AST for file: " + file_path)
