@@ -42,6 +42,13 @@ def execute_ast_transformation(script_path, source_file_info):
     execute_command(backup_command)
 
     parameters = " -s=" + Definitions.PATCH_SIZE
+
+    if Values.DONOR_REQUIRE_MACRO:
+        parameters += " " + Values.DONOR_PRE_PROCESS_MACRO + " "
+
+    if Values.TARGET_REQUIRE_MACRO:
+        parameters += " " + Values.TARGET_PRE_PROCESS_MACRO + " "
+
     parameters += " -script=" + script_path + " -source=" + file_a
     parameters += " -destination=" + file_b + " -target=" + file_c
 
