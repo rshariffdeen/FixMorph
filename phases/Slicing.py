@@ -44,10 +44,21 @@ def slice_code(file_list_to_patch):
 
             Emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
 
-            Slicer.slice_source_file(vector_source_a, segment_code, vector_name_a.replace(".vec", ""), Values.PATH_A)
-            Slicer.slice_source_file(vector_source_b, segment_code, vector_name_b.replace(".vec", ""), Values.PATH_B)
-            Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""), Values.PATH_C)
-            Slicer.slice_source_file(vector_source_d, segment_code, vector_name_d.replace(".vec", ""), Values.Project_D.path)
+            if Values.DONOR_REQUIRE_MACRO:
+                Values.PRE_PROCESS_MACRO = Values.DONOR_PRE_PROCESS_MACRO
+            Slicer.slice_source_file(vector_source_a, segment_code, vector_name_a.replace(".vec", ""), Values.PATH_A, Values.DONOR_REQUIRE_MACRO)
+            Slicer.slice_source_file(vector_source_b, segment_code, vector_name_b.replace(".vec", ""), Values.PATH_B, Values.DONOR_REQUIRE_MACRO)
+
+            seg_found = Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""),
+                                                 Values.PATH_C)
+
+            if not seg_found:
+                Values.TARGET_REQUIRE_MACRO = True
+                Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
+                seg_found = Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""),
+                                                     Values.PATH_C, Values.TARGET_REQUIRE_MACRO)
+
+            Slicer.slice_source_file(vector_source_d, segment_code, vector_name_d.replace(".vec", ""), Values.Project_D.path, Values.TARGET_REQUIRE_MACRO)
 
         except Exception as e:
             error_exit("something went wrong with slicing phase")

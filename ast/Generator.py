@@ -47,12 +47,12 @@ def ast_dump(file_path, output_path, is_header=True, use_macro=False):
     return return_code
 
 
-def get_ast_json(file_path):
+def get_ast_json(file_path, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
     if not os.path.exists(json_file):
         generate_json(file_path)
-    ast_dump(file_path, json_file)
+    ast_dump(file_path, json_file, use_macro)
     if os.stat(json_file).st_size == 0:
         return None
     with io.open(json_file, 'r', encoding='utf8', errors="ignore") as f:
