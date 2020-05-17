@@ -75,7 +75,7 @@ def generate_segmentation(source_file, use_macro=False):
         return None
 
     source_file_pattern = [source_file, source_file.split("/")[-1],
-                           source_file.replace(Values.Project_C.path, '')]
+                           source_file.replace(Values.Project_C.path, '')[1:], source_file.replace(Values.Project_C.path, '')]
     for ast_node in ast_tree['children']:
         # print(ast_node)
         node_type = str(ast_node["type"])
