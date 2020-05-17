@@ -19,8 +19,10 @@ def generate_edit_script(file_a, file_b, output_file):
         extra_arg = ""
         if file_a[-1] == 'h':
             extra_arg = " --"
-        command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches " + \
-                  file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
+        command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches "
+        if Values.DONOR_REQUIRE_MACRO:
+            command += " " + Values.DONOR_PRE_PROCESS_MACRO + " "
+        command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += " > " + output_file
         execute_command(command, False)
     except Exception as e:
