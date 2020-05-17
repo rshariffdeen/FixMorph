@@ -276,11 +276,14 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
     missing_header_list = dict()
     missing_data_type_list = dict()
 
+    if Values.DONOR_REQUIRE_MACRO:
+        Values.PRE_PROCESS_MACRO = Values.DONOR_PRE_PROCESS_MACRO
+    ast_map_a = Generator.get_ast_json(file_a, Values.DONOR_REQUIRE_MACRO)
+    ast_map_b = Generator.get_ast_json(file_b, Values.DONOR_REQUIRE_MACRO)
 
-
-    ast_map_a = Generator.get_ast_json(file_a)
-    ast_map_b = Generator.get_ast_json(file_b)
-    ast_map_c = Generator.get_ast_json(file_c)
+    if Values.TARGET_REQUIRE_MACRO:
+        Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
+    ast_map_c = Generator.get_ast_json(file_c, Values.TARGET_REQUIRE_MACRO)
 
     file_d = str(file_c).replace(Values.Project_C.path, Values.Project_D.path)
 
