@@ -1,4 +1,4 @@
-from common import Definitions
+from common import Definitions, Values
 from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import Emitter, Logger, Finder, Converter
 from ast import Generator
@@ -27,8 +27,12 @@ def generate_map(file_a, file_b, output_file):
         extra_arg = ""
         if file_a[-1] == 'h':
             extra_arg = " --"
-        command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches " + \
-                  file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
+        command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches "
+        if Values.DONOR_REQUIRE_MACRO:
+            command += " " + Values.DONOR_PRE_PROCESS_MACRO + " "
+        if Values.TARGET_REQUIRE_MACRO:
+            command += " " + Values.TARGET_REQUIRE_MACRO + " "
+        command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += "| grep '^Match ' "
         command += " > " + output_file
         execute_command(command, False)
