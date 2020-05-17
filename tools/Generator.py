@@ -70,7 +70,7 @@ def extract_pre_macro_list(source_file):
             token_list = line.split("defined")
             for token in token_list[1:]:
                 macro = re.findall(r'\(([^]]*)\)', token)[0]
-                pre_macro_list.add(macro)
+                pre_macro_list.add(macro.replace(")", "").replace("(", ""))
 
     pre_process_arg = " --extra-arg=\"-D {}=1 \" "
     for macro in pre_macro_list:
@@ -87,7 +87,7 @@ def generate_segmentation(source_file, use_macro=False):
     decl_list = list()
     Emitter.normal("\t\t\tgenerating neighborhoods")
     function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=False, use_macro=use_macro)
-    ast_tree = generate_ast_json(source_file)
+    ast_tree = generate_ast_json(source_file, use_macro)
     if ast_tree is None:
         return None
 
@@ -141,7 +141,6 @@ def create_vectors(project, source_file, segmentation_list):
     Emitter.normal("\t\t\tcreating vectors for neighborhoods")
     enum_list, function_list, macro_list, \
     struct_list, type_def_list, def_list, decl_list, definition_list = segmentation_list
-
 
     if Values.IS_FUNCTION:
         # Emitter.normal("\t\t\tgenerating function vectors")
@@ -217,7 +216,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                     continue
                 create_vectors(project, source_file, segmentation_list)
                 segmentation_list_macro = generate_segmentation(source_file, True)
-                create_vectors(project, source_file, segmentation_list)
+                create_vectors(project, source_file, segmentation_list_macro)
 
             except Exception as e:
                 error_exit(e, "Unexpected error in parseAST with file:", source_file)

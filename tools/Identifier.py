@@ -533,6 +533,130 @@ def identify_fixed_errors(output_a, output_b):
     return list(set(fixed_error_list))
 
 
+def separate_segment(project, source_file, use_macro=False):
+    enum_list = list()
+    function_list = list()
+    macro_list = list()
+    struct_list = list()
+    type_def_list = list()
+    def_list = list()
+    decl_list = list()
+    asm_list = list()
+
+    ast_tree = Gen.generate_ast_json(source_file, use_macro)
+    source_file_pattern = [source_file, source_file.split("/")[-1], source_file.replace(project.path, '')]
+    for ast_node in ast_tree['children']:
+        node_type = str(ast_node["type"])
+        if node_type in ["VarDecl"]:
+            if 'file' in ast_node.keys():
+                if ast_node['file'] in source_file_pattern:
+                    parent_id = int(ast_node['parent_id'])
+                    if parent_id == 0:
+                        decl_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+        elif node_type in ["EnumConstantDecl", "EnumDecl"]:
+            if 'file' in ast_node.keys():
+                if ast_node['file'] in source_file_pattern:
+                    enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+        elif node_type in ["Macro"]:
+            if 'file' in ast_node.keys():
+                if ast_node['file'] in source_file_pattern:
+                    if 'value' in ast_node.keys():
+                        macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+        elif node_type in ["TypedefDecl"]:
+            if 'file' in ast_node.keys():
+                if ast_node['file'] in source_file_pattern:
+                    type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+        elif node_type in ["RecordDecl"]:
+            if 'file' in ast_node.keys():
+                if ast_node['file'] in source_file_pattern:
+                    struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+        elif node_type in ["FunctionDecl"]:
+            if 'file' in ast_node.keys():
+                if ast_node['file'] in source_file_pattern:
+                    function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+        elif node_type in ["EmptyDecl", "FileScopeAsmDecl"]:
+            continue
+        else:
+            print(ast_node)
+            error_exit("unknown node type for code segmentation: " + str(node_type))
+
+    return enum_list, function_list, macro_list, struct_list, type_def_list, def_list, decl_list
+
+
+def create_vectors(project, source_file, segmentation_list, pertinent_lines):
+    Emitter.normal("\t\t\tcreating vectors for neighborhoods")
+    enum_list, function_list, macro_list, \
+    struct_list, type_def_list, def_list, decl_list = segmentation_list
+    for function_name, begin_line, finish_line in function_list:
+        function_name = "func_" + function_name.split("(")[0]
+        for start_line, end_line in pertinent_lines:
+            if is_intersect(begin_line, finish_line, start_line, end_line):
+                Values.IS_FUNCTION = True
+                if source_file not in project.function_list.keys():
+                    project.function_list[source_file] = dict()
+                if function_name not in project.function_list[source_file]:
+                    Emitter.success("\t\t\tFunction: " + function_name.replace("func_", ""))
+                    project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name,
+                                                                                      begin_line, finish_line, True)
+
+    for struct_name, begin_line, finish_line in struct_list:
+        struct_name = "struct_" + struct_name.split(";")[0]
+        for start_line, end_line in pertinent_lines:
+            if is_intersect(begin_line, finish_line, start_line, end_line):
+                Values.IS_STRUCT = True
+                if source_file not in project.struct_list.keys():
+                    project.struct_list[source_file] = dict()
+                if struct_name not in project.struct_list[source_file]:
+                    Emitter.success("\t\t\tStruct: " + struct_name.replace("struct_", ""))
+                    project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name,
+                                                                                  begin_line, finish_line, True)
+
+    for var_name, begin_line, finish_line in decl_list:
+        var_name = "var_" + var_name.split(";")[0]
+        var_type = (var_name.split("(")[1]).split(")")[0]
+        var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
+        for start_line, end_line in pertinent_lines:
+            if is_intersect(begin_line, finish_line, start_line, end_line):
+                Values.IS_TYPEDEC = True
+                if source_file not in project.decl_list.keys():
+                    project.decl_list[source_file] = dict()
+                if var_name not in project.decl_list[source_file]:
+                    Emitter.success("\t\t\tVariable: " + var_name.replace("var_", ""))
+                    project.decl_list[source_file][var_name] = Vector.Vector(source_file, var_name,
+                                                                             begin_line, finish_line, True)
+
+    for macro_name, begin_line, finish_line in macro_list:
+        macro_name = "macro_" + macro_name
+        for start_line, end_line in pertinent_lines:
+            if is_intersect(begin_line, finish_line, start_line, end_line):
+                Values.IS_MACRO = True
+                if source_file not in project.macro_list.keys():
+                    project.macro_list[source_file] = dict()
+                if macro_name not in project.macro_list[source_file]:
+                    Emitter.success("\t\t\tMacro: " + macro_name.replace("macro_", ""))
+                    project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name,
+                                                                                begin_line, finish_line, True)
+
+    count = 0
+    for enum_name, begin_line, finish_line in enum_list:
+        enum_name = "enum_" + enum_name.split(";")[0]
+        if "anonymous" in enum_name:
+            count = count + 1
+            enum_name = "enum_" + str(count)
+        for start_line, end_line in pertinent_lines:
+            if is_intersect(begin_line, finish_line, start_line, end_line):
+                Values.IS_ENUM = True
+
+                if source_file not in project.enum_list.keys():
+                    project.enum_list[source_file] = dict()
+                if enum_name not in project.enum_list[source_file]:
+                    Emitter.success("\t\t\tEnum: " + enum_name.replace("enum_", ""))
+                    project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name,
+                                                                              begin_line, finish_line, True)
+
+    return Values.IS_ENUM or Values.IS_FUNCTION or Values.IS_MACRO or Values.IS_STRUCT or Values.IS_TYPEDEC
+
+
 def identify_code_segment(diff_info, project):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     grouped_line_info = dict()
@@ -546,118 +670,13 @@ def identify_code_segment(diff_info, project):
     for source_file in grouped_line_info:
         Emitter.normal("\t\t" + source_file)
         pertinent_lines = grouped_line_info[source_file]
-        ast_tree = Gen.generate_ast_json(source_file)
 
-        enum_list = list()
-        function_list = list()
-        macro_list = list()
-        struct_list = list()
-        type_def_list = list()
-        def_list = list()
-        decl_list = list()
-        asm_list = list()
-        source_file_pattern = [source_file, source_file.split("/")[-1], source_file.replace(project.path, '')]
-        for ast_node in ast_tree['children']:
-            node_type = str(ast_node["type"])
-            if node_type in ["VarDecl"]:
-                if 'file' in ast_node.keys():
-                    if ast_node['file'] in source_file_pattern:
-                        parent_id = int(ast_node['parent_id'])
-                        if parent_id == 0:
-                            decl_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
-            elif node_type in ["EnumConstantDecl", "EnumDecl"]:
-                if 'file' in ast_node.keys():
-                    if ast_node['file'] in source_file_pattern:
-                        enum_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
-            elif node_type in ["Macro"]:
-                if 'file' in ast_node.keys():
-                    if ast_node['file'] in source_file_pattern:
-                        if 'value' in ast_node.keys():
-                            macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
-            elif node_type in ["TypedefDecl"]:
-                if 'file' in ast_node.keys():
-                    if ast_node['file'] in source_file_pattern:
-                        type_def_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
-            elif node_type in ["RecordDecl"]:
-                if 'file' in ast_node.keys():
-                    if ast_node['file'] in source_file_pattern:
-                        struct_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
-            elif node_type in ["FunctionDecl"]:
-                if 'file' in ast_node.keys():
-                    if ast_node['file'] in source_file_pattern:
-                        function_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
-            elif node_type in ["EmptyDecl", "FileScopeAsmDecl"]:
-                continue
-            else:
-                print(ast_node)
-                error_exit("unknown node type for code segmentation: " + str(node_type))
-
-        for function_name, begin_line, finish_line in function_list:
-            function_name = "func_" + function_name.split("(")[0]
-            for start_line, end_line in pertinent_lines:
-                if is_intersect(begin_line, finish_line, start_line, end_line):
-                    Values.IS_FUNCTION = True
-                    if source_file not in project.function_list.keys():
-                        project.function_list[source_file] = dict()
-                    if function_name not in project.function_list[source_file]:
-                        Emitter.success("\t\t\tFunction: " + function_name.replace("func_", ""))
-                        project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name,
-                                                                                          begin_line, finish_line, True)
-
-        for struct_name, begin_line, finish_line in struct_list:
-            struct_name = "struct_" + struct_name.split(";")[0]
-            for start_line, end_line in pertinent_lines:
-                if is_intersect(begin_line, finish_line, start_line, end_line):
-                    Values.IS_STRUCT = True
-                    if source_file not in project.struct_list.keys():
-                        project.struct_list[source_file] = dict()
-                    if struct_name not in project.struct_list[source_file]:
-                        Emitter.success("\t\t\tStruct: " + struct_name.replace("struct_", ""))
-                        project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name,
-                                                                                      begin_line, finish_line, True)
-
-        for var_name, begin_line, finish_line in decl_list:
-            var_name = "var_" + var_name.split(";")[0]
-            var_type = (var_name.split("(")[1]).split(")")[0]
-            var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
-            for start_line, end_line in pertinent_lines:
-                if is_intersect(begin_line, finish_line, start_line, end_line):
-                    Values.IS_TYPEDEC = True
-                    if source_file not in project.decl_list.keys():
-                        project.decl_list[source_file] = dict()
-                    if var_name not in project.decl_list[source_file]:
-                        Emitter.success("\t\t\tVariable: " + var_name.replace("var_", ""))
-                        project.decl_list[source_file][var_name] = Vector.Vector(source_file, var_name,
-                                                                                 begin_line, finish_line, True)
-
-        for macro_name, begin_line, finish_line in macro_list:
-            macro_name = "macro_" + macro_name
-            for start_line, end_line in pertinent_lines:
-                if is_intersect(begin_line, finish_line, start_line, end_line):
-                    Values.IS_MACRO = True
-                    if source_file not in project.macro_list.keys():
-                        project.macro_list[source_file] = dict()
-                    if macro_name not in project.macro_list[source_file]:
-                        Emitter.success("\t\t\tMacro: " + macro_name.replace("macro_", ""))
-                        project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name,
-                                                                                     begin_line, finish_line, True)
-
-        count = 0
-        for enum_name, begin_line, finish_line in enum_list:
-            enum_name = "enum_" + enum_name.split(";")[0]
-            if "anonymous" in enum_name:
-                count = count + 1
-                enum_name = "enum_" + str(count)
-            for start_line, end_line in pertinent_lines:
-                if is_intersect(begin_line, finish_line, start_line, end_line):
-                    Values.IS_ENUM = True
-
-                    if source_file not in project.enum_list.keys():
-                        project.enum_list[source_file] = dict()
-                    if enum_name not in project.enum_list[source_file]:
-                        Emitter.success("\t\t\tEnum: " + enum_name.replace("enum_", ""))
-                        project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name,
-                                                                                     begin_line, finish_line, True)
+        segmentation_list = separate_segment(project, source_file)
+        found_neighborhood = create_vectors(project, source_file, segmentation_list, pertinent_lines)
+        if not found_neighborhood:
+            segmentation_list = separate_segment(project, source_file, True)
+            create_vectors(project, source_file, segmentation_list, pertinent_lines)
+            Values.DONOR_REQUIRE_MACRO = True
 
 
 def identify_definition_segment(diff_info, project):
