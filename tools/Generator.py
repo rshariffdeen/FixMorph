@@ -224,10 +224,13 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
             source_file = file_list.readline().strip()
 
 
-def generate_ast_json(file_path):
+def generate_ast_json(file_path, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
-    dump_command = Definitions.APP_AST_DIFF + " -ast-dump-json " + file_path
+    dump_command = Definitions.APP_AST_DIFF + " -ast-dump-json "
+    if use_macro:
+        dump_command += " " + Values.PRE_PROCESS_MACRO + "  "
+    dump_command += file_path
     if file_path[-1] == 'h':
         dump_command += " --"
     dump_command += " 2> output/errors_AST_dump > " + json_file
