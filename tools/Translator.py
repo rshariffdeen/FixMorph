@@ -86,27 +86,33 @@ def cmp_to_key(mycmp):
 def gen_temp_json(file_a, file_b, file_c):
     ASTlists = dict()
     try:
-        gen_json(file_a, Values.Project_A.name, ASTlists)
-        gen_json(file_b, Values.Project_B.name, ASTlists)
-        gen_json(file_c, Values.Project_C.name, ASTlists)
+        if Values.DONOR_REQUIRE_MACRO:
+            Values.PRE_PROCESS_MACRO = Values.DONOR_PRE_PROCESS_MACRO
+        gen_json(file_a, Values.Project_A.name, ASTlists, Values.DONOR_REQUIRE_MACRO)
+        gen_json(file_b, Values.Project_B.name, ASTlists, Values.DONOR_REQUIRE_MACRO)
+        if Values.TARGET_REQUIRE_MACRO:
+            Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
+        gen_json(file_c, Values.Project_C.name, ASTlists, Values.TARGET_REQUIRE_MACRO)
     except Exception as e:
         error_exit(e, "Error parsing with crochet-diff. Did you bear make?")
     return ASTlists
 
 
-def ASTdump(file, output):
+def ASTdump(file, output, use_macro=False):
     extra_arg = ""
     if file[-1] == 'h':
         extra_arg = " --"
-    c = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -ast-dump-json " + \
-        file + extra_arg + " 2> output/errors_AST_dump > " + output
+    c = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -ast-dump-json "
+    if use_macro:
+        c += " " + Values.PRE_PROCESS_MACRO + " "
+    c += file + extra_arg + " 2> output/errors_AST_dump > " + output
     execute_command(c)
 
 
-def gen_json(file, name, ASTlists):
+def gen_json(file, name, ASTlists, use_macro=False):
     Emitter.normal("\t\tClang AST parse " + file + " in " + name)
     json_file = "output/json_" + name
-    ASTdump(file, json_file)
+    ASTdump(file, json_file, use_macro)
     ASTlists[name] = Parser.AST_from_file(json_file)
 
 
