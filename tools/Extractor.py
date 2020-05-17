@@ -1,4 +1,5 @@
 import sys
+import re
 from tools import Logger, Emitter, Finder
 from common.Utilities import execute_command, get_file_list, error_exit, is_intersect
 import os
@@ -573,3 +574,23 @@ def extract_header_list(source_path):
     with open(output_file_path, 'r') as output_file:
         header_list = output_file.readlines()
     return header_list
+
+
+def extract_pre_macro_list(source_file):
+    macro_command = ""
+    cat_command = "cat " + source_file + " | grep '#if' > /tmp/log"
+    execute_command(cat_command)
+    pre_macro_list = set()
+    with open('/tmp/log', 'r') as log_file:
+        read_lines = log_file.readlines()
+        for line in read_lines:
+            token_list = line.split("defined")
+            for token in token_list[1:]:
+                macro = re.findall(r'\(([^]]*)\)', token)[0]
+                pre_macro_list.add(macro.replace(")", "").replace("(", ""))
+
+    pre_process_arg = " --extra-arg=\"-D {}=1 \" "
+    for macro in pre_macro_list:
+        macro_command = macro_command + pre_process_arg.format(macro)
+    return macro_command
+

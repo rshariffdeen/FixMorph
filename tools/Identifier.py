@@ -670,7 +670,7 @@ def identify_code_segment(diff_info, project):
     for source_file in grouped_line_info:
         Emitter.normal("\t\t" + source_file)
         pertinent_lines = grouped_line_info[source_file]
-
+        Values.DONOR_PRE_PROCESS_MACRO = Extractor.extract_pre_macro_list(source_file)
         segmentation_list = separate_segment(project, source_file)
         found_neighborhood = create_vectors(project, source_file, segmentation_list, pertinent_lines)
         if not found_neighborhood:

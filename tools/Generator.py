@@ -4,10 +4,10 @@
 import sys
 import io
 import os
-import re
+
 import json
 from common.Utilities import execute_command, error_exit, find_files, get_file_extension_list
-from tools import Emitter, Logger
+from tools import Emitter, Logger, Extractor
 from ast import Vector, Parser, Generator as ASTGenerator
 from common.Utilities import error_exit, clean_parse
 from common import Definitions, Values
@@ -58,23 +58,6 @@ def find_source_file(diff_file_list, project, log_file):
     #         break
     #     last_sub_dir = source_dir.split("/")[-1]
     #     source_dir = source_dir[:source_dir.find(last_sub_dir)]
-
-
-def extract_pre_macro_list(source_file):
-    cat_command = "cat " + source_file + " | grep '#if' > /tmp/log"
-    execute_command(cat_command)
-    pre_macro_list = set()
-    with open('/tmp/log', 'r') as log_file:
-        read_lines = log_file.readlines()
-        for line in read_lines:
-            token_list = line.split("defined")
-            for token in token_list[1:]:
-                macro = re.findall(r'\(([^]]*)\)', token)[0]
-                pre_macro_list.add(macro.replace(")", "").replace("(", ""))
-
-    pre_process_arg = " --extra-arg=\"-D {}=1 \" "
-    for macro in pre_macro_list:
-        Values.PRE_PROCESS_MACRO = Values.PRE_PROCESS_MACRO + pre_process_arg.format(macro)
 
 
 def generate_segmentation(source_file, use_macro=False):
@@ -207,7 +190,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
             # if source_file != "/data/linux/3/v3_16/mm/hugetlb.c":
             #     source_file = file_list.readline().strip()
             #     continue
-            extract_pre_macro_list(source_file)
+            Values.TARGET_PRE_PROCESS_MACRO = Extractor.extract_pre_macro_list(source_file)
 
             try:
                 segmentation_list = generate_segmentation(source_file)
@@ -226,9 +209,12 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
 def generate_ast_json(file_path, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
+    macro_list = Values.TARGET_PRE_PROCESS_MACRO
+    if Values.PATH_A in file_path:
+        macro_list = Values.DONOR_PRE_PROCESS_MACRO
     dump_command = Definitions.APP_AST_DIFF + " -ast-dump-json "
     if use_macro:
-        dump_command += " " + Values.PRE_PROCESS_MACRO + "  "
+        dump_command += " " + macro_list + "  "
     dump_command += file_path
     if file_path[-1] == 'h':
         dump_command += " --"
