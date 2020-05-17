@@ -13,7 +13,7 @@ from common.Utilities import error_exit, clean_parse
 from common import Definitions, Values
 
 
-def find_source_file(diff_file_list, project, log_file):
+def find_source_file(diff_file_list, project, log_file, file_extension):
     Emitter.normal("\t\t\tlocating source files")
     source_dir = None
     list_files = list()
@@ -38,7 +38,7 @@ def find_source_file(diff_file_list, project, log_file):
                 break
 
         if not list_files:
-            iterate_path(source_path, project, source_path[-2:], log_file)
+            iterate_path(source_path, project, file_extension, log_file)
 
         # file_name = source_path.split("/")[-1][:-2]
         # source_dir = source_path[:str(source_path).find(file_name)]
@@ -58,7 +58,7 @@ def iterate_path(source_path, project, file_extension, log_file):
     regex = None
     file_name = source_path.split("/")[-1][:-2]
     source_dir = source_path[:str(source_path).find(file_name)]
-    source_dir = source_dir.replace(Values.PATH_A, "")[1:]
+    source_dir = source_dir.replace(Values.PATH_A, "")
     if regex is None:
         regex = file_name
     else:
@@ -193,7 +193,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
     # intelligently generate vectors
     regex = None
     if Values.BACKPORT or Values.FORK:
-        find_source_file(diff_file_list, project, log_file)
+        find_source_file(diff_file_list, project, log_file, file_extension)
     else:
         find_files(project.path, file_extension, log_file, regex)
 
