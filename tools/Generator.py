@@ -68,7 +68,7 @@ def extract_pre_macro_list(source_file):
         read_lines = log_file.readlines()
         for line in read_lines:
             token_list = line.split("defined")
-            for token in token_list:
+            for token in token_list[1:]:
                 macro = re.findall(r'\(([^]]*)\)', token)[0]
                 pre_macro_list.add(macro)
 
@@ -85,6 +85,7 @@ def generate_segmentation(source_file, use_macro=False):
     type_def_list = list()
     def_list = list()
     decl_list = list()
+    Emitter.normal("\t\t\tgenerating neighborhoods")
     function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=False, use_macro=use_macro)
     ast_tree = generate_ast_json(source_file)
     if ast_tree is None:
@@ -137,7 +138,7 @@ def create_vectors(project, source_file, segmentation_list):
     project.function_list[source_file] = dict()
     project.macro_list[source_file] = dict()
     project.decl_list[source_file] = dict()
-
+    Emitter.normal("\t\t\tcreating vectors for neighborhoods")
     enum_list, function_list, macro_list, \
     struct_list, type_def_list, def_list, decl_list, definition_list = segmentation_list
 
