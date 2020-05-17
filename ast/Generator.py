@@ -51,7 +51,7 @@ def get_ast_json(file_path, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
     if not os.path.exists(json_file):
-        generate_json(file_path)
+        generate_json(file_path, use_macro)
     ast_dump(file_path, json_file, use_macro)
     if os.stat(json_file).st_size == 0:
         return None
