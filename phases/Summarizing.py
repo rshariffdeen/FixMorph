@@ -367,9 +367,10 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x, source_map):
 
 
 def extract_header_files(file_path):
-    extract_command = "cat " + file_path + " | grep '#include' > /tmp/headers"
+    result_file = Definitions.DIRECTORY_TMP + "/headers"
+    extract_command = "cat " + file_path + " | grep '#include' > " + result_file
     execute_command(extract_command)
-    with open("/tmp/headers", "r") as result_file:
+    with open(result_file, "r") as result_file:
         header_list = result_file.readlines()
         return header_list
 

@@ -319,6 +319,7 @@ def read_conf():
     dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
 
     Definitions.DIRECTORY_OUTPUT = Definitions.DIRECTORY_OUTPUT_BASE + "/" + dir_name
+    Definitions.DIRECTORY_TMP = Definitions.DIRECTORY_OUTPUT_BASE + "/tmp"
     Definitions.DIRECTORY_LOG = Definitions.DIRECTORY_LOG_BASE + "/" + dir_name
     Definitions.FILE_ERROR_LOG = Definitions.DIRECTORY_LOG + "/log-error"
     Definitions.FILE_LAST_LOG = Definitions.DIRECTORY_LOG + "/log-latest"

@@ -94,8 +94,10 @@ def load_values():
     global FILE_DIFF_C, FILE_DIFF_H, FILE_DIFF_ALL
     global FILE_AST_SCRIPT, FILE_AST_DIFF_ERROR
     global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
-
+    Definitions.FILE_AST_SCRIPT = Definitions.DIRECTORY_OUTPUT + "/ast-script-temp"
     Definitions.FILE_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/diff-info"
+    Definitions.FILE_TEMP_DIFF = Definitions.DIRECTORY_OUTPUT + "/temp_diff"
+    Definitions.FILE_AST_DIFF_ERROR = Definitions.DIRECTORY_OUTPUT + "/errors_ast_diff"
 
 
 def save_values():

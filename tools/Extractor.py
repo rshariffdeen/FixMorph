@@ -578,10 +578,11 @@ def extract_header_list(source_path):
 
 def extract_pre_macro_list(source_file):
     macro_command = ""
-    cat_command = "cat " + source_file + " | grep '#if' > /tmp/log"
+    result_file = Definitions.DIRECTORY_TMP + "/result"
+    cat_command = "cat " + source_file + " | grep '#if' > " + result_file
     execute_command(cat_command)
     pre_macro_list = set()
-    with open('/tmp/log', 'r') as log_file:
+    with open(result_file, 'r') as log_file:
         read_lines = log_file.readlines()
         for line in read_lines:
             token_list = line.split("defined")

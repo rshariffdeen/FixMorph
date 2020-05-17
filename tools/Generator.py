@@ -23,9 +23,10 @@ def find_source_file(diff_file_list, project, log_file):
         source_path = source_path.replace(Values.PATH_A, "")
         source_path = source_path[1:]
         git_query = "cd " + Values.PATH_A + ";"
-        git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > /tmp/list"
+        result_file =  Definitions.DIRECTORY_TMP + "/list"
+        git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
         execute_command(git_query)
-        with open('/tmp/list', 'r') as tmp_file:
+        with open(result_file, 'r') as tmp_file:
             list_lines = tmp_file.readlines()
             for path in list_lines:
                 file_path_list.add(path.strip().replace("\n", ""))
