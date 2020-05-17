@@ -21,25 +21,49 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
     regex = None
     if Values.BACKPORT or Values.FORK:
         source_dir = None
+        list_files = list()
         for source_loc in diff_file_list:
+            file_path_list = set()
             source_path, line_number = source_loc.split(":")
-            file_name = source_path.split("/")[-1][:-2]
-            source_dir = source_path[:str(source_path).find(file_name)]
-            source_dir = source_dir.replace(Values.PATH_A, "")[1:]
-            if regex is None:
-                regex = file_name
-            else:
-                regex = regex + "\|" + file_name
-        find_files(project.path, file_extension, log_file, regex)
+            source_path = source_path.replace(Values.PATH_A, "")
+            source_path = source_path[1:]
+            git_query = "cd " + Values.PATH_A + ";"
+            git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > /tmp/list"
+            execute_command(git_query)
+            with open('/tmp/list', 'r') as tmp_file:
+                list_lines = tmp_file.readlines()
+                for path in list_lines:
+                    file_path_list.add(path.strip().replace("\n", ""))
 
-        while os.stat(log_file).st_size == 0:
-            source_dir = source_dir[:-1]
-            regex = source_dir
-            find_files(project.path, file_extension, log_file, regex)
-            if "/" not in source_dir:
-                break
-            last_sub_dir = source_dir.split("/")[-1]
-            source_dir = source_dir[:source_dir.find(last_sub_dir)]
+            for file_path in file_path_list:
+                new_path = project.path + "/" + file_path
+                if os.path.isfile(new_path):
+                    list_files.append(new_path)
+                    break
+            # file_name = source_path.split("/")[-1][:-2]
+            # source_dir = source_path[:str(source_path).find(file_name)]
+            # source_dir = source_dir.replace(Values.PATH_A, "")[1:]
+            # if regex is None:
+            #     regex = file_name
+            # else:
+            #     regex = regex + "\|" + file_name
+
+
+        # print(list_files)
+
+        with open(log_file, 'r') as out_file:
+            out_file.writelines(list_files)
+
+        # find_files(project.path, file_extension, log_file, regex)
+        #
+        # while os.stat(log_file).st_size == 0:
+        #     source_dir = source_dir[:-1]
+        #     regex = source_dir
+        #     find_files(project.path, file_extension, log_file, regex)
+        #     if "/" not in source_dir:
+        #         break
+        #     last_sub_dir = source_dir.split("/")[-1]
+        #     source_dir = source_dir[:source_dir.find(last_sub_dir)]
 
     else:
         find_files(project.path, file_extension, log_file, regex)
