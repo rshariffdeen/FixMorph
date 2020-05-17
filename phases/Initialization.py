@@ -46,6 +46,8 @@ def create_output_dir():
     if not os.path.isdir(Definitions.DIRECTORY_OUTPUT):
         create_command = "mkdir -p " + Definitions.DIRECTORY_OUTPUT
         execute_command(create_command)
+    if not os.path.isdir(Definitions.DIRECTORY_TMP):
+        os.makedirs(Definitions.DIRECTORY_TMP)
 
 
 def create_log_dir():

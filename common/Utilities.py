@@ -45,9 +45,6 @@ def create_base_directories():
     if not os.path.isdir(Definitions.DIRECTORY_BACKUP):
         os.makedirs(Definitions.DIRECTORY_BACKUP)
 
-    if not os.path.isdir(Definitions.DIRECTORY_TMP):
-        os.makedirs(Definitions.DIRECTORY_TMP)
-
 
 def error_exit(*args):
     print("\n")
