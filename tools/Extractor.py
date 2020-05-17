@@ -585,10 +585,20 @@ def extract_pre_macro_list(source_file):
     with open(result_file, 'r') as log_file:
         read_lines = log_file.readlines()
         for line in read_lines:
-            token_list = line.split("defined")
-            for token in token_list[1:]:
-                macro = re.findall(r'\(([^]]*)\)', token)[0]
-                pre_macro_list.add(macro.replace(")", "").replace("(", ""))
+            if "ifdef" in line:
+                pre_macro_list.add(line.split(" ")[-1])
+            elif "ifndef" in line:
+                pre_macro_list.add(line.split(" ")[-1])
+            elif "defined(" in line:
+                token_list = line.split("defined")
+                for token in token_list[1:]:
+                    macro = re.findall(r'\(([^]]*)\)', token)[0]
+                    pre_macro_list.add(macro.replace(")", "").replace("(", ""))
+            elif "defined" in line:
+                token_list = line.split(" defined ")
+                for token in token_list[1:]:
+                    macro = token.split(" ")[0]
+                    pre_macro_list.add(macro.replace(")", "").replace("(", ""))
 
     pre_process_arg = " --extra-arg=\"-D {}=1 \" "
     for macro in pre_macro_list:
