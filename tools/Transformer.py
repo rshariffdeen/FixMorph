@@ -3,7 +3,7 @@
 
 
 import sys
-from common import Definitions
+from common import Definitions, Values
 from common.Utilities import get_code, error_exit, execute_command
 from ast import Generator as ASTGenerator
 from tools import Extractor, Oracle, Logger, Filter, Emitter
@@ -17,8 +17,15 @@ def transform_source_file(source_path, ast_script, output_file=None):
                 script_line = script_line + "\n"
             script_file.write(script_line)
 
-    transform_command = Definitions.PATCH_COMMAND + " -s=" + Definitions.PATCH_SIZE + \
-         " -script=" + Definitions.FILE_AST_SCRIPT + " -source=" + source_path + \
+    transform_command = Definitions.PATCH_COMMAND + " -s=" + Definitions.PATCH_SIZE
+    if Values.PATH_A in source_path or Values.PATH_B in source_path:
+        if Values.DONOR_REQUIRE_MACRO:
+            transform_command += " " + Values.DONOR_PRE_PROCESS_MACRO + " "
+    if Values.PATH_C in source_path or Values.Project_D.path in source_path:
+        if Values.TARGET_REQUIRE_MACRO:
+            transform_command += " " + Values.TARGET_PRE_PROCESS_MACRO + " "
+
+    transform_command += " -script=" + Definitions.FILE_AST_SCRIPT + " -source=" + source_path + \
          " -destination=" + source_path + " -target=" + source_path
 
     if source_path[-1] == 'h':
