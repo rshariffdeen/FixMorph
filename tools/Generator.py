@@ -40,6 +40,8 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                 if os.path.isfile(new_path):
                     list_files.append(new_path)
                     break
+
+
             # file_name = source_path.split("/")[-1][:-2]
             # source_dir = source_path[:str(source_path).find(file_name)]
             # source_dir = source_dir.replace(Values.PATH_A, "")[1:]
@@ -51,7 +53,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
 
         # print(list_files)
 
-        with open(log_file, 'r') as out_file:
+        with open(log_file, 'w') as out_file:
             out_file.writelines(list_files)
 
         # find_files(project.path, file_extension, log_file, regex)
