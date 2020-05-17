@@ -25,6 +25,23 @@ def set_env_value():
     execute_command("export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python")
 
 
+def load_file_defs():
+    Definitions.FILE_AST_SCRIPT = Definitions.DIRECTORY_TMP + "/ast-script"
+    Definitions.FILE_TEMP_DIFF = Definitions.DIRECTORY_TMP + "/temp_diff"
+    Definitions.FILE_AST_MAP = Definitions.DIRECTORY_TMP + "/ast-map"
+    Definitions.FILE_AST_DIFF_ERROR = Definitions.DIRECTORY_TMP + "/errors_ast_diff"
+    Definitions.FILE_PARTIAL_PATCH = Definitions.DIRECTORY_TMP + "/gen-patch"
+    Definitions.FILE_EXCLUDED_EXTENSIONS = Definitions.DIRECTORY_TMP + "/excluded-extensions"
+    Definitions.FILE_EXCLUDED_EXTENSIONS_A = Definitions.DIRECTORY_TMP + "/excluded-extensions-a"
+    Definitions.FILE_EXCLUDED_EXTENSIONS_B = Definitions.DIRECTORY_TMP + "/excluded-extensions-b"
+    Definitions.FILE_GIT_UNTRACKED_FILES = Definitions.DIRECTORY_TMP + "/untracked-list"
+    Definitions.FILE_DIFF_C = Definitions.DIRECTORY_TMP + "/diff_C"
+    Definitions.FILE_DIFF_H = Definitions.DIRECTORY_TMP + "/diff_H"
+    Definitions.FILE_DIFF_ALL = Definitions.DIRECTORY_TMP + "/diff_all"
+    Definitions.FILE_FIND_RESULT = Definitions.DIRECTORY_TMP + "/find_tmp"
+    Definitions.FILE_TEMP_TRANSFORM = Definitions.DIRECTORY_TMP + "/temp-transform"
+
+
 def load_values():
     Values.Project_A = Project.Project(Values.PATH_A, "Pa")
     Values.Project_B = Project.Project(Values.PATH_B, "Pb")
@@ -33,6 +50,7 @@ def load_values():
     if Values.PATH_E:
         Values.Project_E = Project.Project(Values.PATH_E, "Pe")
     load_standard_list()
+    load_file_defs()
 
 
 def create_patch_dir():

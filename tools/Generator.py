@@ -181,6 +181,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
         find_source_file(diff_file_list, project, log_file)
     else:
         find_files(project.path, file_extension, log_file, regex)
+
     if os.stat(log_file).st_size == 0:
         find_files(project.path, file_extension, log_file, None)
 
