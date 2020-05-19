@@ -111,7 +111,7 @@ def ASTdump(file, output, use_macro=False):
 
 def gen_json(file, name, ASTlists, use_macro=False):
     Emitter.normal("\t\tClang AST parse " + file + " in " + name)
-    json_file = "output/json_" + name
+    json_file = Definitions.DIRECTORY_OUTPUT + "/json_" + name
     ASTdump(file, json_file, use_macro)
     ASTlists[name] = Parser.AST_from_file(json_file)
 
