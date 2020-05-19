@@ -129,9 +129,13 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
     neighbor_type, neighbor_name, slice = str(slice_file_a).split("/")[-1].split(".c.")[-1].split(".")
     if neighbor_type == "func":
         neighbor_ast = Finder.search_function_node_by_name(ast_tree_a, neighbor_name)
+    elif neighbor_type == "var":
+        neighbor_ast = Finder.search_node(ast_tree_a, "VarDecl", neighbor_name)
 
     if neighbor_ast:
         neighbor_ast_range = (int(neighbor_ast['begin']), int(neighbor_ast['end']))
+    else:
+        error_exit("No neighbor AST Found")
 
     for ast_node_txt_a in ast_node_map:
         ast_node_txt_c = ast_node_map[ast_node_txt_a]

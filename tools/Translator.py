@@ -230,8 +230,14 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     target_node_id = id_from_string(txt_target_node)
                     target_node = json_ast_dump[Values.Project_C.name][target_node_id]
 
+                    if update_node.type != target_node.type:
+                        instruction = get_instruction((Definitions.REPLACE, target_node, update_node))
+                        translated_instruction_list.append(instruction)
+                        continue
+
                     if target_node.line is None:
                         target_node.line = target_node.parent.line
+
                     instruction = get_instruction((Definitions.UPDATE, target_node, update_node))
                     translated_instruction_list.append(instruction)
 
