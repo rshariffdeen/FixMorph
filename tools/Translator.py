@@ -666,8 +666,14 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     replaced.append(nodeA.id)
                     continue
 
-            if nodeA.value == nodeB.value:
-                continue
+            if nodeA.value == nodeB.value and nodeA.type != "CompoundStmt":
+                if nodeA.type == "IntegerLiteral":
+                    if nodeA.col_end == nodeB.col_end:
+                        Emitter.warning("skipping update for value and length match")
+                        continue
+                else:
+                    Emitter.warning("skipping update for value match")
+                    continue
 
             if nodeB.parent_id in updated:
                 updated.append(nodeB.id)
@@ -684,8 +690,15 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeB2 = ASTlists[Values.Project_B.name][nodeB2]
             pos = i[3]
             # Emitter.white("\t" + Common.MOVE + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
-            if int(pos) == nodeB2.children.index(nodeB1):
-                continue
+            nodeA1 = match_BA[i[1]]
+            nodeA1 = id_from_string(nodeA1)
+            nodeA1 = ASTlists[Values.Project_A.name][nodeA1]
+            if i[2] in match_BA.keys():
+                nodeA2 = match_BA[i[2]]
+                nodeA2 = id_from_string(nodeA2)
+                nodeA2 = ASTlists[Values.Project_A.name][nodeA2]
+                if int(pos) == nodeA2.children.index(nodeA1):
+                    continue
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.MOVE, nodeB1, nodeB2, pos))
