@@ -296,25 +296,25 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
         for instruction in instruction_list:
             count = count + 1
             # Emitter.normal("\t[action]transplanting code segment " + str(count))
+            check_node = None
             if "Insert" in instruction:
-                insert_node_id = instruction.split("(")[1].split(")")[0]
-                inserting_node = Finder.search_ast_node_by_id(ast_map_b, int(insert_node_id))
-                missing_function_list_source = Identifier.identify_missing_functions(ast_map_a,
-                                                                                   inserting_node,
-                                                                                   file_b,
-                                                                                   file_d,
-                                                                                   ast_map_c)
-                if not Values.IS_LINUX_KERNEL:
-                    missing_function_list.update(Identifier.identify_missing_functions(ast_map_a,
-                                                                                   inserting_node,
-                                                                                   file_b,
-                                                                                   file_d,
-                                                                                   ast_map_c))
+                check_node_id = instruction.split("(")[1].split(")")[0]
+                check_node = Finder.search_ast_node_by_id(ast_map_b, int(check_node_id))
 
-                missing_macro_list.update(Identifier.identify_missing_macros(inserting_node,
-                                                                             file_b,
-                                                                             file_d
-                                                                             ))
+            elif "Replace" in instruction:
+                check_node_id = instruction.split(" with ")[1].split("(")[1].split(")")[0]
+                check_node = Finder.search_ast_node_by_id(ast_map_b, int(check_node_id))
+
+            missing_function_list.update(Identifier.identify_missing_functions(ast_map_a,
+                                                                               check_node,
+                                                                               file_b,
+                                                                               file_d,
+                                                                               ast_map_c))
+
+            missing_macro_list.update(Identifier.identify_missing_macros(check_node,
+                                                                         file_b,
+                                                                         file_d
+                                                                         ))
 
             script_file.write(instruction + "\n")
 
