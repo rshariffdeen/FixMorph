@@ -5,7 +5,7 @@
 import sys
 import os
 from common import Values
-from common.Utilities import get_code, error_exit
+from common.Utilities import get_code, error_exit, execute_command
 from ast import Generator as ASTGenerator
 from tools import Extractor, Oracle, Logger, Filter, Emitter, Transformer
 
@@ -36,10 +36,14 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
     # print(ast_script)
     output_file_name = "." + segment_code + "." + segment_identifier + ".slice"
     output_file_path = source_path + output_file_name
-    Transformer.transform_source_file(source_path, ast_script, output_file_path)
 
-    if os.stat(output_file_path).st_size == 0:
-        error_exit("Slice is empty")
+    if ast_script:
+        Transformer.transform_source_file(source_path, ast_script, output_file_path)
+        if os.stat(output_file_path).st_size == 0:
+            error_exit("Slice is empty")
+    else:
+        copy_command = "cp " + source_path + " " + output_file_path
+        execute_command(copy_command)
 
     Emitter.normal("\t\t\tcreated " + output_file_path)
     return segment_found
