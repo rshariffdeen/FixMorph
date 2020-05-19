@@ -684,6 +684,8 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeB2 = ASTlists[Values.Project_B.name][nodeB2]
             pos = i[3]
             # Emitter.white("\t" + Common.MOVE + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
+            if int(pos) == nodeB2.children.index(nodeB1):
+                continue
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.MOVE, nodeB1, nodeB2, pos))
