@@ -42,12 +42,23 @@ def slice_code(file_list_to_patch):
             vector_name_d = vector_name_c.replace(Values.PATH_C, Values.Project_D.path)
             vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
 
-            Emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
+            segment_identifier_a = vector_name_a.replace(".vec", "")
+            segment_identifier_b = vector_name_b.replace(".vec", "")
+            segment_identifier_c = vector_name_c.replace(".vec", "")
+            segment_identifier_d = vector_name_d.replace(".vec", "")
+
+            if segment_code == "var":
+                segment_identifier_a = vector_name_a[:segment_identifier_a.rfind("_")]
+                segment_identifier_b = vector_name_b[:segment_identifier_b.rfind("_")]
+                segment_identifier_c = vector_name_c[:segment_identifier_c.rfind("_")]
+                segment_identifier_d = vector_name_d[:segment_identifier_d.rfind("_")]
+
+            Emitter.normal("\t\t" + segment_code + ": " + segment_identifier_a)
 
             if Values.DONOR_REQUIRE_MACRO:
                 Values.PRE_PROCESS_MACRO = Values.DONOR_PRE_PROCESS_MACRO
-            Slicer.slice_source_file(vector_source_a, segment_code, vector_name_a.replace(".vec", ""), Values.PATH_A, Values.DONOR_REQUIRE_MACRO)
-            Slicer.slice_source_file(vector_source_b, segment_code, vector_name_b.replace(".vec", ""), Values.PATH_B, Values.DONOR_REQUIRE_MACRO)
+            Slicer.slice_source_file(vector_source_a, segment_code, segment_identifier_a, Values.PATH_A, Values.DONOR_REQUIRE_MACRO)
+            Slicer.slice_source_file(vector_source_b, segment_code, segment_identifier_b, Values.PATH_B, Values.DONOR_REQUIRE_MACRO)
 
             seg_found = Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""),
                                                  Values.PATH_C)
@@ -55,10 +66,11 @@ def slice_code(file_list_to_patch):
             if not seg_found:
                 Values.TARGET_REQUIRE_MACRO = True
                 Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
-                seg_found = Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""),
+                seg_found = Slicer.slice_source_file(vector_source_c, segment_code, segment_identifier_c,
                                                      Values.PATH_C, Values.TARGET_REQUIRE_MACRO)
 
-            Slicer.slice_source_file(vector_source_d, segment_code, vector_name_d.replace(".vec", ""), Values.Project_D.path, Values.TARGET_REQUIRE_MACRO)
+            Slicer.slice_source_file(vector_source_d, segment_code, segment_identifier_d,
+                                     Values.Project_D.path, Values.TARGET_REQUIRE_MACRO)
 
         except Exception as e:
             error_exit("something went wrong with slicing phase")
