@@ -98,6 +98,7 @@ def transplant_code():
         Emitter.highlight("\tGenerated AST script")
         translated_script = generated_data[0]
         Emitter.emit_ast_script(translated_script)
+
         identified_missing_function_list, \
         identified_missing_macro_list, modified_source_list = Weaver.weave_code(vector_source_a,
                                                                                 vector_source_b,

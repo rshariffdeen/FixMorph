@@ -40,7 +40,10 @@ def extract_complete_function_node(function_def_node, source_path):
     source_dir = "/".join(source_path.split("/")[:-1])
     # print(source_dir)
     if len(function_def_node['children']) > 1:
-        source_file_loc = source_dir + "/" + function_def_node['file']
+        if Values.IS_LINUX_KERNEL:
+            source_file_loc = Values.PATH_B + "/" + function_def_node['file']
+        else:
+            source_file_loc = source_dir + "/" + function_def_node['file']
         # print(source_file_loc)
         source_file_loc = os.path.abspath(source_file_loc)
         # print(source_file_loc)
