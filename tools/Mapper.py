@@ -1,6 +1,6 @@
 from common import Definitions, Values
 from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
-from tools import Emitter, Logger, Finder, Converter
+from tools import Emitter, Logger, Finder, Converter, Writer
 from ast import Generator
 import sys
 
@@ -107,7 +107,7 @@ def generate(generated_script_files):
             map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
             generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
-            # var_map = derive_var_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            var_map = derive_var_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
             variable_map_info[file_list] = ast_node_map
@@ -175,6 +175,7 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                 max_score = candidate_score
         refined_var_map[value_a] = best_candidate
 
+    Writer.write_as_json(refined_var_map, Definitions.FILE_VAR_MAP)
     # print(refined_var_map)
     return refined_var_map
 

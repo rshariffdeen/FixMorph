@@ -19,6 +19,7 @@ def load_values():
         Values.generated_script_files = script_info
 
     Definitions.FILE_MAP_INFO = Definitions.DIRECTORY_OUTPUT + "/map-info"
+    Definitions.FILE_VAR_MAP = Definitions.DIRECTORY_OUTPUT + "/var-map"
 
 
 def safe_exec(function_def, title, *args):
