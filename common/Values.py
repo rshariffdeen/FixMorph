@@ -93,7 +93,6 @@ Pc = None
 crash_script = None
 
 CONF_FILE_NAME = "crochet.conf"
-PATCH_COMMAND = "crochet-patch"
 PATCH_SIZE = "1000"
 DIFF_COMMAND = "crochet-diff "
 DIFF_SIZE = "1000"

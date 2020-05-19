@@ -183,17 +183,20 @@ def fix_syntax_errors(source_file):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tfixing syntax errors")
     with open(FILE_SYNTAX_ERRORS, 'r') as error_log:
-        read_line = error_log.readline()
-        source_location = read_line.split(": ")[0]
-        error_type = (read_line.split(" [")[-1]).replace("]", "")
-        if "return-type" in error_type:
-            fix_return_type(source_file, source_location)
-        elif "use of undeclared label" in read_line:
-            fix_label_error(source_file, source_location)
-        elif "too many arguments provided" in read_line:
-            fix_argument_errors(source_file, source_location)
-        elif "expected identifier or '(' before '}' token" in read_line:
-            fix_bracket(source_file, source_location)
+        read_line_list = error_log.readlines()
+        for read_line in read_line_list:
+            if ": " not in read_line:
+                continue
+            source_location = read_line.split(": ")[0]
+            error_type = (read_line.split(" [")[-1]).replace("]", "")
+            if "return-type" in error_type:
+                fix_return_type(source_file, source_location)
+            elif "use of undeclared label" in read_line:
+                fix_label_error(source_file, source_location)
+            elif "too many arguments provided" in read_line:
+                fix_argument_errors(source_file, source_location)
+            elif "expected identifier or '(' before '}' token" in read_line:
+                fix_bracket(source_file, source_location)
 
 
 def check_syntax_errors(modified_source_list):
