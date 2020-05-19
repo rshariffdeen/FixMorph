@@ -130,6 +130,7 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
     if neighbor_type == "func":
         neighbor_ast = Finder.search_function_node_by_name(ast_tree_a, neighbor_name)
     elif neighbor_type == "var":
+        neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
         neighbor_ast = Finder.search_node(ast_tree_a, "VarDecl", neighbor_name)
 
     if neighbor_ast:
