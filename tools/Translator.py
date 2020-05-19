@@ -904,13 +904,17 @@ def translate_script_list(generated_script_list):
             for token in instruction:
                 instruction_line += token + " "
             original_script.append(instruction_line)
+        Emitter.information(original_script)
         modified_script = simplify_patch(generated_data[0], generated_data[2], json_ast_dump)
+        Emitter.information(modified_script)
         modified_script.sort(key=cmp_to_key(order_comp))
         modified_script = rewrite_as_script(modified_script)
+        Emitter.information(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
         map_ac = Values.ast_map[file_list]
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                      generated_data[2], map_ac)
+        Emitter.information(translated_script)
         if not translated_script:
             error_exit("failed to translate AST transformation")
         translated_script_list[file_list] = (translated_script, original_script)
