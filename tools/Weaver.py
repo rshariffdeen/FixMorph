@@ -309,6 +309,9 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
                 check_node_id = instruction.split(" to ")[1].split("(")[1].split(")")[0]
                 check_node = Finder.search_ast_node_by_id(ast_map_b, int(check_node_id))
 
+            elif "Delete" in instruction:
+                check_node = None
+
             if check_node:
 
                 missing_function_list.update(Identifier.identify_missing_functions(ast_map_a,
