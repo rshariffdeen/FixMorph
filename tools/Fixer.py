@@ -130,6 +130,26 @@ def fix_label_error(source_file, source_location):
         error_exit("NEW RETURN TYPE!")
 
 
+def fix_bracket(source_file, source_location):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.normal("\t\tfixing bracket errors")
+    line_number = int(source_location.split(":")[1])
+    ast_map = Generator.get_ast_json(source_file)
+    function_node = Finder.search_function_node_by_loc(ast_map, int(line_number), source_file)
+    goto_node = extract_goto_node(function_node, line_number)
+    function_definition = function_node['value']
+    function_name = function_node['identifier']
+    function_return_type = (function_definition.replace(function_name, "")).split("(")[1]
+    start_line = goto_node['start line']
+    end_line = goto_node['end line']
+    original_statement = ""
+    new_statement = "\n"
+    backup_file(source_file, FILENAME_BACKUP)
+    replace_code(new_statement, source_file, start_line)
+    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    show_partial_diff(backup_file_path, source_file)
+
+
 def fix_argument_errors(source_file, source_location):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tfixing argument errors")
@@ -172,6 +192,9 @@ def fix_syntax_errors(source_file):
             fix_label_error(source_file, source_location)
         elif "too many arguments provided" in read_line:
             fix_argument_errors(source_file, source_location)
+        elif "expected identifier or '(' before '}' token" in read_line:
+            fix_bracket(source_file, source_location)
+
 
 def check_syntax_errors(modified_source_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
