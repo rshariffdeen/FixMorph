@@ -40,4 +40,5 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
         error_exit("Slice is empty")
 
     Emitter.normal("\t\t\tcreated " + output_file_path)
+    return segment_found
 

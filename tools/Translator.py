@@ -263,7 +263,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
 
                 else:
                     Emitter.warning(
-                        "Warning: Match for " + str(txt_target_node_a) + "not found. Skipping UPDATE instruction.")
+                        "Warning: Match for " + str(txt_target_node_a) + "not found. Skipping REPLACE instruction.")
 
             except Exception as e:
                 error_exit(e, "Something went wrong with UPDATE.")
