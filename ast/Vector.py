@@ -2,6 +2,7 @@
 
 from tools import Logger, Emitter
 import sys
+from common import Definitions
 from common.Utilities import execute_command, error_exit
 import os
 import codecs
@@ -35,10 +36,11 @@ class Vector:
 
     def generate_deckard_vec(self):
         Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+        error_log = Definitions.DIRECTORY_TMP + "/deckard_error_log"
         if self.name is None:
-            command = "echo " + self.vector_path + " >> output/errors; " + \
+            command = "echo " + self.vector_path + " >> " + error_log + "; " + \
                       Vector.deckard_path + " " + self.file_path + " -o " + \
-                      self.vector_path + " 2> output/errors"
+                      self.vector_path + " 2> " + error_log
         else:
             current = "\t\t" + self.name + " " + str(self.start_line) + "-" + \
                       str(self.end_line)
@@ -56,11 +58,11 @@ class Vector:
             self.start_line = start_line
             self.end_line = end_line
 
-            command = "echo " + self.vector_path + "\n >>  output/errors; "
+            command = "echo " + self.vector_path + "\n >> " + error_log + "; "
             command += Vector.deckard_path + " --start-line-number " + \
                        str(self.start_line) + " --end-line-number " + str(self.end_line) + \
                        " " + self.file_path + " -o " + self.vector_path + \
-                       " 2> output/errors"
+                       " 2> " + error_log
 
         try:
             execute_command(command)
@@ -68,6 +70,7 @@ class Vector:
             error_exit(exception, "Error with Deckard vector generation. Exiting...")
 
         if not os.path.isfile(self.vector_path):
+            error_log = Definitions.DIRECTORY_TMP + "/deckard_error_log"
             if self.name is None:
                 c1 = "echo " + self.vector_path + " >> output/errors; " + \
                      Vector.deckard_path_2 + " " + self.file_path + " -o " + \
