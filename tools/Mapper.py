@@ -175,7 +175,8 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                 max_score = candidate_score
         refined_var_map[value_a] = best_candidate
 
-    Writer.write_as_json(refined_var_map, Definitions.FILE_VAR_MAP)
+
+    Writer.write_var_map(refined_var_map, Definitions.FILE_VAR_MAP)
     # print(refined_var_map)
     return refined_var_map
 
