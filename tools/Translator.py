@@ -679,6 +679,10 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 updated.append(nodeB.id)
                 continue
 
+            if nodeB.type != nodeA.type:
+                modified_AB.append((Definitions.REPLACE, nodeA, nodeB))
+                continue
+
             if nodeB.type != "BinaryOperator":
                 updated.append(nodeB.id)
 
