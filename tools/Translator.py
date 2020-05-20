@@ -707,8 +707,9 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 nodeA2 = match_BA[i[2]]
                 nodeA2 = id_from_string(nodeA2)
                 nodeA2 = ASTlists[Values.Project_A.name][nodeA2]
-                if int(pos) == nodeA2.children.index(nodeA1):
-                    continue
+                if nodeA1 in nodeA2.children:
+                    if int(pos) == nodeA2.children.index(nodeA1):
+                        continue
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.MOVE, nodeB1, nodeB2, pos))
