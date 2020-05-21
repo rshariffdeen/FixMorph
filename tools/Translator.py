@@ -948,7 +948,8 @@ def translate_script_list(generated_script_list):
             Values.ast_map = Mapper.generate(Values.generated_script_files)
             translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                          generated_data[2], map_ac)
-
+            if not translated_script:
+                error_exit("Unable to translate the script")
 
         translated_script_list[file_list] = (translated_script, original_script)
         restore_file_orig(vector_source_a)
