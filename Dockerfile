@@ -31,7 +31,7 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-10 main"
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-install-recommends --force-yes \
     clang-10
-RUN mkdir -p /llvm/llvm-10; git clone https://github.com/llvm/llvm-project.git /llvm/llvm-10/source; cd /llvm/llvm-7/source; git checkout llvmorg-10.0.0
+RUN mkdir -p /llvm/llvm-10; git clone https://github.com/llvm/llvm-project.git /llvm/llvm-10/source; cd /llvm/llvm-10/source; git checkout llvmorg-10.0.0
 #RUN svn co https://llvm.org/svn/llvm-project/cfe/tags/RELEASE_700/final/ /llvm/llvm-7/source/tools/clang
 RUN git clone https://github.com/rshariffdeen/clang-tools.git /llvm/llvm-10/source/clang-tools-extra/clang-tools; cd /llvm/llvm-10/source/clang-tools-extra/clang-tools; git checkout llvm-10
 #RUN git clone https://github.com/llvm-mirror/clang-tools-extra.git /llvm/llvm-7/source/tools/clang/tools/clang-extra
