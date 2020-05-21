@@ -1,7 +1,7 @@
 import sys
 from common import Definitions, Values
 from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
-from tools import Emitter, Logger
+from tools import Emitter, Logger, Mapper
 from ast import Parser
 
 
@@ -942,7 +942,14 @@ def translate_script_list(generated_script_list):
                                                      generated_data[2], map_ac)
         Emitter.information(translated_script)
         if not translated_script:
-            error_exit("failed to translate AST transformation")
+            Emitter.warning("failed to translate AST transformation")
+            Emitter.warning("trying to use different if-def combination")
+            Values.TARGET_REQUIRE_MACRO = not Values.TARGET_REQUIRE_MACRO
+            Values.ast_map = Mapper.generate(Values.generated_script_files)
+            translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
+                                                         generated_data[2], map_ac)
+
+
         translated_script_list[file_list] = (translated_script, original_script)
         restore_file_orig(vector_source_a)
         restore_file_orig(vector_source_b)
