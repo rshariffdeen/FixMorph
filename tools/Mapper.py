@@ -151,17 +151,18 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
         if ast_node_a:
             node_type_a = ast_node_a['type']
             if node_type_a == "Macro":
-                value_a = ast_node_a['value']
-                if ast_node_c:
-                    node_type_c = ast_node_c['type']
-                    if node_type_c == "Macro":
-                        value_c = ast_node_a['value']
-                        if value_a not in var_map:
-                            var_map[value_a] = dict()
-                        if value_c not in var_map[value_a]:
-                            var_map[value_a][value_c] = value_score
-                        else:
-                            var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
+                if 'value' in ast_node_a.keys():
+                    value_a = ast_node_a['value']
+                    if ast_node_c:
+                        node_type_c = ast_node_c['type']
+                        if node_type_c == "Macro":
+                            value_c = ast_node_a['value']
+                            if value_a not in var_map:
+                                var_map[value_a] = dict()
+                            if value_c not in var_map[value_a]:
+                                var_map[value_a][value_c] = value_score
+                            else:
+                                var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
 
             if 'identifier' in ast_node_a:
                 value_a = ast_node_a['identifier']
