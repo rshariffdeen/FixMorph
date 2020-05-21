@@ -526,6 +526,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
                         target_node = json_ast_dump[Values.Project_C.name][target_node_id]
+                    else:
+                        Emitter.warning("Warning: node for insertion not found. Skipping INSERT operation.")
                 elif txt_target_node_b in map_bd.keys():
                     target_node = map_bd[txt_target_node_b]
                 else:
