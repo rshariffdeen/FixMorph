@@ -195,7 +195,7 @@ def fix_syntax_errors(source_file):
                 fix_label_error(source_file, source_location)
             elif "too many arguments provided" in read_line:
                 fix_argument_errors(source_file, source_location)
-            elif "expected identifier or '(' before '}' token" in read_line:
+            elif "extraneous closing brace" in read_line:
                 fix_bracket(source_file, source_location)
 
 
