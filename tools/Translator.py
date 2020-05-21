@@ -528,11 +528,12 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         target_node = json_ast_dump[Values.Project_C.name][target_node_id]
                     else:
                         Emitter.warning("Warning: node for insertion not found. Skipping INSERT operation.")
+                        continue
                 elif txt_target_node_b in map_bd.keys():
                     target_node = map_bd[txt_target_node_b]
                 else:
                     Emitter.warning("Warning: node for insertion not found. Skipping INSERT operation.")
-
+                    continue
                 try:
                     if offset != 0:
                         previous_child_node_b = target_node_b.children[offset - 1]
