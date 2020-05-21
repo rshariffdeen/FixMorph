@@ -474,8 +474,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         else:
                             Emitter.warning("Failed at match for child.")
                 except Exception as e:
-                    error_exit(e, "Failed at locating pos.")
-
+                    Emitter.warning("Failed at locating pos.")
+                    return translated_instruction_list
                 if type(move_node) == Parser.AST:
                     if move_node.line is None:
                         move_node.line = move_node.parent.line
@@ -619,7 +619,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                             instruction = get_instruction((Definitions.INSERT, insert_node, target_node, offset))
                             translated_instruction_list.append(instruction)
             except Exception as e:
-                error_exit(e, "Something went wrong with INSERT.")
+                Emitter.warning("Something went wrong with INSERT.")
 
     return translated_instruction_list
 
