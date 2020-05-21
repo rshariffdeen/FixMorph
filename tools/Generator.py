@@ -16,14 +16,14 @@ from common import Definitions, Values
 def find_source_file(diff_file_list, project, log_file, file_extension):
     Emitter.normal("\t\t\tlocating source files")
     source_dir = None
-    list_files = list()
+    list_files = set()
     for source_loc in diff_file_list:
         file_path_list = set()
         source_path, line_number = source_loc.split(":")
         source_path = source_path.replace(Values.PATH_A, "")
         source_path = source_path[1:]
         git_query = "cd " + Values.PATH_A + ";"
-        result_file =  Definitions.DIRECTORY_TMP + "/list"
+        result_file = Definitions.DIRECTORY_TMP + "/list"
         git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
         execute_command(git_query)
         with open(result_file, 'r') as tmp_file:
@@ -34,7 +34,7 @@ def find_source_file(diff_file_list, project, log_file, file_extension):
         for file_path in file_path_list:
             new_path = project.path + "/" + file_path
             if os.path.isfile(new_path):
-                list_files.append(new_path)
+                list_files.add(new_path)
                 break
 
         if not list_files:
