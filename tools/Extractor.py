@@ -241,49 +241,39 @@ def extract_macro_definition(ast_node, source_file, target_file):
     # print(ast_node)
     # print(node_type)
     if node_type == "Macro":
-        identifier = str(ast_node['value'])
-        # print(identifier)
-        start_line = int(ast_node['start line'])
-        node_child_count = len(ast_node['children'])
-        if identifier in Values.STANDARD_MACRO_LIST:
-            return macro_list
-        # print(node_child_count)
-        if node_child_count > 0:
-            for child_node in ast_node['children']:
-                if 'value' not in child_node:
-                    continue
-                identifier = str(child_node['value'])
-                # print(identifier)
-                if str(identifier).isdigit():
-                    continue
-                if identifier in Values.STANDARD_MACRO_LIST:
-                    continue
-                if "(" in identifier:
-                    identifier = identifier.split("(")[0]
-                if identifier not in macro_list.keys():
-                    info = dict()
-                    info['source'] = source_file
-                    info['target'] = target_file
-                    macro_list[identifier] = info
-                else:
-                    info = macro_list[identifier]
-                    if info['source'] != source_file or info['target'] != target_file:
-                        error_exit("MACRO REQUIRED MULTIPLE TIMES!!")
+        identifier = None
+        if 'value' in ast_node:
+            identifier = str(ast_node['value'])
+            # print(identifier)
+            if identifier in Values.STANDARD_MACRO_LIST:
+                return macro_list
         else:
-            if "(" in identifier:
-                identifier = identifier.split("(")[0]
-            token_list = identifier.split(" ")
-            # print(token_list)
-            for token in token_list:
-                if token in ["/", "+", "-"]:
-                    continue
-                if identifier not in macro_list.keys():
-                    info = dict()
-                    info['source'] = source_file
-                    info['target'] = target_file
-                    macro_list[token] = info
-                else:
-                    error_exit("MACRO REQUIRED MULTIPLE TIMES!!")
+            start_line = int(ast_node['start line'])
+            node_child_count = len(ast_node['children'])
+
+            # print(node_child_count)
+            if node_child_count > 0:
+                for child_node in ast_node['children']:
+                    if 'value' not in child_node:
+                        continue
+                    identifier = str(child_node['value'])
+                    # print(identifier)
+                    if str(identifier).isdigit():
+                        continue
+                    if identifier in Values.STANDARD_MACRO_LIST:
+                        continue
+                    if "(" in identifier:
+                        identifier = identifier.split("(")[0]
+                    if identifier not in macro_list.keys():
+                        info = dict()
+                        info['source'] = source_file
+                        info['target'] = target_file
+                        macro_list[identifier] = info
+                    else:
+                        info = macro_list[identifier]
+                        if info['source'] != source_file or info['target'] != target_file:
+                            error_exit("MACRO REQUIRED MULTIPLE TIMES!!")
+
     return macro_list
 
 
