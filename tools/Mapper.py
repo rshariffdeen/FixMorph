@@ -150,13 +150,27 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                 value_score = 100
         if ast_node_a:
             node_type_a = ast_node_a['type']
-            if node_type_a == "Macro":
+            if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
+                if "identifer" in ast_node_a.keys():
+                    identifier_a = ast_node_a['identifier']
+                    if ast_node_c:
+                        node_type_c = ast_node_c['type']
+                        if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
+                            identifier_c = ast_node_c['identifier']
+                            if identifier_a not in var_map:
+                                var_map[identifier_a] = dict()
+                            if identifier_c not in var_map[identifier_a]:
+                                var_map[identifier_a][identifier_c] = value_score
+                            else:
+                                var_map[identifier_a][identifier_c] = var_map[identifier_a][identifier_c] + value_score
+
+            elif node_type_a == "Macro":
                 if 'value' in ast_node_a.keys():
                     value_a = ast_node_a['value']
                     if ast_node_c:
                         node_type_c = ast_node_c['type']
                         if node_type_c == "Macro":
-                            value_c = ast_node_a['value']
+                            value_c = ast_node_c['value']
                             if value_a not in var_map:
                                 var_map[value_a] = dict()
                             if value_c not in var_map[value_a]:
@@ -164,20 +178,22 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                             else:
                                 var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
 
-            if 'identifier' in ast_node_a:
-                value_a = ast_node_a['identifier']
+            elif node_type_a in ["MemberExpr", "ArraySubscriptExpr"]:
+                value_a = ast_node_a['value']
                 node_type_a = ast_node_a['type']
                 if node_type_a in ["MemberExpr"]:
                     value_a, var_type, auxilary_list = Converter.convert_member_expr(ast_node_a)
                 elif node_type_a == "ArraySubscriptExpr":
                     value_a, var_type, auxilary_list = Converter.convert_array_subscript(ast_node_a)
+
                 if ast_node_c:
-                    if 'identifier' in ast_node_c:
-                        value_c = ast_node_c['identifier']
-                        if node_type_a in ["MemberExpr"]:
-                            value_c, var_type, auxilary_list = Converter.convert_member_expr(ast_node_a)
-                        elif node_type_a == "ArraySubscriptExpr":
-                            value_c, var_type, auxilary_list = Converter.convert_array_subscript(ast_node_a)
+                    node_type_c = ast_node_c['type']
+                    if node_type_c in ["MemberExpr", "ArraySubscriptExpr"]:
+                        value_c = ast_node_c['value']
+                        if node_type_c in ["MemberExpr"]:
+                            value_c, var_type, auxilary_list = Converter.convert_member_expr(ast_node_c)
+                        elif node_type_c == "ArraySubscriptExpr":
+                            value_c, var_type, auxilary_list = Converter.convert_array_subscript(ast_node_c)
                         if value_a not in var_map:
                             var_map[value_a] = dict()
                         if value_c not in var_map[value_a]:
@@ -194,7 +210,6 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                 best_candidate = candidate
                 max_score = candidate_score
         refined_var_map[value_a] = best_candidate
-
 
     Writer.write_var_map(refined_var_map, Definitions.FILE_VAR_MAP)
     # print(refined_var_map)
