@@ -69,8 +69,6 @@ FILE_PROJECT_E = ""
 
 
 
-
-
 # ------------------- Configuration --------------------
 
 CONF_PATH_A = "path_a:"
@@ -147,6 +145,8 @@ ARG_SKIP_TRANSLATION = "--skip-trans"
 ARG_ONLY_ANALYSE = "--only-analyse"
 ARG_ONLY_DETECT = "--only-detect"
 ARG_BREAK_WEAVE = "--break-weave"
+ARG_USE_CACHE = "--use-cache"
+
 
 # ----------------- TOOLS --------------------------------
 TOOL_VECGEN = "third-party/deckard/cvecgen_fail "

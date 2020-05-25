@@ -77,6 +77,7 @@ KLEE_FLAG_C = ""
 FILE_CONFIGURATION = ""
 AST_DIFF_SIZE = "1000"
 VC = ""
+USE_CACHE = False
 
 silence_emitter = False
 file_list_to_patch = []
