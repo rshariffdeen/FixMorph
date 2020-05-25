@@ -27,6 +27,8 @@ def convert_cast_expr(ast_node, only_string=False):
         param_node_var_name, param_node_data_type, param_node_aux_list = convert_member_expr(param_node)
         var_list = var_list + param_node_aux_list
         var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
+    elif param_node_type == "DeclRefExpr":
+        var_name = "(" + type_value + ") " + param_node['value'] + " " + var_name
     else:
         print(param_node)
         print(ast_node)
@@ -216,8 +218,10 @@ def convert_array_subscript(ast_node, only_string=False):
         var_name = array_name + iterator_name
     elif array_type == "ArraySubscriptExpr":
         var_data_type = None
-        if "data_type" in array_node:
-            var_data_type = str(array_node['data_type'])
+        sub_array_node = array_node['children'][0]
+        sub_array_type = str(array_node['type'])
+        if "data_type" in sub_array_node:
+            var_data_type = str(sub_array_node['data_type'])
         iterator_node = ast_node['children'][1]
         array_name = str(array_node['value'])
         iterator_name, var_data_type, var_list = convert_array_subscript(iterator_node)
