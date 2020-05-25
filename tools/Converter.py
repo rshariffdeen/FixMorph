@@ -98,6 +98,8 @@ def convert_binary_node_to_expr(ast_node):
         var_list = var_list + left_child_var_list
     elif left_child_type == "Macro":
         lef_child_value = left_child['value']
+    elif left_child_type == "CStyleCastExpr":
+        left_child_value, left_child_data_type, left_child_var_list = convert_cast_expr(left_child)
     else:
         print(left_child)
         error_exit("Unhandled child type in convert binary node")
@@ -121,6 +123,8 @@ def convert_binary_node_to_expr(ast_node):
     elif right_child_type == "Macro":
         right_child_value = right_child['value']
         # var_list = var_list + right_child_var_list
+    elif right_child_type == "CStyleCastExpr":
+        right_child_value, right_child_data_type, right_child_var_list = convert_cast_expr(right_child)
     else:
         print(right_child)
         error_exit("Unhandled child type in convert binary node")
