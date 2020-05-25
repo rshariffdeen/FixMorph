@@ -344,8 +344,8 @@ def convert_member_expr(ast_node, only_string=False):
             var_name = "(" + param_node_var_name + ")" + var_name
             break
         elif child_node_type == "CStyleCastExpr":
-            cast_var_name, cast_data_type, cast_node_aux_list = convert_cast_expr(child_node)
-            var_list = var_list + cast_node_aux_list
+            cast_var_name, cast_data_type = convert_cast_expr(child_node, True)
+            # var_list = var_list + cast_node_aux_list
             var_name = cast_var_name + var_name
             break
         elif child_node_type == "MemberExpr":
