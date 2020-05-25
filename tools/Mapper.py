@@ -179,7 +179,7 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                                 var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
 
             elif node_type_a in ["MemberExpr", "ArraySubscriptExpr"]:
-                value_a = ast_node_a['value']
+                # value_a = ast_node_a['value']
                 node_type_a = ast_node_a['type']
                 if node_type_a in ["MemberExpr"]:
                     value_a, var_type, auxilary_list = Converter.convert_member_expr(ast_node_a)
