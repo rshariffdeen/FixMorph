@@ -105,7 +105,8 @@ def generate(generated_script_files):
             replace_file(slice_file_c, vector_source_c)
 
             map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
-            generate_map(vector_source_a, vector_source_c, map_file_name)
+            if not Values.USE_CACHE:
+                generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
             derive_var_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             restore_file_orig(vector_source_a)
