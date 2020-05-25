@@ -204,6 +204,12 @@ def convert_array_subscript(ast_node, only_string=False):
         array_name = str(array_node['value'])
         iterator_name, var_list = convert_array_iterator(iterator_node)
         var_name = array_name + iterator_name
+    elif array_type == "ArraySubscriptExpr":
+        var_data_type = str(array_node['data_type'])
+        iterator_node = ast_node['children'][1]
+        array_name = str(array_node['value'])
+        iterator_name, var_data_type, var_list = convert_array_subscript(iterator_node)
+        var_name = array_name + iterator_name
     else:
         print(array_type)
         print(array_node)
