@@ -18,7 +18,9 @@ def convert_cast_expr(ast_node, only_string=False):
     var_list = list()
     type_node = ast_node['children'][0]
     type_value = type_node['value']
-    data_type = str(type_node['data_type'])
+    data_type = None
+    if "data_type" in type_node:
+        data_type = str(type_node['data_type'])
     param_node = ast_node['children'][1]
     param_node_type = param_node['type']
     if param_node_type == "MemberExpr":
@@ -209,7 +211,9 @@ def convert_array_subscript(ast_node, only_string=False):
         iterator_name, var_list = convert_array_iterator(iterator_node)
         var_name = array_name + iterator_name
     elif array_type == "ArraySubscriptExpr":
-        var_data_type = str(array_node['data_type'])
+        var_data_type = None
+        if "data_type" in array_node:
+            var_data_type = str(array_node['data_type'])
         iterator_node = ast_node['children'][1]
         array_name = str(array_node['value'])
         iterator_name, var_data_type, var_list = convert_array_subscript(iterator_node)
