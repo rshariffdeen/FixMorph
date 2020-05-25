@@ -28,6 +28,7 @@ def convert_cast_expr(ast_node, only_string=False):
         var_list = var_list + param_node_aux_list
         var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
     else:
+        print(param_node)
         error_exit("Unhandled CStyleCAST")
     if only_string:
         return var_name, data_type
