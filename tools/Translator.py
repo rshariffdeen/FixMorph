@@ -105,7 +105,8 @@ def ASTdump(file, output, use_macro=False):
     c = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -ast-dump-json "
     if use_macro:
         c += " " + Values.PRE_PROCESS_MACRO + " "
-    c += file + extra_arg + " 2> output/errors_AST_dump > " + output
+    error_file = Definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
+    c += file + extra_arg + " 2> " + error_file + " > " + output
     execute_command(c)
 
 

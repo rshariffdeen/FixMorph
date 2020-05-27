@@ -235,7 +235,10 @@ def generate_ast_json(file_path, use_macro=False):
     dump_command += file_path
     if file_path[-1] == 'h':
         dump_command += " --"
-    dump_command += " 2> output/errors_AST_dump > " + json_file
+
+    error_file = Definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
+    dump_command += " 2> " + error_file + " > " + json_file
+
     return_code = execute_command(dump_command)
     Emitter.debug("return code:" + str(return_code))
     if os.stat(json_file).st_size == 0:

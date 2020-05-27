@@ -41,7 +41,8 @@ def ast_dump(file_path, output_path, is_header=True, use_macro=False):
     dump_command += file_path
     if file_path[-1] == 'h':
         dump_command += " --"
-    dump_command += " 2> output/errors_AST_dump > " + output_path
+    error_file = Definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
+    dump_command += " 2> " + error_file + " > " + output_path
     return_code = execute_command(dump_command)
     Emitter.debug("return code:" + str(return_code))
     return return_code

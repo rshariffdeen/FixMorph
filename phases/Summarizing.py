@@ -159,7 +159,8 @@ def get_ast_json(file_path):
     dump_command = "crochet-diff -ast-dump-json " + file_path
     if file_path[-1] == 'h':
         dump_command += " --"
-    dump_command += " 2> output/errors_AST_dump > " + json_file
+    error_file = Definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
+    dump_command += " 2> " + error_file + " > " + json_file
     if os.stat(json_file).st_size == 0:
         return None
     with io.open(json_file, 'r', encoding='utf8', errors="ignore") as f:
