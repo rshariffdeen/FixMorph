@@ -544,6 +544,8 @@ def separate_segment(project, source_file, use_macro=False):
     asm_list = list()
 
     ast_tree = Gen.generate_ast_json(source_file, use_macro)
+    if not ast_tree:
+        error_exit("AST Tree not built, probably compile command not found")
     source_file_pattern = [source_file, source_file.split("/")[-1], source_file.replace(project.path, '')]
     for ast_node in ast_tree['children']:
         node_type = str(ast_node["type"])
