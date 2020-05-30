@@ -4,6 +4,7 @@ from tools import Emitter, Logger, Finder, Converter, Writer
 from ast import Generator
 import sys
 
+BREAK_LIST = [",", " ", " _", ";", "\n", ]
 
 def map_ast_from_source(source_a, source_b, script_file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
@@ -216,6 +217,12 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
             value_a = value_a.split("(")[0]
         if "(" in best_candidate:
             best_candidate = best_candidate.split("(")[0]
+        if not value_a or not value_c:
+            continue
+        if any(token in str(value_a).lower() for token in BREAK_LIST):
+            continue
+        if any(token in str(value_c).lower() for token in BREAK_LIST):
+            continue
         refined_var_map[value_a] = best_candidate
 
     Writer.write_var_map(refined_var_map, Definitions.FILE_VAR_MAP)
