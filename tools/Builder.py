@@ -157,7 +157,7 @@ def build_project(project_path, build_command=None):
         if build_command == "skip":
             return
         elif Values.IS_LINUX_KERNEL:
-            build_command = "bear " + build_command + "  --dry-run"
+            build_command = "bear " + build_command
         elif "--no-static" in build_command:
             c_flags_Nstatic = C_FLAGS.replace("-static", "")
             build_command = "bear make CFLAGS=" + c_flags_Nstatic + " "
