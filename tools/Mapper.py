@@ -204,8 +204,6 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                         else:
                             var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
     for value_a in var_map:
-        if "(" in value_a:
-            value_a = value_a.split("(")[0]
         candidate_list = var_map[value_a]
         max_score = 0
         best_candidate = None
@@ -214,6 +212,8 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
             if max_score < candidate_score:
                 best_candidate = candidate
                 max_score = candidate_score
+        if "(" in value_a:
+            value_a = value_a.split("(")[0]
         if "(" in best_candidate:
             best_candidate = best_candidate.split("(")[0]
         refined_var_map[value_a] = best_candidate
