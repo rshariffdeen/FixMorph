@@ -273,6 +273,9 @@ def convert_call_expr(ast_node, only_string=False):
         elif operand_node_type == "DeclRefExpr":
             operand_var_name = str(operand_node['value'])
             operand_list.append(operand_var_name)
+        elif operand_node_type == "MemberExpr":
+            operand_var_name, operand_data_type = convert_member_expr(operand_node, True)
+            operand_list.append(operand_var_name)
         elif operand_node_type == "Macro":
             operand_var_name = str(operand_node['value'])
             if "?" in operand_var_name:
