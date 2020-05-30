@@ -24,11 +24,14 @@ def convert_cast_expr(ast_node, only_string=False):
     param_node = ast_node['children'][1]
     param_node_type = param_node['type']
     if param_node_type == "MemberExpr":
-        param_node_var_name, param_node_data_type, param_node_aux_list = convert_member_expr(param_node)
+        param_node_var_name, param_node_data_type, param_node_aux_list = convert_member_expr(param_node, True)
         var_list = var_list + param_node_aux_list
         var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
     elif param_node_type == "DeclRefExpr":
         var_name = "(" + type_value + ") " + param_node['value'] + " " + var_name
+    elif param_node_type == "CallExpr":
+        param_node_var_name, param_node_data_type, param_node_aux_list = convert_call_expr(param_node, True)
+        var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
     else:
         print(param_node)
         print(ast_node)
