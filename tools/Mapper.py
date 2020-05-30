@@ -218,11 +218,11 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
             value_a = value_a.split("(")[0]
         if "(" in best_candidate:
             best_candidate = best_candidate.split("(")[0]
-        if not value_a or not value_c:
+        if not value_a or not best_candidate:
             continue
         if any(token in str(value_a).lower() for token in BREAK_LIST):
             continue
-        if any(token in str(value_c).lower() for token in BREAK_LIST):
+        if any(token in str(best_candidate).lower() for token in BREAK_LIST):
             continue
         refined_var_map[value_a] = best_candidate
 
