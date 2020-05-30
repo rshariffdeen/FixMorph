@@ -4,7 +4,8 @@ from tools import Emitter, Logger, Finder, Converter, Writer
 from ast import Generator
 import sys
 
-BREAK_LIST = [",", " ", " _", ";", "\n", ]
+BREAK_LIST = [",", " ", " _", ";", "\n"]
+
 
 def map_ast_from_source(source_a, source_b, script_file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
