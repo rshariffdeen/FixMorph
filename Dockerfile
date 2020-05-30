@@ -40,7 +40,7 @@ RUN echo "add_subdirectory(clang-tools)" >> /llvm/llvm-10/source/clang-tools-ext
 #RUN echo "add_clang_subdirectory(clang-extra)" >> /llvm/llvm-7/source/tools/clang/tools/CMakeLists.txt
 #RUN svn co http://llvm.org/svn/llvm-project/compiler-rt/tags/RELEASE_700/final /llvm/llvm-7/source/projects/compiler-rt
 RUN mkdir /llvm/llvm-10/build; cd /llvm/llvm-10/build; cmake /llvm/llvm-10/source/llvm -DCMAKE_BUILD_TYPE=Release -DCMAKE_ENABLE_ASSERTIONS=OFF -DLLVM_ENABLE_WERROR=OFF \
- -DLLVM_TARGETS_TO_BUILD=X86 -DCMAKE_CXX_FLAGS="-std=c++11" -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 \
+ -DLLVM_TARGETS_TO_BUILD=X86 -DCMAKE_CXX_FLAGS="-std=c++11" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
  -DLLVM_ENABLE_PROJECTS="clang;libcxx;clang-tools-extra;libcxxabi"
 
 RUN cd /llvm/llvm-10/build; make -j32; make install
