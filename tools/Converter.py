@@ -279,6 +279,7 @@ def convert_call_expr(ast_node, only_string=False):
                 continue
             operand_list.append(operand_var_name)
         else:
+            print(operand_node)
             error_exit("unhandled operand for call expr convert")
 
     var_name = function_name + "("
