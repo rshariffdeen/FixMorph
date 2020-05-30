@@ -225,17 +225,9 @@ def convert_array_subscript(ast_node, only_string=False):
     elif array_type == "ArraySubscriptExpr":
         sub_array_node = array_node['children'][0]
         sub_array_type = str(array_node['type'])
-        if "data_type" in sub_array_node:
-            var_data_type = str(sub_array_node['data_type'])
+        array_name, var_data_type, var_list = convert_array_subscript(sub_array_node)
         iterator_node = ast_node['children'][1]
-        array_name = None
-        if "value" in array_node:
-            array_name = str(array_node['value'])
-        if not array_name:
-            print(array_node)
-            print(ast_node)
-            error_exit("array name not found")
-        iterator_name, var_data_type, var_list = convert_array_subscript(iterator_node)
+        iterator_name, var_list = convert_array_iterator(iterator_node)
         var_name = array_name + iterator_name
     else:
         print(array_type)
