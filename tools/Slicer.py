@@ -43,6 +43,7 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
             error_exit("Slice is empty")
     else:
         copy_command = "cp " + source_path + " " + output_file_path
+        Emitter.warning("AST script was empty, using full file")
         execute_command(copy_command)
 
     Emitter.normal("\t\t\tcreated " + output_file_path)

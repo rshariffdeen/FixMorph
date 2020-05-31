@@ -60,8 +60,7 @@ def slice_code(file_list_to_patch):
             Slicer.slice_source_file(vector_source_a, segment_code, segment_identifier_a, Values.PATH_A, Values.DONOR_REQUIRE_MACRO)
             Slicer.slice_source_file(vector_source_b, segment_code, segment_identifier_b, Values.PATH_B, Values.DONOR_REQUIRE_MACRO)
 
-            seg_found = Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""),
-                                                 Values.PATH_C)
+            seg_found = Slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""), Values.PATH_C)
 
             if not seg_found:
                 Values.TARGET_REQUIRE_MACRO = True
