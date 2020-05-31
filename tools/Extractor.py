@@ -598,3 +598,17 @@ def extract_pre_macro_list(source_file):
         macro_command = macro_command + pre_process_arg.format(macro)
     return macro_command
 
+
+def extract_neighborhood(source_path, segment_code, segment_identifier, use_macro=False):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    ast_tree = Generator.get_ast_json(source_path, use_macro, True)
+    segment_type = Values.segment_map[segment_code]
+    ast_script = list()
+    segment_found = False
+    for ast_node in ast_tree['children']:
+        node_id = ast_node['id']
+        node_type = ast_node['type']
+        if node_type == segment_type:
+            node_identifier = ast_node['identifier']
+            if node_identifier == segment_identifier:
+                return ast_node

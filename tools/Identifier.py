@@ -66,20 +66,18 @@ def identify_missing_functions(ast_map_b, ast_node, source_path_b, source_path_d
     return missing_function_list
 
 
-def identify_missing_var(function_node_a, function_node_b, insert_node_b, skip_list, source_path_b, var_map):
+def identify_missing_var(neighborhood_a, neighborhood_b, insert_node_b, source_path_b, var_map):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tanalysing for missing variables")
     missing_var_list = dict()
     ref_list = Extractor.extract_reference_node_list(insert_node_b)
-    dec_list = Extractor.extract_decl_list(function_node_a)
-    dec_node_list_b = Extractor.extract_decl_node_list(function_node_b)
+    dec_list = Extractor.extract_decl_list(neighborhood_a)
+    dec_node_list_b = Extractor.extract_decl_node_list(neighborhood_b)
     ast_tree = Generator.get_ast_json(source_path_b)
     enum_list = Extractor.extract_enum_node_list(ast_tree)
     for ref_node in ref_list:
         node_type = str(ref_node['type'])
         node_start_line = int(ref_node['start line'])
-        if node_start_line in skip_list:
-            continue
         if node_type == "DeclRefExpr":
             if "ref_type" in ref_node.keys():
                 ref_type = str(ref_node['ref_type'])

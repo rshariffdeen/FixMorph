@@ -270,7 +270,7 @@ def weave_functions(missing_function_list, modified_source_list):
     return missing_header_list, missing_macro_list, modified_source_list
 
 
-def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
+def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list, seg_id_a, seg_id_c, seg_code):
     missing_function_list = dict()
     missing_var_list = dict()
     missing_macro_list = dict()
@@ -291,6 +291,9 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
     # Check for an edit script
     script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_script"
     syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_syntax_errors"
+    neighborhood_a = Extractor.extract_neighborhood(file_a, seg_code, seg_id_a)
+    neighborhood_c = Extractor.extract_neighborhood(file_c, seg_code, seg_id_c)
+
     with open(script_file_name, 'w') as script_file:
         count = 0
         for instruction in instruction_list:
@@ -324,7 +327,25 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list):
                                                                              file_b,
                                                                              file_d
                                                                              ))
+                var_map = Values.VAR_MAP[(file_a, file_c)]
+                missing_var_list.update(Identifier.identify_missing_var(neighborhood_a,
+                                                                        neighborhood_c,
+                                                                        check_node,
+                                                                        file_b,
+                                                                        var_map
+                                                                        ))
 
+            script_file.write(instruction + "\n")
+        print(missing_var_list)
+        position_c = str(neighborhood_c['id']) + " at " + str(1)
+        for var in missing_var_list:
+            # print(var)
+            var_info = missing_var_list[var]
+            ast_node = var_info['ast-node']
+            # not sure why the if is required
+            # if "ref_type" in ast_node.keys():
+            ast_op = "Insert " + ast_node['type'] + "(" + str(ast_node['id']) + ")"
+            ast_op += " into " + position_c
             script_file.write(instruction + "\n")
 
     file_info = file_a, file_b, file_c, file_d

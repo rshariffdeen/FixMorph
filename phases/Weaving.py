@@ -88,10 +88,11 @@ def transplant_code():
         replace_file(slice_file_c, vector_source_c)
         replace_file(slice_file_d, vector_source_d)
 
-        segment_type = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
-        segment_identifier = slice_file_c.split("." + segment_type + ".")[-1].replace(".slice", "")
+        segment_code = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
+        segment_identifier_a = slice_file_a.split("." + segment_code + ".")[-1].replace(".slice", "")
+        segment_identifier_c = slice_file_c.split("." + segment_code + ".")[-1].replace(".slice", "")
 
-        Emitter.sub_sub_title("transforming " + segment_identifier + " in " + vector_source_c)
+        Emitter.sub_sub_title("transforming " + segment_identifier_c + " in " + vector_source_c)
         Emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
         Emitter.emit_ast_script(original_script)
@@ -104,7 +105,11 @@ def transplant_code():
                                                                                 vector_source_b,
                                                                                 vector_source_c,
                                                                                 translated_script,
-                                                                                modified_source_list)
+                                                                                modified_source_list,
+                                                                                segment_identifier_a,
+                                                                                segment_identifier_c,
+                                                                                segment_code
+                                                                                )
         file_index += 1
         if missing_function_list:
             if identified_missing_function_list:
