@@ -41,8 +41,8 @@ def generate_script_for_files(file_list_to_patch):
             vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
             vector_source_c, vector_name_c = vec_path_c.split(split_regex)
             vector_name_b = vector_name_a.replace(Values.PATH_A, Values.PATH_B)
-            if vector_source_a in generated_source_list:
-                continue
+            # if vector_source_a in generated_source_list:
+            #     continue
 
             Emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
 
