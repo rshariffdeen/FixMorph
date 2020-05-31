@@ -3,7 +3,7 @@
 
 
 import sys, os
-from common.Utilities import execute_command, error_exit, show_partial_diff, backup_file
+from common.Utilities import execute_command, error_exit, show_partial_diff, backup_file, get_code
 from common import Definitions
 from ast import Generator
 from tools import Logger, Finder, Emitter
@@ -190,6 +190,20 @@ def fix_syntax_errors(source_file):
                 fix_argument_errors(source_file, source_location)
             elif "extraneous closing brace" in read_line:
                 fix_bracket(source_file, source_location)
+            elif "redefinition of" in read_line:
+                fix_redeclaration_error(source_file, source_location)
+
+
+def fix_redeclaration_error(source_file, source_location):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.normal("\t\tfixing redeclaration errors")
+    line_number = int(source_location.split(":")[1])
+    original_statement = get_code(source_file, line_number)
+    new_statement = original_statement.split(";")[1] + ";"
+    backup_file(source_file, FILENAME_BACKUP)
+    replace_code(new_statement, source_file, line_number)
+    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    show_partial_diff(backup_file_path, source_file)
 
 
 def check_syntax_errors(modified_source_list):
