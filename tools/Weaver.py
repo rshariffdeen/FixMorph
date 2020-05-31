@@ -381,9 +381,9 @@ def weave_slice(slice_info):
             replace_file(slice_file, source_file_c)
             if Values.TARGET_REQUIRE_MACRO:
                 Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
-            ast_tree_slice = Generator.get_ast_json(source_file_c, Values.TARGET_REQUIRE_MACRO)
+            ast_tree_slice = Generator.get_ast_json(source_file_c, Values.TARGET_REQUIRE_MACRO, True)
             restore_file_orig(source_file_c)
-            ast_tree_source = Generator.get_ast_json(source_file_c, Values.TARGET_REQUIRE_MACRO)
+            ast_tree_source = Generator.get_ast_json(source_file_c, Values.TARGET_REQUIRE_MACRO, True)
             segment_node_slice = Finder.search_node(ast_tree_slice, segment_type, segment_identifier)
             segment_node_source = Finder.search_node(ast_tree_source, segment_type, segment_identifier)
             start_line_source = int(segment_node_source['start line'])
