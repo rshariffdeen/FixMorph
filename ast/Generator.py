@@ -61,10 +61,10 @@ def get_ast_json(file_path, use_macro=False, regenerate=False):
     return ast_json['root']
 
 
-def generate_json(file_path, use_macro=False):
+def generate_json(file_path, use_macro=False, regenerate=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
-    if not os.path.exists(json_file) and not Values.USE_CACHE:
+    if not (os.path.exists(json_file) and not Values.USE_CACHE) or regenerate:
         ast_dump(file_path, json_file, False, use_macro)
     return AST.load_from_file(json_file)
 
