@@ -12,7 +12,7 @@ from tools import Extractor, Oracle, Logger, Filter, Emitter, Transformer
 
 def slice_source_file(source_path, segment_code, segment_identifier, project_path, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    ast_tree = ASTGenerator.get_ast_json(source_path, use_macro)
+    ast_tree = ASTGenerator.get_ast_json(source_path, use_macro, True)
     segment_type = Values.segment_map[segment_code]
     ast_script = list()
     source_relative_path = source_path.replace(project_path, ".")
