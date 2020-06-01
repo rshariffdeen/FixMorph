@@ -66,13 +66,13 @@ def identify_missing_functions(ast_map_b, ast_node, source_path_b, source_path_d
     return missing_function_list
 
 
-def identify_missing_var(neighborhood_a, neighborhood_b, insert_node_b, source_path_b, var_map):
+def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_path_b, var_map):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tanalysing for missing variables")
     missing_var_list = dict()
     ref_list = Extractor.extract_reference_node_list(insert_node_b)
-    dec_list = Extractor.extract_decl_list(neighborhood_a)
-    dec_node_list_b = Extractor.extract_decl_node_list(neighborhood_b)
+    dec_list_a = Extractor.extract_decl_node_list(neighborhood_a)
+    dec_list_c = Extractor.extract_decl_node_list(neighborhood_c)
     ast_tree = Generator.get_ast_json(source_path_b)
     enum_list = Extractor.extract_enum_node_list(ast_tree)
     if insert_node_b['type'] == "Macro":
@@ -80,11 +80,11 @@ def identify_missing_var(neighborhood_a, neighborhood_b, insert_node_b, source_p
         if "(" in macro_value:
             operand_list = macro_value.split("(")[1].split(")")[0].split(",")
             for operand in operand_list:
-                if operand not in dec_list:
-                    if operand not in missing_var_list.keys() and operand in dec_node_list_b.keys():
+                if operand not in dec_list_c.keys():
+                    if operand not in missing_var_list.keys() and operand in dec_list_a.keys():
                         info = dict()
                         info['ref_list'] = list()
-                        info['ast-node'] = dec_node_list_b[operand]
+                        info['ast-node'] = dec_list_a[operand]
                         missing_var_list[operand] = info
             return missing_var_list
 
@@ -96,11 +96,11 @@ def identify_missing_var(neighborhood_a, neighborhood_b, insert_node_b, source_p
                 ref_type = str(ref_node['ref_type'])
                 identifier = str(ref_node['value'])
                 if ref_type == "VarDecl":
-                    if identifier not in dec_list:
-                        if identifier not in missing_var_list.keys() and identifier in dec_node_list_b.keys():
+                    if identifier not in dec_list_c.keys():
+                        if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
                             info = dict()
                             info['ref_list'] = list()
-                            info['ast-node'] = dec_node_list_b[identifier]
+                            info['ast-node'] = dec_list_a[identifier]
                             missing_var_list[identifier] = info
                     elif identifier not in var_map.keys():
                         skip = False
@@ -109,10 +109,10 @@ def identify_missing_var(neighborhood_a, neighborhood_b, insert_node_b, source_p
                                 skip = True
                                 break
                         if not skip:
-                            if identifier not in missing_var_list.keys() and identifier in dec_node_list_b.keys():
+                            if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
                                 info = dict()
                                 info['ref_list'] = list()
-                                info['ast-node'] = dec_node_list_b[identifier]
+                                info['ast-node'] = dec_list_a[identifier]
                                 missing_var_list[identifier] = info
                 elif ref_type == "FunctionDecl":
                     if identifier in Values.STANDARD_FUNCTION_LIST:
