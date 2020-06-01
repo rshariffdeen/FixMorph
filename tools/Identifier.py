@@ -75,6 +75,19 @@ def identify_missing_var(neighborhood_a, neighborhood_b, insert_node_b, source_p
     dec_node_list_b = Extractor.extract_decl_node_list(neighborhood_b)
     ast_tree = Generator.get_ast_json(source_path_b)
     enum_list = Extractor.extract_enum_node_list(ast_tree)
+    if insert_node_b['type'] == "Macro":
+        macro_value = insert_node_b['value']
+        if "(" in macro_value:
+            operand_list = macro_value.split("(")[1].split(")")[0].split(",")
+            for operand in operand_list:
+                if operand not in dec_list:
+                    if operand not in missing_var_list.keys() and operand in dec_node_list_b.keys():
+                        info = dict()
+                        info['ref_list'] = list()
+                        info['ast-node'] = dec_node_list_b[operand]
+                        missing_var_list[operand] = info
+            return missing_var_list
+
     for ref_node in ref_list:
         node_type = str(ref_node['type'])
         node_start_line = int(ref_node['start line'])
