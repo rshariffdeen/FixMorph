@@ -177,6 +177,9 @@ def convert_array_iterator(iterator_node):
     elif iterator_node_type == "ParenExpr":
         iterator_value, var_list = convert_paren_node_to_expr(iterator_node)
         var_name = "[" + iterator_value + "]"
+    elif iterator_node_type == "CallExpr":
+        iterator_value = convert_call_expr(iterator_node, True)
+        var_name = "[" + iterator_value + "]"
     else:
         print(iterator_node)
         error_exit("Unknown iterator type for convert_array_iterator")
