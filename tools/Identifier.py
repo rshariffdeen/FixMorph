@@ -70,9 +70,13 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tanalysing for missing variables")
     missing_var_list = dict()
+    print(insert_node_b)
     ref_list = Extractor.extract_reference_node_list(insert_node_b)
+    print(ref_list)
     dec_list_a = Extractor.extract_decl_node_list(neighborhood_a)
+    print(dec_list_a.keys())
     dec_list_c = Extractor.extract_decl_node_list(neighborhood_c)
+    print(dec_list_c.keys())
     ast_tree = Generator.get_ast_json(source_path_b)
     enum_list = Extractor.extract_enum_node_list(ast_tree)
     if insert_node_b['type'] == "Macro":
@@ -86,6 +90,7 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
                         info['ref_list'] = list()
                         info['ast-node'] = dec_list_a[operand]
                         missing_var_list[operand] = info
+            print(missing_var_list)
             return missing_var_list
 
     for ref_node in ref_list:
@@ -124,6 +129,7 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
                     info['ref_list'] = list()
                     info['ast-node'] = enum_list[identifier]
                     missing_var_list[identifier] = info
+    print(missing_var_list)
     return missing_var_list
 
 
