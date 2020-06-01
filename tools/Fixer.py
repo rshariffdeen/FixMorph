@@ -218,7 +218,7 @@ def fix_semicolon_error(source_file, source_location):
     Emitter.information("fetching line number: " + str(line_number))
     original_statement = get_code(source_file, line_number)
     Emitter.information("replacing statement: " + original_statement)
-    new_statement = original_statement + ";\n"
+    new_statement = original_statement.replace("\n", ";\n")
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
