@@ -228,7 +228,7 @@ def convert_array_subscript(ast_node, only_string=False):
         iterator_name, var_list = convert_array_iterator(iterator_node)
         var_name = array_name + iterator_name
     elif array_type == "ArraySubscriptExpr":
-        array_name, var_data_type, var_list = convert_array_subscript(array_node)
+        array_name, var_data_type = convert_array_subscript(array_node, True)
         iterator_node = ast_node['children'][1]
         iterator_name, var_list = convert_array_iterator(iterator_node)
         var_name = array_name + iterator_name
