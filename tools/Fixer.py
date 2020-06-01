@@ -203,7 +203,7 @@ def fix_redeclaration_error(source_file, source_location):
     Emitter.information("fetching line number: " + str(line_number))
     original_statement = get_code(source_file, line_number)
     Emitter.information("replacing statement: " + original_statement)
-    new_statement = original_statement.split(";")[1] + ";"
+    new_statement = original_statement.split(";")[1] + ";\n"
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
@@ -215,8 +215,11 @@ def fix_semicolon_error(source_file, source_location):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tfixing semicolon errors")
     line_number = int(source_location.split(":")[1])
+    Emitter.information("fetching line number: " + str(line_number))
     original_statement = get_code(source_file, line_number)
-    new_statement = original_statement + ";"
+    Emitter.information("replacing statement: " + original_statement)
+    new_statement = original_statement + ";\n"
+    Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
     backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
