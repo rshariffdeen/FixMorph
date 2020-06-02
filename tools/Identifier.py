@@ -81,8 +81,10 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
     enum_list = Extractor.extract_enum_node_list(ast_tree)
     if insert_node_b['type'] == "Macro":
         macro_value = insert_node_b['value']
+        print(macro_value)
         if "(" in macro_value:
             operand_list = macro_value.split("(")[1].split(")")[0].split(",")
+            print(operand_list)
             for operand in operand_list:
                 if operand not in dec_list_c.keys():
                     if operand not in missing_var_list.keys() and operand in dec_list_a.keys():
