@@ -50,7 +50,7 @@ def convert_paren_node_to_expr(ast_node):
     child_node_type = child_node['type']
     if child_node_type == "BinaryOperator":
         value, var_list = convert_binary_node_to_expr(child_node)
-    if child_node_type == "CStyleCastExpr":
+    elif child_node_type == "CStyleCastExpr":
         value, var_list = convert_cast_expr(child_node)
     else:
         print(child_node)
