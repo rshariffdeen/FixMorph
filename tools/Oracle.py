@@ -45,8 +45,8 @@ def is_node_equal(node_a, node_b, var_map):
     elif node_type_a == "ArraySubscriptExpr":
         # print(node_a)
         # print(node_b)
-        node_value_a, node_type_a = Converter.convert_array_subscript(node_a, True)
-        node_value_b, node_type_b = Converter.convert_array_subscript(node_b, True)
+        node_value_a, node_type_a, var_list = Converter.convert_array_subscript(node_a)
+        node_value_b, node_type_b, var_list = Converter.convert_array_subscript(node_b)
         if node_value_a == node_value_b or node_value_a == var_map[node_value_b] or \
                 node_value_b == var_map[node_value_a]:
             return True
@@ -61,8 +61,8 @@ def is_node_equal(node_a, node_b, var_map):
             return False
 
     elif node_type_a == "MemberExpr":
-        node_value_a, node_type_a = Converter.convert_member_expr(node_a, True)
-        node_value_b, node_type_b = Converter.convert_member_expr(node_b, True)
+        node_value_a, node_type_a, var_list = Converter.convert_member_expr(node_a, True)
+        node_value_b, node_type_b, var_list = Converter.convert_member_expr(node_b, True)
         if node_value_a == node_value_b:
             return True
         else:
