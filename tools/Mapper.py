@@ -186,18 +186,18 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                 # value_a = ast_node_a['value']
                 node_type_a = ast_node_a['type']
                 if node_type_a in ["MemberExpr"]:
-                    value_a, var_type = Converter.convert_member_expr(ast_node_a, True)
+                    value_a = Converter.convert_member_expr(ast_node_a, True)
                 elif node_type_a == "ArraySubscriptExpr":
-                    value_a, var_type = Converter.convert_array_subscript(ast_node_a, True)
+                    value_a = Converter.convert_array_subscript(ast_node_a, True)
 
                 if ast_node_c:
                     node_type_c = ast_node_c['type']
                     if node_type_c in ["MemberExpr", "ArraySubscriptExpr"]:
                         # value_c = ast_node_c['value']
                         if node_type_c in ["MemberExpr"]:
-                            value_c, var_type = Converter.convert_member_expr(ast_node_c, True)
+                            value_c = Converter.convert_member_expr(ast_node_c, True)
                         elif node_type_c == "ArraySubscriptExpr":
-                            value_c, var_type = Converter.convert_array_subscript(ast_node_c, True)
+                            value_c = Converter.convert_array_subscript(ast_node_c, True)
 
                         if value_a not in var_map:
                             var_map[value_a] = dict()
