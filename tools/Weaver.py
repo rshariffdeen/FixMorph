@@ -344,8 +344,10 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list, s
             ast_node = var_info['ast-node']
             # not sure why the if is required
             # if "ref_type" in ast_node.keys():
-            ast_op = "Insert " + ast_node['type'] + "(" + str(ast_node['id']) + ")"
-            ast_op += " into " + position_c
+            node_id_a = ast_node['id']
+            node_id_b = node_id_a
+            instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
+            instruction += " into " + position_c
             script_file.write(instruction + "\n")
 
     file_info = file_a, file_b, file_c, file_d
