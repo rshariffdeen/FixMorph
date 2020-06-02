@@ -86,12 +86,13 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
             operand_list = macro_value.split("(")[1].split(")")[0].split(",")
             print(operand_list)
             for operand in operand_list:
-                if operand not in dec_list_c.keys():
-                    if operand not in missing_var_list.keys() and operand in dec_list_a.keys():
+                identifier = operand.strip().replace("\n", "")
+                if identifier not in dec_list_c.keys():
+                    if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
                         info = dict()
                         info['ref_list'] = list()
-                        info['ast-node'] = dec_list_a[operand]
-                        missing_var_list[operand] = info
+                        info['ast-node'] = dec_list_a[identifier]
+                        missing_var_list[identifier] = info
             print(missing_var_list)
             return missing_var_list
 
