@@ -165,7 +165,7 @@ def weave_slices():
         vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
         segment_type = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
         segment_identifier = slice_file_c.split("." + segment_type + ".")[-1].replace(".slice", "")
-        if vector_source_d not in slice_info:
+        if (vector_source_d, vector_source_b) not in slice_info:
             slice_info[(vector_source_d, vector_source_b)] = list()
         slice_info[(vector_source_d, vector_source_b)].append(slice_file_d)
 
