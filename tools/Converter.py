@@ -188,6 +188,9 @@ def convert_array_iterator(iterator_node, only_string=False):
     elif iterator_node_type == "CallExpr":
         iterator_value = convert_call_expr(iterator_node, True)
         var_name = "[" + iterator_value + "]"
+    elif iterator_node_type == "ArraySubscriptExpr":
+        iterator_value = convert_array_subscript(iterator_node, True)
+        var_name = "[" + iterator_value + "]"
     else:
         print(iterator_node)
         error_exit("Unknown iterator type for convert_array_iterator")
