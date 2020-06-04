@@ -16,6 +16,8 @@ LD_FLAGS = ""
 
 
 def config_project(project_path, is_llvm, custom_config_command=None):
+    if not os.path.isfile(project_path + "/compile_commands.json"):
+        return
     dir_command = "cd " + project_path + ";"
     if os.path.exists(project_path + "/" + "aclocal.m4"):
         pre_config_command = "rm aclocal.m4;aclocal"
@@ -149,6 +151,8 @@ def apply_flags(build_command):
 
 
 def build_project(project_path, build_command=None):
+    if not os.path.isfile(project_path + "/compile_commands.json"):
+        return
     dir_command = "cd " + project_path + ";"
     if build_command is None:
         build_command = "bear make CFLAGS=" + C_FLAGS + " "
