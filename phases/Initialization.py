@@ -102,9 +102,9 @@ def create_files():
     open(Definitions.FILE_PROJECT_C, 'a').close()
     Definitions.FILE_PROJECT_D = Definitions.DIRECTORY_OUTPUT + "/project-D"
     open(Definitions.FILE_PROJECT_D, 'a').close()
-    Definitions.FILE_PROJECT_D = Definitions.DIRECTORY_OUTPUT + "/var-map-store"
+    Definitions.FILE_VAR_MAP_STORE = Definitions.DIRECTORY_OUTPUT + "/var-map-store"
     open(Definitions.FILE_VAR_MAP_STORE, 'a').close()
-    Definitions.FILE_PROJECT_D = Definitions.DIRECTORY_OUTPUT + "/vec-map-store"
+    Definitions.FILE_VEC_MAP_STORE = Definitions.DIRECTORY_OUTPUT + "/vec-map-store"
     open(Definitions.FILE_VEC_MAP_STORE, 'a').close()
     if Values.PATH_E:
         Definitions.FILE_PROJECT_E = Definitions.DIRECTORY_OUTPUT + "/project-E"
