@@ -66,8 +66,8 @@ FILE_PROJECT_B = ""
 FILE_PROJECT_C = ""
 FILE_PROJECT_D = ""
 FILE_PROJECT_E = ""
-
-
+FILE_VAR_MAP_STORE = ""
+FILE_VEC_MAP_STORE = ""
 
 # ------------------- Configuration --------------------
 

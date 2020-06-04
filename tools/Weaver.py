@@ -336,7 +336,7 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list, s
                                                                         ))
 
             script_file.write(instruction + "\n")
-        print(missing_var_list)
+        # print(missing_var_list)
         target_ast = None
         if neighborhood_c['type'] == "FunctionDecl":
             target_ast = neighborhood_c['children'][1]

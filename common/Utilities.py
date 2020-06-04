@@ -26,6 +26,8 @@ def save_current_state():
     pickle.dump(Values.Project_B, open(Definitions.FILE_PROJECT_B, 'wb'))
     pickle.dump(Values.Project_C, open(Definitions.FILE_PROJECT_C, 'wb'))
     pickle.dump(Values.Project_D, open(Definitions.FILE_PROJECT_D, 'wb'))
+    pickle.dump(Values.VAR_MAP, open(Definitions.FILE_VAR_MAP_STORE, 'wb'))
+    pickle.dump(Values.VECTOR_MAP, open(Definitions.FILE_VEC_MAP_STORE, 'wb'))
 
 
 def load_state():
@@ -33,6 +35,8 @@ def load_state():
     Values.Project_B = pickle.load(open(Definitions.FILE_PROJECT_B, 'rb'))
     Values.Project_C = pickle.load(open(Definitions.FILE_PROJECT_C, 'rb'))
     Values.Project_D = pickle.load(open(Definitions.FILE_PROJECT_D, 'rb'))
+    Values.VAR_MAP = pickle.load(open(Definitions.FILE_VAR_MAP_STORE, 'rb'))
+    Values.VECTOR_MAP = pickle.load(open(Definitions.FILE_VEC_MAP_STORE, 'rb'))
 
 
 def create_base_directories():
