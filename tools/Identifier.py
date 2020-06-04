@@ -99,7 +99,7 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
     for ref_node in ref_list:
         node_type = str(ref_node['type'])
         node_start_line = int(ref_node['start line'])
-        if node_type in ["DeclRefExpr", "ParmVarDecl"]:
+        if node_type in ["DeclRefExpr"]:
             if "ref_type" in ref_node.keys():
                 ref_type = str(ref_node['ref_type'])
                 identifier = str(ref_node['value'])
@@ -132,6 +132,9 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
                     info['ref_list'] = list()
                     info['ast-node'] = enum_list[identifier]
                     missing_var_list[identifier] = info
+        elif node_type in ["ParmVarDecl"]:
+            # TODO: implement importing missing arguments
+            continue
     # print(missing_var_list)
     return missing_var_list
 
