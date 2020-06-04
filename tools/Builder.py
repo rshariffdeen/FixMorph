@@ -176,6 +176,23 @@ def build_project(project_path, build_command=None):
     if int(ret_code) != 0:
         Emitter.error(build_command)
         error_exit("BUILD FAILED!!\nExit Code: " + str(ret_code))
+    store_compile_database(project_path)
+
+
+def store_compile_database(project_path):
+    dir_command = "cd " + project_path + ";"
+    postfix = project_path.split("/")[-1]
+    store_file = Definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
+    store_database_command = dir_command + "cp compile_commands.json " + store_file
+    execute_command(store_database_command)
+
+
+def restore_compile_database(project_path):
+    dir_command = "cd " + project_path + ";"
+    postfix = project_path.split("/")[-1]
+    store_file = Definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
+    restore_database_command = dir_command + "cp " + store_file + " " + project_path + "/compile_commands.json"
+    execute_command(restore_database_command)
 
 
 def build_all():
@@ -396,6 +413,7 @@ def restore_project(project_path, commit_id=None):
         return
     # print(restore_command)
     execute_command(restore_command)
+    restore_compile_database(project_path)
 
 
 def soft_restore_project(project_path):
@@ -410,6 +428,7 @@ def soft_restore_project(project_path):
         return
     # print(restore_command)
     execute_command(restore_command)
+    restore_compile_database(project_path)
 
 
 def restore_all():
