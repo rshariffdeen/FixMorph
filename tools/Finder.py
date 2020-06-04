@@ -83,6 +83,8 @@ def search_ast_node_by_id(ast_node, find_id):
     is_high = False
     is_low = False
     prev_child_node = None
+    if not ast_node:
+        return None
     node_id = int(ast_node['id'])
     if node_id == find_id:
         return ast_node
@@ -124,8 +126,9 @@ def search_node(ast_tree, node_type, node_identifier):
             # print(child_node_identifier, function_name)
             if ast_node_identifier == node_identifier:
                 if node_type == "FunctionDecl":
-                    if str(ast_node['file'])[-2:] == ".h":
-                        continue
+                    if 'file' in ast_node.keys():
+                        if str(ast_node['file'])[-2:] == ".h":
+                            continue
                     if ast_node['start line'] != ast_node['end line']:
                         return ast_node
                 else:
