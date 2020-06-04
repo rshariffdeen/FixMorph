@@ -17,11 +17,15 @@ def find_source_file(diff_file_list, project, log_file, file_extension):
     Emitter.normal("\t\t\tlocating source files")
     source_dir = None
     list_files = set()
+    source_file_list = list()
     for source_loc in diff_file_list:
         file_path_list = set()
         source_path, line_number = source_loc.split(":")
         source_path = source_path.replace(Values.PATH_A, "")
         source_path = source_path[1:]
+        if source_path in source_file_list:
+            continue
+        source_file_list.append(source_path)
         git_query = "cd " + Values.PATH_A + ";"
         result_file = Definitions.DIRECTORY_TMP + "/list"
         git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
