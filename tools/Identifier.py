@@ -99,7 +99,7 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
     for ref_node in ref_list:
         node_type = str(ref_node['type'])
         node_start_line = int(ref_node['start line'])
-        if node_type == "DeclRefExpr":
+        if node_type in ["DeclRefExpr", "ParmVarDecl"]:
             if "ref_type" in ref_node.keys():
                 ref_type = str(ref_node['ref_type'])
                 identifier = str(ref_node['value'])
