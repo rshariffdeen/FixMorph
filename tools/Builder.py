@@ -181,7 +181,7 @@ def build_project(project_path, build_command=None):
 
 def store_compile_database(project_path):
     dir_command = "cd " + project_path + ";"
-    postfix = project_path.split("/")[-1]
+    postfix = project_path[:-1].split("/")[-1]
     store_file = Definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
     store_database_command = dir_command + "cp compile_commands.json " + store_file
     execute_command(store_database_command)
@@ -189,7 +189,7 @@ def store_compile_database(project_path):
 
 def restore_compile_database(project_path):
     dir_command = "cd " + project_path + ";"
-    postfix = project_path.split("/")[-1]
+    postfix = project_path[:-1].split("/")[-1]
     store_file = Definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
     restore_database_command = dir_command + "cp " + store_file + " " + project_path + "/compile_commands.json"
     execute_command(restore_database_command)
