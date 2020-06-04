@@ -107,8 +107,14 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
 
         vector_c = vector_list_c[0]
         matrix_c = vector_c[1]
-        best_distance = Vector.Vector.dist(matrix_a, matrix_c)
         best_vector = vector_c
+        if not matrix_c:
+            for vector_c in vector_list_c:
+                matrix_c = vector_c[1]
+                if matrix_c:
+                    best_vector = vector_c
+                    break
+        best_distance = Vector.Vector.dist(matrix_a, matrix_c)
         distance_matrix = dict()
 
         # Get best match candidate
