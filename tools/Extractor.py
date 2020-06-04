@@ -617,4 +617,5 @@ def extract_neighborhood(source_path, segment_code, segment_identifier, use_macr
                     if len(ast_node['children']) > 1:
                         if ast_node['children'][1]['type'] == "CompoundStmt":
                             return ast_node
-                return ast_node
+                else:
+                    return ast_node
