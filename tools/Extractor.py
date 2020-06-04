@@ -149,6 +149,8 @@ def extract_decl_list(ast_node):
 def extract_decl_node_list(ast_node):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dec_list = dict()
+    if not ast_node:
+        return dec_list
     node_type = str(ast_node["type"])
     if node_type in ["FunctionDecl", "VarDecl", "ParmVarDecl"]:
         identifier = str(ast_node['identifier'])
