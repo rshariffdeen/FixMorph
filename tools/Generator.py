@@ -109,7 +109,11 @@ def generate_segmentation(source_file, use_macro=False):
             if 'file' in ast_node.keys():
                 if ast_node['file'] in source_file_pattern:
                     if 'value' in ast_node.keys():
-                        macro_list.append((ast_node["value"], ast_node["start line"], ast_node["end line"]))
+                        macro_value = ast_node["value"]
+                        if "(" in macro_value:
+                            macro_value = macro_value.split("(")[0]
+                        macro_list.append((macro_value, ast_node["start line"], ast_node["end line"]))
+
         elif node_type in ["TypedefDecl"]:
             if 'file' in ast_node.keys():
                 if ast_node['file'] in source_file_pattern:
