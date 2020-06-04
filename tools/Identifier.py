@@ -110,21 +110,24 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
                             info['ref_list'] = list()
                             info['ast-node'] = dec_list_a[identifier]
                             missing_var_list[identifier] = info
-                    elif identifier not in var_map.keys():
-                        skip = False
-                        for var in var_map.keys():
-                            if identifier in var:
-                                skip = True
-                                break
-                        if not skip:
-                            if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
-                                info = dict()
-                                info['ref_list'] = list()
-                                info['ast-node'] = dec_list_a[identifier]
-                                missing_var_list[identifier] = info
+                    # elif identifier not in var_map.keys():
+                    #     skip = False
+                    #     for var in var_map.keys():
+                    #         if identifier in var:
+                    #             skip = True
+                    #             break
+                    #     if not skip:
+                    #         if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
+                    #             info = dict()
+                    #             info['ref_list'] = list()
+                    #             info['ast-node'] = dec_list_a[identifier]
+                    #             missing_var_list[identifier] = info
                 elif ref_type == "FunctionDecl":
                     if identifier in Values.STANDARD_FUNCTION_LIST:
                         continue
+                elif node_type in ["ParmVarDecl"]:
+                    # TODO: implement importing missing arguments
+                    continue
             else:
                 identifier = str(ref_node['value'])
                 if identifier not in missing_var_list.keys() and identifier in enum_list.keys():
@@ -132,9 +135,7 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
                     info['ref_list'] = list()
                     info['ast-node'] = enum_list[identifier]
                     missing_var_list[identifier] = info
-        elif node_type in ["ParmVarDecl"]:
-            # TODO: implement importing missing arguments
-            continue
+
     # print(missing_var_list)
     return missing_var_list
 
