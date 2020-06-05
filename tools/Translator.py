@@ -676,7 +676,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     replaced.append(nodeA.id)
                     continue
 
-            if nodeA.value == nodeB.value and nodeA.type != "CompoundStmt":
+            if nodeA.value == nodeB.value and nodeA.type not in ["CompoundStmt", "IfStmt"]:
                 if nodeA.type == "IntegerLiteral":
                     if nodeA.col_end == nodeB.col_end:
                         Emitter.warning("skipping update for value and length match")
