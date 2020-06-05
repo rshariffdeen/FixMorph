@@ -359,16 +359,16 @@ def build_verify():
     # clean_project(Values.Project_C.path)
 
     if Values.CONFIG_COMMAND_C:
-        config_project(Values.Project_D.path, False, Values.CONFIG_COMMAND_C)
+        config_project(Values.Project_D.path, False, Values.CONFIG_COMMAND_C, verify=True)
         # config_project(Values.Project_C.path, False, Values.CONFIG_COMMAND_C)
     else:
-        config_project(Values.Project_D.path, False)
+        config_project(Values.Project_D.path, False, verify=True)
         # config_project(Values.Project_C.path, False)
 
     if Values.BUILD_COMMAND_C:
         CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
         C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
-        build_project(Values.Project_D.path, Values.BUILD_COMMAND_C)
+        build_project(Values.Project_D.path, Values.BUILD_COMMAND_C, verify=True)
         # build_project(Values.Project_C.path, Values.BUILD_COMMAND_C)
     else:
         CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
