@@ -17,7 +17,7 @@ LD_FLAGS = ""
 
 def config_project(project_path, is_llvm, custom_config_command=None, verify=False):
     if not verify:
-        if not os.path.isfile(project_path + "/compile_commands.json"):
+        if os.path.isfile(project_path + "/compile_commands.json"):
             return
     dir_command = "cd " + project_path + ";"
     if os.path.exists(project_path + "/" + "aclocal.m4"):
@@ -153,7 +153,7 @@ def apply_flags(build_command):
 
 def build_project(project_path, build_command=None, verify=False):
     if not verify:
-        if not os.path.isfile(project_path + "/compile_commands.json"):
+        if os.path.isfile(project_path + "/compile_commands.json"):
             return
     dir_command = "cd " + project_path + ";"
     if build_command is None:
