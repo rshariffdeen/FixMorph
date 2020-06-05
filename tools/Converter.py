@@ -56,6 +56,8 @@ def convert_paren_node_to_expr(ast_node, only_string=False):
         value = convert_cast_expr(child_node, True)
     elif child_node_type == "Macro":
         value = child_node['value']
+    elif child_node_type == "CallExpr":
+        value = convert_call_expr(child_node, True)
     else:
         print(child_node)
         error_exit("Unknown child node type in parenexpr")
