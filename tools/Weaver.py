@@ -350,6 +350,7 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list, s
             instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
             instruction += " into " + position_c
             script_file.write(instruction + "\n")
+            Emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
 
     file_info = file_a, file_b, file_c, file_d
     execute_ast_transformation(script_file_name, file_info)
