@@ -139,7 +139,8 @@ def load_values():
             script_info[(path_info[0], path_info[1], path_info[2])] = trans_script_info
         Values.translated_script_for_files = script_info
 
-    # Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+    Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+    Definitions.FILE_TEMP_FIX = Definitions.DIRECTORY_TMP + "/temp-fix"
 
 
 def save_values():

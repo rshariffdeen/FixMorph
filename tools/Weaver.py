@@ -10,8 +10,6 @@ file_index = 1
 backup_file_list = dict()
 FILENAME_BACKUP = "temp-source"
 TOOL_AST_PATCH = "patchweave"
-FILE_TEMP_FIX = Definitions.DIRECTORY_TMP + "/temp-fix"
-FILE_EMPTY = Definitions.DIRECTORY_MAIN + "/data/empty"
 
 
 def restore_files():
@@ -53,12 +51,12 @@ def execute_ast_transformation(script_path, source_file_info):
     parameters += " -destination=" + file_b + " -target=" + file_c
     parameters += " -map=" + Definitions.FILE_VAR_MAP
 
-    patch_command = Definitions.PATCH_COMMAND + parameters + " > " + FILE_TEMP_FIX
+    patch_command = Definitions.PATCH_COMMAND + parameters + " > " + Definitions.FILE_TEMP_FIX
 
     ret_code = int(execute_command(patch_command))
 
     if ret_code == 0:
-        move_command = "cp " + FILE_TEMP_FIX + " " + file_d
+        move_command = "cp " + Definitions.FILE_TEMP_FIX + " " + file_d
         execute_command(move_command)
         show_partial_diff(file_c, file_d)
 
