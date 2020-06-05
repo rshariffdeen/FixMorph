@@ -15,9 +15,10 @@ CXX_FLAGS = "-g -O0  -fPIC"
 LD_FLAGS = ""
 
 
-def config_project(project_path, is_llvm, custom_config_command=None):
-    if not os.path.isfile(project_path + "/compile_commands.json"):
-        return
+def config_project(project_path, is_llvm, custom_config_command=None, verify=False):
+    if not verify:
+        if not os.path.isfile(project_path + "/compile_commands.json"):
+            return
     dir_command = "cd " + project_path + ";"
     if os.path.exists(project_path + "/" + "aclocal.m4"):
         pre_config_command = "rm aclocal.m4;aclocal"
@@ -150,9 +151,10 @@ def apply_flags(build_command):
     return build_command
 
 
-def build_project(project_path, build_command=None):
-    if not os.path.isfile(project_path + "/compile_commands.json"):
-        return
+def build_project(project_path, build_command=None, verify=False):
+    if not verify:
+        if not os.path.isfile(project_path + "/compile_commands.json"):
+            return
     dir_command = "cd " + project_path + ";"
     if build_command is None:
         build_command = "bear make CFLAGS=" + C_FLAGS + " "
@@ -354,25 +356,25 @@ def build_verify():
     C_FLAGS = "'-g -O0 -DNDEBUG'"
     Emitter.normal("\t\t" + Values.Project_D.path)
     clean_project(Values.Project_D.path)
-    clean_project(Values.Project_C.path)
+    # clean_project(Values.Project_C.path)
 
     if Values.CONFIG_COMMAND_C:
         config_project(Values.Project_D.path, False, Values.CONFIG_COMMAND_C)
-        config_project(Values.Project_C.path, False, Values.CONFIG_COMMAND_C)
+        # config_project(Values.Project_C.path, False, Values.CONFIG_COMMAND_C)
     else:
         config_project(Values.Project_D.path, False)
-        config_project(Values.Project_C.path, False)
+        # config_project(Values.Project_C.path, False)
 
     if Values.BUILD_COMMAND_C:
         CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
         C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
         build_project(Values.Project_D.path, Values.BUILD_COMMAND_C)
-        build_project(Values.Project_C.path, Values.BUILD_COMMAND_C)
+        # build_project(Values.Project_C.path, Values.BUILD_COMMAND_C)
     else:
         CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
         C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
-        build_project(Values.Project_C.path)
-        build_project(Values.Project_D.path)
+        # build_project(Values.Project_C.path)
+        build_project(Values.Project_D.path, verify=True)
 
 
 def build_asan():
