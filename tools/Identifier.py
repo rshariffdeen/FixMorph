@@ -78,7 +78,7 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
     dec_list_c = Extractor.extract_decl_node_list(neighborhood_c)
     # print(dec_list_c.keys())
     ast_tree = Generator.get_ast_json(source_path_b)
-    enum_list = Extractor.extract_enum_node_list(ast_tree)
+    # enum_list = Extractor.extract_enum_node_list(ast_tree)
     if insert_node_b['type'] == "Macro":
         macro_value = insert_node_b['value']
         # print(macro_value)
@@ -128,13 +128,13 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
                 elif node_type in ["ParmVarDecl"]:
                     # TODO: implement importing missing arguments
                     continue
-            else:
-                identifier = str(ref_node['value'])
-                if identifier not in missing_var_list.keys() and identifier in enum_list.keys():
-                    info = dict()
-                    info['ref_list'] = list()
-                    info['ast-node'] = enum_list[identifier]
-                    missing_var_list[identifier] = info
+            # else:
+            #     identifier = str(ref_node['value'])
+            #     if identifier not in missing_var_list.keys() and identifier in enum_list.keys():
+            #         info = dict()
+            #         info['ref_list'] = list()
+            #         info['ast-node'] = enum_list[identifier]
+            #         missing_var_list[identifier] = info
 
     # print(missing_var_list)
     return missing_var_list
