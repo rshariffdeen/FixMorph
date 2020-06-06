@@ -200,7 +200,7 @@ def fix_syntax_errors(source_file):
                 fix_paranthese_error(source_file, source_location, True)
             elif "expected ')'" in read_line:
                 fix_paranthese_error(source_file, source_location)
-            elif "expected expression before ',' token":
+            elif "expected expression before ',' token" in read_line:
                 fix_comma_error(source_file, source_location)
 
 
