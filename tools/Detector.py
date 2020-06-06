@@ -160,7 +160,7 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
 
 
 def detect_struct_clones():
-    extension = "*struct*\.vec"
+    extension = "*.struct_*\.vec"
     vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'struct')
     vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'struct')
     clone_list = []
@@ -187,7 +187,7 @@ def detect_struct_clones():
 
 
 def detect_enum_clones():
-    extension = "*enum*\.vec"
+    extension = "*.enum_*\.vec"
     vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'enum')
     vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'enum')
     clone_list = []
@@ -214,7 +214,7 @@ def detect_enum_clones():
 
 
 def detect_function_clones():
-    extension = "*func*\.vec"
+    extension = "*.func_*\.vec"
     vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'function')
     vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'function')
     clone_list = []
@@ -251,7 +251,7 @@ def detect_function_clones():
 
 
 def detect_decl_clones():
-    extension = "*var*\.vec"
+    extension = "*.var_*\.vec"
     vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'global variable')
     vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'global variable')
     clone_list = []
