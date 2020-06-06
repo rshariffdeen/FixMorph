@@ -197,7 +197,7 @@ def fix_syntax_errors(source_file):
             elif "implicit declaration of function" in read_line:
                 fix_unknown_function_calls(source_file, source_location)
             elif "extraneous ')' before ';'" in read_line:
-                fix_paranthese_error(source_file, source_location)
+                fix_paranthese_error(source_file, source_location, True)
             elif "expected ')'" in read_line:
                 fix_paranthese_error(source_file, source_location)
 
@@ -247,14 +247,14 @@ def fix_semicolon_error(source_file, source_location):
     show_partial_diff(backup_file_path, source_file)
 
 
-def fix_paranthese_error(source_file, source_location):
+def fix_paranthese_error(source_file, source_location, remove=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tfixing paranthese errors")
     line_number = int(source_location.split(":")[1])
     Emitter.information("fetching line number: " + str(line_number))
     original_statement = get_code(source_file, line_number)
     Emitter.information("replacing statement: " + original_statement)
-    if ");" in original_statement:
+    if remove:
         new_statement = original_statement.replace(");", ";")
     else:
         new_statement = original_statement.replace(";", ");")
