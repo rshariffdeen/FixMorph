@@ -771,8 +771,10 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             if int(pos) - 1 in inserted_pos_node_list.keys():
                 adjusted_pos = inserted_pos_node_list[int(pos) - 1]
             inserted_pos_node_list[int(pos)] = adjusted_pos
-
-            if nodeB2 not in inserted:
+            if nodeB2.type == "UnaryOperator":
+                replace_node = nodeB2.children[0]
+                modified_AB.append((Definitions.REPLACE, nodeB1, replace_node))
+            elif nodeB2 not in inserted:
                 modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
     return modified_AB
 
