@@ -96,6 +96,16 @@ def convert_unary_node_to_expr(ast_node, only_string=False):
     return var_name, list(set(var_list))
 
 
+def convert_conditional_op_to_expr(ast_node, only_string=False):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    var_name = ""
+    condition_exp = convert_binary_node_to_expr(ast_node['children'][0], True)
+    true_node = ast_node['children'][1]
+    false_node = ast_node['children'][2]
+
+    return var_name
+
+
 def convert_binary_node_to_expr(ast_node, only_string=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     var_name = ""
