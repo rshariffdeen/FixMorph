@@ -631,6 +631,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
     inserted = []
     deleted = []
     updated = []
+    replacing = []
     replaced = []
     insert_pos_list = dict()
     Emitter.sub_sub_title("Simplifying transformation script")
@@ -658,8 +659,10 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     if instruction[0] == Definitions.INSERT and instruction[2].id == parentA.id and int(instruction[3]) == index:
                             modified_AB.remove(instruction)
                             is_replace = True
-                            modified_AB.append((Definitions.REPLACE, nodeA, instruction[1]))
-                            replaced.append(nodeA.id)
+                            if instruction[1] not in replacing:
+                                modified_AB.append((Definitions.REPLACE, nodeA, instruction[1]))
+                                replaced.append(nodeA.id)
+                                replacing.append(instruction[1])
                             break
             # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
             if not is_replace:
