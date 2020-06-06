@@ -33,6 +33,9 @@ def convert_cast_expr(ast_node, only_string=False):
         var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
     elif param_node_type == "IntegerLiteral":
         var_name = "(" + type_value + ") " + param_node['value'] + " " + var_name
+    elif param_node_type == "ParenExpr":
+        param_node_var_name = convert_paren_node_to_expr(param_node, True)
+        var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
     else:
         print(param_node)
         print(ast_node)
