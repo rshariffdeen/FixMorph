@@ -80,21 +80,22 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
     ast_tree = Generator.get_ast_json(source_path_b)
     # enum_list = Extractor.extract_enum_node_list(ast_tree)
     if insert_node_b['type'] == "Macro":
-        macro_value = insert_node_b['value']
-        # print(macro_value)
-        if "(" in macro_value:
-            operand_list = macro_value.split("(")[1].split(")")[0].split(",")
-            # print(operand_list)
-            for operand in operand_list:
-                identifier = operand.strip().replace("\n", "")
-                if identifier not in dec_list_c.keys():
-                    if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
-                        info = dict()
-                        info['ref_list'] = list()
-                        info['ast-node'] = dec_list_a[identifier]
-                        missing_var_list[identifier] = info
-            # print(missing_var_list)
-            return missing_var_list
+        if "value" in insert_node_b:
+            macro_value = insert_node_b['value']
+            # print(macro_value)
+            if "(" in macro_value:
+                operand_list = macro_value.split("(")[1].split(")")[0].split(",")
+                # print(operand_list)
+                for operand in operand_list:
+                    identifier = operand.strip().replace("\n", "")
+                    if identifier not in dec_list_c.keys():
+                        if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
+                            info = dict()
+                            info['ref_list'] = list()
+                            info['ast-node'] = dec_list_a[identifier]
+                            missing_var_list[identifier] = info
+                # print(missing_var_list)
+                return missing_var_list
 
     for ref_node in ref_list:
         node_type = str(ref_node['type'])
