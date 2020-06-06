@@ -659,10 +659,10 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     if instruction[0] == Definitions.INSERT and instruction[2].id == parentA.id and int(instruction[3]) == index:
                             modified_AB.remove(instruction)
                             is_replace = True
-                            if instruction[1] not in replacing:
+                            if instruction[1].id not in replacing:
                                 modified_AB.append((Definitions.REPLACE, nodeA, instruction[1]))
                                 replaced.append(nodeA.id)
-                                replacing.append(instruction[1])
+                                replacing.append(instruction[1].id)
                             break
             # Emitter.white("\t" + Common.DELETE + " - " + str(nodeA))
             if not is_replace:
@@ -725,10 +725,13 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     nodeA = match_BA[i[1]]
                     nodeA = id_from_string(nodeA)
                     nodeA = ASTlists[Values.Project_A.name][nodeA]
-                    modified_AB.append((Definitions.REPLACE, nodeA, nodeB2))
-                    for instruction in modified_AB:
-                        if instruction[0] == Definitions.INSERT and instruction[1].id == nodeB2.id:
-                            modified_AB.remove(instruction)
+                    if nodeB2.id not in replacing:
+                        replaced.append(nodeA.id)
+                        replacing.append(nodeB2.id)
+                        modified_AB.append((Definitions.REPLACE, nodeA, nodeB2))
+                        for instruction in modified_AB:
+                            if instruction[0] == Definitions.INSERT and instruction[1].id == nodeB2.id:
+                                modified_AB.remove(instruction)
                 else:
                     Emitter.warning("Warning: node " + str(nodeB1) + \
                                   "could not be matched. " + \
