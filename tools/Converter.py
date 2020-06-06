@@ -111,6 +111,32 @@ def convert_conditional_op_to_expr(ast_node, only_string=False):
     return var_name
 
 
+def get_binary_operand_value(ast_node):
+    ast_value = ""
+    ast_type = str(ast_node['type'])
+    if ast_type in ["DeclRefExpr", "IntegerLiteral"]:
+        ast_value = str(ast_node['value'])
+    elif ast_type == "BinaryOperator":
+        ast_value = convert_binary_node_to_expr(ast_node, True)
+        # var_list = var_list + left_child_var_list
+    elif ast_type == "ParenExpr":
+        ast_value = convert_paren_node_to_expr(ast_node, True)
+        # var_list = var_list + left_child_var_list
+    elif ast_type == "MemberExpr":
+        ast_value = convert_member_expr(ast_node, True)
+        # var_list = var_list + left_child_var_list
+    elif ast_type == "Macro":
+        ast_value = ast_node['value']
+    elif ast_type == "CStyleCastExpr":
+        ast_value = convert_cast_expr(ast_node, True)
+    elif ast_type == "CallExpr":
+        ast_value = convert_call_expr(ast_node, True)
+    else:
+        print(ast_node)
+        error_exit("Unhandled child type in convert binary node")
+    return ast_value
+
+
 def convert_binary_node_to_expr(ast_node, only_string=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     var_name = ""
@@ -118,51 +144,12 @@ def convert_binary_node_to_expr(ast_node, only_string=False):
     # print(ast_node)
     left_child = ast_node['children'][0]
     # print(left_child)
-    left_child_value = ""
-    left_child_type = str(left_child['type'])
-    if left_child_type in ["DeclRefExpr", "IntegerLiteral"]:
-        left_child_value = str(left_child['value'])
-    elif left_child_type == "BinaryOperator":
-        left_child_value = convert_binary_node_to_expr(left_child, True)
-        # var_list = var_list + left_child_var_list
-    elif left_child_type == "ParenExpr":
-        left_child_value = convert_paren_node_to_expr(left_child, True)
-        # var_list = var_list + left_child_var_list
-    elif left_child_type == "MemberExpr":
-        left_child_value = convert_member_expr(left_child, True)
-        # var_list = var_list + left_child_var_list
-    elif left_child_type == "Macro":
-        lef_child_value = left_child['value']
-    elif left_child_type == "CStyleCastExpr":
-        left_child_value = convert_cast_expr(left_child, True)
-    else:
-        print(left_child)
-        error_exit("Unhandled child type in convert binary node")
+    left_child_value = get_binary_operand_value(left_child)
     operation = str(ast_node['value'])
     # print(operation)
     right_child = ast_node['children'][1]
     # print(right_child)
-    right_child_value = ""
-    right_child_type = str(right_child['type'])
-    if right_child_type in ["DeclRefExpr", "IntegerLiteral"]:
-        right_child_value = str(right_child['value'])
-    elif right_child_type == "BinaryOperator":
-        right_child_value = convert_binary_node_to_expr(right_child, True)
-        # var_list = var_list + right_child_var_list
-    elif right_child_type == "ParenExpr":
-        right_child_value = convert_paren_node_to_expr(right_child, True)
-        # var_list = var_list + right_child_var_list
-    elif right_child_type == "MemberExpr":
-        right_child_value = convert_member_expr(right_child, True)
-        # var_list = var_list + right_child_var_list
-    elif right_child_type == "Macro":
-        right_child_value = right_child['value']
-        # var_list = var_list + right_child_var_list
-    elif right_child_type == "CStyleCastExpr":
-        right_child_value = convert_cast_expr(right_child, True)
-    else:
-        print(right_child)
-        error_exit("Unhandled child type in convert binary node")
+    right_child_value = get_binary_operand_value(right_child)
     var_name = left_child_value + " " + operation + " " + right_child_value
     if only_string:
         return var_name
