@@ -732,6 +732,8 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                         for instruction in modified_AB:
                             if instruction[0] == Definitions.INSERT and instruction[1].id == nodeB2.id:
                                 modified_AB.remove(instruction)
+                    else:
+                        modified_AB.append((Definitions.DELETE, nodeA))
                 else:
                     Emitter.warning("Warning: node " + str(nodeB1) + \
                                   "could not be matched. " + \
