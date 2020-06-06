@@ -129,8 +129,9 @@ def search_node(ast_tree, node_type, node_identifier):
                     if 'file' in ast_node.keys():
                         if str(ast_node['file'])[-2:] == ".h":
                             continue
-                    if ast_node['start line'] != ast_node['end line']:
-                        return ast_node
+                    if len(ast_node['children']) > 1:
+                        if ast_node['children'][1]['type'] == "CompoundStmt":
+                            return ast_node
                 else:
                     return ast_node
 
