@@ -198,6 +198,8 @@ def fix_syntax_errors(source_file):
                 fix_unknown_function_calls(source_file, source_location)
             elif "extraneous ')' before ';'" in read_line:
                 fix_paranthese_error(source_file, source_location)
+            elif "expected ')'" in read_line:
+                fix_paranthese_error(source_file, source_location)
 
 
 def fix_unknown_function_calls(source_file, source_location):
@@ -252,7 +254,10 @@ def fix_paranthese_error(source_file, source_location):
     Emitter.information("fetching line number: " + str(line_number))
     original_statement = get_code(source_file, line_number)
     Emitter.information("replacing statement: " + original_statement)
-    new_statement = original_statement.replace(");", ";")
+    if ");" in original_statement:
+        new_statement = original_statement.replace(");", ";")
+    else:
+        new_statement = original_statement.replace(";", ");")
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
