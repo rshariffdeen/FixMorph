@@ -119,9 +119,11 @@ def get_node_value(ast_node):
         ast_value = convert_cast_expr(ast_node, True)
     elif ast_type == "CallExpr":
         ast_value = convert_call_expr(ast_node, True)
+    elif ast_type == "UnaryExprOrTypeTraitExpr":
+        ast_value = ""
     else:
         print(ast_node)
-        error_exit("Unhandled child type in convert binary node")
+        error_exit("Unhandled child type in convert ast node")
 
     return ast_value
 
@@ -220,7 +222,7 @@ def convert_array_subscript(ast_node, only_string=False):
         array_data_type = None
         if 'data_type' in array_node.keys():
             array_data_type = str(array_node['data_type'])
-        if len(ast_node['children'])> 1:
+        if len(ast_node['children']) > 1:
             iterator_node = ast_node['children'][1]
             array_name = convert_member_expr(array_node, True)
             iterator_name = convert_array_iterator(iterator_node, True)
