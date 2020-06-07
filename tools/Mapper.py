@@ -182,6 +182,21 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                                 else:
                                     var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
 
+            elif node_type_a == "LabelStmt":
+                if 'value' in ast_node_a.keys():
+                    value_a = ast_node_a['value']
+                    if ast_node_c:
+                        node_type_c = ast_node_c['type']
+                        if node_type_c == "LabelStmt":
+                            if 'value' in ast_node_c.keys():
+                                value_c = ast_node_c['value']
+                                if value_a not in var_map:
+                                    var_map[value_a] = dict()
+                                if value_c not in var_map[value_a]:
+                                    var_map[value_a][value_c] = value_score
+                                else:
+                                    var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
+
             elif node_type_a in ["MemberExpr", "ArraySubscriptExpr"]:
                 # value_a = ast_node_a['value']
                 node_type_a = ast_node_a['type']
