@@ -53,19 +53,7 @@ def convert_paren_node_to_expr(ast_node, only_string=False):
     child_node = ast_node['children'][0]
     # print(child_node)
     child_node_type = child_node['type']
-    if child_node_type == "BinaryOperator":
-        value = convert_binary_node_to_expr(child_node, True)
-    elif child_node_type == "CStyleCastExpr":
-        value = convert_cast_expr(child_node, True)
-    elif child_node_type == "Macro":
-        value = child_node['value']
-    elif child_node_type == "CallExpr":
-        value = convert_call_expr(child_node, True)
-    elif child_node_type == "DeclRefExpr":
-        value = child_node['value']
-    else:
-        print(child_node)
-        error_exit("Unknown child node type in parenexpr")
+    value = get_node_value(child_node)
     var_name = "(" + value + ")"
     # print(var_name)
     if only_string:
@@ -111,7 +99,7 @@ def convert_conditional_op_to_expr(ast_node, only_string=False):
     return var_name
 
 
-def get_binary_operand_value(ast_node):
+def get_node_value(ast_node):
     ast_value = ""
     ast_type = str(ast_node['type'])
     if ast_type in ["DeclRefExpr", "IntegerLiteral"]:
@@ -134,6 +122,7 @@ def get_binary_operand_value(ast_node):
     else:
         print(ast_node)
         error_exit("Unhandled child type in convert binary node")
+
     return ast_value
 
 
@@ -144,12 +133,12 @@ def convert_binary_node_to_expr(ast_node, only_string=False):
     # print(ast_node)
     left_child = ast_node['children'][0]
     # print(left_child)
-    left_child_value = get_binary_operand_value(left_child)
+    left_child_value = get_node_value(left_child)
     operation = str(ast_node['value'])
     # print(operation)
     right_child = ast_node['children'][1]
     # print(right_child)
-    right_child_value = get_binary_operand_value(right_child)
+    right_child_value = get_node_value(right_child)
     var_name = left_child_value + " " + operation + " " + right_child_value
     if only_string:
         return var_name
