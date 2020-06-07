@@ -220,10 +220,11 @@ def convert_array_subscript(ast_node, only_string=False):
         array_data_type = None
         if 'data_type' in array_node.keys():
             array_data_type = str(array_node['data_type'])
-        iterator_node = ast_node['children'][1]
-        array_name = convert_member_expr(array_node, True)
-        iterator_name = convert_array_iterator(iterator_node, True)
-        var_name = array_name + iterator_name
+        if len(ast_node['children'] > 1):
+            iterator_node = ast_node['children'][1]
+            array_name = convert_member_expr(array_node, True)
+            iterator_name = convert_array_iterator(iterator_node, True)
+            var_name = array_name + iterator_name
     elif array_type == "ParenExpr":
         array_name = convert_paren_node_to_expr(array_node, True)
         var_data_type = None
