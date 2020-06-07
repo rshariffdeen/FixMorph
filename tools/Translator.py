@@ -788,7 +788,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 nodeA = match_BA[i[2]]
                 nodeA = id_from_string(nodeA)
                 nodeA = ASTlists[Values.Project_A.name][nodeA]
-                replace_node = nodeA.children[pos]
+                replace_node = nodeA.children[int(pos)]
                 if replace_node.parent_id in replaced:
                     replaced.append(replace_node.id)
                     modified_AB.append((Definitions.REPLACE, nodeB1, replace_node))
