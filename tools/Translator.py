@@ -781,7 +781,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             inserted_pos_node_list[int(pos)] = adjusted_pos
             if nodeB2.type in ["UnaryOperator"]:
                 replace_node = nodeB2.children[0]
-                if replace_node.parent_id in replaced:
+                if replace_node.parent_id not in replaced:
                     replaced.append(replace_node.id)
                     modified_AB.append((Definitions.REPLACE, nodeB1, replace_node))
             elif nodeB2.type in ["CompoundAssignOperator"]:
@@ -789,7 +789,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 nodeA = id_from_string(nodeA)
                 nodeA = ASTlists[Values.Project_A.name][nodeA]
                 replace_node = nodeA.children[int(pos)]
-                if replace_node.parent_id in replaced:
+                if replace_node.parent_id not in replaced:
                     replaced.append(replace_node.id)
                     modified_AB.append((Definitions.REPLACE, nodeB1, replace_node))
             elif nodeB2 not in inserted:
