@@ -791,7 +791,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 replace_node = nodeA.children[int(pos)]
                 if replace_node.parent_id not in replaced:
                     replaced.append(replace_node.id)
-                    modified_AB.append((Definitions.REPLACE, nodeB1, replace_node))
+                    modified_AB.append((Definitions.REPLACE, replace_node, nodeB1))
             elif nodeB2 not in inserted:
                 modified_AB.append((Definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
     return modified_AB
