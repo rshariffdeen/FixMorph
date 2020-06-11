@@ -302,6 +302,9 @@ def check_syntax_errors(modified_source_list):
     Emitter.sub_sub_title("computing syntax errors")
     for source_file in modified_source_list:
         Emitter.normal("\t" + source_file)
+        if source_file[-1] == "h":
+            Emitter.normal("\t\tskipping header file")
+            continue
         Emitter.normal("\t\tchecking syntax errors")
         check_command = "clang-check -analyze " + source_file + " > " + FILE_SYNTAX_ERRORS
         check_command += " 2>&1"
