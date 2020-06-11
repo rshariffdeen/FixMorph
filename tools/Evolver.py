@@ -9,7 +9,7 @@ import sys
 file_index = 1
 
 
-def evolve_definitions(missing_definition_list, modified_source_list):
+def evolve_definitions(missing_definition_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     missing_header_list = dict()
     missing_macro_list = dict()
@@ -29,7 +29,7 @@ def evolve_definitions(missing_definition_list, modified_source_list):
     return missing_header_list, missing_macro_list
 
 
-def evolve_data_type(missing_data_type_list, modified_source_list):
+def evolve_data_type(missing_data_type_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     missing_header_list = dict()
     missing_macro_list = dict()
@@ -52,7 +52,7 @@ def evolve_data_type(missing_data_type_list, modified_source_list):
     return missing_header_list, missing_macro_list
 
 
-def evolve_functions(missing_function_list, modified_source_list):
+def evolve_functions(missing_function_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     if not missing_function_list:
         Emitter.normal("\t-none-")

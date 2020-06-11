@@ -26,37 +26,23 @@ def safe_exec(function_def, title, *args):
     return result
 
 
-def evolve_headers():
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global modified_source_list, header_list
-    if header_list:
-        modified_source_list = Weaver.weave_headers(header_list, modified_source_list)
-
-
 def evolve_macros():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global modified_source_list, macro_list
-    if macro_list:
-        modified_source_list = Weaver.weave_definitions(macro_list, modified_source_list)
+    if Values.missing_macro_list:
+        missing_header_list, missing_macro_list = Evolver.evolve_definitions(Values.missing_macro_list)
 
 
 def evolve_data_types():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global modified_source_list, data_type_list
-    if data_type_list:
-        modified_source_list = Weaver.weave_data_type(data_type_list, modified_source_list)
+    if Values.missing_data_type_list:
+        missing_header_list, missing_macro_list = Evolver.evolve_data_type(Values.missing_data_type_list)
 
 
 def evolve_functions():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global header_list, macro_list, modified_source_list
-
-    header_list_func, \
-    macro_list_func, modified_source_list = Weaver.weave_functions(function_list,
-                                                                               modified_source_list)
-
-    macro_list = Merger.merge_macro_info(macro_list, macro_list_func)
-    header_list = Merger.merge_header_info(header_list, header_list_func)
+    header_list, macro_list = Evolver.evolve_functions(Values.missing_function_list)
+    Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, macro_list)
+    Values.missing_header_list = Merger.merge_header_info(Values.missing_header_list, header_list)
 
 
 def evolve_code():
@@ -137,14 +123,11 @@ def load_values():
 
 
 def save_values():
-    global modified_source_list
-    # Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
-    Values.MODIFIED_SOURCE_LIST = modified_source_list
     save_current_state()
 
 
 def evolve():
-    Emitter.title("evolve transformation")
+    Emitter.title("Evolve transformation")
     load_values()
     if not Values.SKIP_EVOLVE:
         safe_exec(evolve_code, "evolve code slices")
@@ -154,8 +137,6 @@ def evolve():
             safe_exec(evolve_data_types, "evolve data structures")
         if Values.missing_macro_list:
             safe_exec(evolve_macros, "evolve macros")
-        if Values.missing_header_list:
-            safe_exec(evolve_headers, "evolve header files")      
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")
