@@ -81,8 +81,6 @@ def fix_return_type(source_file, source_location):
     function_definition = function_node['value']
     function_name = function_node['identifier']
     function_return_type = (function_definition.replace(function_name, "")).split("(")[1]
-    start_line = return_node['start line']
-    end_line = return_node['end line']
     original_statement = ""
     if function_return_type.strip() == "void":
         new_statement = "return;\n"
