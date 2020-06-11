@@ -197,8 +197,9 @@ def restore_compile_database(project_path):
     dir_command = "cd " + project_path + ";"
     postfix = project_path[:-1].split("/")[-1]
     store_file = Definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
-    restore_database_command = dir_command + "cp " + store_file + " " + project_path + "/compile_commands.json"
-    execute_command(restore_database_command)
+    if os.path.isfile(store_file):
+        restore_database_command = dir_command + "cp " + store_file + " " + project_path + "/compile_commands.json"
+        execute_command(restore_database_command)
 
 
 def build_all():
