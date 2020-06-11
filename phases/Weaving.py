@@ -92,10 +92,13 @@ def transplant_code():
         Emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
         Emitter.emit_ast_script(original_script)
-        Emitter.highlight("\tGenerated AST script")
-        translated_script = generated_data[0]
-        Emitter.emit_ast_script(translated_script)
         script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(segment_identifier_c) + "_script"
+        translated_script = list()
+        with open(script_file_name, "r") as script_file:
+            translated_script = script_file.readlines()
+        Emitter.highlight("\tGenerated AST script")
+        Emitter.emit_ast_script(translated_script)
+
         Weaver.weave_code(vector_source_a,
                           vector_source_b,
                           vector_source_c,
