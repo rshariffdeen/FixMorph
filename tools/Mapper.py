@@ -135,7 +135,9 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
     elif neighbor_type == "var":
         neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
         neighbor_ast = Finder.search_node(ast_tree_a, "VarDecl", neighbor_name)
-
+    elif neighbor_type == "struct":
+        neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
+        neighbor_ast = Finder.search_node(ast_tree_a, "RecordDecl", neighbor_name)
     if neighbor_ast:
         neighbor_ast_range = (int(neighbor_ast['begin']), int(neighbor_ast['end']))
     else:
