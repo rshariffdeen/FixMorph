@@ -7,9 +7,6 @@ from common import Definitions, Values
 from ast import Generator
 
 
-FILE_MACRO_DEF = Definitions.DIRECTORY_TMP + "/macro-def"
-
-
 def extract_child_id_list(ast_node):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     id_list = list()
@@ -27,9 +24,9 @@ def extract_child_id_list(ast_node):
 def extract_macro_definitions(source_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.information("\t\t[info] extracting macro definitions from\n\t\t" + str(source_path))
-    extract_command = "clang -E -dD -dM " + source_path + " > " + FILE_MACRO_DEF
+    extract_command = "clang -E -dD -dM " + source_path + " > " + Definitions.FILE_MACRO_DEF
     execute_command(extract_command)
-    with open(FILE_MACRO_DEF, "r") as macro_file:
+    with open(Definitions.FILE_MACRO_DEF, "r") as macro_file:
         macro_def_list = macro_file.readlines()
         return macro_def_list
 

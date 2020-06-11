@@ -92,6 +92,7 @@ def load_values():
         clone_list = Reader.read_json(Definitions.FILE_CLONE_INFO)
         Values.file_list_to_patch = clone_list
     Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
+    Definitions.FILE_MACRO_DEF = Definitions.DIRECTORY_TMP + "/macro-def"
 
 
 def save_values():
