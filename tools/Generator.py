@@ -154,7 +154,7 @@ def create_vectors(project, source_file, segmentation_list):
 
     if Values.IS_FUNCTION:
         # Emitter.normal("\t\t\tgenerating function vectors")
-        vector_list_a = Finder.search_vector_list(Values.Project_A, "*\.c", 'func')
+        vector_list_a = Finder.search_vector_list(Values.Project_A, "*.func_*\.vec", 'func')
         function_name_list_a = list()
         function_name_list_c = dict()
         filtered_function_list = list()
@@ -162,7 +162,7 @@ def create_vectors(project, source_file, segmentation_list):
             # Assume vector already created
             file_path_a = vector_a[0]
             source_a, function_name_a = file_path_a.split(".func_")
-            function_name_list_a.append(function_name_a)
+            function_name_list_a.append(function_name_a.replace(".vec", ""))
         for function_name, begin_line, finish_line in function_list:
             function_name_list_c[function_name] = (begin_line, finish_line)
 
