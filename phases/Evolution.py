@@ -2,16 +2,10 @@ import time
 import sys
 from common import Values, Definitions
 from common.Utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
-from tools import Emitter, Weaver, Reader, Logger, Fixer, Merger
+from tools import Emitter, Evolver, Reader, Logger, Merger
 
 file_index = 1
 backup_file_list = dict()
-
-missing_function_list = dict()
-missing_macro_list = dict()
-missing_header_list = dict()
-missing_data_type_list = dict()
-modified_source_list = list()
 
 
 def safe_exec(function_def, title, *args):
@@ -32,43 +26,43 @@ def safe_exec(function_def, title, *args):
     return result
 
 
-def transplant_missing_header():
+def evolve_headers():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global modified_source_list, missing_header_list
-    if missing_header_list:
-        modified_source_list = Weaver.weave_headers(missing_header_list, modified_source_list)
+    global modified_source_list, header_list
+    if header_list:
+        modified_source_list = Weaver.weave_headers(header_list, modified_source_list)
 
 
-def transplant_missing_macros():
+def evolve_macros():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global modified_source_list, missing_macro_list
-    if missing_macro_list:
-        modified_source_list = Weaver.weave_definitions(missing_macro_list, modified_source_list)
+    global modified_source_list, macro_list
+    if macro_list:
+        modified_source_list = Weaver.weave_definitions(macro_list, modified_source_list)
 
 
-def transplant_missing_data_types():
+def evolve_data_types():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global modified_source_list, missing_data_type_list
-    if missing_data_type_list:
-        modified_source_list = Weaver.weave_data_type(missing_data_type_list, modified_source_list)
+    global modified_source_list, data_type_list
+    if data_type_list:
+        modified_source_list = Weaver.weave_data_type(data_type_list, modified_source_list)
 
 
-def transplant_missing_functions():
+def evolve_functions():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global missing_header_list, missing_macro_list, modified_source_list
+    global header_list, macro_list, modified_source_list
 
-    missing_header_list_func, \
-    missing_macro_list_func, modified_source_list = Weaver.weave_functions(missing_function_list,
+    header_list_func, \
+    macro_list_func, modified_source_list = Weaver.weave_functions(function_list,
                                                                                modified_source_list)
 
-    missing_macro_list = Merger.merge_macro_info(missing_macro_list, missing_macro_list_func)
-    missing_header_list = Merger.merge_header_info(missing_header_list, missing_header_list_func)
+    macro_list = Merger.merge_macro_info(macro_list, macro_list_func)
+    header_list = Merger.merge_header_info(header_list, header_list_func)
 
 
-def transplant_code():
-    global file_index, missing_function_list, missing_macro_list, modified_source_list
+def evolve_code():
+    global file_index
     if not Values.translated_script_for_files:
-        error_exit("nothing to transplant")
+        error_exit("nothing to evolve")
     for file_list, generated_data in Values.translated_script_for_files.items():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
@@ -92,7 +86,7 @@ def transplant_code():
         segment_identifier_a = slice_file_a.split("." + segment_code + ".")[-1].replace(".slice", "")
         segment_identifier_c = slice_file_c.split("." + segment_code + ".")[-1].replace(".slice", "")
 
-        Emitter.sub_sub_title("transforming " + segment_identifier_c + " in " + vector_source_c)
+        Emitter.sub_sub_title("evolving " + segment_identifier_c + " in " + vector_source_c)
         Emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
         Emitter.emit_ast_script(original_script)
@@ -100,28 +94,27 @@ def transplant_code():
         translated_script = generated_data[0]
         Emitter.emit_ast_script(translated_script)
 
-        identified_missing_function_list, \
-        identified_missing_macro_list, modified_source_list = Weaver.weave_code(vector_source_a,
-                                                                                vector_source_b,
-                                                                                vector_source_c,
-                                                                                translated_script,
-                                                                                modified_source_list,
-                                                                                segment_identifier_a,
-                                                                                segment_identifier_c,
-                                                                                segment_code
-                                                                                )
+        identified_function_list, \
+        identified_macro_list = Evolver.evolve_code(vector_source_a,
+                                                    vector_source_b,
+                                                    vector_source_c,
+                                                    translated_script,
+                                                    segment_identifier_a,
+                                                    segment_identifier_c,
+                                                    segment_code
+                                                    )
         file_index += 1
-        if missing_function_list:
-            if identified_missing_function_list:
-                missing_function_list = missing_function_list.update(identified_missing_function_list)
+        if Values.missing_function_list:
+            if identified_function_list:
+                Values.missing_function_list = Values.missing_function_list.update(identified_function_list)
         else:
-            missing_function_list = identified_missing_function_list
+            Values.missing_function_list = identified_function_list
 
-        if missing_macro_list:
-            if identified_missing_macro_list:
-                missing_macro_list = Merger.merge_macro_info(missing_macro_list, identified_missing_macro_list)
+        if Values.missing_macro_list:
+            if identified_macro_list:
+                Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, identified_macro_list)
         else:
-            missing_macro_list = identified_missing_macro_list
+            Values.missing_macro_list = identified_macro_list
 
         restore_file_orig(vector_source_a)
         restore_file_orig(vector_source_b)
@@ -150,47 +143,19 @@ def save_values():
     save_current_state()
 
 
-def weave_slices():
-    global file_index, missing_function_list, missing_macro_list, modified_source_list
-    if not Values.translated_script_for_files:
-        error_exit("no slice to weave")
-    slice_info = dict()
-    for file_list, generated_data in Values.translated_script_for_files.items():
-        slice_file_a = file_list[0]
-        slice_file_b = file_list[1]
-        slice_file_c = file_list[2]
-        slice_file_d = slice_file_c.replace(Values.PATH_C, Values.Project_D.path)
-        vector_source_a = get_source_name_from_slice(slice_file_a)
-        vector_source_b = get_source_name_from_slice(slice_file_b)
-        vector_source_c = get_source_name_from_slice(slice_file_c)
-        vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
-        segment_type = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
-        segment_identifier = slice_file_c.split("." + segment_type + ".")[-1].replace(".slice", "")
-        if (vector_source_d, vector_source_b) not in slice_info:
-            slice_info[(vector_source_d, vector_source_b)] = list()
-        slice_info[(vector_source_d, vector_source_b)].append(slice_file_d)
-
-    Emitter.sub_sub_title("weaving slices into source file")
-    Weaver.weave_slice(slice_info)
-
-
 def evolve():
-    global missing_header_list, missing_macro_list, modified_source_list, missing_function_list
-    global missing_data_type_list
-    Emitter.title("Applying transformation")
+    Emitter.title("evolve transformation")
     load_values()
-    if not Values.SKIP_WEAVE:
-        safe_exec(transplant_code, "transforming slices")
-        safe_exec(weave_slices, "weaving slices")
-        if missing_function_list:
-            safe_exec(transplant_missing_functions, "transplanting functions")
-        if missing_data_type_list:
-            safe_exec(transplant_missing_data_types, "transplanting data structures")
-        if missing_macro_list:
-            safe_exec(transplant_missing_macros, "transplanting macros")
-        if missing_header_list:
-            safe_exec(transplant_missing_header, "transplanting header files")
-        safe_exec(Fixer.check, "correcting syntax errors", modified_source_list)
+    if not Values.SKIP_EVOLVE:
+        safe_exec(evolve_code, "evolve code slices")
+        if Values.missing_function_list:
+            safe_exec(evolve_functions, "evolve function definitions")
+        if Values.missing_data_type_list:
+            safe_exec(evolve_data_types, "evolve data structures")
+        if Values.missing_macro_list:
+            safe_exec(evolve_macros, "evolve macros")
+        if Values.missing_header_list:
+            safe_exec(evolve_headers, "evolve header files")      
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

@@ -127,3 +127,9 @@ DONOR_PRE_PROCESS_MACRO = ""
 TARGET_PRE_PROCESS_MACRO = ""
 
 USE_PREPROCESS = False
+
+missing_function_list = dict()
+missing_macro_list = dict()
+missing_header_list = dict()
+missing_data_type_list = dict()
+modified_source_list = list()
