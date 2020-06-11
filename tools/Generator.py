@@ -7,7 +7,7 @@ import os
 
 import json
 from common.Utilities import execute_command, error_exit, find_files, get_file_extension_list
-from tools import Emitter, Logger, Extractor
+from tools import Emitter, Logger, Extractor, Finder
 from ast import Vector, Parser, Generator as ASTGenerator
 from common.Utilities import error_exit, clean_parse
 from common import Definitions, Values
@@ -89,7 +89,7 @@ def generate_segmentation(source_file, use_macro=False):
     def_list = list()
     decl_list = list()
     Emitter.normal("\t\t\tgenerating neighborhoods")
-    function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=False, use_macro=use_macro)
+    function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=False, use_macro=use_macro, use_local=True)
     ast_tree = generate_ast_json(source_file, use_macro)
     if ast_tree is None:
         return None
@@ -151,6 +151,24 @@ def create_vectors(project, source_file, segmentation_list):
 
     if Values.IS_FUNCTION:
         # Emitter.normal("\t\t\tgenerating function vectors")
+        vector_list_a = Finder.search_vector_list(Values.Project_A, "*\.c", 'func')
+        function_name_list_a = list()
+        function_name_list_c = dict()
+        function_name_list = list()
+        for vector_a in vector_list_a:
+            # Assume vector already created
+            file_path_a = vector_a[0]
+            source_a, function_name_a = file_path_a.split(".func_")
+            function_name_list_a.append(function_name_a)
+        for function_name, begin_line, finish_line in function_list:
+            function_name_list[function_name] = (begin_line, finish_line)
+
+        for function_name in function_name_list_a:
+            if function_name in function_name_list_c.keys():
+                function_name_list.append(function_name)
+        if len(function_name_list_a) != len(function_name_list):
+            function_name_list = list()
+
         for function_name, begin_line, finish_line in function_list:
             function_name = "func_" + function_name.split("(")[0]
             project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name, begin_line,
