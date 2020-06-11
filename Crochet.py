@@ -4,7 +4,8 @@
 
 import time
 from tools import Emitter, Logger
-from phases import Initialization, Building, Differencing, Detection, Mapping, Extraction, Translation, Weaving, Verify, Summarizing, Slicing, Comparison
+from phases import Initialization, Building, Differencing, Detection, Mapping, Extraction, Translation, \
+    Evolution, Weaving, Verify, Summarizing, Slicing, Comparison
 from common import Definitions
 from common.Utilities import error_exit, create_base_directories
 
@@ -52,6 +53,10 @@ def run():
     time_start = time.time()
     Translation.translate()
     time_info[Definitions.KEY_DURATION_TRANSLATION] = str(time.time() - time_start)
+
+    time_start = time.time()
+    Evolution.evolve()
+    time_info[Definitions.KEY_DURATION_EVOLUTION] = str(time.time() - time_start)
 
     time_start = time.time()
     Weaving.weave()

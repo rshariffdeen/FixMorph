@@ -135,6 +135,7 @@ def end(time_info):
     statistics("AST Analysis: " + time_info[Definitions.KEY_DURATION_EXTRACTION] + " seconds")
     statistics("Map Generation: " + time_info[Definitions.KEY_DURATION_MAP_GENERATION] + " seconds")
     statistics("Translation: " + time_info[Definitions.KEY_DURATION_TRANSLATION] + " seconds")
+    statistics("Evolution: " + time_info[Definitions.KEY_DURATION_EVOLUTION] + " seconds")
     statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
     statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
     statistics("Comparison: " + time_info[Definitions.KEY_DURATION_COMPARISON] + " seconds")

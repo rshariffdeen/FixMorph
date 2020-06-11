@@ -73,6 +73,7 @@ def end(time_duration):
     output("AST Analysis: " + time_duration[Definitions.KEY_DURATION_EXTRACTION] + " seconds")
     output("Map Generation: " + time_duration[Definitions.KEY_DURATION_MAP_GENERATION] + " seconds")
     output("Translation: " + time_duration[Definitions.KEY_DURATION_TRANSLATION] + " seconds")
+    output("Evolution: " + time_duration[Definitions.KEY_DURATION_EVOLUTION] + " seconds")
     output("Transplantation: " + time_duration[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
     output("Verification: " + time_duration[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
     output("Comparison: " + time_duration[Definitions.KEY_DURATION_COMPARISON] + " seconds")
