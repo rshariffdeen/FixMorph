@@ -337,51 +337,15 @@ def merge_segmentation_list(segmentation_list_a, segmentation_list_b):
     enum_list_b, function_list_b, macro_list_b, \
     struct_list_b, type_def_list_b, def_list_b, decl_list_b, definition_list_b = segmentation_list_b
 
-    for identifier in enum_list_b.keys():
-        if identifier not in enum_list_a.keys():
-            enum_list_a[identifier] = enum_list_b[identifier]
-        else:
-            if enum_list_a[identifier] != enum_list_b[identifier]:
-                Emitter.warning("Non-equivalent duplicate exist")
-                Emitter.debug(enum_list_b[identifier])
-                Emitter.debug(enum_list_a[identifier])
+    enum_list = set(enum_list_a + enum_list_b)
+    function_list = set(function_list_a + function_list_b)
+    macro_list = set(macro_list_a + macro_list_b)
+    struct_list = set(struct_list_a + struct_list_b)
+    type_def_list = set(type_def_list_a + type_def_list_b)
+    def_list = set(decl_list_a + def_list_b)
+    decl_list = set(decl_list_a + decl_list_b)
+    definition_list = set(definition_list_a + definition_list_b)
 
-    for identifier in function_list_b.keys():
-        if identifier not in function_list_a.keys():
-            function_list_a[identifier] = function_list_b[identifier]
-        else:
-            if function_list_a[identifier] != function_list_b[identifier]:
-                Emitter.warning("Non-equivalent duplicate exist")
-                Emitter.debug(function_list_b[identifier])
-                Emitter.debug(function_list_a[identifier])
-
-    for identifier in macro_list_b.keys():
-        if identifier not in macro_list_a.keys():
-            macro_list_a[identifier] = macro_list_b[identifier]
-        else:
-            if macro_list_a[identifier] != macro_list_b[identifier]:
-                Emitter.warning("Non-equivalent duplicate exist")
-                Emitter.debug(macro_list_b[identifier])
-                Emitter.debug(macro_list_a[identifier])
-
-    for identifier in def_list_b.keys():
-        if identifier not in def_list_a.keys():
-            def_list_a[identifier] = def_list_b[identifier]
-        else:
-            if def_list_a[identifier] != def_list_b[identifier]:
-                Emitter.warning("Non-equivalent duplicate exist")
-                Emitter.debug(def_list_b[identifier])
-                Emitter.debug(def_list_a[identifier])
-
-    for identifier in struct_list_b.keys():
-        if identifier not in struct_list_a.keys():
-            struct_list_a[identifier] = struct_list_b[identifier]
-        else:
-            if struct_list_a[identifier] != struct_list_b[identifier]:
-                Emitter.warning("Non-equivalent duplicate exist")
-                Emitter.debug(struct_list_b[identifier])
-                Emitter.debug(struct_list_a[identifier])
-
-    segmentation_list_merged = enum_list_a, function_list_a, macro_list_a, \
-                               struct_list_a, type_def_list_a, def_list_a, decl_list_a, definition_list_a
+    segmentation_list_merged = enum_list, function_list, macro_list, \
+                               struct_list, type_def_list, def_list, decl_list, definition_list
     return segmentation_list_merged
