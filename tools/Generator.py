@@ -7,7 +7,7 @@ import os
 
 import json
 from common.Utilities import execute_command, error_exit, find_files, get_file_extension_list
-from tools import Emitter, Logger, Extractor, Finder
+from tools import Emitter, Logger, Extractor, Finder, Merger
 from ast import Vector, Parser, Generator as ASTGenerator
 from common.Utilities import error_exit, clean_parse
 from common import Definitions, Values
@@ -240,9 +240,9 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                 if segmentation_list is None:
                     source_file = file_list.readline().strip()
                     continue
-                create_vectors(project, source_file, segmentation_list)
                 segmentation_list_macro = generate_segmentation(source_file, True)
-                create_vectors(project, source_file, segmentation_list_macro)
+                segmentation_list = Merger.merge_segmentation_list(segmentation_list, segmentation_list_macro)
+                create_vectors(project, source_file, segmentation_list)
 
             except Exception as e:
                 error_exit(e, "Unexpected error in parseAST with file:", source_file)
