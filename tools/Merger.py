@@ -344,7 +344,10 @@ def merge_segmentation_list(segmentation_list_a, segmentation_list_b):
     type_def_list = set(type_def_list_a + type_def_list_b)
     def_list = set(decl_list_a + def_list_b)
     decl_list = set(decl_list_a + decl_list_b)
-    definition_list = set(definition_list_a + definition_list_b)
+    definition_list = definition_list_a
+    for identifier in definition_list_b.keys():
+        if identifier not in definition_list_a.keys():
+            definition_list[identifier] = definition_list_b[identifier]
 
     segmentation_list_merged = enum_list, function_list, macro_list, \
                                struct_list, type_def_list, def_list, decl_list, definition_list
