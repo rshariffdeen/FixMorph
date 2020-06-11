@@ -245,12 +245,8 @@ def weave_functions(missing_function_list, modified_source_list):
         function_def_node = Finder.search_ast_node_by_id(ast_map_b, int(node_id))
         function_node, function_source_file = Extractor.extract_complete_function_node(function_def_node,
                                                                                        source_path_b)
-        missing_def_list = Identifier.identify_missing_definitions(function_node, missing_function_list)
         def_insert_point = Finder.find_definition_insertion_point(source_path_d)
 
-        missing_macro_list = Identifier.identify_missing_macros_in_func(function_node, function_source_file,
-                                                                        source_path_d)
-        missing_header_list = Identifier.identify_missing_headers(function_node, source_path_d)
         start_line = function_node["start line"]
         end_line = function_node["end line"]
         # print(function_name)
@@ -264,17 +260,10 @@ def weave_functions(missing_function_list, modified_source_list):
             modified_source_list.append(source_path_d)
         backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_path_d)
+    return modified_source_list
 
-    return missing_header_list, missing_macro_list, modified_source_list
 
-
-def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list, seg_id_a, seg_id_c, seg_code):
-    missing_function_list = dict()
-    missing_var_list = dict()
-    missing_macro_list = dict()
-    missing_header_list = dict()
-    missing_data_type_list = dict()
-
+def weave_code(file_a, file_b, file_c, script_file_name, modified_source_list):
     if Values.DONOR_REQUIRE_MACRO:
         Values.PRE_PROCESS_MACRO = Values.DONOR_PRE_PROCESS_MACRO
     ast_map_a = Generator.get_ast_json(file_a, Values.DONOR_REQUIRE_MACRO, True)
@@ -287,70 +276,8 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list, s
     file_d = str(file_c).replace(Values.Project_C.path, Values.Project_D.path)
 
     # Check for an edit script
-    script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_script"
+    # script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_script"
     syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_syntax_errors"
-    neighborhood_a = Extractor.extract_neighborhood(file_a, seg_code, seg_id_a)
-    neighborhood_c = Extractor.extract_neighborhood(file_c, seg_code, seg_id_c)
-
-    with open(script_file_name, 'w') as script_file:
-        count = 0
-        for instruction in instruction_list:
-            count = count + 1
-            # Emitter.normal("\t[action]transplanting code segment " + str(count))
-            check_node = None
-            if "Insert" in instruction:
-                check_node_id = instruction.split("(")[1].split(")")[0]
-                check_node = Finder.search_ast_node_by_id(ast_map_b, int(check_node_id))
-
-            elif "Replace" in instruction:
-                check_node_id = instruction.split(" with ")[1].split("(")[1].split(")")[0]
-                check_node = Finder.search_ast_node_by_id(ast_map_b, int(check_node_id))
-
-            elif "Update" in instruction:
-                check_node_id = instruction.split(" to ")[1].split("(")[1].split(")")[0]
-                check_node = Finder.search_ast_node_by_id(ast_map_b, int(check_node_id))
-
-            elif "Delete" in instruction:
-                check_node = None
-
-            if check_node:
-
-                missing_function_list.update(Identifier.identify_missing_functions(ast_map_a,
-                                                                                   check_node,
-                                                                                   file_b,
-                                                                                   file_d,
-                                                                                   ast_map_c))
-
-                missing_macro_list.update(Identifier.identify_missing_macros(check_node,
-                                                                             file_b,
-                                                                             file_d
-                                                                             ))
-                var_map = Values.VAR_MAP[(file_a, file_c)]
-                missing_var_list.update(Identifier.identify_missing_var(neighborhood_a,
-                                                                        neighborhood_c,
-                                                                        check_node,
-                                                                        file_b,
-                                                                        var_map
-                                                                        ))
-
-            script_file.write(instruction + "\n")
-        # print(missing_var_list)
-        target_ast = None
-        if neighborhood_c['type'] in ["FunctionDecl", "RecordDecl"]:
-            target_ast = neighborhood_c['children'][1]
-        position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(1)
-        for var in missing_var_list:
-            # print(var)
-            var_info = missing_var_list[var]
-            ast_node = var_info['ast-node']
-            # not sure why the if is required
-            # if "ref_type" in ast_node.keys():
-            node_id_a = ast_node['id']
-            node_id_b = node_id_a
-            instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
-            instruction += " into " + position_c
-            script_file.write(instruction + "\n")
-            Emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
 
     file_info = file_a, file_b, file_c, file_d
     execute_ast_transformation(script_file_name, file_info)
@@ -362,33 +289,11 @@ def weave_code(file_a, file_b, file_c, instruction_list, modified_source_list, s
     fix_command += " 2>" + syntax_error_file_name
     execute_command(fix_command)
 
-    # # We check that everything went fine, otherwise, we restore everything
-    # try:
-    #     check_command = Definitions.SYNTAX_CHECK_COMMAND + file_d + " 2>" + syntax_error_file_name
-    #     if file_c[-1] == "h":
-    #         check_command += " --"
-    #     execute_command(check_command)
-    # except Exception as e:
-    #     Emitter.error("Clang-check could not repair syntax errors.")
-    #     restore_files()
-    #     error_exit(e, "Crochet failed.")
-
-    # # We format the file to be with proper spacing (needed?)
-    # format_command = Definitions.STYLE_FORMAT_COMMAND + file_c
-    # if file_c[-1] == "h":
-    #     format_command += " --"
-    # format_command += " > " + output_file + "; "
-    # execute_command(format_command)
-    # show_patch(file_a, file_b, file_c, file_d, str(file_index))
-    #
-    # c5 = "cp " + output_file + " " + file_c + ";"
-    # execute_command(c5)
-
     if file_d not in modified_source_list:
         modified_source_list.append(file_d)
 
     Emitter.success("\n\tSuccessful transformation")
-    return missing_function_list, missing_macro_list, modified_source_list
+    return modified_source_list
 
 
 def weave_slice(slice_info):

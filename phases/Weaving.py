@@ -34,39 +34,35 @@ def safe_exec(function_def, title, *args):
 
 def transplant_missing_header():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global modified_source_list, missing_header_list
-    if missing_header_list:
-        modified_source_list = Weaver.weave_headers(missing_header_list, modified_source_list)
+    global modified_source_list
+    if Values.missing_header_list:
+        modified_source_list = Weaver.weave_headers(Values.missing_header_list, modified_source_list)
 
 
 def transplant_missing_macros():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list, missing_macro_list
-    if missing_macro_list:
-        modified_source_list = Weaver.weave_definitions(missing_macro_list, modified_source_list)
+    if Values.missing_macro_list:
+        modified_source_list = Weaver.weave_definitions(Values.missing_macro_list, modified_source_list)
 
 
 def transplant_missing_data_types():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global modified_source_list, missing_data_type_list
-    if missing_data_type_list:
-        modified_source_list = Weaver.weave_data_type(missing_data_type_list, modified_source_list)
+    global modified_source_list
+    if Values.missing_data_type_list:
+        modified_source_list = Weaver.weave_data_type(Values.missing_data_type_list, modified_source_list)
 
 
 def transplant_missing_functions():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global missing_header_list, missing_macro_list, modified_source_list
+    global modified_source_list
 
-    missing_header_list_func, \
-    missing_macro_list_func, modified_source_list = Weaver.weave_functions(missing_function_list,
-                                                                               modified_source_list)
-
-    missing_macro_list = Merger.merge_macro_info(missing_macro_list, missing_macro_list_func)
-    missing_header_list = Merger.merge_header_info(missing_header_list, missing_header_list_func)
+    modified_source_list = Weaver.weave_functions(missing_function_list,
+                                                  modified_source_list)
 
 
 def transplant_code():
-    global file_index, missing_function_list, missing_macro_list, modified_source_list
+    global file_index, modified_source_list
     if not Values.translated_script_for_files:
         error_exit("nothing to transplant")
     for file_list, generated_data in Values.translated_script_for_files.items():
@@ -99,29 +95,13 @@ def transplant_code():
         Emitter.highlight("\tGenerated AST script")
         translated_script = generated_data[0]
         Emitter.emit_ast_script(translated_script)
-
-        identified_missing_function_list, \
-        identified_missing_macro_list, modified_source_list = Weaver.weave_code(vector_source_a,
-                                                                                vector_source_b,
-                                                                                vector_source_c,
-                                                                                translated_script,
-                                                                                modified_source_list,
-                                                                                segment_identifier_a,
-                                                                                segment_identifier_c,
-                                                                                segment_code
-                                                                                )
-        file_index += 1
-        if missing_function_list:
-            if identified_missing_function_list:
-                missing_function_list = missing_function_list.update(identified_missing_function_list)
-        else:
-            missing_function_list = identified_missing_function_list
-
-        if missing_macro_list:
-            if identified_missing_macro_list:
-                missing_macro_list = Merger.merge_macro_info(missing_macro_list, identified_missing_macro_list)
-        else:
-            missing_macro_list = identified_missing_macro_list
+        script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(segment_identifier_c) + "_script"
+        Weaver.weave_code(vector_source_a,
+                          vector_source_b,
+                          vector_source_c,
+                          script_file_name,
+                          modified_source_list
+                          )
 
         restore_file_orig(vector_source_a)
         restore_file_orig(vector_source_b)
@@ -175,20 +155,19 @@ def weave_slices():
 
 
 def weave():
-    global missing_header_list, missing_macro_list, modified_source_list, missing_function_list
-    global missing_data_type_list
+    global modified_source_list
     Emitter.title("Applying transformation")
     load_values()
     if not Values.SKIP_WEAVE:
         safe_exec(transplant_code, "transforming slices")
         safe_exec(weave_slices, "weaving slices")
-        if missing_function_list:
+        if Values.missing_function_list:
             safe_exec(transplant_missing_functions, "transplanting functions")
-        if missing_data_type_list:
+        if Values.missing_data_type_list:
             safe_exec(transplant_missing_data_types, "transplanting data structures")
-        if missing_macro_list:
+        if Values.missing_macro_list:
             safe_exec(transplant_missing_macros, "transplanting macros")
-        if missing_header_list:
+        if Values.missing_header_list:
             safe_exec(transplant_missing_header, "transplanting header files")
         safe_exec(Fixer.check, "correcting syntax errors", modified_source_list)
         save_values()

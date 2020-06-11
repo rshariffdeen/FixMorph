@@ -6,8 +6,6 @@ from ast import Generator
 import os
 import sys
 
-file_index = 1
-
 
 def evolve_definitions(missing_definition_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
@@ -98,8 +96,8 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
     file_d = str(file_c).replace(Values.Project_C.path, Values.Project_D.path)
 
     # Check for an edit script
-    script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_script"
-    syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_syntax_errors"
+    script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_script"
+    syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_syntax_errors"
     neighborhood_a = Extractor.extract_neighborhood(file_a, seg_code, seg_id_a)
     neighborhood_c = Extractor.extract_neighborhood(file_c, seg_code, seg_id_c)
 
