@@ -68,6 +68,10 @@ FILE_PROJECT_D = ""
 FILE_PROJECT_E = ""
 FILE_VAR_MAP_STORE = ""
 FILE_VEC_MAP_STORE = ""
+FILE_MISSING_FUNCTIONS = ""
+FILE_MISSING_MACROS = ""
+FILE_MISSING_HEADERS = ""
+FILE_MISSING_TYPES = ""
 
 # ------------------- Configuration --------------------
 

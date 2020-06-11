@@ -28,6 +28,10 @@ def save_current_state():
     pickle.dump(Values.Project_D, open(Definitions.FILE_PROJECT_D, 'wb'))
     pickle.dump(Values.VAR_MAP, open(Definitions.FILE_VAR_MAP_STORE, 'wb'))
     pickle.dump(Values.VECTOR_MAP, open(Definitions.FILE_VEC_MAP_STORE, 'wb'))
+    pickle.dump(Values.missing_header_list, open(Definitions.FILE_MISSING_HEADERS, 'wb'))
+    pickle.dump(Values.missing_macro_list, open(Definitions.FILE_MISSING_MACROS, 'wb'))
+    pickle.dump(Values.missing_function_list, open(Definitions.FILE_MISSING_FUNCTIONS, 'wb'))
+    pickle.dump(Values.missing_data_type_list, open(Definitions.FILE_MISSING_TYPES, 'wb'))
 
 
 def load_state():
@@ -37,6 +41,10 @@ def load_state():
     Values.Project_D = pickle.load(open(Definitions.FILE_PROJECT_D, 'rb'))
     Values.VAR_MAP = pickle.load(open(Definitions.FILE_VAR_MAP_STORE, 'rb'))
     Values.VECTOR_MAP = pickle.load(open(Definitions.FILE_VEC_MAP_STORE, 'rb'))
+    Values.missing_function_list = pickle.load(open(Definitions.FILE_MISSING_FUNCTIONS, 'rb'))
+    Values.missing_data_type_list = pickle.load(open(Definitions.FILE_MISSING_TYPES, 'rb'))
+    Values.missing_macro_list = pickle.load(open(Definitions.FILE_MISSING_MACROS, 'rb'))
+    Values.missing_header_list = pickle.load(open(Definitions.FILE_MISSING_HEADERS, 'rb'))
 
 
 def create_base_directories():

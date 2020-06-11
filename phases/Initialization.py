@@ -106,6 +106,16 @@ def create_files():
     open(Definitions.FILE_VAR_MAP_STORE, 'a').close()
     Definitions.FILE_VEC_MAP_STORE = Definitions.DIRECTORY_OUTPUT + "/vec-map-store"
     open(Definitions.FILE_VEC_MAP_STORE, 'a').close()
+
+    Definitions.FILE_MISSING_FUNCTIONS = Definitions.DIRECTORY_OUTPUT + "/missing-functions"
+    open(Definitions.FILE_MISSING_FUNCTIONS, 'a').close()
+    Definitions.FILE_MISSING_HEADERS = Definitions.DIRECTORY_OUTPUT + "/missing-headers"
+    open(Definitions.FILE_MISSING_HEADERS, 'a').close()
+    Definitions.FILE_MISSING_MACROS = Definitions.DIRECTORY_OUTPUT + "/missing-macros"
+    open(Definitions.FILE_MISSING_MACROS, 'a').close()
+    Definitions.FILE_MISSING_TYPES = Definitions.DIRECTORY_OUTPUT + "/missing-types"
+    open(Definitions.FILE_MISSING_TYPES, 'a').close()
+
     if Values.PATH_E:
         Definitions.FILE_PROJECT_E = Definitions.DIRECTORY_OUTPUT + "/project-E"
         open(Definitions.FILE_PROJECT_E, 'a').close()
