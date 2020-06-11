@@ -724,6 +724,8 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             if nodeB2 not in inserted:
                 modified_AB.append((Definitions.MOVE, nodeB1, nodeB2, pos))
             else:
+                if nodeB2.type == "IfStmt":
+                    continue
                 if i[1] in match_BA.keys():
                     nodeA = match_BA[i[1]]
                     nodeA = id_from_string(nodeA)
