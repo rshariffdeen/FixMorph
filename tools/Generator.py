@@ -88,7 +88,10 @@ def generate_segmentation(source_file, use_macro=False):
     type_def_list = list()
     def_list = list()
     decl_list = list()
-    Emitter.normal("\t\t\tgenerating neighborhoods")
+    heading = "generating neighborhoods"
+    if use_macro:
+        heading = heading + " using macros"
+    Emitter.normal("\t\t\t" + heading)
     function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=False, use_macro=use_macro, use_local=True)
     ast_tree = generate_ast_json(source_file, use_macro)
     if ast_tree is None:

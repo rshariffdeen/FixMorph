@@ -330,7 +330,7 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
 
 def merge_segmentation_list(segmentation_list_a, segmentation_list_b):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\tmerging segmentation list")
+    Emitter.normal("\t\t\tmerging segmentation list")
     enum_list_a, function_list_a, macro_list_a, \
     struct_list_a, type_def_list_a, def_list_a, decl_list_a, definition_list_a = segmentation_list_a
 
