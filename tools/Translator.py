@@ -647,6 +647,8 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if nodeA.parent_id in replaced:
                     replaced.append(nodeA.id)
                     continue
+                if nodeA.id in replaced:
+                    continue
                 parentA = ASTlists[Values.Project_A.name][int(nodeA.parent_id)]
                 index = None
                 iterator = 0
@@ -723,10 +725,17 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 if nodeB2.type in ["UnaryOperator", "BinaryOperator"]:
-                    replace_node = nodeB2.children[int(pos)]
-                    if replace_node.parent_id not in replaced:
-                        replaced.append(replace_node.id)
-                        modified_AB.append((Definitions.REPLACE, nodeB1, replace_node))
+                    # nodeA1 = match_BA[i[1]]
+                    # nodeA1 = id_from_string(nodeA1)
+                    # nodeA1 = ASTlists[Values.Project_A.name][nodeA1]
+                    nodeA2 = match_BA[i[2]]
+                    nodeA2 = id_from_string(nodeA2)
+                    nodeA2 = ASTlists[Values.Project_A.name][nodeA2]
+                    replaced_node = nodeA2.children[int(pos)]
+                    if nodeB2.id not in replacing:
+                        replaced.append(replaced_node.id)
+                        replacing.append(nodeA1.id)
+                        modified_AB.append((Definitions.REPLACE, replaced_node, nodeB1))
                 else:
                     modified_AB.append((Definitions.MOVE, nodeB1, nodeB2, pos))
             else:
