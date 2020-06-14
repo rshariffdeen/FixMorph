@@ -124,8 +124,8 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
     var_map = dict()
     refined_var_map = dict()
 
-    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO)
-    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO)
+    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO,  regenerate=True)
 
     neighbor_ast = None
     neighbor_ast_range = None
