@@ -723,7 +723,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
                 if nodeB2.type in ["UnaryOperator", "BinaryOperator"]:
-                    replace_node = nodeB2.children[pos]
+                    replace_node = nodeB2.children[int(pos)]
                     if replace_node.parent_id not in replaced:
                         replaced.append(replace_node.id)
                         modified_AB.append((Definitions.REPLACE, nodeB1, replace_node))
