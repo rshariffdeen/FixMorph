@@ -720,14 +720,9 @@ def identify_code_segment(diff_info, project):
         source_file, start_line = source_loc.split(":")
         diff_line_info = diff_info[source_loc]
         operation = diff_line_info['operation']
-        if operation == "insert":
-            source_file = source_file.replace(Values.PATH_A, Values.PATH_B)
         if source_file not in grouped_line_info:
             grouped_line_info[source_file] = list()
-        if operation == "insert":
-            grouped_line_info[source_file].append(diff_line_info['new-lines'])
-        else:
-            grouped_line_info[source_file].append(diff_line_info['old-lines'])
+        grouped_line_info[source_file].append(diff_line_info['old-lines'])
 
     for source_file in grouped_line_info:
         Emitter.normal("\t\t" + source_file)
