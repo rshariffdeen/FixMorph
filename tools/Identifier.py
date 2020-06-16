@@ -310,7 +310,7 @@ def identify_missing_macros(ast_node, source_file, target_file):
 
 def identify_missing_macros_in_func(function_node, source_file, target_file):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.normal("\t\tidentifying missing macros")
+    Emitter.normal("\t\tidentifying missing macros in function")
     missing_macro_list = dict()
     ref_list = Extractor.extract_reference_node_list(function_node)
     dec_list = Extractor.extract_decl_list(function_node)

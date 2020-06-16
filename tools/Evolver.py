@@ -13,17 +13,40 @@ def evolve_definitions(missing_definition_list):
     missing_macro_list = dict()
     if not missing_definition_list:
         Emitter.normal("\t-none-")
+    ast_b = None
+    macro_def_node_list = dict()
     for def_name in missing_definition_list:
         Emitter.normal(def_name)
         macro_info = missing_definition_list[def_name]
         source_file = macro_info['source']
         target_file = macro_info['target']
         macro_def_list = Extractor.extract_macro_definitions(source_file)
-        def_insert_line = Finder.find_definition_insertion_point(target_file)
+        if not ast_b:
+            ast_b = Generator.get_ast_json(source_file, use_macro=Values.DONOR_REQUIRE_MACRO)
+            macro_def_node_list = Extractor.extract_macro_def_node_list(ast_b)
+        if def_name in macro_def_node_list:
+            macro_def_node = macro_def_node_list[def_name]
+            if 'identifier' in macro_def_node:
+                identifier = macro_def_node['identifier']
+                if identifier == def_name:
+                    if "file" in macro_def_node:
+                        def_file = macro_def_node['file']
+                        if def_file[-1] == "h":
+                            header_file = def_file.split("/include/")[-1]
+                            missing_header_list[header_file] = target_file
+                    else:
+                        missing_macro_list[def_name] = missing_definition_list[def_name]
+        else:
+            missing_macro_list[def_name] = missing_definition_list[def_name]
+
+
+        # def_insert_line = Finder.find_definition_insertion_point(target_file)
         # missing_macro_list = Identifier.identify_missing_macros_in_func(ast_node, function_source_file,
         #                                                             source_path_d)
         # missing_header_list = Identifier.identify_missing_headers(ast_node, source_path_d)
         #
+    print(missing_header_list)
+    print(missing_macro_list)
     return missing_header_list, missing_macro_list
 
 

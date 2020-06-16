@@ -29,7 +29,9 @@ def safe_exec(function_def, title, *args):
 def evolve_macros():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     if Values.missing_macro_list:
-        missing_header_list, missing_macro_list = Evolver.evolve_definitions(Values.missing_macro_list)
+        header_list, macro_list = Evolver.evolve_definitions(Values.missing_macro_list)
+        Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, macro_list)
+        Values.missing_header_list = Merger.merge_header_info(Values.missing_header_list, header_list)
 
 
 def evolve_data_types():
@@ -40,9 +42,10 @@ def evolve_data_types():
 
 def evolve_functions():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    header_list, macro_list = Evolver.evolve_functions(Values.missing_function_list)
-    Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, macro_list)
-    Values.missing_header_list = Merger.merge_header_info(Values.missing_header_list, header_list)
+    if Values.missing_function_list:
+        header_list, macro_list = Evolver.evolve_functions(Values.missing_function_list)
+        Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, macro_list)
+        Values.missing_header_list = Merger.merge_header_info(Values.missing_header_list, header_list)
 
 
 def evolve_code():
