@@ -142,6 +142,7 @@ def weave_headers(missing_header_list, modified_source_list):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     if not missing_header_list:
         Emitter.normal("\t-none-")
+    target_file = ""
     for header_name in missing_header_list:
         Emitter.normal(header_name)
         target_file = missing_header_list[header_name]
@@ -153,6 +154,26 @@ def weave_headers(missing_header_list, modified_source_list):
             modified_source_list.append(target_file)
         backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, target_file)
+
+    for source_file_c in modified_source_list:
+        source_file_a = None
+        for path_a, path_c in Values.VECTOR_MAP:
+            if source_file_c in path_c:
+                source_file_a = path_a.split(".c.")[0] + ".c"
+        if source_file_a:
+            added_header_list = Values.Project_A.header_list[source_file_a]['added']
+            for header_name in added_header_list:
+                Emitter.normal(header_name)
+                target_file = source_file_c
+                transplant_code = "\n#include<" + header_name + ">\n"
+                def_insert_line = Finder.find_definition_insertion_point(target_file)
+                backup_file(target_file, FILENAME_BACKUP)
+                insert_code(transplant_code, target_file, def_insert_line)
+                if target_file not in modified_source_list:
+                    modified_source_list.append(target_file)
+                backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+                show_partial_diff(backup_file_path, target_file)
+
     return modified_source_list
 
 
