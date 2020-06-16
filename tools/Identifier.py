@@ -285,7 +285,7 @@ def identify_missing_macros(ast_node, source_file, target_file):
     target_macro_list = Converter.convert_macro_list_to_dict(Extractor.extract_macro_definitions(target_file))
     if node_type == "Macro":
         node_macro_list = Extractor.extract_macro_definition(ast_node, source_file, target_file)
-        print(node_macro_list)
+        # print(node_macro_list)
         for macro_name in node_macro_list:
             if macro_name not in target_macro_list:
                 if macro_name not in Values.VAR_MAP:
@@ -293,18 +293,18 @@ def identify_missing_macros(ast_node, source_file, target_file):
     else:
         macro_node_list = Extractor.extract_macro_node_list(ast_node)
         macro_def_list = dict()
-        print(macro_node_list)
+        # print(macro_node_list)
         for macro_node in macro_node_list:
             macro_def_list_temp = Extractor.extract_macro_definition(macro_node, source_file, target_file)
             print(macro_def_list_temp)
             macro_def_list = Merger.merge_macro_info(macro_def_list, macro_def_list_temp)
-        print(macro_def_list)
+        # print(macro_def_list)
         for macro_name in macro_def_list:
             if macro_name not in target_macro_list:
                 if macro_name not in Values.VAR_MAP:
                     missing_macro_list[macro_name] = macro_def_list[macro_name]
 
-    print(missing_macro_list)
+    # print(missing_macro_list)
     return missing_macro_list
 
 
