@@ -96,7 +96,7 @@ def evolve_functions(missing_function_list):
                                                                                        source_path_b)
         if function_source_file[-1] == "h":
             header_file = function_source_file.split("/include/")[-1]
-            missing_header_list[header_file] = source_path_b
+            missing_header_list[header_file] = source_path_d
         else:
             missing_def_list = Identifier.identify_missing_definitions(function_node, missing_function_list)
             missing_macro_list = Identifier.identify_missing_macros_in_func(function_node, function_source_file,
