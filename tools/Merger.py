@@ -74,7 +74,8 @@ def merge_header_info(info_a, info_b):
     for header_name in info_a:
         info = info_a[header_name]
         if header_name in info_b.keys():
-            error_exit("MULTIPLE USAGE OF HEADER")
+            if info_a[header_name] != info_b[header_name]:
+                error_exit("MULTIPLE USAGE OF HEADER")
         header_info[header_name] = info
 
     for header_name in info_b:
