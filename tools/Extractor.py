@@ -91,16 +91,31 @@ def extract_call_node_list(ast_node):
 
 def extract_label_node_list(ast_node):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    label_stmt_list = list()
+    label_stmt_list = dict()
     node_type = str(ast_node["type"])
     if node_type == "LabelStmt":
-        label_stmt_list.append(ast_node)
+        node_value = ast_node['value']
+        label_stmt_list[node_value] = ast_node
     else:
         if len(ast_node['children']) > 0:
             for child_node in ast_node['children']:
                 child_label_list = extract_label_node_list(child_node)
-                call_expr_list = label_stmt_list + child_label_list
+                label_stmt_list.update(child_label_list)
     return label_stmt_list
+
+
+def extract_goto_node_list(ast_node):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    goto_stmt_list = list()
+    node_type = str(ast_node["type"])
+    if node_type == "GotoStmt":
+        goto_stmt_list.append(ast_node)
+    else:
+        if len(ast_node['children']) > 0:
+            for child_node in ast_node['children']:
+                child_goto_list = extract_goto_node_list(child_node)
+                goto_stmt_list = goto_stmt_list + child_goto_list
+    return goto_stmt_list
 
 
 def extract_function_node_list(ast_node):

@@ -81,6 +81,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
     missing_function_list = dict()
     missing_var_list = dict()
     missing_macro_list = dict()
+    missing_label_list = dict()
     missing_header_list = dict()
     missing_data_type_list = dict()
 
@@ -142,6 +143,13 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
                                                                         var_map
                                                                         ))
 
+                missing_label_list.update(Identifier.identify_missing_labels(neighborhood_a,
+                                                                             neighborhood_c,
+                                                                             check_node,
+                                                                             file_b,
+                                                                             var_map
+                                                                             ))
+
             script_file.write(instruction + "\n")
         # print(missing_var_list)
         target_ast = None
@@ -160,6 +168,20 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
             instruction += " into " + position_c
             script_file.write(instruction + "\n")
             Emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
+
+        position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(len(target_ast['children'] - 1))
+        for label in missing_label_list:
+            # print(var)
+            label_info = missing_label_list[label]
+            ast_node = label_info['ast-node']
+            # not sure why the if is required
+            # if "ref_type" in ast_node.keys():
+            node_id_a = ast_node['id']
+            node_id_b = node_id_a
+            instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
+            instruction += " into " + position_c
+            script_file.write(instruction + "\n")
+            Emitter.highlight("\t\tadditional label added with instruction: " + instruction)
 
     Emitter.success("\n\tSuccessful evolution")
     return missing_function_list, missing_macro_list

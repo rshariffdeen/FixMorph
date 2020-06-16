@@ -5,7 +5,7 @@
 import sys
 import os
 
-from common.Utilities import error_exit, is_intersect
+from common.Utilities import error_exit, is_intersect, get_code
 import collections
 from common import Values
 from tools import Emitter, Logger, Extractor, Finder, Oracle, Converter, Merger
@@ -16,11 +16,26 @@ from tools import Generator as Gen
 STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *"]
 
 
-def identify_missing_labels(ast_map, ast_node, source_path_b, source_path_d, skip_list):
+def identify_missing_labels(neighborhood_a, neighborhood_c, insert_node_b, source_path_b, var_map):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tanalysing for missing labels")
-    missing_label_list = list()
-    label_list = Extractor.extract_label_node_list(ast_node)
+    missing_label_list = dict()
+    label_list_a = Extractor.extract_label_node_list(neighborhood_a)
+    label_list_c = Extractor.extract_label_node_list(neighborhood_c)
+    goto_list = Extractor.extract_goto_node_list(insert_node_b)
+    for goto_node in goto_list:
+        line_number = int(goto_node['start line'])
+        Emitter.information("extracting line number: " + str(line_number))
+        goto_code = get_code(source_path_b, line_number)
+        Emitter.information("extracted line: " + str(goto_code))
+        identifier = goto_code.strip().replace("goto", "").replace(";", "").replace("\n", "")
+        if identifier in var_map:
+            continue
+        if identifier not in label_list_c and identifier in label_list_a:
+            info = dict()
+            info['ref_list'] = list()
+            info['ast-node'] = label_list_a[identifier]
+            missing_label_list[identifier] = info
     return missing_label_list
 
 
@@ -64,6 +79,74 @@ def identify_missing_functions(ast_map_b, ast_node, source_path_b, source_path_d
                     error_exit("MULTIPLE FUNCTION REFERENCES ON DIFFERENT TARGETS FOUND!!!")
     # print(missing_function_list)
     return missing_function_list
+
+
+def identify_insert_offset(offset, target_node):
+    if offset != 0:
+        previous_child_node_b = target_node_b.children[offset - 1]
+        previous_child_node_b = previous_child_node_b.simple_print()
+        if previous_child_node_b in map_ab.keys():
+            previous_child_node_a = map_ab[previous_child_node_b]
+            if previous_child_node_a in map_ac.keys():
+                previous_child_node_c = map_ac[previous_child_node_a]
+                previous_child_node_c = id_from_string(previous_child_node_c)
+                previous_child_node_c = json_ast_dump[Values.Project_C.name][previous_child_node_c]
+                if previous_child_node_c in target_node.children:
+                    offset = target_node.children.index(previous_child_node_c)
+                    offset += 1
+                else:
+                    if offset + 1 < len(target_node_b.children):
+                        next_child_node_b = target_node_b.children[offset + 1]
+                        next_child_node_b = next_child_node_b.simple_print()
+                        if next_child_node_b in map_ab.keys():
+                            next_child_node_a = map_ab[next_child_node_b]
+                            if next_child_node_a in map_ac.keys():
+                                next_child_node_c = map_ac[next_child_node_a]
+                                next_child_node_c = id_from_string(next_child_node_c)
+                                next_child_node_c = json_ast_dump[Values.Project_C.name][next_child_node_c]
+                                if next_child_node_c in target_node.children:
+                                    offset = target_node.children.index(next_child_node_c)
+                                else:
+                                    Emitter.warning("Node not in children.")
+                                    Emitter.warning(instruction)
+                                    Emitter.warning(next_child_node_c)
+                                    Emitter.warning([child.simple_print() for child in target_node.children])
+                                    target_node = json_ast_dump[
+                                        Values.Project_C.name][next_child_node_c.parent_id]
+                                    offset = target_node.children.index(next_child_node_c)
+
+            else:
+                Emitter.warning("Failed at locating match for(insert) " + previous_child_node_a)
+                Emitter.warning("Trying to get pos anyway.")
+                # This is more likely to be correct
+                previous_child_node_a = id_from_string(previous_child_node_a)
+                previous_child_node_a = json_ast_dump[Values.Project_A.name][previous_child_node_a]
+                parent_a = previous_child_node_a.parent
+                if parent_a is not None:
+                    offset = parent_a.children.index(previous_child_node_a)
+                    matching_parent_c = map_ac[parent_a.simple_print()]
+                    matching_parent_id = id_from_string(matching_parent_c)
+                    target_node = json_ast_dump[Values.Project_C.name][matching_parent_id]
+                    offset += 1
+
+        elif offset + 1 < len(target_node_b.children):
+            next_child_node_b = target_node_b.children[offset + 1]
+            next_child_node_b = next_child_node_b.simple_print()
+            if next_child_node_b in map_ab.keys():
+                next_child_node_a = map_ab[next_child_node_b]
+                if next_child_node_a in map_ac.keys():
+                    next_child_node_c = map_ac[next_child_node_a]
+                    next_child_node_c = id_from_string(next_child_node_c)
+                    next_child_node_c = json_ast_dump[Values.Project_C.name][next_child_node_c]
+                    if next_child_node_c in target_node.children:
+                        offset = target_node.children.index(next_child_node_c)
+                    else:
+                        Emitter.warning("Node not in children.")
+                        Emitter.warning(instruction)
+                        Emitter.warning(next_child_node_c)
+                        Emitter.warning([child.simple_print() for child in target_node.children])
+                        target_node = json_ast_dump[Values.Project_C.name][next_child_node_c.parent_id]
+                        offset = target_node.children.index(next_child_node_c)
 
 
 def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_path_b, var_map):
