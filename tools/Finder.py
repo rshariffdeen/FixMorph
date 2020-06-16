@@ -182,7 +182,7 @@ def find_definition_insertion_point(source_path):
         child_node_type = child_node['type']
         if child_node_type == "FunctionDecl":
             if 'file' in child_node:
-                child_node_file_name = child_node['file']
+                child_node_file_name = child_node['file'].split("/")[-1]
                 if child_node_file_name == file_name:
                     return int(child_node['start line'])
     return 0

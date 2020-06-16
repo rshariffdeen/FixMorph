@@ -146,7 +146,10 @@ def weave_headers(missing_header_list, modified_source_list):
     for header_name in missing_header_list:
         Emitter.normal(header_name)
         target_file = missing_header_list[header_name]
-        transplant_code = "\n#include<" + header_name + ">\n"
+        if "/" in header_name:
+            transplant_code = "\n#include<" + header_name + ">\n"
+        else:
+            transplant_code = "\n#include \"" + header_name + "\"\n"
         def_insert_line = Finder.find_definition_insertion_point(target_file)
         backup_file(target_file, FILENAME_BACKUP)
         insert_code(transplant_code, target_file, def_insert_line)
