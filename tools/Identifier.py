@@ -16,11 +16,12 @@ from tools import Generator as Gen
 STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *"]
 
 
-def identify_missing_labels(neighborhood_a, neighborhood_c, insert_node_b, source_path_b, var_map):
+def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, var_map):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tanalysing for missing labels")
     missing_label_list = dict()
     label_list_a = Extractor.extract_label_node_list(neighborhood_a)
+    label_list_b = Extractor.extract_label_node_list(neighborhood_b)
     label_list_c = Extractor.extract_label_node_list(neighborhood_c)
     goto_list = Extractor.extract_goto_node_list(insert_node_b)
     for goto_node in goto_list:
@@ -36,7 +37,7 @@ def identify_missing_labels(neighborhood_a, neighborhood_c, insert_node_b, sourc
                     continue
             info = dict()
             info['ref_list'] = list()
-            info['ast-node'] = label_list_a[identifier]
+            info['ast-node'] = label_list_b[identifier]
             missing_label_list[identifier] = info
     return missing_label_list
 
@@ -83,8 +84,7 @@ def identify_missing_functions(ast_map_b, ast_node, source_path_b, source_path_d
     return missing_function_list
 
 
-
-def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_path_b, var_map):
+def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, var_map):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tanalysing for missing variables")
     missing_var_list = dict()
@@ -92,6 +92,7 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
     ref_list = Extractor.extract_reference_node_list(insert_node_b)
     # print(ref_list)
     dec_list_a = Extractor.extract_decl_node_list(neighborhood_a)
+    dec_list_b = Extractor.extract_decl_node_list(neighborhood_b)
     # print(dec_list_a.keys())
     dec_list_c = Extractor.extract_decl_node_list(neighborhood_c)
     # print(dec_list_c.keys())
@@ -110,7 +111,7 @@ def identify_missing_var(neighborhood_a, neighborhood_c, insert_node_b, source_p
                         if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
                             info = dict()
                             info['ref_list'] = list()
-                            info['ast-node'] = dec_list_a[identifier]
+                            info['ast-node'] = dec_list_b[identifier]
                             missing_var_list[identifier] = info
                 # print(missing_var_list)
                 return missing_var_list

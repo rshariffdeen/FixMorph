@@ -59,6 +59,7 @@ def generate_script_for_files(file_list_to_patch):
             restore_file_orig(vector_source_b)
 
             original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
+            Values.NODE_MAP[(slice_file_a, slice_file_b)] = map_ab
             if not original_script:
                 error_exit("failed to extract AST transformation")
             generated_data = (original_script, inserted_node_list, map_ab)
