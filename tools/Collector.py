@@ -76,6 +76,8 @@ def collect_instruction_list(script_file_path):
             elif instruction == Definitions.INSERT:
                 try:
                     node_a, node_b = clean_parse(content, Definitions.INTO)
+                    if "TranslationUnitDecl" in node_b:
+                        continue
                     node_b_at = node_b.split(Definitions.AT)
                     node_b = Definitions.AT.join(node_b_at[:-1])
                     pos = node_b_at[-1]
