@@ -43,9 +43,10 @@ def evolve_data_types():
 def evolve_functions():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     if Values.missing_function_list:
-        header_list, macro_list = Evolver.evolve_functions(Values.missing_function_list)
+        header_list, macro_list, function_list = Evolver.evolve_functions(Values.missing_function_list)
         Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, macro_list)
         Values.missing_header_list = Merger.merge_header_info(Values.missing_header_list, header_list)
+        Values.missing_function_list = function_list
 
 
 def evolve_code():
