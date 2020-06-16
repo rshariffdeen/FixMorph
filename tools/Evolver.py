@@ -168,8 +168,8 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
             instruction += " into " + position_c
             script_file.write(instruction + "\n")
             Emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
-
-        position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(len(target_ast['children'] - 1))
+        offset = len(target_ast['children']) - 1
+        position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
         for label in missing_label_list:
             # print(var)
             label_info = missing_label_list[label]
