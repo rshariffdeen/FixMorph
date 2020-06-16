@@ -681,7 +681,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     replaced.append(nodeA.id)
                     continue
 
-            if nodeA.value == nodeB.value and nodeA.type not in ["CompoundStmt", "IfStmt"]:
+            if nodeA.value == nodeB.value and nodeA.type not in ["CompoundStmt", "IfStmt", "GCCAsmStmt"]:
                 if nodeA.type == "IntegerLiteral":
                     if nodeA.col_end == nodeB.col_end:
                         Emitter.warning("skipping update for value and length match")
@@ -724,7 +724,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                         continue
             inserted.append(nodeB1)
             if nodeB2 not in inserted:
-                if nodeB2.type in ["UnaryOperator", "BinaryOperator"]:
+                if nodeB2.type in ["UnaryOperator", "BinaryOperator", "FunctionDecl"]:
                     # nodeA1 = match_BA[i[1]]
                     # nodeA1 = id_from_string(nodeA1)
                     # nodeA1 = ASTlists[Values.Project_A.name][nodeA1]
