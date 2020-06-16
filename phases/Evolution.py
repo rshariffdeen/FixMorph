@@ -30,7 +30,7 @@ def evolve_macros():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     if Values.missing_macro_list:
         header_list, macro_list = Evolver.evolve_definitions(Values.missing_macro_list)
-        Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, macro_list)
+        Values.missing_macro_list = macro_list
         Values.missing_header_list = Merger.merge_header_info(Values.missing_header_list, header_list)
 
 
