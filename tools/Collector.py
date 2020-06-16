@@ -14,6 +14,7 @@ def collect_instruction_list(script_file_path):
     instruction_list = list()
     inserted_node_list = list()
     map_ab = dict()
+    skip_list = list()
 
     with open(script_file_path, 'r') as script_file:
         script_line_list = script_file.readlines()
@@ -77,6 +78,10 @@ def collect_instruction_list(script_file_path):
                 try:
                     node_a, node_b = clean_parse(content, Definitions.INTO)
                     if "TranslationUnitDecl" in node_b:
+                        skip_list.append(node_a)
+                        continue
+                    if node_b in skip_list:
+                        skip_list.append(node_a)
                         continue
                     node_b_at = node_b.split(Definitions.AT)
                     node_b = Definitions.AT.join(node_b_at[:-1])
