@@ -258,6 +258,7 @@ def extract_macro_definition(ast_node, source_file, target_file):
         identifier = None
         if 'value' in ast_node:
             identifier = str(ast_node['value'])
+            identifier = identifier.split("(")[0]
             # print(identifier)
             if identifier in Values.STANDARD_MACRO_LIST:
                 return macro_list
@@ -271,6 +272,7 @@ def extract_macro_definition(ast_node, source_file, target_file):
                         if 'value' not in child_node:
                             continue
                         identifier = str(child_node['value'])
+                        identifier = identifier.split("(")[0]
                         # print(identifier)
                         if str(identifier).isdigit():
                             continue
