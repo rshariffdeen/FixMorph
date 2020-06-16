@@ -34,6 +34,7 @@ def evolve_definitions(missing_definition_list):
                         if def_file[-1] == "h":
                             header_file = def_file.split("/include/")[-1]
                             missing_header_list[header_file] = target_file
+                            Emitter.success("\t\tfound definition in: " + def_file)
                     else:
                         missing_macro_list[def_name] = missing_definition_list[def_name]
         else:
@@ -101,6 +102,7 @@ def evolve_functions(missing_function_list):
             missing_macro_list = Identifier.identify_missing_macros_in_func(function_node, function_source_file,
                                                                             source_path_d)
             missing_header_list = Identifier.identify_missing_headers(function_node, source_path_d)
+        Emitter.success("\t\tfound definition in: " + function_source_file)
         # print(function_name)
     return missing_header_list, missing_macro_list, filtered_missing_function_list
 
