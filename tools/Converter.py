@@ -443,5 +443,6 @@ def convert_macro_list_to_dict(string_list):
     macro_list = dict()
     for macro_def in string_list:
         macro_name = str(macro_def).split(" ")[1]
+        macro_name = macro_name.split("(")[0]
         macro_list[macro_name] = macro_def
     return macro_list

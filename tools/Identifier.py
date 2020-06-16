@@ -287,6 +287,7 @@ def identify_missing_macros(ast_node, source_file, target_file):
         node_macro_list = Extractor.extract_macro_definition(ast_node, source_file, target_file)
         # print(node_macro_list)
         for macro_name in node_macro_list:
+            macro_name = macro_name.split("(")[0]
             if macro_name not in target_macro_list:
                 if macro_name not in Values.VAR_MAP:
                     missing_macro_list[macro_name] = node_macro_list[macro_name]
