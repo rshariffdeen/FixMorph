@@ -14,7 +14,7 @@ def evolve_definitions(missing_definition_list):
     if not missing_definition_list:
         Emitter.normal("\t-none-")
     ast_b = None
-    macro_def_node_list = dict()
+    def_node_list = dict()
     for def_name in missing_definition_list:
         Emitter.normal(def_name)
         macro_info = missing_definition_list[def_name]
@@ -80,6 +80,7 @@ def evolve_functions(missing_function_list):
     def_insert_point = ""
     missing_header_list = dict()
     missing_macro_list = dict()
+    filtered_missing_function_list = dict()
     for function_name in missing_function_list:
         info = missing_function_list[function_name]
         node_id = info['node_id']
@@ -92,12 +93,16 @@ def evolve_functions(missing_function_list):
         function_def_node = Finder.search_ast_node_by_id(ast_map_b, int(node_id))
         function_node, function_source_file = Extractor.extract_complete_function_node(function_def_node,
                                                                                        source_path_b)
-        missing_def_list = Identifier.identify_missing_definitions(function_node, missing_function_list)
-        missing_macro_list = Identifier.identify_missing_macros_in_func(function_node, function_source_file,
-                                                                        source_path_d)
-        missing_header_list = Identifier.identify_missing_headers(function_node, source_path_d)
+        if function_source_file[-1] == "h":
+            header_file = function_source_file.split("/include/")[-1]
+            missing_header_list[header_file] = source_path_b
+        else:
+            missing_def_list = Identifier.identify_missing_definitions(function_node, missing_function_list)
+            missing_macro_list = Identifier.identify_missing_macros_in_func(function_node, function_source_file,
+                                                                            source_path_d)
+            missing_header_list = Identifier.identify_missing_headers(function_node, source_path_d)
         # print(function_name)
-    return missing_header_list, missing_macro_list
+    return missing_header_list, missing_macro_list, filtered_missing_function_list
 
 
 def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, seg_code):
