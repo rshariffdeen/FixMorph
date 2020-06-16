@@ -28,7 +28,7 @@ def identify_missing_labels(neighborhood_a, neighborhood_c, insert_node_b, sourc
         Emitter.information("extracting line number: " + str(line_number))
         goto_code = get_code(source_path_b, line_number)
         Emitter.information("extracted line: " + str(goto_code))
-        identifier = goto_code.strip().replace("goto", "").replace(";", "").replace("\n", "")
+        identifier = goto_code.strip().replace("goto", "").replace(";", "").replace("\n", "").replace(" ", "")
         if identifier not in label_list_c and identifier in label_list_a:
             if identifier in var_map:
                 alias = var_map[identifier]
