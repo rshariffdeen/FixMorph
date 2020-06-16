@@ -92,12 +92,16 @@ def evolve_functions(missing_function_list):
         function_ref_node_id = int(info['ref_node_id'])
         function_ref_node = Finder.search_ast_node_by_id(ast_map_b, function_ref_node_id)
         function_def_node = Finder.search_ast_node_by_id(ast_map_b, int(node_id))
-        function_node, function_source_file = Extractor.extract_complete_function_node(function_def_node,
-                                                                                       source_path_b)
+        function_source_file = function_def_node['file']
         if function_source_file[-1] == "h":
-            header_file = function_source_file.split("/include/")[-1]
+            if "include" in function_source_file:
+                header_file = function_source_file.split("/include/")[-1]
+            else:
+                header_file = function_source_file.split("/")[-1]
             missing_header_list[header_file] = source_path_d
         else:
+            function_node, function_source_file = Extractor.extract_complete_function_node(function_def_node,
+                                                                                           source_path_b)
             missing_def_list = Identifier.identify_missing_definitions(function_node, missing_function_list)
             missing_macro_list = Identifier.identify_missing_macros_in_func(function_node, function_source_file,
                                                                             source_path_d)
