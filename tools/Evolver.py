@@ -20,17 +20,17 @@ def evolve_definitions(missing_definition_list):
         macro_info = missing_definition_list[def_name]
         source_file = macro_info['source']
         target_file = macro_info['target']
-        macro_def_list = Extractor.extract_macro_definitions(source_file)
+        def_node_list = Extractor.extract_macro_definitions(source_file)
         if not ast_b:
             ast_b = Generator.get_ast_json(source_file, use_macro=Values.DONOR_REQUIRE_MACRO)
-            macro_def_node_list = Extractor.extract_macro_def_node_list(ast_b)
-        if def_name in macro_def_node_list:
-            macro_def_node = macro_def_node_list[def_name]
-            if 'identifier' in macro_def_node:
-                identifier = macro_def_node['identifier']
+            def_node_list = Extractor.extract_def_node_list(ast_b)
+        if def_name in def_node_list:
+            def_node = def_node_list[def_name]
+            if 'identifier' in def_node:
+                identifier = def_node['identifier']
                 if identifier == def_name:
-                    if "file" in macro_def_node:
-                        def_file = macro_def_node['file']
+                    if "file" in def_node:
+                        def_file = def_node['file']
                         if def_file[-1] == "h":
                             header_file = def_file.split("/include/")[-1]
                             missing_header_list[header_file] = target_file

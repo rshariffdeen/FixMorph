@@ -315,12 +315,12 @@ def extract_macro_node_list(ast_node):
     return macro_node_list
 
 
-def extract_macro_def_node_list(ast_tree):
+def extract_def_node_list(ast_tree):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     macro_node_list = dict()
-    for ast_node in ast_tree:
+    for ast_node in ast_tree['children']:
         node_type = str(ast_node["type"])
-        if node_type in ["Macro"]:
+        if node_type in ["Macro", "FunctionDecl"]:
             if "identifier" in ast_node:
                 identifier = ast_node['identifier']
                 if "(" in identifier:
