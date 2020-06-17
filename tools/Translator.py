@@ -802,13 +802,14 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     replaced.append(replace_node.id)
                     modified_AB.append((Definitions.REPLACE, nodeB1, replace_node))
             elif nodeB2.type in ["BinaryOperator"]:
+                if nodeB2 in inserted:
+                    continue
                 target_node_b = nodeB2
                 nodeA = match_BA[i[2]]
                 nodeA = id_from_string(nodeA)
                 nodeA = ASTlists[Values.Project_A.name][nodeA]
                 target_node_a = nodeA
                 replace_node = target_node_a.children[int(pos)]
-
                 if replace_node.parent_id not in replaced:
                     replaced.append(replace_node.id)
                     modified_AB.append((Definitions.REPLACE, replace_node, nodeB1))
