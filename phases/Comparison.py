@@ -156,17 +156,19 @@ def compare():
 
     if not Values.SKIP_COMPARE:
         if not Values.PATH_E:
-            error_exit("Path E is missing in configuration")
+            Emitter.special("\n\t-skipping this phase-")
 
-        ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
-                                     Values.PATH_C, Values.PATH_E)
-        # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
-        #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
+        else:
 
-        transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
-                                         Values.PATH_C, Values.Project_D.path)
-        # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
-        #                                  Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
+            ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
+                                         Values.PATH_C, Values.PATH_E)
+            # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
+            #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
+
+            transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
+                                             Values.PATH_C, Values.Project_D.path)
+            # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
+            #                                  Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
 
         save_values()
     else:
