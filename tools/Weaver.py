@@ -327,13 +327,13 @@ def weave_slice(slice_info):
             segment_identifier = slice_file.split("." + segment_code + ".")[-1].replace(".slice", "")
             Emitter.normal("\t\t\tweaving slice " + segment_identifier)
             segment_type = Values.segment_map[segment_code]
-            backup_file_orig(source_file_c)
-            replace_file(slice_file, source_file_c)
+            backup_file_orig(source_file_d)
+            replace_file(slice_file, source_file_d)
             if Values.TARGET_REQUIRE_MACRO:
                 Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
-            ast_tree_slice = Generator.get_ast_json(source_file_c, Values.TARGET_REQUIRE_MACRO, True)
-            restore_file_orig(source_file_c)
-            ast_tree_source = Generator.get_ast_json(source_file_c, Values.TARGET_REQUIRE_MACRO, True)
+            ast_tree_slice = Generator.get_ast_json(source_file_d, Values.TARGET_REQUIRE_MACRO, True)
+            restore_file_orig(source_file_d)
+            ast_tree_source = Generator.get_ast_json(source_file_d, Values.TARGET_REQUIRE_MACRO, True)
             segment_node_slice = Finder.search_node(ast_tree_slice, segment_type, segment_identifier)
             segment_node_source = Finder.search_node(ast_tree_source, segment_type, segment_identifier)
             start_line_source = int(segment_node_source['start line'])
