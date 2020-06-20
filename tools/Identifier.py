@@ -157,22 +157,29 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                 if ref_type == "VarDecl":
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
+                            info = dict()
+                            info['ref_list'] = [neighborhood_b['value']]
                             if identifier in dec_list_local_a.keys():
-                                info = dict()
-                                info['ref_list'] = list()
                                 info['ast-node'] = dec_list_local_b[identifier]
-                                info['references'] = [neighborhood_b['value']]
                                 info['pre-exist'] = True
                                 info['is_global'] = False
-                                missing_var_list[identifier] = info
+
+                            elif identifier in dec_list_global_a.keys():
+                                info['is_global'] = True
+                                info['pre-exist'] = True
+                                info['ast-node'] = dec_list_global_b[identifier]
+
                             elif identifier in dec_list_local_b.keys():
-                                info = dict()
-                                info['ref_list'] = list()
                                 info['is_global'] = False
                                 info['pre-exist'] = False
                                 info['ast-node'] = dec_list_local_b[identifier]
-                                info['references'] = [neighborhood_b['value']]
-                                missing_var_list[identifier] = info
+
+                            elif identifier in dec_list_global_b.keys():
+                                info['is_global'] = True
+                                info['pre-exist'] = False
+                                info['ast-node'] = dec_list_global_b[identifier]
+
+                            missing_var_list[identifier] = info
                         else:
                             if neighborhood_b['value'] not in missing_var_list[identifier]['references']:
                                 missing_var_list[identifier]['references'].append(neighborhood_b['value'])
