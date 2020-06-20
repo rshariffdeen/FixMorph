@@ -175,6 +175,20 @@ def extract_decl_node_list(ast_node):
     return dec_list
 
 
+def extract_decl_node_list_global(ast_tree):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    dec_list = dict()
+    if not ast_tree:
+        return dec_list
+    if len(ast_tree['children']) > 0:
+        for child_node in ast_tree['children']:
+            child_node_type = child_node['type']
+            if child_node_type in ["FunctionDecl", "VarDecl", "ParmVarDecl"]:
+                identifier = str(child_node['identifier'])
+                dec_list[identifier] = child_node
+    return dec_list
+
+
 def extract_enum_node_list(ast_tree):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dec_list = dict()

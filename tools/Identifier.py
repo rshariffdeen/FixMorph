@@ -101,9 +101,9 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
     ast_tree_a = Generator.get_ast_json(source_path_a)
     ast_tree_b = Generator.get_ast_json(source_path_b)
     ast_tree_c = Generator.get_ast_json(source_path_c)
-    dec_list_global_a = Extractor.extract_decl_node_list(ast_tree_a)
-    dec_list_global_b = Extractor.extract_decl_node_list(ast_tree_b)
-    dec_list_global_c = Extractor.extract_decl_node_list(ast_tree_c)
+    dec_list_global_a = Extractor.extract_decl_node_list_global(ast_tree_a)
+    dec_list_global_b = Extractor.extract_decl_node_list_global(ast_tree_b)
+    dec_list_global_c = Extractor.extract_decl_node_list_global(ast_tree_c)
     # enum_list = Extractor.extract_enum_node_list(ast_tree)
     if insert_node_b['type'] == "Macro":
         if "value" in insert_node_b:
