@@ -114,7 +114,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                 # print(operand_list)
                 for operand in operand_list:
                     identifier = operand.strip().replace("\n", "")
-                    if identifier not in [dec_list_local_c.keys() + dec_list_global_c.keys()]:
+                    if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
                             info = dict()
                             info['ref_list'] = [neighborhood_b['value']]
@@ -155,7 +155,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                 ref_type = str(ref_node['ref_type'])
                 identifier = str(ref_node['value'])
                 if ref_type == "VarDecl":
-                    if identifier not in [dec_list_local_c.keys() + dec_list_global_c.keys()]:
+                    if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
                             if identifier in dec_list_local_a.keys():
                                 info = dict()
