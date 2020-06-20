@@ -99,6 +99,7 @@ def evolve_functions(missing_function_list):
             else:
                 header_file = function_source_file.split("/")[-1]
             missing_header_list[header_file] = source_path_d
+
         else:
             function_node, function_source_file = Extractor.extract_complete_function_node(function_def_node,
                                                                                            source_path_b)

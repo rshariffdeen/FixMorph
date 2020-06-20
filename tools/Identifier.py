@@ -93,6 +93,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
     # print(ref_list)
     dec_list_a = Extractor.extract_decl_node_list(neighborhood_a)
     dec_list_b = Extractor.extract_decl_node_list(neighborhood_b)
+    dec_list_b = Extractor.extract_decl_node_list(neighborhood_b)
     # print(dec_list_a.keys())
     dec_list_c = Extractor.extract_decl_node_list(neighborhood_c)
     # print(dec_list_c.keys())
@@ -108,11 +109,19 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                 for operand in operand_list:
                     identifier = operand.strip().replace("\n", "")
                     if identifier not in dec_list_c.keys():
-                        if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
-                            info = dict()
-                            info['ref_list'] = list()
-                            info['ast-node'] = dec_list_b[identifier]
-                            missing_var_list[identifier] = info
+                        if identifier not in missing_var_list.keys():
+                            if identifier in dec_list_a.keys():
+                                info = dict()
+                                info['ref_list'] = list()
+                                info['ast-node'] = dec_list_b[identifier]
+                                missing_var_list[identifier] = info
+                            elif identifier in dec_list_b.keys():
+                                info = dict()
+                                info['ref_list'] = list()
+                                info['is_global'] = True
+                                info['ast-node'] = dec_list_b[identifier]
+                                missing_var_list[identifier] = info
+
                 # print(missing_var_list)
                 return missing_var_list
 
@@ -125,11 +134,19 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                 identifier = str(ref_node['value'])
                 if ref_type == "VarDecl":
                     if identifier not in dec_list_c.keys():
-                        if identifier not in missing_var_list.keys() and identifier in dec_list_a.keys():
-                            info = dict()
-                            info['ref_list'] = list()
-                            info['ast-node'] = dec_list_a[identifier]
-                            missing_var_list[identifier] = info
+                        if identifier not in missing_var_list.keys():
+                            if identifier in dec_list_a.keys():
+                                info = dict()
+                                info['ref_list'] = list()
+                                info['ast-node'] = dec_list_a[identifier]
+                                missing_var_list[identifier] = info
+                            elif identifier in dec_list_b.keys():
+                                info = dict()
+                                info['ref_list'] = list()
+                                info['is_glogbal'] = True
+                                info['ast-node'] = dec_list_a[identifier]
+                                missing_var_list[identifier] = info
+
                     # elif identifier not in var_map.keys():
                     #     skip = False
                     #     for var in var_map.keys():
