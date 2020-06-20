@@ -177,6 +177,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
                                                                         neighborhood_c,
                                                                         check_node,
                                                                         file_b,
+                                                                        file_c,
                                                                         var_map
                                                                         ))
 
