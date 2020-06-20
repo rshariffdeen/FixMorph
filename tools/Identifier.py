@@ -114,13 +114,22 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                                 info = dict()
                                 info['ref_list'] = list()
                                 info['ast-node'] = dec_list_b[identifier]
+                                info['references'] = [neighborhood_b['value']]
+                                info['pre-exist'] = True
+                                info['is_global'] = False
                                 missing_var_list[identifier] = info
                             elif identifier in dec_list_b.keys():
                                 info = dict()
                                 info['ref_list'] = list()
-                                info['is_global'] = True
+                                info['is_global'] = False
+                                info['pre-exist'] = False
                                 info['ast-node'] = dec_list_b[identifier]
+                                info['references'] = [neighborhood_b['value']]
                                 missing_var_list[identifier] = info
+                        else:
+                            if neighborhood_b['value'] not in missing_var_list[identifier]['references']:
+                                missing_var_list[identifier]['references'].append(neighborhood_b['value'])
+                                missing_var_list[identifier]['is_global'] = True
 
                 # print(missing_var_list)
                 return missing_var_list
@@ -138,14 +147,23 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                             if identifier in dec_list_a.keys():
                                 info = dict()
                                 info['ref_list'] = list()
-                                info['ast-node'] = dec_list_a[identifier]
+                                info['ast-node'] = dec_list_b[identifier]
+                                info['references'] = [neighborhood_b['value']]
+                                info['pre-exist'] = True
+                                info['is_global'] = False
                                 missing_var_list[identifier] = info
                             elif identifier in dec_list_b.keys():
                                 info = dict()
                                 info['ref_list'] = list()
-                                info['is_glogbal'] = True
-                                info['ast-node'] = dec_list_a[identifier]
+                                info['is_global'] = False
+                                info['pre-exist'] = False
+                                info['ast-node'] = dec_list_b[identifier]
+                                info['references'] = [neighborhood_b['value']]
                                 missing_var_list[identifier] = info
+                        else:
+                            if neighborhood_b['value'] not in missing_var_list[identifier]['references']:
+                                missing_var_list[identifier]['references'].append(neighborhood_b['value'])
+                                missing_var_list[identifier]['is_global'] = True
 
                     # elif identifier not in var_map.keys():
                     #     skip = False
