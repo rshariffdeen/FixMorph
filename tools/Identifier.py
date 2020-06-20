@@ -88,16 +88,20 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tanalysing for missing variables")
     missing_var_list = dict()
+    source_path_a = source_path_b.replace(Values.PATH_B, Values.PATH_A)
     # print(insert_node_b)
     ref_list = Extractor.extract_reference_node_list(insert_node_b)
     # print(ref_list)
-    dec_list_a = Extractor.extract_decl_node_list(neighborhood_a)
-    dec_list_b = Extractor.extract_decl_node_list(neighborhood_b)
-    dec_list_b = Extractor.extract_decl_node_list(neighborhood_b)
+    dec_list_local_a = Extractor.extract_decl_node_list(neighborhood_a)
+    dec_list_local_b = Extractor.extract_decl_node_list(neighborhood_b)
+
     # print(dec_list_a.keys())
     dec_list_c = Extractor.extract_decl_node_list(neighborhood_c)
     # print(dec_list_c.keys())
-    ast_tree = Generator.get_ast_json(source_path_b)
+    ast_tree_a = Generator.get_ast_json(source_path_a)
+    ast_tree_b = Generator.get_ast_json(source_path_b)
+    dec_list_global_a = Extractor.extract_decl_node_list(ast_tree_a)
+    dec_list_global_b = Extractor.extract_decl_node_list(ast_tree_b)
     # enum_list = Extractor.extract_enum_node_list(ast_tree)
     if insert_node_b['type'] == "Macro":
         if "value" in insert_node_b:
@@ -110,22 +114,29 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                     identifier = operand.strip().replace("\n", "")
                     if identifier not in dec_list_c.keys():
                         if identifier not in missing_var_list.keys():
-                            if identifier in dec_list_a.keys():
-                                info = dict()
-                                info['ref_list'] = list()
-                                info['ast-node'] = dec_list_b[identifier]
-                                info['references'] = [neighborhood_b['value']]
+                            info = dict()
+                            info['ref_list'] = [neighborhood_b['value']]
+                            if identifier in dec_list_local_a.keys():
+                                info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
                                 info['is_global'] = False
-                                missing_var_list[identifier] = info
-                            elif identifier in dec_list_b.keys():
-                                info = dict()
-                                info['ref_list'] = list()
+
+                            elif identifier in dec_list_global_a.keys():
+                                info['is_global'] = True
+                                info['pre-exist'] = True
+                                info['ast-node'] = dec_list_global_b[identifier]
+
+                            elif identifier in dec_list_local_b.keys():
                                 info['is_global'] = False
                                 info['pre-exist'] = False
-                                info['ast-node'] = dec_list_b[identifier]
-                                info['references'] = [neighborhood_b['value']]
-                                missing_var_list[identifier] = info
+                                info['ast-node'] = dec_list_local_b[identifier]
+
+                            elif identifier in dec_list_global_b.keys():
+                                info['is_global'] = True
+                                info['pre-exist'] = False
+                                info['ast-node'] = dec_list_global_b[identifier]
+
+                            missing_var_list[identifier] = info
                         else:
                             if neighborhood_b['value'] not in missing_var_list[identifier]['references']:
                                 missing_var_list[identifier]['references'].append(neighborhood_b['value'])
@@ -144,20 +155,20 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                 if ref_type == "VarDecl":
                     if identifier not in dec_list_c.keys():
                         if identifier not in missing_var_list.keys():
-                            if identifier in dec_list_a.keys():
+                            if identifier in dec_list_local_a.keys():
                                 info = dict()
                                 info['ref_list'] = list()
-                                info['ast-node'] = dec_list_b[identifier]
+                                info['ast-node'] = dec_list_local_b[identifier]
                                 info['references'] = [neighborhood_b['value']]
                                 info['pre-exist'] = True
                                 info['is_global'] = False
                                 missing_var_list[identifier] = info
-                            elif identifier in dec_list_b.keys():
+                            elif identifier in dec_list_local_b.keys():
                                 info = dict()
                                 info['ref_list'] = list()
                                 info['is_global'] = False
                                 info['pre-exist'] = False
-                                info['ast-node'] = dec_list_b[identifier]
+                                info['ast-node'] = dec_list_local_b[identifier]
                                 info['references'] = [neighborhood_b['value']]
                                 missing_var_list[identifier] = info
                         else:
