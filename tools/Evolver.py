@@ -137,7 +137,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
     neighborhood_a = Extractor.extract_neighborhood(file_a, seg_code, seg_id_a)
     neighborhood_b = Extractor.extract_neighborhood(file_b, seg_code, seg_id_a)
     neighborhood_c = Extractor.extract_neighborhood(file_c, seg_code, seg_id_c)
-
+    var_map = Values.VAR_MAP[(file_a, file_c)]
     with open(script_file_name, 'w') as script_file:
         count = 0
         for instruction in instruction_list:
@@ -171,7 +171,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
                                                                              file_b,
                                                                              file_d
                                                                              ))
-                var_map = Values.VAR_MAP[(file_a, file_c)]
+
                 missing_var_list.update(Identifier.identify_missing_var(neighborhood_a,
                                                                         neighborhood_b,
                                                                         neighborhood_c,
