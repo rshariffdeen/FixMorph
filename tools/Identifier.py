@@ -213,7 +213,18 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                     print(enum_ref_node)
                     enum_def_node = Finder.search_ast_node_by_id(ast_tree_b, int(enum_ref_node['parent_id']))
                     print(enum_def_node)
-                    missing_var_list[identifier] = 0
+                    enum_value_str = ""
+                    enum_value_int = 0
+                    for enum_const in enum_def_node['children']:
+                        if enum_const['type'] == "EnumConstantDecl":
+                            enum_value_int = enum_value_int + 1
+                            if len(enum_const['children']):
+                                enum_const_type = enum_const['children'][0]['type']
+                                if enum_const_type == "IntegerLiteral":
+                                    enum_value_int = int(enum_const['children'][0]['value'])
+                                else:
+                                    Emitter.warning("Unhandled enum constant type")
+                    missing_var_list[identifier] = enum_value_int
 
     print(missing_var_list)
     return missing_var_list
