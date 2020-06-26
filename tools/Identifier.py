@@ -205,13 +205,14 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                     continue
             else:
                 identifier = str(ref_node['value'])
+                print(identifier)
                 if identifier not in missing_var_list.keys() and identifier in enum_list_b.keys():
                     info = dict()
                     info['ref_list'] = list()
                     info['ast-node'] = enum_list_b[identifier]
                     missing_var_list[identifier] = info
 
-    # print(missing_var_list)
+    print(missing_var_list)
     return missing_var_list
 
 
