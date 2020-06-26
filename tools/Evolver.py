@@ -1,6 +1,6 @@
 from common import Definitions, Values
 from common.Utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
-from tools import Emitter, Logger, Finder, Extractor, Identifier
+from tools import Emitter, Logger, Finder, Extractor, Identifier, Writer
 from ast import Generator
 
 import os
@@ -198,15 +198,21 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
         for var in missing_var_list:
             # print(var)
             var_info = missing_var_list[var]
-            ast_node = var_info['ast-node']
-            # not sure why the if is required
-            # if "ref_type" in ast_node.keys():
-            node_id_a = ast_node['id']
-            node_id_b = node_id_a
-            instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
-            instruction += " into " + position_c
-            script_file.write(instruction + "\n")
-            Emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
+            if "ast-node" in var_info.keys():
+                ast_node = var_info['ast-node']
+                # not sure why the if is required
+                # if "ref_type" in ast_node.keys():
+                node_id_a = ast_node['id']
+                node_id_b = node_id_a
+                instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
+                instruction += " into " + position_c
+                script_file.write(instruction + "\n")
+                Emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
+            elif "value" in var_info.keys():
+                var_map[var] = var_info['value']
+
+        Values.VAR_MAP[(file_a, file_c)] = var_map
+        Writer.write_var_map(var_map, Definitions.FILE_VAR_MAP)
         offset = len(target_ast['children']) - 1
         position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
         for label in missing_label_list:

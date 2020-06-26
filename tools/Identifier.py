@@ -224,8 +224,10 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                                     enum_value_int = int(enum_const['children'][0]['value'])
                                 else:
                                     Emitter.warning("Unhandled enum constant type")
-                    info['value'] = enum_value_int
-                    missing_var_list[identifier] = info
+                            enum_identifier = enum_const['identifier']
+                            if enum_identifier == identifier:
+                                info['value'] = enum_value_int
+                                missing_var_list[identifier] = info
 
     print(missing_var_list)
     return missing_var_list
