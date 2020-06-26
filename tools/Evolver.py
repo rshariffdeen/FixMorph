@@ -209,7 +209,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
                 script_file.write(instruction + "\n")
                 Emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
             elif "value" in var_info.keys():
-                var_map[var] = var_info['value']
+                var_map[var] = str(var_info['value'])
 
         Values.VAR_MAP[(file_a, file_c)] = var_map
         Writer.write_var_map(var_map, Definitions.FILE_VAR_MAP)

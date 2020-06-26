@@ -205,14 +205,14 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                     continue
             else:
                 identifier = str(ref_node['value'])
-                print(identifier)
+                # print(identifier)
                 if identifier not in missing_var_list.keys() and identifier in enum_list_b.keys():
                     info = dict()
                     info['ref_list'] = list()
                     enum_ref_node = enum_list_b[identifier]
-                    print(enum_ref_node)
+                    # print(enum_ref_node)
                     enum_def_node = Finder.search_ast_node_by_id(ast_tree_b, int(enum_ref_node['parent_id']))
-                    print(enum_def_node)
+                    #print(enum_def_node)
                     enum_value_str = ""
                     enum_value_int = 0
                     for enum_const in enum_def_node['children']:
@@ -229,7 +229,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                                 info['value'] = enum_value_int
                                 missing_var_list[identifier] = info
 
-    print(missing_var_list)
+    # print(missing_var_list)
     return missing_var_list
 
 
