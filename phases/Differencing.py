@@ -98,6 +98,7 @@ def load_values():
     Definitions.FILE_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/diff-info"
     Definitions.FILE_TEMP_DIFF = Definitions.DIRECTORY_OUTPUT + "/temp_diff"
     Definitions.FILE_AST_DIFF_ERROR = Definitions.DIRECTORY_OUTPUT + "/errors_ast_diff"
+    Definitions.FILE_N_COUNT = Definitions.DIRECTORY_OUTPUT + "/n-count"
 
 
 def save_values():

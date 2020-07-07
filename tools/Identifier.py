@@ -7,7 +7,7 @@ import os
 
 from common.Utilities import error_exit, is_intersect, get_code
 import collections
-from common import Values
+from common import Values, Definitions
 from tools import Emitter, Logger, Extractor, Finder, Oracle, Converter, Merger
 from ast import Generator, Vector
 from tools import Generator as Gen
@@ -714,6 +714,7 @@ def separate_segment(project, source_file, use_macro=False):
 
 def create_vectors(project, source_file, segmentation_list, pertinent_lines):
     Emitter.normal("\t\t\tcreating vectors for neighborhoods")
+    neighbor_list = list()
     enum_list, function_list, macro_list, \
     struct_list, type_def_list, def_list, decl_list = segmentation_list
     for function_name, begin_line, finish_line in function_list:
@@ -725,6 +726,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines):
                     project.function_list[source_file] = dict()
                 if function_name not in project.function_list[source_file]:
                     Emitter.success("\t\t\tFunction: " + function_name.replace("func_", ""))
+                    neighbor_list.append(function_name)
                     project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name,
                                                                                       begin_line, finish_line, True)
 
@@ -737,6 +739,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines):
                     project.struct_list[source_file] = dict()
                 if struct_name not in project.struct_list[source_file]:
                     Emitter.success("\t\t\tStruct: " + struct_name.replace("struct_", ""))
+                    neighbor_list.append(struct_name)
                     project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name,
                                                                                   begin_line, finish_line, True)
 
@@ -751,6 +754,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines):
                     project.decl_list[source_file] = dict()
                 if var_name not in project.decl_list[source_file]:
                     Emitter.success("\t\t\tVariable: " + var_name.replace("var_", ""))
+                    neighbor_list.append(var_name)
                     project.decl_list[source_file][var_name] = Vector.Vector(source_file, var_name,
                                                                              begin_line, finish_line, True)
 
@@ -763,6 +767,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines):
                     project.macro_list[source_file] = dict()
                 if macro_name not in project.macro_list[source_file]:
                     Emitter.success("\t\t\tMacro: " + macro_name.replace("macro_", ""))
+                    neighbor_list.append(macro_name)
                     project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name,
                                                                                 begin_line, finish_line, True)
 
@@ -780,9 +785,12 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines):
                     project.enum_list[source_file] = dict()
                 if enum_name not in project.enum_list[source_file]:
                     Emitter.success("\t\t\tEnum: " + enum_name.replace("enum_", ""))
+                    neighbor_list.append(enum_name)
                     project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name,
                                                                               begin_line, finish_line, True)
 
+    with open(Definitions.FILE_N_COUNT, "w") as out_file:
+        out_file.writelines(neighbor_list)
     return Values.IS_ENUM or Values.IS_FUNCTION or Values.IS_MACRO or Values.IS_STRUCT or Values.IS_TYPEDEC
 
 

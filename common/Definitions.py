@@ -74,6 +74,7 @@ FILE_MISSING_FUNCTIONS = ""
 FILE_MISSING_MACROS = ""
 FILE_MISSING_HEADERS = ""
 FILE_MISSING_TYPES = ""
+FILE_N_COUNT = ""
 
 # ------------------- Configuration --------------------
 
