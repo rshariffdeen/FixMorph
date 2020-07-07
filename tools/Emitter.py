@@ -161,7 +161,17 @@ def help():
     print("\t" + Definitions.ARG_SKIP_VERIFY + "\t| " + "skip verification")
 
     print("Run Only Phases\n-----------------------\n")
+    print("\t" + Definitions.ARG_ONLY_BUILD + "\t| " + "run only build step")
+    print("\t" + Definitions.ARG_ONLY_DIFF + "\t| " + "run only differentiation")
+    print("\t" + Definitions.ARG_ONLY_DETECT + "\t| " + "run only detection")
+    print("\t" + Definitions.ARG_ONLY_SLICE + "\t| " + "run only slicing")
+    print("\t" + Definitions.ARG_ONLY_EXTRACT + "\t| " + "run only extraction")
+    print("\t" + Definitions.ARG_ONLY_MAP + "\t| " + "run only mapping")
+    print("\t" + Definitions.ARG_ONLY_TRANSLATE + "\t| " + "run only translation")
+    print("\t" + Definitions.ARG_ONLY_EVOLVE + "\t| " + "run only evolution")
     print("\t" + Definitions.ARG_ONLY_WEAVE + "\t| " + "run only transplantation")
-    print("\t" + Definitions.ARG_ONLY_BUILD + "\t| " + "run only build")
     print("\t" + Definitions.ARG_ONLY_VERIFY + "\t| " + "run only verification")
+    print("\t" + Definitions.ARG_ONLY_COMPARISON + "\t| " + "run only comparison")
+    print("\t" + Definitions.ARG_ONLY_SUMMARIZE + "\t| " + "run only summarize")
+
 

@@ -343,6 +343,45 @@ def read_conf():
                 Values.SKIP_DETECTION = True
                 Values.SKIP_COMPARE = True
                 Values.SKIP_SEGMENT = True
+            elif Definitions.ARG_ONLY_DIFF in arg:
+                Values.SKIP_VERIFY = True
+                Values.SKIP_RESTORE = True
+                Values.SKIP_SUMMARY = True
+                Values.SKIP_BUILD = True
+                Values.SKIP_EVOLVE = True
+                Values.SKIP_WEAVE = True
+                Values.SKIP_MAPPING = True
+                Values.SKIP_EXTRACTION = True
+                Values.SKIP_TRANSLATION = True
+                Values.SKIP_DETECTION = True
+                Values.SKIP_COMPARE = True
+                Values.SKIP_SEGMENT = True
+            elif Definitions.ARG_ONLY_SLICE in arg:
+                Values.SKIP_VERIFY = True
+                Values.SKIP_RESTORE = True
+                Values.SKIP_SUMMARY = True
+                Values.SKIP_BUILD = True
+                Values.SKIP_EVOLVE = True
+                Values.SKIP_WEAVE = True
+                Values.SKIP_MAPPING = True
+                Values.SKIP_EXTRACTION = True
+                Values.SKIP_TRANSLATION = True
+                Values.SKIP_DETECTION = True
+                Values.SKIP_COMPARE = True
+                Values.SKIP_DIFF = True
+            elif Definitions.ARG_ONLY_EXTRACT in arg:
+                Values.SKIP_VERIFY = True
+                Values.SKIP_RESTORE = True
+                Values.SKIP_SUMMARY = True
+                Values.SKIP_BUILD = True
+                Values.SKIP_EVOLVE = True
+                Values.SKIP_WEAVE = True
+                Values.SKIP_MAPPING = True
+                Values.SKIP_SEGMENT = True
+                Values.SKIP_TRANSLATION = True
+                Values.SKIP_DETECTION = True
+                Values.SKIP_COMPARE = True
+                Values.SKIP_DIFF = True
             elif Definitions.ARG_SKIP_BUILD in arg:
                 Values.SKIP_BUILD = True
             elif Definitions.ARG_LINUX_KERNEL in arg:
