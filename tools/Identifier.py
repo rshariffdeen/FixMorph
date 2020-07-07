@@ -790,7 +790,8 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines):
                                                                               begin_line, finish_line, True)
 
     with open(Definitions.FILE_N_COUNT, "w") as out_file:
-        out_file.writelines(neighbor_list)
+        for neighbor_name in neighbor_list:
+            out_file.write(neighbor_name + "\n")
     return Values.IS_ENUM or Values.IS_FUNCTION or Values.IS_MACRO or Values.IS_STRUCT or Values.IS_TYPEDEC
 
 
