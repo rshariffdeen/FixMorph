@@ -240,6 +240,7 @@ def read_conf():
                 Values.SKIP_BUILD = True
                 Values.SKIP_WEAVE = True
                 Values.SKIP_DIFF = True
+                Values.SKIP_SLICE = True
                 Values.SKIP_MAPPING = True
                 Values.SKIP_EXTRACTION = True
                 Values.SKIP_TRANSLATION = True
@@ -252,6 +253,7 @@ def read_conf():
                 Values.ONLY_EVOLVE = True
                 Values.SKIP_VERIFY = True
                 Values.SKIP_RESTORE = True
+                Values.SKIP_SLICE = True
                 Values.SKIP_BUILD = True
                 Values.SKIP_WEAVE = True
                 Values.SKIP_DIFF = True
@@ -271,6 +273,7 @@ def read_conf():
                 Values.SKIP_DIFF = True
                 Values.SKIP_MAPPING = True
                 Values.SKIP_EXTRACTION = True
+                Values.SKIP_SLICE = True
                 Values.SKIP_TRANSLATION = True
                 Values.SKIP_COMPARE = True
                 Values.SKIP_SUMMARY = True
@@ -290,11 +293,13 @@ def read_conf():
                 Values.SKIP_SUMMARY = True
                 Values.SKIP_SEGMENT = True
                 Values.SKIP_COMPARE = True
+                Values.SKIP_SLICE = True
             elif Definitions.ARG_ONLY_TRANSLATE in arg:
                 Values.ONLY_TRANSLATE = True
                 Values.SKIP_EVOLVE = True
                 Values.SKIP_RESTORE = True
                 Values.SKIP_BUILD = True
+                Values.SKIP_SLICE = True
                 Values.SKIP_WEAVE = True
                 Values.SKIP_DIFF = True
                 Values.SKIP_VERIFY = True
@@ -316,6 +321,7 @@ def read_conf():
                 Values.SKIP_DETECTION = True
                 Values.SKIP_SEGMENT = True
                 Values.SKIP_COMPARE = True
+                Values.SKIP_SLICE = True
             elif Definitions.ARG_ONLY_ANALYSE in arg:
                 Values.ONLY_ANALYSE = True
                 Values.SKIP_VERIFY = True
@@ -330,6 +336,7 @@ def read_conf():
                 Values.SKIP_WEAVE = True
                 Values.SKIP_COMPARE = True
                 Values.SKIP_SEGMENT = True
+                Values.SKIP_SLICE = True
             elif Definitions.ARG_ONLY_WEAVE in arg:
                 Values.SKIP_VERIFY = True
                 Values.SKIP_RESTORE = True
@@ -343,6 +350,7 @@ def read_conf():
                 Values.SKIP_DETECTION = True
                 Values.SKIP_COMPARE = True
                 Values.SKIP_SEGMENT = True
+                Values.SKIP_SLICE = True
             elif Definitions.ARG_ONLY_DIFF in arg:
                 Values.SKIP_VERIFY = True
                 Values.SKIP_RESTORE = True
@@ -356,6 +364,7 @@ def read_conf():
                 Values.SKIP_DETECTION = True
                 Values.SKIP_COMPARE = True
                 Values.SKIP_SEGMENT = True
+                Values.SKIP_SLICE = True
             elif Definitions.ARG_ONLY_SLICE in arg:
                 Values.SKIP_VERIFY = True
                 Values.SKIP_RESTORE = True
@@ -375,6 +384,7 @@ def read_conf():
                 Values.SKIP_SUMMARY = True
                 Values.SKIP_BUILD = True
                 Values.SKIP_EVOLVE = True
+                Values.SKIP_SLICE = True
                 Values.SKIP_WEAVE = True
                 Values.SKIP_MAPPING = True
                 Values.SKIP_SEGMENT = True
@@ -394,6 +404,7 @@ def read_conf():
                 Values.SKIP_BUILD = True
                 Values.SKIP_EVOLVE = True
                 Values.SKIP_DIFF = True
+                Values.SKIP_SLICE = True
                 Values.SKIP_MAPPING = True
                 Values.SKIP_EXTRACTION = True
                 Values.SKIP_TRANSLATION = True
@@ -407,6 +418,7 @@ def read_conf():
                 Values.SKIP_MAPPING = True
                 Values.SKIP_EVOLVE = True
                 Values.SKIP_EXTRACTION = True
+                Values.SKIP_SLICE = True
                 Values.SKIP_TRANSLATION = True
                 Values.SKIP_DETECTION = True
                 Values.SKIP_BUILD = True
