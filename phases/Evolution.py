@@ -134,7 +134,7 @@ def evolve():
     Emitter.title("Evolve transformation")
     load_values()
     if Values.PHASE_SETTING[Definitions.PHASE_EVOLUTION]:
-        safe_exec(evolve_code, "evolve code slices")
+        safe_exec(evolve_code, "evaluate code slices")
         if Values.missing_function_list:
             safe_exec(evolve_functions, "evolve function definitions")
         if Values.missing_data_type_list:

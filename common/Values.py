@@ -15,6 +15,11 @@ FORK = False
 IS_LINUX_KERNEL = False
 SKIP_VEC_GEN = False
 
+count_orig_total_N = 0
+count_orig_localized_N = 0
+count_trans_total_N = 0
+count_trans_localized_N = 0
+
 
 PHASE_SETTING = {
     Definitions.PHASE_BUILD: 1,
