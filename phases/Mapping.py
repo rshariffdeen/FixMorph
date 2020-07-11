@@ -51,7 +51,7 @@ def map():
     Emitter.title("Variable Mapping")
     load_values()
 
-    if not Values.SKIP_MAPPING:
+    if Values.PHASE_SETTING[Definitions.PHASE_MAPPING]:
         if not Values.generated_script_files:
             error_exit("no ast to map")
         safe_exec(generate_map, 'derivation of variable/data-structure map')

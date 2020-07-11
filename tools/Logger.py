@@ -76,6 +76,7 @@ def end(time_duration):
     output("Evolution: " + time_duration[Definitions.KEY_DURATION_EVOLUTION] + " seconds")
     output("Transplantation: " + time_duration[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
     output("Verification: " + time_duration[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
+    output("Evaluation: " + time_duration[Definitions.KEY_DURATION_EVALUATION] + " seconds")
     output("Comparison: " + time_duration[Definitions.KEY_DURATION_COMPARISON] + " seconds")
     output("Summarizing: " + time_duration[Definitions.KEY_DURATION_SUMMARIZATION] + " seconds")
     output("\nCrochet finished successfully after " + time_duration[Definitions.KEY_DURATION_TOTAL] + " seconds\n")

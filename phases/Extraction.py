@@ -106,7 +106,7 @@ def extract():
     Emitter.title("Extract AST Transformation")
     # Using all previous structures to transplant patch
     load_values()
-    if not Values.SKIP_EXTRACTION:
+    if Values.PHASE_SETTING[Definitions.PHASE_EXTRACTION]:
         if not Values.file_list_to_patch:
             error_exit("no clone file detected to generate AST")
         safe_exec(generate_script_for_files, "extraction of AST transformation", Values.file_list_to_patch)

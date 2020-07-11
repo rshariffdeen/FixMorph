@@ -180,10 +180,6 @@ def read_conf_file():
             Values.BUILD_COMMAND_C = configuration.replace(Definitions.CONF_BUILD_COMMAND_C, '')
         elif Definitions.CONF_ASAN_FLAG in configuration:
             Values.ASAN_FLAG = configuration.replace(Definitions.CONF_ASAN_FLAG, '')
-        elif Definitions.CONF_KLEE_FLAGS_A in configuration:
-            Values.KLEE_FLAG_A = configuration.replace(Definitions.CONF_KLEE_FLAGS_A, '')
-        elif Definitions.CONF_KLEE_FLAGS_C in configuration:
-            Values.KLEE_FLAG_C = configuration.replace(Definitions.CONF_KLEE_FLAGS_C, '')
         elif Definitions.CONF_DIFF_SIZE in configuration:
             Values.AST_DIFF_SIZE = configuration.replace(Definitions.CONF_DIFF_SIZE, '')
         elif Definitions.CONF_EXPLOIT_C in configuration:
@@ -202,28 +198,8 @@ def read_conf():
         for arg in sys.argv:
             if Definitions.ARG_DEBUG in arg:
                 Values.DEBUG = True
-            elif Definitions.ARG_SKIP_DIFFERENCE in arg:
-                Values.SKIP_DIFF = True
-            elif Definitions.ARG_SKIP_SEGMENT in arg:
-                Values.SKIP_SEGMENT = True
-            elif Definitions.ARG_SKIP_DETECTION in arg:
-                Values.SKIP_DETECTION = True
             elif Definitions.ARG_SKIP_VEC_GEN in arg:
                 Values.SKIP_VEC_GEN = True
-            elif Definitions.ARG_SKIP_EXTRACTION in arg:
-                Values.SKIP_EXTRACTION = True
-            elif Definitions.ARG_SKIP_MAPPING in arg:
-                Values.SKIP_MAPPING = True
-            elif Definitions.ARG_SKIP_WEAVE in arg:
-                Values.SKIP_WEAVE = True
-            elif Definitions.ARG_SKIP_VERIFY in arg:
-                Values.SKIP_VERIFY = True
-            elif Definitions.ARG_SKIP_SUMMARY in arg:
-                Values.SKIP_SUMMARY = True
-            elif Definitions.ARG_SKIP_COMPARE in arg:
-                Values.SKIP_COMPARE = True
-            elif Definitions.ARG_SKIP_TRANSLATION in arg:
-                Values.SKIP_TRANSLATION = True
             elif Definitions.ARG_SKIP_RESTORE in arg:
                 Values.SKIP_RESTORE = True
             elif Definitions.ARG_USE_CACHE in arg:
@@ -234,196 +210,20 @@ def read_conf():
                 Values.FORK = True
             elif Definitions.ARG_CONF_FILE in arg:
                 Values.FILE_CONFIGURATION = str(arg).replace(Definitions.ARG_CONF_FILE, '')
-            elif Definitions.ARG_ONLY_VERIFY in arg:
-                Values.ONLY_VERIFY = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_SLICE = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_EVOLVE = True
-            elif Definitions.ARG_ONLY_EVOLVE in arg:
-                Values.ONLY_EVOLVE = True
-                Values.SKIP_VERIFY = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_SLICE = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_SEGMENT = True
-            elif Definitions.ARG_ONLY_DETECT in arg:
-                Values.ONLY_DETECT = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_SLICE = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_VERIFY = True
-                Values.SKIP_SEGMENT = True
-            elif Definitions.ARG_ONLY_MAP in arg:
-                Values.SKIP_EVOLVE = True
-                Values.ONLY_MAPPING = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_VERIFY = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SLICE = True
-            elif Definitions.ARG_ONLY_TRANSLATE in arg:
-                Values.ONLY_TRANSLATE = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_SLICE = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_VERIFY = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_COMPARE = True
-            elif Definitions.ARG_ONLY_BUILD in arg:
-                Values.SKIP_VERIFY = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SLICE = True
-            elif Definitions.ARG_ONLY_ANALYSE in arg:
-                Values.ONLY_ANALYSE = True
-                Values.SKIP_VERIFY = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_SLICE = True
-            elif Definitions.ARG_ONLY_WEAVE in arg:
-                Values.SKIP_VERIFY = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_SLICE = True
-            elif Definitions.ARG_ONLY_DIFF in arg:
-                Values.SKIP_VERIFY = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_SLICE = True
-            elif Definitions.ARG_ONLY_SLICE in arg:
-                Values.SKIP_VERIFY = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_DIFF = True
-            elif Definitions.ARG_ONLY_EXTRACT in arg:
-                Values.SKIP_VERIFY = True
-                Values.SKIP_RESTORE = True
-                Values.SKIP_SUMMARY = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_SLICE = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_DIFF = True
-            elif Definitions.ARG_SKIP_BUILD in arg:
-                Values.SKIP_BUILD = True
             elif Definitions.ARG_LINUX_KERNEL in arg:
                 Values.IS_LINUX_KERNEL = True
             elif Definitions.ARG_BREAK_WEAVE in arg:
                 Values.BREAK_WEAVE = True
-            elif Definitions.ARG_ONLY_COMPARISON in arg:
-                Values.SKIP_VERIFY = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_SLICE = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_SEGMENT = True
-                Values.SKIP_SUMMARY = True
-            elif Definitions.ARG_ONLY_SUMMARIZE in arg:
-                Values.SKIP_VERIFY = True
-                Values.SKIP_WEAVE = True
-                Values.SKIP_DIFF = True
-                Values.SKIP_MAPPING = True
-                Values.SKIP_EVOLVE = True
-                Values.SKIP_EXTRACTION = True
-                Values.SKIP_SLICE = True
-                Values.SKIP_TRANSLATION = True
-                Values.SKIP_DETECTION = True
-                Values.SKIP_BUILD = True
-                Values.SKIP_COMPARE = True
-                Values.SKIP_SEGMENT = True
+            elif "--skip" in arg:
+                arg_phase = arg.replace("--skip-", "")
+                Values.PHASE_SETTING[arg_phase] = 0
+            elif "--only" in arg:
+                arg_phase = arg.replace("--only-", "")
+                for phase, setting in Values.PHASE_SETTING:
+                    if phase == arg_phase:
+                        Values.PHASE_SETTING[phase] = 1
+                    else:
+                        Values.PHASE_SETTING[phase] = 0
             elif "Crochet.py" in arg:
                 continue
             else:

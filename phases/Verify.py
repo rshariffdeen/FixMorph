@@ -93,7 +93,7 @@ def verify():
     Emitter.title("Patch Verification")
     set_values()
 
-    if not Values.SKIP_VERIFY:
+    if Values.PHASE_SETTING[Definitions.PHASE_VERIFY]:
         if not Values.MODIFIED_SOURCE_LIST:
             error_exit("no modified sources to verify")
         safe_exec(verify_compilation, "verifying compilation")

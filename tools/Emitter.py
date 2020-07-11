@@ -138,6 +138,7 @@ def end(time_info):
     statistics("Evolution: " + time_info[Definitions.KEY_DURATION_EVOLUTION] + " seconds")
     statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
     statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
+    statistics("Evaluation: " + time_info[Definitions.KEY_DURATION_EVALUATION] + " seconds")
     statistics("Comparison: " + time_info[Definitions.KEY_DURATION_COMPARISON] + " seconds")
     statistics("Summarizing: " + time_info[Definitions.KEY_DURATION_SUMMARIZATION] + " seconds")
     success("\nCrochet finished successfully after " + time_info[Definitions.KEY_DURATION_TOTAL] + " seconds\n")
@@ -153,10 +154,10 @@ def help():
     print("\t" + Definitions.ARG_SKIP_BUILD + "\t| " + "skip build")
     print("\t" + Definitions.ARG_SKIP_SUMMARY + "\t| " + "skip diff analysis")
     print("\t" + Definitions.ARG_SKIP_VEC_GEN + "\t| " + "disable vector generation")
-    print("\t" + Definitions.ARG_SKIP_DETECTION + "\t| " + "skip clone analysis")
-    print("\t" + Definitions.ARG_SKIP_EXTRACTION + "\t| " + "skip AST analysis")
-    print("\t" + Definitions.ARG_SKIP_MAPPING + "\t| " + "skip variable analysis")
-    print("\t" + Definitions.ARG_SKIP_TRANSLATION + "\t| " + "skip translation")
+    print("\t" + Definitions.ARG_SKIP_DETECT + "\t| " + "skip clone analysis")
+    print("\t" + Definitions.ARG_SKIP_EXTRACT + "\t| " + "skip AST analysis")
+    print("\t" + Definitions.ARG_SKIP_MAP + "\t| " + "skip variable analysis")
+    print("\t" + Definitions.ARG_SKIP_TRANSLATE + "\t| " + "skip translation")
     print("\t" + Definitions.ARG_SKIP_WEAVE + "\t| " + "skip transplant")
     print("\t" + Definitions.ARG_SKIP_VERIFY + "\t| " + "skip verification")
 
@@ -171,7 +172,7 @@ def help():
     print("\t" + Definitions.ARG_ONLY_EVOLVE + "\t| " + "run only evolution")
     print("\t" + Definitions.ARG_ONLY_WEAVE + "\t| " + "run only transplantation")
     print("\t" + Definitions.ARG_ONLY_VERIFY + "\t| " + "run only verification")
-    print("\t" + Definitions.ARG_ONLY_COMPARISON + "\t| " + "run only comparison")
-    print("\t" + Definitions.ARG_ONLY_SUMMARIZE + "\t| " + "run only summarize")
+    print("\t" + Definitions.ARG_ONLY_COMPARE + "\t| " + "run only comparison")
+    print("\t" + Definitions.ARG_ONLY_SUMMARY + "\t| " + "run only summarize")
 
 

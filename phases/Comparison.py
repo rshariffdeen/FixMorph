@@ -154,7 +154,7 @@ def compare():
     Emitter.title("Comparison with Manual Porting")
     load_values()
 
-    if not Values.SKIP_COMPARE:
+    if Values.PHASE_SETTING[Definitions.PHASE_COMPARE]:
         if not Values.PATH_E:
             Emitter.special("\n\t-skipping this phase-")
 

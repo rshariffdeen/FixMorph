@@ -161,7 +161,7 @@ def weave():
     global modified_source_list
     Emitter.title("Applying transformation")
     load_values()
-    if not Values.SKIP_WEAVE:
+    if Values.PHASE_SETTING[Definitions.PHASE_WEAVE]:
         safe_exec(transplant_code, "transforming slices")
         safe_exec(weave_slices, "weaving slices")
         if Values.missing_function_list:

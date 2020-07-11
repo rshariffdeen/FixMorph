@@ -5,7 +5,7 @@
 import sys
 import time
 from common.Utilities import error_exit
-from common import Values
+from common import Values, Definitions
 from tools import Logger, Emitter, Slicer
 
 
@@ -121,6 +121,6 @@ def safe_exec(function_def, title, *args):
 def slice():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Slicing Source Files")
-    if not Values.SKIP_SLICE:
+    if Values.PHASE_SETTING[Definitions.PHASE_SLICING]:
         safe_exec(slice_code, "slice segments", Values.file_list_to_patch)
 

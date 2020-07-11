@@ -106,22 +106,35 @@ CONF_VC = "version-control:"
 
 KEY_DURATION_TOTAL = 'run-time'
 KEY_DURATION_INITIALIZATION = 'initialization'
-KEY_DURATION_BUILD_ANALYSIS = "build-analysis"
-KEY_DURATION_SUMMARIZATION = "summarize-analysis"
-KEY_DURATION_COMPARISON = "comparison-analysis"
+KEY_DURATION_BUILD_ANALYSIS = "build-process"
 KEY_DURATION_DIFF_ANALYSIS = 'diff-analysis'
-KEY_DURATION_SEGMENTATION = 'segmentation'
 KEY_DURATION_CLONE_ANALYSIS = "clone-analysis"
-KEY_DURATION_EXTRACTION = "clone-analysis"
+KEY_DURATION_SLICE = "slicing-process"
+KEY_DURATION_EXTRACTION = "patch-extraction"
 KEY_DURATION_MAP_GENERATION = "map-generation"
-KEY_DURATION_SLICE = "slice"
-KEY_DURATION_FUNCTION_MATCH = "match-functions"
-KEY_DURATION_VARIABLE_MATCH = "match-variables"
 KEY_DURATION_TRANSLATION = 'translation'
 KEY_DURATION_EVOLUTION = "evolution"
 KEY_DURATION_TRANSPLANTATION = "transplantation"
 KEY_DURATION_VERIFICATION = 'verification'
-KEY_DURATION_EXPLOIT_GENERATION = 'exploitation'
+KEY_DURATION_EVALUATION = 'evaluation'
+KEY_DURATION_SUMMARIZATION = "summarize-analysis"
+KEY_DURATION_COMPARISON = "comparison-analysis"
+
+
+# ---------------- PHASES ---------------------------
+PHASE_BUILD = "build"
+PHASE_DIFF = "diff"
+PHASE_DETECTION = "detect"
+PHASE_SLICING = "slice"
+PHASE_EXTRACTION = "extract"
+PHASE_MAPPING = "map"
+PHASE_TRANSLATION = "translate"
+PHASE_EVOLUTION = "evolve"
+PHASE_WEAVE = "weave"
+PHASE_VERIFY = "verify"
+PHASE_EVALUATE = "eval"
+PHASE_COMPARE = "compare"
+PHASE_SUMMARIZE = "summary"
 
 
 # ---------------- ARGUMENTS ---------------------------
@@ -130,34 +143,40 @@ ARG_DEBUG = "--debug"
 ARG_BACKPORT = "--backport"
 ARG_FORK = "--fork"
 ARG_LINUX_KERNEL = "--linux-kernel"
-ARG_SKIP_WEAVE = "--skip-weave"
-ARG_SKIP_SUMMARY = "--skip-summary"
-ARG_SKIP_COMPARE = "--skip-compare"
-ARG_SKIP_SEGMENT = "--skip-segment"
-ARG_SKIP_VERIFY = "--skip-verify"
-ARG_SKIP_RESTORE = "--skip-restore"
-ARG_ONLY_VERIFY = "--only-verify"
-ARG_ONLY_EVOLVE = "--only-evolve"
-ARG_ONLY_COMPARISON = "--only-compare"
-ARG_ONLY_SUMMARIZE = "--only-summary"
-ARG_ONLY_BUILD = "--only-build"
-ARG_ONLY_MAP = "--only-mapping"
-ARG_ONLY_TRANSLATE = "--only-translate"
-ARG_ONLY_WEAVE = "--only-weave"
-ARG_ONLY_EXTRACT = "--only-extract"
-ARG_ONLY_SLICE = "--only-slice"
-ARG_ONLY_DIFF = "--only-diff"
-ARG_SKIP_BUILD = "--skip-build"
-ARG_SKIP_VEC_GEN = "--skip-vec-gen"
-ARG_SKIP_DETECTION = "--skip-detection"
-ARG_SKIP_DIFFERENCE = "--skip-diff"
-ARG_SKIP_EXTRACTION = "--skip-extraction"
-ARG_SKIP_MAPPING = "--skip-mapping"
-ARG_SKIP_TRANSLATION = "--skip-trans"
-ARG_ONLY_ANALYSE = "--only-analyse"
-ARG_ONLY_DETECT = "--only-detect"
 ARG_BREAK_WEAVE = "--break-weave"
 ARG_USE_CACHE = "--use-cache"
+
+ARG_ONLY_BUILD = "--only-" + PHASE_BUILD
+ARG_ONLY_DIFF = "--only-" + PHASE_DIFF
+ARG_ONLY_DETECT = "--only-" + PHASE_DETECTION
+ARG_ONLY_SLICE = "--only-" + PHASE_SLICING
+ARG_ONLY_EXTRACT = "--only-" + PHASE_EXTRACTION
+ARG_ONLY_MAP = "--only-" + PHASE_MAPPING
+ARG_ONLY_TRANSLATE = "--only-" + PHASE_TRANSLATION
+ARG_ONLY_EVOLVE = "--only-" + PHASE_EVOLUTION
+ARG_ONLY_WEAVE = "--only-" + PHASE_WEAVE
+ARG_ONLY_VERIFY = "--only-" + PHASE_VERIFY
+ARG_ONLY_EVALUATION = "--only-" + PHASE_EVALUATE
+ARG_ONLY_COMPARE = "--only-" + PHASE_COMPARE
+ARG_ONLY_SUMMARY = "--only-" + PHASE_SUMMARIZE
+
+
+ARG_SKIP_BUILD = "--skip-" + PHASE_BUILD
+ARG_SKIP_DIFF = "--skip-" + PHASE_DIFF
+ARG_SKIP_DETECT = "--skip-" + PHASE_DETECTION
+ARG_SKIP_SLICE = "--skip-" + PHASE_SLICING
+ARG_SKIP_EXTRACT = "--skip-" + PHASE_EXTRACTION
+ARG_SKIP_MAP = "--skip-" + PHASE_MAPPING
+ARG_SKIP_TRANSLATE = "--skip-" + PHASE_TRANSLATION
+ARG_SKIP_EVOLVE = "--skip-" + PHASE_EVOLUTION
+ARG_SKIP_WEAVE = "--skip-" + PHASE_WEAVE
+ARG_SKIP_VERIFY = "--skip-" + PHASE_VERIFY
+ARG_SKIP_EVAL = "--skip-" + PHASE_EVALUATE
+ARG_SKIP_COMPARE = "--skip-" + PHASE_COMPARE
+ARG_SKIP_SUMMARY = "--skip-" + PHASE_SUMMARIZE
+ARG_SKIP_VEC_GEN = "--skip-vec-gen"
+ARG_SKIP_RESTORE = "--skip-restore"
+
 
 
 # ----------------- TOOLS --------------------------------

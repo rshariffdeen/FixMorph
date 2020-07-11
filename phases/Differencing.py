@@ -110,7 +110,7 @@ def diff():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Analysing Changes")
     load_values()
-    if not Values.SKIP_DIFF:
+    if Values.PHASE_SETTING[Definitions.PHASE_DIFF]:
         safe_exec(analyse_source_diff, "analysing source diff")
         safe_exec(segment_code, "segmentation of code")
         save_values()

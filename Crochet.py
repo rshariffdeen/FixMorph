@@ -5,7 +5,7 @@
 import time
 from tools import Emitter, Logger
 from phases import Initialization, Building, Differencing, Detection, Mapping, Extraction, Translation, \
-    Evolution, Weaving, Verify, Summarizing, Slicing, Comparison
+    Evolution, Weaving, Verify, Summarizing, Slicing, Comparison, Evaluation
 from common import Definitions
 from common.Utilities import error_exit, create_base_directories
 
@@ -65,6 +65,10 @@ def run():
     time_check = time.time()
     Verify.verify()
     time_info[Definitions.KEY_DURATION_VERIFICATION] = str(time.time() - time_check)
+
+    time_start = time.time()
+    Evaluation.evaluate()
+    time_info[Definitions.KEY_DURATION_EVALUATION] = str(time.time() - time_start)
 
     time_start = time.time()
     Comparison.compare()

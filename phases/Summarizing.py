@@ -483,7 +483,7 @@ def summarize():
     Emitter.title("Ported Patch Analysis")
     load_values()
 
-    if not Values.SKIP_SUMMARY:
+    if Values.PHASE_SETTING[Definitions.PHASE_SUMMARIZE]:
         if not Values.PATH_E:
             Emitter.special("\n\t-skipping this phase-")
         else:

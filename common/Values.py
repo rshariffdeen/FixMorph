@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+from common import Definitions
 
 Project_A = None
 Project_B = None
@@ -9,38 +9,28 @@ Project_D = None
 Project_E = None
 
 DEBUG = False
-SKIP_TRACE_GEN = False
-SKIP_SYM_TRACE_GEN = False
-SKIP_EXPLOIT = False
-SKIP_WEAVE = False
-SKIP_DIFF = False
-SKIP_SUMMARY = False
-SKIP_COMPARE = False
-SKIP_SEGMENT = False
-SKIP_VERIFY = False
-SKIP_SLICE = False
-SKIP_EVOLVE = False
-SKIP_RESTORE = False
-ONLY_VERIFY = False
-ONLY_EVOLVE = False
-ONLY_ANALYSE = False
-ONLY_DIFF = False
-ONLY_EXTRACT = False
-ONLY_SLICE = False
-ONLY_MAPPING = False
-ONLY_TRANSLATE = False
-ONLY_DETECT = False
 BACKPORT = False
 BREAK_WEAVE = False
 FORK = False
 IS_LINUX_KERNEL = False
-SKIP_BUILD = False
-SKIP_DETECTION = False
 SKIP_VEC_GEN = False
-SKIP_EXTRACTION = False
-SKIP_MAPPING = False
-SKIP_TRANSLATION = False
 
+
+PHASE_SETTING = {
+    Definitions.PHASE_BUILD: 1,
+    Definitions.PHASE_DIFF: 1,
+    Definitions.PHASE_DETECTION: 1,
+    Definitions.PHASE_SLICING: 1,
+    Definitions.PHASE_EXTRACTION: 1,
+    Definitions.PHASE_MAPPING: 1,
+    Definitions.PHASE_TRANSLATION: 1,
+    Definitions.PHASE_EVOLUTION: 1,
+    Definitions.PHASE_WEAVE: 1,
+    Definitions.PHASE_VERIFY: 1,
+    Definitions.PHASE_EVALUATE: 1,
+    Definitions.PHASE_COMPARE: 1,
+    Definitions.PHASE_SUMMARIZE: 1,
+}
 
 STANDARD_FUNCTION_LIST = list()
 STANDARD_MACRO_LIST = list()

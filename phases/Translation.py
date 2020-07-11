@@ -56,7 +56,7 @@ def translate():
     global translated_script_list
     Emitter.title("Translate AST Script")
     load_values()
-    if not Values.SKIP_TRANSLATION:
+    if Values.PHASE_SETTING[Definitions.PHASE_TRANSLATION]:
         safe_exec(translate_scripts, "translation of generated scripts")
         save_values()
     else:

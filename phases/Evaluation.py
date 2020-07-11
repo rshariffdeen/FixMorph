@@ -130,10 +130,10 @@ def save_values():
     save_current_state()
 
 
-def evolve():
-    Emitter.title("Evolve transformation")
+def evaluate():
+    Emitter.title("Evaluating transformation")
     load_values()
-    if Values.PHASE_SETTING[Definitions.PHASE_EVOLUTION]:
+    if Values.PHASE_SETTING[Definitions.PHASE_EVALUATE]:
         safe_exec(evolve_code, "evolve code slices")
         if Values.missing_function_list:
             safe_exec(evolve_functions, "evolve function definitions")

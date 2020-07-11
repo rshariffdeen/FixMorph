@@ -75,7 +75,7 @@ def detect():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Clone Detection")
     load_values()
-    if not Values.SKIP_DETECTION:
+    if Values.PHASE_SETTING[Definitions.PHASE_DETECTION]:
         if not Values.SKIP_VEC_GEN:
             safe_exec(generate_target_vectors, "generating vectors for target")
         safe_exec(find_clones, "finding clones in target")
