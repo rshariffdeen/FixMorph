@@ -123,4 +123,5 @@ def slice():
     Emitter.title("Slicing Source Files")
     if Values.PHASE_SETTING[Definitions.PHASE_SLICING]:
         safe_exec(slice_code, "slice segments", Values.file_list_to_patch)
-
+    else:
+        Emitter.special("\n\t-skipping this phase-")
