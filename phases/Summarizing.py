@@ -73,6 +73,8 @@ def load_values():
     Definitions.FILE_ORIG_DIFF = Definitions.DIRECTORY_OUTPUT + "/orig-diff"
     Definitions.FILE_PORT_DIFF = Definitions.DIRECTORY_OUTPUT + "/port-diff"
     Definitions.FILE_TRANSPLANT_DIFF = Definitions.DIRECTORY_OUTPUT + "/transplant-diff"
+    Definitions.FILE_PORT_N = Definitions.DIRECTORY_OUTPUT + "/n-port"
+    Definitions.FILE_TRANS_N = Definitions.DIRECTORY_OUTPUT + "/n-trans"
 
 
 def save_values():
@@ -95,11 +97,11 @@ def save_values():
         path_e = path_c.replace(Values.Project_C.path, Values.Project_E.path)
         diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + Definitions.FILE_PORT_DIFF
         execute_command(diff_command)
-    if not Values.ONLY_ANALYSE:
-        for path_c in file_list_c:
-            path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
-            diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + Definitions.FILE_TRANSPLANT_DIFF
-            execute_command(diff_command)
+
+    for path_c in file_list_c:
+        path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
+        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + Definitions.FILE_TRANSPLANT_DIFF
+        execute_command(diff_command)
     save_current_state()
 
 
@@ -462,19 +464,18 @@ def classify_porting(path_a, path_b):
     is_pruned = is_pruned or any_prune
     summary_list = summary_list + header_summary
 
-
     is_translated = has_namespace_changed(orig_file_list, ported_file_list)
     print(is_translated)
 
     print(is_yielded, is_pruned, summary_list)
 
 
-def segment_code(diff_info, project):
+def segment_code(diff_info, project, out_file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.sub_sub_title("identifying modified definitions")
     Identifier.identify_definition_segment(diff_info, project)
     Emitter.sub_sub_title("identifying modified segments")
-    Identifier.identify_code_segment(diff_info, project)
+    Identifier.identify_code_segment(diff_info, project, out_file_path)
 
 
 def summarize():
@@ -491,12 +492,12 @@ def summarize():
             clear_values(Values.Project_A)
             original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
                                                Values.PATH_A, Values.PATH_B)
-            segment_code(original_diff_info, Values.Project_A)
+            segment_code(original_diff_info, Values.Project_A, Definitions.FILE_ORIG_N)
 
             clear_values(Values.Project_C)
             ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
                                                Values.PATH_C, Values.PATH_E)
-            segment_code(ported_diff_info, Values.Project_C)
+            segment_code(ported_diff_info, Values.Project_C, Definitions.FILE_PORT_N)
 
         save_values()
     else:

@@ -148,6 +148,14 @@ def safe_exec(function_def, title, *args):
     return result
 
 
+def segment_code(diff_info, project, out_file_path):
+    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    Emitter.sub_sub_title("identifying modified definitions")
+    Identifier.identify_definition_segment(diff_info, project)
+    Emitter.sub_sub_title("identifying modified segments")
+    Identifier.identify_code_segment(diff_info, project, out_file_path)
+
+
 def compare():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global original_diff_info, ported_diff_info, transplanted_diff_info
@@ -164,11 +172,13 @@ def compare():
                                          Values.PATH_C, Values.PATH_E)
             # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
             #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
+            segment_code(ported_diff_info, Values.Project_C, Definitions.FILE_PORT_N)
 
             transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
                                              Values.PATH_C, Values.Project_D.path)
             # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
             #                                  Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
+            segment_code(ported_diff_info, Values.Project_C, Definitions.FILE_TRANS_N)
 
         save_values()
     else:

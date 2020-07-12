@@ -26,7 +26,7 @@ def segment_code():
     Emitter.sub_sub_title("identifying modified definitions")
     Identifier.identify_definition_segment(diff_info, Values.Project_A)
     Emitter.sub_sub_title("identifying modified segments")
-    Identifier.identify_code_segment(diff_info, Values.Project_A)
+    Identifier.identify_code_segment(diff_info, Values.Project_A, Definitions.FILE_ORIG_N)
 
 
 def analyse_source_diff():
@@ -98,7 +98,7 @@ def load_values():
     Definitions.FILE_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/diff-info"
     Definitions.FILE_TEMP_DIFF = Definitions.DIRECTORY_OUTPUT + "/temp_diff"
     Definitions.FILE_AST_DIFF_ERROR = Definitions.DIRECTORY_OUTPUT + "/errors_ast_diff"
-    Definitions.FILE_N_COUNT = Definitions.DIRECTORY_OUTPUT + "/n-count"
+    Definitions.FILE_ORIG_N = Definitions.DIRECTORY_OUTPUT + "/n-orig"
 
 
 def save_values():
