@@ -4,9 +4,6 @@ from common import Values, Definitions
 from common.Utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import Emitter, Evolver, Reader, Logger, Merger
 
-file_index = 1
-backup_file_list = dict()
-
 
 def safe_exec(function_def, title, *args):
     start_time = time.time()
@@ -26,30 +23,7 @@ def safe_exec(function_def, title, *args):
     return result
 
 
-def evolve_macros():
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if Values.missing_macro_list:
-        header_list, macro_list = Evolver.evolve_definitions(Values.missing_macro_list)
-        Values.missing_macro_list = macro_list
-        Values.missing_header_list = Merger.merge_header_info(Values.missing_header_list, header_list)
-
-
-def evolve_data_types():
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if Values.missing_data_type_list:
-        missing_header_list, missing_macro_list = Evolver.evolve_data_type(Values.missing_data_type_list)
-
-
-def evolve_functions():
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if Values.missing_function_list:
-        header_list, macro_list, function_list = Evolver.evolve_functions(Values.missing_function_list)
-        Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, macro_list)
-        Values.missing_header_list = Merger.merge_header_info(Values.missing_header_list, header_list)
-        Values.missing_function_list = function_list
-
-
-def evolve_code():
+def evaluate_code():
     global file_index
     if not Values.translated_script_for_files:
         error_exit("nothing to evolve")
@@ -85,7 +59,8 @@ def evolve_code():
         Emitter.emit_ast_script(translated_script)
 
         identified_function_list, \
-        identified_macro_list = Evolver.evolve_code(vector_source_a,
+        identified_macro_list = Evolver.evolve_code(
+                                                    vector_source_a,
                                                     vector_source_b,
                                                     vector_source_c,
                                                     translated_script,
@@ -134,13 +109,7 @@ def evaluate():
     Emitter.title("Evaluating transformation")
     load_values()
     if Values.PHASE_SETTING[Definitions.PHASE_EVALUATE]:
-        safe_exec(evolve_code, "evolve code slices")
-        if Values.missing_function_list:
-            safe_exec(evolve_functions, "evolve function definitions")
-        if Values.missing_data_type_list:
-            safe_exec(evolve_data_types, "evolve data structures")
-        if Values.missing_macro_list:
-            safe_exec(evolve_macros, "evolve macros")
+        safe_exec(evaluate_code, "evaluate code slices")
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

@@ -158,6 +158,15 @@ def segment_code(diff_info, project, out_file_path):
     Identifier.identify_code_segment(diff_info, project, out_file_path)
 
 
+def clear_values(project):
+    project.header_list = dict()
+    project.function_list = dict()
+    project.struct_list = dict()
+    project.macro_list = dict()
+    project.def_list = dict()
+    project.enum_list = dict()
+
+
 def compare():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global original_diff_info, ported_diff_info, transplanted_diff_info
@@ -169,13 +178,14 @@ def compare():
             Emitter.special("\n\t-skipping this phase-")
 
         else:
-
+            clear_values(Values.Project_C)
             ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
                                          Values.PATH_C, Values.PATH_E)
             # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
             #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
             segment_code(ported_diff_info, Values.Project_C, Definitions.FILE_PORT_N)
 
+            clear_values(Values.Project_C)
             transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
                                              Values.PATH_C, Values.Project_D.path)
             # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
