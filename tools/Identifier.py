@@ -712,7 +712,7 @@ def separate_segment(project, source_file, use_macro=False):
     return enum_list, function_list, macro_list, struct_list, type_def_list, def_list, decl_list
 
 
-def create_vectors(project, source_file, segmentation_list, pertinent_lines):
+def create_vectors(project, source_file, segmentation_list, pertinent_lines, out_file_path):
     Emitter.normal("\t\t\tcreating vectors for neighborhoods")
     neighbor_list = list()
     enum_list, function_list, macro_list, \
@@ -789,13 +789,13 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines):
                     project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name,
                                                                               begin_line, finish_line, True)
 
-    with open(Definitions.FILE_N_COUNT, "w") as out_file:
+    with open(out_file_path, "w") as out_file:
         for neighbor_name in neighbor_list:
             out_file.write(neighbor_name + "\n")
     return Values.IS_ENUM or Values.IS_FUNCTION or Values.IS_MACRO or Values.IS_STRUCT or Values.IS_TYPEDEC
 
 
-def identify_code_segment(diff_info, project):
+def identify_code_segment(diff_info, project, out_file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     grouped_line_info = dict()
     for source_loc in diff_info:
@@ -811,10 +811,10 @@ def identify_code_segment(diff_info, project):
         pertinent_lines = grouped_line_info[source_file]
         Values.DONOR_PRE_PROCESS_MACRO = Extractor.extract_pre_macro_list(source_file)
         segmentation_list = separate_segment(project, source_file)
-        found_neighborhood = create_vectors(project, source_file, segmentation_list, pertinent_lines)
+        found_neighborhood = create_vectors(project, source_file, segmentation_list, pertinent_lines, out_file_path)
         if not found_neighborhood:
             segmentation_list = separate_segment(project, source_file, True)
-            create_vectors(project, source_file, segmentation_list, pertinent_lines)
+            create_vectors(project, source_file, segmentation_list, pertinent_lines, out_file_path)
             Values.DONOR_REQUIRE_MACRO = True
 
 

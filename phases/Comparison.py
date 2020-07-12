@@ -74,6 +74,8 @@ def load_values():
     Definitions.FILE_PORT_DIFF = Definitions.DIRECTORY_OUTPUT + "/port-diff"
     Definitions.FILE_COMPARISON_RESULT = Definitions.DIRECTORY_OUTPUT + "/comparison-result"
     Definitions.FILE_TRANSPLANT_DIFF = Definitions.DIRECTORY_OUTPUT + "/transplant-diff"
+    Definitions.FILE_PORT_N = Definitions.DIRECTORY_OUTPUT + "/n-port"
+    Definitions.FILE_TRANS_N = Definitions.DIRECTORY_OUTPUT + "/n-trans"
 
 
 def save_values():
