@@ -32,6 +32,7 @@ PHASE_SETTING = {
     Definitions.PHASE_EVOLUTION: 1,
     Definitions.PHASE_WEAVE: 1,
     Definitions.PHASE_VERIFY: 1,
+    Definitions.PHASE_REVERSE: 1,
     Definitions.PHASE_EVALUATE: 1,
     Definitions.PHASE_COMPARE: 1,
     Definitions.PHASE_SUMMARIZE: 1,

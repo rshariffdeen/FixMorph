@@ -138,6 +138,7 @@ def end(time_info):
     statistics("Evolution: " + time_info[Definitions.KEY_DURATION_EVOLUTION] + " seconds")
     statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " seconds")
     statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " seconds")
+    statistics("Reverse Transplantation: " + time_info[Definitions.KEY_DURATION_REVERSE] + " seconds")
     statistics("Evaluation: " + time_info[Definitions.KEY_DURATION_EVALUATION] + " seconds")
     statistics("Comparison: " + time_info[Definitions.KEY_DURATION_COMPARISON] + " seconds")
     statistics("Summarizing: " + time_info[Definitions.KEY_DURATION_SUMMARIZATION] + " seconds")
