@@ -219,7 +219,7 @@ def read_conf():
                 Values.PHASE_SETTING[arg_phase] = 0
             elif "--only" in arg:
                 arg_phase = arg.replace("--only-", "")
-                for phase, setting in Values.PHASE_SETTING:
+                for phase in Values.PHASE_SETTING:
                     if phase == arg_phase:
                         Values.PHASE_SETTING[phase] = 1
                     else:
