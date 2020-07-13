@@ -138,6 +138,15 @@ def is_intersect(start_a, end_a, start_b, end_b):
     return not (end_b < start_a or start_b > end_a)
 
 
+def clear_values(project):
+    project.header_list = dict()
+    project.function_list = dict()
+    project.struct_list = dict()
+    project.macro_list = dict()
+    project.def_list = dict()
+    project.enum_list = dict()
+
+
 def get_file_list(dir_name):
     current_file_list = os.listdir(dir_name)
     full_list = list()

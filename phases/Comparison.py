@@ -8,11 +8,11 @@ import os
 import io
 import json
 from git import Repo
-from common.Utilities import execute_command, error_exit, save_current_state, load_state
+from common.Utilities import execute_command, error_exit, save_current_state, clear_values
 from common import Definitions, Values
 from ast import Vector, Parser
 import difflib
-from tools import Logger, Emitter, Identifier, Writer, Generator, Reader, Differ, Merger
+from tools import Logger, Emitter, Identifier, Writer, Generator, Differ, Merger
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -156,15 +156,6 @@ def segment_code(diff_info, project, out_file_path):
     Identifier.identify_definition_segment(diff_info, project)
     Emitter.sub_sub_title("identifying modified segments")
     Identifier.identify_code_segment(diff_info, project, out_file_path)
-
-
-def clear_values(project):
-    project.header_list = dict()
-    project.function_list = dict()
-    project.struct_list = dict()
-    project.macro_list = dict()
-    project.def_list = dict()
-    project.enum_list = dict()
 
 
 def compare():

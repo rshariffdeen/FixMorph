@@ -4,7 +4,7 @@
 
 import sys
 import time
-from common.Utilities import error_exit, save_current_state
+from common.Utilities import error_exit, save_current_state, clear_values
 from common import Definitions, Values
 from tools import Logger, Emitter, Differ, Writer, Merger, Generator, Identifier
 
@@ -32,6 +32,7 @@ def segment_code():
 def analyse_source_diff():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global diff_info
+    clear_values(Values.Project_A)
     Differ.diff_files(Definitions.FILE_DIFF_ALL,
                       Definitions.FILE_DIFF_C,
                       Definitions.FILE_DIFF_H,
