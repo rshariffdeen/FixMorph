@@ -190,7 +190,7 @@ def compare():
                                              Values.PATH_C, Values.Project_D.path)
             # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
             #                                  Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
-            segment_code(ported_diff_info, Values.Project_C, Definitions.FILE_TRANS_N)
+            segment_code(transplanted_diff_info, Values.Project_C, Definitions.FILE_TRANS_N)
 
         save_values()
     else:
