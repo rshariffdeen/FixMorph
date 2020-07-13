@@ -274,15 +274,17 @@ def config_all(is_llvm=False):
 
 def build_normal():
     global CC, CXX, CXX_FLAGS, C_FLAGS, LD_FLAGS
-    clean_all()
-    CC = "clang"
-    CXX = "clang++"
-    CXX_FLAGS = "'-g -O0'"
-    C_FLAGS = "'-g -O0'"
-    config_all()
-    CXX_FLAGS = "'-g -O0 -DNDEBUG '"
-    C_FLAGS = "'-g -O0 -DNDEBUG '"
-    build_all()
+    restore_all()
+    if not Values.ONLY_RESET:
+        clean_all()
+        CC = "clang"
+        CXX = "clang++"
+        CXX_FLAGS = "'-g -O0'"
+        C_FLAGS = "'-g -O0'"
+        config_all()
+        CXX_FLAGS = "'-g -O0 -DNDEBUG '"
+        C_FLAGS = "'-g -O0 -DNDEBUG '"
+        build_all()
 
 
 def remove_fsanitize(build_command):
@@ -477,7 +479,6 @@ def clean_project(project_path):
 
 
 def clean_all():
-    restore_all()
     Emitter.sub_sub_title("cleaning projects")
     Emitter.normal("\t" + Values.Project_A.path)
     clean_project(Values.Project_A.path)

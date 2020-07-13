@@ -14,6 +14,8 @@ BREAK_WEAVE = False
 FORK = False
 IS_LINUX_KERNEL = False
 SKIP_VEC_GEN = False
+ANALYSE_N = False
+ONLY_RESET = False
 
 count_orig_total_N = 0
 count_orig_localized_N = 0

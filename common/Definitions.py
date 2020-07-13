@@ -182,6 +182,7 @@ ARG_SKIP_COMPARE = "--skip-" + PHASE_COMPARE
 ARG_SKIP_SUMMARY = "--skip-" + PHASE_SUMMARIZE
 ARG_SKIP_VEC_GEN = "--skip-vec-gen"
 ARG_SKIP_RESTORE = "--skip-restore"
+ARG_ANALYSE_NEIGHBORS = "--analyse-n"
 
 
 # ----------------- TOOLS --------------------------------
