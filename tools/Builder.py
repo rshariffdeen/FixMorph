@@ -448,8 +448,9 @@ def restore_all():
     restore_project(Values.Project_B.path)
     Emitter.normal("\t" + Values.Project_C.path)
     restore_project(Values.Project_C.path)
-    Emitter.normal("\t" + Values.Project_D.path)
-    restore_project(Values.Project_D.path, Values.COMMIT_C)
+    if not Values.ANALYSE_N:
+        Emitter.normal("\t" + Values.Project_D.path)
+        restore_project(Values.Project_D.path, Values.COMMIT_C)
     if Values.PATH_E:
         Emitter.normal("\t" + Values.Project_E.path)
         restore_project(Values.Project_E.path)
