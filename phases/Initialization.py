@@ -186,6 +186,18 @@ def read_conf_file():
             Values.EXPLOIT_C = configuration.replace(Definitions.CONF_EXPLOIT_C, '')
         elif Definitions.CONF_VC in configuration:
             Values.VC = configuration.replace(Definitions.CONF_VC, '')
+        elif Definitions.CONF_LINUX_KERNEL in configuration:
+            value = configuration.replace(Definitions.CONF_LINUX_KERNEL, '')
+            if "true" in value:
+                Values.IS_LINUX_KERNEL = True
+            else:
+                Values.IS_LINUX_KERNEL = False
+        elif Definitions.CONF_BACKPORT in configuration:
+            value = configuration.replace(Definitions.CONF_BACKPORT, '')
+            if "true" in value:
+                Values.BACKPORT = True
+            else:
+                Values.BACKPORT = False
 
 
 def reading_phase_settings():

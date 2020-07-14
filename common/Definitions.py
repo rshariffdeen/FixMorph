@@ -102,6 +102,8 @@ CONF_KLEE_FLAGS_A = "klee_flags_a:"
 CONF_KLEE_FLAGS_C = "klee_flags_c:"
 CONF_DIFF_SIZE = "diff_size:"
 CONF_VC = "version-control:"
+CONF_LINUX_KERNEL = "linux-kernel:"
+CONF_BACKPORT = "backport:"
 
 
 # ----------------- KEY DEFINITIONS -------------------
