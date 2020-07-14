@@ -234,6 +234,13 @@ def read_conf():
                         Values.PHASE_SETTING[phase] = 1
                     else:
                         Values.PHASE_SETTING[phase] = 0
+            elif Definitions.ARG_BUILD_AND_ANALYSE in arg:
+                Values.ANALYSE_N = True
+                for phase in Values.PHASE_SETTING:
+                    if phase in [Definitions.PHASE_BUILD, Definitions.PHASE_DIFF, Definitions.PHASE_COMPARE]:
+                        Values.PHASE_SETTING[phase] = 1
+                    else:
+                        Values.PHASE_SETTING[phase] = 0
             elif "--skip" in arg:
                 arg_phase = arg.replace("--skip-", "")
                 Values.PHASE_SETTING[arg_phase] = 0

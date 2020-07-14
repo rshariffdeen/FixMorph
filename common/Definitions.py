@@ -185,6 +185,7 @@ ARG_SKIP_SUMMARY = "--skip-" + PHASE_SUMMARIZE
 ARG_SKIP_VEC_GEN = "--skip-vec-gen"
 ARG_SKIP_RESTORE = "--skip-restore"
 ARG_ANALYSE_NEIGHBORS = "--analyse-n"
+ARG_BUILD_AND_ANALYSE = "--analyse-b-n"
 
 
 # ----------------- TOOLS --------------------------------
