@@ -54,9 +54,9 @@ def run():
     Translation.translate()
     time_info[Definitions.KEY_DURATION_TRANSLATION] = str(time.time() - time_start)
 
-    time_start = time.time()
-    Reversing.reverse()
-    time_info[Definitions.KEY_DURATION_REVERSE] = str(time.time() - time_start)
+    # time_start = time.time()
+    # Reversing.reverse()
+    # time_info[Definitions.KEY_DURATION_REVERSE] = str(time.time() - time_start)
 
     time_start = time.time()
     Evolution.evolve()
