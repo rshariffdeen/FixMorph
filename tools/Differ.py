@@ -53,12 +53,13 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
                 path_b = path_a.replace(project_path_a, project_path_b)
                 h_diff.write("Files " + path_a + " and " + path_b + " differ")
         return
+
+    untracked_list_command = "cd " + project_path_a + ";" + "touch " + untrack_file
     if Values.VC == "git":
-        untracked_list_command = "cd " + project_path_a + ";"
         untracked_list_command += "git ls-files --others  > " + untrack_file + ";"
         untracked_list_command += "cd " + project_path_b + ";"
         untracked_list_command += "git ls-files --others  >> " + untrack_file
-        execute_command(untracked_list_command)
+    execute_command(untracked_list_command)
 
     with open(output_ext, 'w') as exclusions:
         for pattern in extensions:
