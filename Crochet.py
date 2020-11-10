@@ -70,17 +70,17 @@ def run():
     Verify.verify()
     time_info[Definitions.KEY_DURATION_VERIFICATION] = str(time.time() - time_check)
 
-    time_start = time.time()
-    Evaluation.evaluate()
-    time_info[Definitions.KEY_DURATION_EVALUATION] = str(time.time() - time_start)
-
-    time_start = time.time()
-    Comparison.compare()
-    time_info[Definitions.KEY_DURATION_COMPARISON] = str(time.time() - time_start)
-
-    time_start = time.time()
-    Summarizing.summarize()
-    time_info[Definitions.KEY_DURATION_SUMMARIZATION] = str(time.time() - time_start)
+    # time_start = time.time()
+    # Evaluation.evaluate()
+    # time_info[Definitions.KEY_DURATION_EVALUATION] = str(time.time() - time_start)
+    #
+    # time_start = time.time()
+    # Comparison.compare()
+    # time_info[Definitions.KEY_DURATION_COMPARISON] = str(time.time() - time_start)
+    #
+    # time_start = time.time()
+    # Summarizing.summarize()
+    # time_info[Definitions.KEY_DURATION_SUMMARIZATION] = str(time.time() - time_start)
 
     # Final running time and exit message
     time_info[Definitions.KEY_DURATION_TOTAL] = str(time.time() - start_time)
