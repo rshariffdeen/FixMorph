@@ -40,7 +40,7 @@ int main( ) {
 
 void printBook( struct Books book ) {
    char* author = book.author;
-   author[0] = tolower("a");
+   author[0] = tolower(author);
 
    printf( "Book author : %s\n", author);
 }
