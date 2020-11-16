@@ -2,6 +2,7 @@
 
 int fibonacci(int number)
 {
+        printf("Xiao Liang");
 	if (    number <=  1)
 	{
 		return number;
