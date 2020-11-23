@@ -35,7 +35,7 @@ def generate_map(file_a, file_b, output_file):
         if Values.TARGET_REQUIRE_MACRO:
             command += " " + Values.TARGET_PRE_PROCESS_MACRO + " "
         command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
-        command += "| grep '^Match ' "
+        # command += "| grep '^Match ' "
         command += " > " + output_file
         execute_command(command, False)
         Emitter.normal("\t\t\tmap generated")
@@ -110,7 +110,12 @@ def generate(generated_script_files):
             if not Values.USE_CACHE:
                 generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
+            print(ast_node_map)
+            ast_node_map = adjust_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
+            print("after adjustment")
+            print(ast_node_map)
             derive_var_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            derive_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
             variable_map_info[file_list] = ast_node_map
@@ -244,6 +249,115 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
         refined_var_map[value_a] = best_candidate
     Values.VAR_MAP[(source_a, source_c)] = refined_var_map
     Writer.write_var_map(refined_var_map, Definitions.FILE_VAR_MAP)
-    # print(refined_var_map)
+
     return refined_var_map
+
+
+def derive_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
+    method_invocation_map = dict()
+
+    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO,  regenerate=True)
+
+    for ast_node_txt_a in ast_node_map:
+        ast_node_txt_c = ast_node_map[ast_node_txt_a]
+        ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
+        ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
+        ast_node_a = Finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+        ast_node_c = Finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+
+        if ast_node_a and ast_node_c:
+            node_type_a = ast_node_a['type']
+            node_type_c = ast_node_c['type']
+            if node_type_a in ["CallExpr"] and node_type_c in ["CallExpr"]:
+                children_a = ast_node_a["children"]
+                children_c = ast_node_c["children"]
+                if len(children_a) < 1 or len(children_c) < 1 or len(children_a) == len(children_c):
+                    continue
+                method_name = children_a[0]["value"]
+
+                arg_operation = []
+                for i in range(1, len(children_a)):
+                    node_txt_a = children_a[i]["type"] + "(" + str(children_a[i]["id"]) + ")"
+                    if node_txt_a in ast_node_map.keys():
+                        node_txt_c = ast_node_map[node_txt_a]
+                        node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
+                        ast_node_c = Finder.search_ast_node_by_id(ast_tree_c, node_id_c)
+                        if ast_node_c in children_c:
+                            arg_operation.append((Definitions.MATCH, i, children_c.index(ast_node_c)))
+                        else:
+                            arg_operation.append((Definitions.DELETE, i))
+                    else:
+                        arg_operation.append((Definitions.DELETE, i))
+                for i in range(1, len(children_c)):
+                    node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
+                    if node_txt_c not in ast_node_map.values():
+                        arg_operation.append((Definitions.INSERT, i, children_c[i]["value"]))
+
+                method_invocation_map[method_name] = arg_operation
+
+    print("method invocation map: ")
+    print(method_invocation_map)
+    Values.Method_ARG_MAP = method_invocation_map
+    return method_invocation_map
+
+
+# adjust the mapping via anti-unification
+def adjust_mapping(ast_node_map, map_file_name, source_a, source_c):
+    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO,  regenerate=True)
+
+    with open(map_file_name, 'r') as ast_map:
+        line = ast_map.readline().strip()
+        while line:
+            line = line.split(" ")
+            operation = line[0]
+            content = " ".join(line[1:])
+            if operation == Definitions.MATCH:
+                try:
+                    node_a, node_c = clean_parse(content, Definitions.TO)
+                    ast_node_id_a = int(str(node_a).split("(")[1].split(")")[0])
+                    ast_node_id_c = int(str(node_c).split("(")[1].split(")")[0])
+                    ast_node_a = Finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+                    ast_node_c = Finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+
+                    au_pairs = anti_unification(ast_node_a, ast_node_c)
+                    for au_pair_key in au_pairs:
+                        au_pair_value = au_pairs[au_pair_key]
+                        ast_node_map[au_pair_key] = au_pair_value
+                except Exception as exception:
+                    error_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
+            line = ast_map.readline().strip()
+    return ast_node_map
+
+
+def anti_unification(ast_node_a, ast_node_c):
+    au_pairs = dict()
+    waiting_list_a = [ast_node_a]
+    waiting_list_c = [ast_node_c]
+
+    while len(waiting_list_a) != 0 and len(waiting_list_c) != 0:
+        current_a = waiting_list_a.pop()
+        current_c = waiting_list_c.pop()
+
+        children_a = current_a["children"]
+        children_c = current_c["children"]
+
+        # do not support anti-unification with different number of children yet
+        if len(children_a) != len(children_c):
+            continue
+
+        length = len(children_a)
+        for i in range(length):
+            child_a = children_a[i]
+            child_c = children_c[i]
+            if child_a["type"] == child_c["type"]:
+                waiting_list_a.append(child_a)
+                waiting_list_c.append(child_c)
+            else:
+                key = child_a["type"] + "(" + str(child_a["id"]) + ")"
+                value = child_c["type"] + "(" + str(child_c["id"]) + ")"
+                au_pairs[key] = value
+
+    return au_pairs
 

@@ -127,7 +127,8 @@ def diff_c_files(diff_file_path, project_path_a, untracked_file_list):
                 Emitter.normal("\t\t\t" + file_a)
     else:
         Emitter.normal("\t\t\t-none-")
-    return filtered_file_list
+    #return filtered_file_list
+    return file_list
 
 
 def diff_line(diff_file_list, output_file):
