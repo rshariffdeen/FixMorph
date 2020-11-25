@@ -8,6 +8,9 @@ from shutil import copyfile
 
 
 def create():
+    log_file_name = "log-" + str(time.time())
+    log_file_path = Definitions.DIRECTORY_LOG + "/" + log_file_name
+    Definitions.FILE_MAIN_LOG = log_file_path
     with open(Definitions.FILE_MAIN_LOG, 'w+') as log_file:
         log_file.write("[Start] Crochet started at " + str(datetime.datetime.now()) + "\n")
     if os.path.exists(Definitions.FILE_LAST_LOG):

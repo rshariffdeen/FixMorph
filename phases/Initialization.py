@@ -278,9 +278,6 @@ def read_conf():
     Definitions.FILE_LAST_LOG = Definitions.DIRECTORY_LOG + "/log-latest"
     Definitions.FILE_MAKE_LOG = Definitions.DIRECTORY_LOG + "/log-make"
     Definitions.FILE_COMMAND_LOG = Definitions.DIRECTORY_LOG + "/log-command"
-    log_file_name = "log-" + str(time.time())
-    log_file_path = Definitions.DIRECTORY_LOG + "/" + log_file_name
-    Definitions.FILE_MAIN_LOG = log_file_path
 
 
 def initialize():
