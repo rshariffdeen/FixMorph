@@ -46,6 +46,12 @@ def trace(function_name, arguments):
     log(message)
 
 
+def note(message):
+    message = str(message).strip().lower().replace("[note]", "")
+    message = "[NOTE]: " + str(message) + "\n"
+    log(message)
+
+
 def command(message):
     message = "[COMMAND]: " + str(message) + "\n"
     log(message)

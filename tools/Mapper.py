@@ -110,10 +110,10 @@ def generate(generated_script_files):
             if not Values.USE_CACHE:
                 generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
-            print(ast_node_map)
+            Emitter.data(ast_node_map)
             ast_node_map = adjust_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
-            print("after adjustment")
-            print(ast_node_map)
+            Emitter.debug("Updating map using anti-unification")
+            Emitter.data(ast_node_map)
             derive_var_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             derive_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             restore_file_orig(vector_source_a)
