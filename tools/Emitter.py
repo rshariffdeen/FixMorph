@@ -47,9 +47,8 @@ def sub_sub_title(sub_title):
 
 
 def command(message):
-    if Values.DEBUG:
-        message = "[COMMAND] " + message
-        write(message, ROSE)
+    prefix = "\t\t[command] "
+    write(message, ROSE, prefix=prefix, indent_level=2)
     Logger.command(message)
 
 
@@ -115,8 +114,18 @@ def warning(message):
 
 def debug(message):
     if Values.DEBUG:
-        write(message, RED)
-    Logger.warning(message)
+        prefix = "\t\t[debug] "
+        write(message, GREY, prefix=prefix, indent_level=2)
+    Logger.debug(message)
+
+
+def data(message, info=None):
+    if Values.DEBUG:
+        prefix = "\t\t[data] "
+        write(message, GREY, prefix=prefix, indent_level=2)
+        if info:
+            write(info, GREY, prefix=prefix, indent_level=2)
+    Logger.data(message, info)
 
 
 def start():

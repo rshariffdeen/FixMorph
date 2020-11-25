@@ -3,7 +3,7 @@
 import time
 import datetime
 import os
-from common import Definitions
+from common import Definitions, Values
 from shutil import copyfile
 
 
@@ -59,6 +59,22 @@ def output(message):
 
 def warning(message):
     message = "[WARNING]: " + str(message) + "\n"
+    log(message)
+
+
+def data(message, data=None, is_patch=False):
+    if Values.DEBUG or is_patch:
+        message = str(message).strip()
+        message = "[DATA]: " + str(message) + "\n"
+        log(message)
+        if data:
+            data = "[DATA]: " + str(data) + "\n"
+            log(data)
+
+
+def debug(message):
+    message = str(message).strip()
+    message = "[DEBUG]: " + str(message) + "\n"
     log(message)
 
 
