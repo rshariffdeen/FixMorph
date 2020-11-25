@@ -10,14 +10,8 @@ from common import Definitions
 from common.Utilities import error_exit, create_base_directories
 
 
-def first_run_check():
-    create_base_directories()
-    Initialization.read_conf()
-    Initialization.create_directories()
-
-
 def run():
-    first_run_check()
+    create_base_directories()
     Emitter.start()
     start_time = time.time()
     time_info = dict()

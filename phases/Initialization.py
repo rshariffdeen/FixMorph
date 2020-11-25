@@ -286,8 +286,9 @@ def read_conf():
 def initialize():
     Emitter.title("Initializing project for Transfer")
     Emitter.sub_title("loading configuration")
-    load_values()
+    read_conf()
     create_directories()
+    load_values()
     create_files()
     Emitter.sub_title("set environment")
     set_env_value()
