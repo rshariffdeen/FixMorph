@@ -17,11 +17,11 @@ def safe_exec(function_def, title, *args):
             result = function_def()
         else:
             result = function_def(*args)
-        duration = str(time.time() - start_time)
-        Emitter.success("\n\tSuccessful " + description + ", after " + duration + " seconds.")
+        duration = format((time.time() - start_time) / 60, '.3f')
+        Emitter.success("\n\tSuccessful " + description + ", after " + duration + " minutes.")
     except Exception as exception:
-        duration = str(time.time() - start_time)
-        Emitter.error("Crash during " + description + ", after " + duration + " seconds.")
+        duration = format((time.time() - start_time) / 60, '.3f')
+        Emitter.error("Crash during " + description + ", after " + duration + " minutes.")
         error_exit(exception, "Unexpected error during " + description + ".")
     return result
 
