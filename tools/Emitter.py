@@ -4,6 +4,8 @@ import sys
 from common import Definitions, Values
 from tools import Logger
 from datetime import datetime
+import textwrap
+
 
 GREY = '\t\x1b[1;30m'
 RED = '\t\x1b[1;31m'
@@ -18,10 +20,15 @@ PROG_OUTPUT_COLOR = '\t\x1b[0;30;47m'
 STAT_COLOR = '\t\x1b[0;32;47m'
 
 
-def write(print_message, print_color, new_line=True):
+def write(print_message, print_color, new_line=True, prefix=None, indent_level=0):
     if not Values.silence_emitter:
-        r = "\033[K" + print_color + str(print_message) + '\x1b[0m'
-        sys.stdout.write(r)
+        message = "\033[K" + print_color + str(print_message) + '\x1b[0m'
+        if prefix:
+            prefix = "\033[K" + print_color + str(prefix) + '\x1b[0m'
+            len_prefix = ((indent_level+1) * 4) + len(prefix)
+            wrapper = textwrap.TextWrapper(initial_indent=prefix, subsequent_indent=' '*len_prefix, width=int(columns))
+            message = wrapper.fill(message)
+        sys.stdout.write(message)
         if new_line:
             r = "\n"
             sys.stdout.write("\n")
@@ -54,11 +61,15 @@ def command(message):
 
 def normal(message, jump_line=True):
     write(message, BLUE, jump_line)
-    # Logger.output(message)
+    Logger.output(message)
 
 
 def highlight(message, jump_line=True):
-    write(message, WHITE, jump_line)
+    indent_length = message.count("\t")
+    prefix = "\t" * indent_length
+    message = message.replace("\t", "")
+    write(message, WHITE, jump_line, indent_level=indent_length, prefix=prefix)
+    Logger.note(message)
 
 
 def information(message, jump_line=True):
