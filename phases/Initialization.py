@@ -5,6 +5,7 @@
 import os
 import sys
 import time
+import shutil
 import subprocess
 from common.Utilities import execute_command
 from entity import Project
@@ -55,6 +56,8 @@ def load_values():
 
 def create_patch_dir():
     patch_dir = Values.PATH_C + "-patch"
+    if Definitions.DIRECTORY_TESTS in patch_dir:
+        shutil.rmtree(patch_dir)
     if not os.path.isdir(patch_dir):
         create_command = "cp -rf " + Values.PATH_C + " " + Values.PATH_C + "-patch"
         execute_command(create_command)
