@@ -9,6 +9,7 @@ Project_D = None
 Project_E = None
 
 DEBUG = False
+DEBUG_DATA = False
 BACKPORT = False
 BREAK_WEAVE = False
 FORK = False

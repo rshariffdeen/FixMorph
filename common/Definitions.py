@@ -147,6 +147,7 @@ PHASE_SUMMARIZE = "summary"
 # ---------------- ARGUMENTS ---------------------------
 ARG_CONF_FILE = "--conf="
 ARG_DEBUG = "--debug"
+ARG_DEBUG_DATA = "--debug-data"
 ARG_BACKPORT = "--backport"
 ARG_FORK = "--fork"
 ARG_LINUX_KERNEL = "--linux-kernel"

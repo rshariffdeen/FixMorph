@@ -133,7 +133,7 @@ def debug(message):
 
 
 def data(message, info=None):
-    if Values.DEBUG:
+    if Values.DEBUG_DATA:
         prefix = "\t\t[data] "
         write(message, GREY, prefix=prefix, indent_level=2)
         if info:

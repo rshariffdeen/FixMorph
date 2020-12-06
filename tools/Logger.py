@@ -72,7 +72,7 @@ def warning(message):
 
 
 def data(message, data=None, is_patch=False):
-    if Values.DEBUG or is_patch:
+    if Values.DEBUG_DATA or is_patch:
         message = str(message).strip()
         message = "[DATA]: " + str(message) + "\n"
         log(message)

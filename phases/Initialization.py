@@ -215,6 +215,8 @@ def read_conf():
         for arg in sys.argv:
             if Definitions.ARG_DEBUG in arg:
                 Values.DEBUG = True
+            elif Definitions.ARG_DEBUG_DATA in arg:
+                Values.DEBUG_DATA = True
             elif Definitions.ARG_SKIP_VEC_GEN in arg:
                 Values.SKIP_VEC_GEN = True
             elif Definitions.ARG_SKIP_RESTORE in arg:
