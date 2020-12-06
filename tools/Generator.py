@@ -245,7 +245,8 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
                     source_file = file_list.readline().strip()
                     continue
                 segmentation_list_macro = generate_segmentation(source_file, True)
-                segmentation_list = Merger.merge_segmentation_list(segmentation_list, segmentation_list_macro)
+                if segmentation_list_macro:
+                    segmentation_list = Merger.merge_segmentation_list(segmentation_list, segmentation_list_macro)
                 create_vectors(project, source_file, segmentation_list)
 
             except Exception as e:
