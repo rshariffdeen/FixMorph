@@ -120,6 +120,7 @@ IS_TYPEDEF = False
 IS_TYPEDEC = False
 VECTOR_MAP = dict()
 VAR_MAP = dict()
+FUNCTION_MAP = dict()
 Method_ARG_MAP = dict()
 NODE_MAP = dict()
 

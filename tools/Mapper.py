@@ -253,6 +253,54 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
     return refined_var_map
 
 
+def derive_function_map(ast_node_map, source_a, source_c, slice_file_a):
+    function_map = dict()
+
+    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO,  regenerate=True)
+
+    for ast_node_txt_a in ast_node_map:
+        ast_node_txt_c = ast_node_map[ast_node_txt_a]
+        ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
+        ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
+        ast_node_a = Finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+        ast_node_c = Finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+
+        if ast_node_a and ast_node_c:
+            node_type_a = ast_node_a['type']
+            node_type_c = ast_node_c['type']
+            if node_type_a in ["FunctionDecl"] and node_type_c in ["FunctionDecl"]:
+                children_a = ast_node_a["children"]
+                children_c = ast_node_c["children"]
+                if len(children_a) < 1 or len(children_c) < 1 or len(children_a) == len(children_c):
+                    continue
+                method_name = children_a["identifier"]
+
+                arg_operation = []
+                for i in range(1, len(children_a)):
+                    node_txt_a = children_a[i]["type"] + "(" + str(children_a[i]["id"]) + ")"
+                    if node_txt_a in ast_node_map.keys():
+                        node_txt_c = ast_node_map[node_txt_a]
+                        node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
+                        ast_node_c = Finder.search_ast_node_by_id(ast_tree_c, node_id_c)
+                        if ast_node_c in children_c:
+                            arg_operation.append((Definitions.MATCH, i, children_c.index(ast_node_c)))
+                        else:
+                            arg_operation.append((Definitions.DELETE, i))
+                    else:
+                        arg_operation.append((Definitions.DELETE, i))
+                for i in range(1, len(children_c)):
+                    node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
+                    if node_txt_c not in ast_node_map.values():
+                        arg_operation.append((Definitions.INSERT, i, children_c[i]["value"]))
+
+                function_map[method_name] = arg_operation
+
+    Emitter.data("function map", function_map)
+    Values.FUNCTION_MAP = function_map
+    return function_map
+
+
 def derive_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
     method_invocation_map = dict()
 
@@ -296,8 +344,7 @@ def derive_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
 
                 method_invocation_map[method_name] = arg_operation
 
-    print("method invocation map: ")
-    print(method_invocation_map)
+    Emitter.data("method invocation map", method_invocation_map)
     Values.Method_ARG_MAP = method_invocation_map
     return method_invocation_map
 
