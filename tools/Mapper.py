@@ -116,6 +116,7 @@ def generate(generated_script_files):
             Emitter.data(ast_node_map)
             derive_var_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             derive_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            derive_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
             variable_map_info[file_list] = ast_node_map
