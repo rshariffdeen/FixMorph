@@ -7,7 +7,7 @@ void testFunc(int a, char* str){
 }
 
 int main( ) {
-    int i = 0;
-    testFunc(i, "test");
+//    int i = 0;
+//    testFunc(i, "test");
     return 0;
 }
