@@ -8,12 +8,14 @@ struct Book {
 } book;
 
 void selectionSort(struct Book list[], int n) {
-  int j, i, min, pos;
+  int j, i, min, pos, book_id, rank;
   struct Book temp;
   i = 0;
-  float new = 0.0;
+
   while (i < n) {
-    min = list[i].book_id;
+    book_id = list[i].book_id;
+    rank = list[i].rank;
+    min = book_id;
     pos = i;
     for (j = i + 1; j < n; j++) {
       if (list[j].book_id < min) {

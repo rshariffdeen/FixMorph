@@ -8,13 +8,14 @@ struct Author {
 } author;
 
 int sort(struct Author author_list[], int length) {
-  int a, b, minimum, position;
+  int a, b, minimum, position, author_id, rank;
   struct Author selected;
   a = 0;
- float new = 0.0; 
 
   while (a < length) {
-    minimum = author_list[a].rank;
+    author_id = author_list[a].user_id;
+    rank = author_list[a].rank;
+    min = rank;
     position = a;
     for (b = a + 1; b < length; b++) {
       if (author_list[b].rank < minimum) {
