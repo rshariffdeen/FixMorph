@@ -14,6 +14,7 @@ int main( ) {
     int i = 0;
     testLocalRefA(i, "test");
     testLocalRefA(3, "test2");
+    testGlobalRefA("test global");
     printf("\ntest function\n");
     return 0;
 }
