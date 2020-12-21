@@ -234,32 +234,32 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
                         else:
                             namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
 
-            # elif node_type_a in ["FunctionDecl"]:
-            #     method_name_a = ast_node_a["identifier"]
-            #     method_name_c = ast_node_c["identifier"]
-            #     value_a = method_name_a + "("
-            #     value_c = method_name_c + "("
-            #     if value_a not in namespace_map:
-            #         namespace_map[value_a] = dict()
-            #     if value_c not in namespace_map[value_a]:
-            #         namespace_map[value_a][value_c] = value_score
-            #     else:
-            #         namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
-            #
-            # elif node_type_a in ["CallExpr"]:
-            #     children_a = ast_node_a["children"]
-            #     children_c = ast_node_c["children"]
-            #
-            #     method_name_a = children_a[0]["value"]
-            #     method_name_c = children_c[0]["value"]
-            #     value_a = method_name_a + "("
-            #     value_c = method_name_c + "("
-            #     if value_a not in namespace_map:
-            #         namespace_map[value_a] = dict()
-            #     if value_c not in namespace_map[value_a]:
-            #         namespace_map[value_a][value_c] = value_score
-            #     else:
-            #         namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
+            elif node_type_a in ["FunctionDecl"]:
+                method_name_a = ast_node_a["identifier"]
+                method_name_c = ast_node_c["identifier"]
+                value_a = method_name_a + "("
+                value_c = method_name_c + "("
+                if value_a not in namespace_map:
+                    namespace_map[value_a] = dict()
+                if value_c not in namespace_map[value_a]:
+                    namespace_map[value_a][value_c] = value_score
+                else:
+                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
+
+            elif node_type_a in ["CallExpr"]:
+                children_a = ast_node_a["children"]
+                children_c = ast_node_c["children"]
+
+                method_name_a = children_a[0]["value"]
+                method_name_c = children_c[0]["value"]
+                value_a = method_name_a + "("
+                value_c = method_name_c + "("
+                if value_a not in namespace_map:
+                    namespace_map[value_a] = dict()
+                if value_c not in namespace_map[value_a]:
+                    namespace_map[value_a][value_c] = value_score
+                else:
+                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
 
     for value_a in namespace_map:
         candidate_list = namespace_map[value_a]
