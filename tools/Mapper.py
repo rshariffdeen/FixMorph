@@ -114,11 +114,11 @@ def generate(generated_script_files):
             ast_node_map = adjust_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
             Emitter.normal("\tupdating map using anti-unification")
             Emitter.data(ast_node_map)
-            derive_var_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.normal("\tderiving method invocation map")
-            derive_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.normal("\tderiving function signature map")
-            derive_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
             variable_map_info[file_list] = ast_node_map
@@ -128,8 +128,8 @@ def generate(generated_script_files):
     return variable_map_info
 
 
-def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
-    var_map = dict()
+def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
+    namespace_map = dict()
     refined_var_map = dict()
 
     ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
@@ -170,12 +170,12 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                         node_type_c = ast_node_c['type']
                         if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
                             identifier_c = ast_node_c['identifier']
-                            if identifier_a not in var_map:
-                                var_map[identifier_a] = dict()
-                            if identifier_c not in var_map[identifier_a]:
-                                var_map[identifier_a][identifier_c] = value_score
+                            if identifier_a not in namespace_map:
+                                namespace_map[identifier_a] = dict()
+                            if identifier_c not in namespace_map[identifier_a]:
+                                namespace_map[identifier_a][identifier_c] = value_score
                             else:
-                                var_map[identifier_a][identifier_c] = var_map[identifier_a][identifier_c] + value_score
+                                namespace_map[identifier_a][identifier_c] = namespace_map[identifier_a][identifier_c] + value_score
 
             elif node_type_a == "Macro":
                 if 'value' in ast_node_a.keys():
@@ -185,12 +185,12 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                         if node_type_c == "Macro":
                             if 'value' in ast_node_c.keys():
                                 value_c = ast_node_c['value']
-                                if value_a not in var_map:
-                                    var_map[value_a] = dict()
-                                if value_c not in var_map[value_a]:
-                                    var_map[value_a][value_c] = value_score
+                                if value_a not in namespace_map:
+                                    namespace_map[value_a] = dict()
+                                if value_c not in namespace_map[value_a]:
+                                    namespace_map[value_a][value_c] = value_score
                                 else:
-                                    var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
+                                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
 
             elif node_type_a == "LabelStmt":
                 if 'value' in ast_node_a.keys():
@@ -200,12 +200,12 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                         if node_type_c == "LabelStmt":
                             if 'value' in ast_node_c.keys():
                                 value_c = ast_node_c['value']
-                                if value_a not in var_map:
-                                    var_map[value_a] = dict()
-                                if value_c not in var_map[value_a]:
-                                    var_map[value_a][value_c] = value_score
+                                if value_a not in namespace_map:
+                                    namespace_map[value_a] = dict()
+                                if value_c not in namespace_map[value_a]:
+                                    namespace_map[value_a][value_c] = value_score
                                 else:
-                                    var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
+                                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
 
             elif node_type_a in ["MemberExpr", "ArraySubscriptExpr"]:
                 # value_a = ast_node_a['value']
@@ -224,14 +224,42 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
                         elif node_type_c == "ArraySubscriptExpr":
                             value_c = Converter.convert_array_subscript(ast_node_c, True)
 
-                        if value_a not in var_map:
-                            var_map[value_a] = dict()
-                        if value_c not in var_map[value_a]:
-                            var_map[value_a][value_c] = value_score
+                        if value_a not in namespace_map:
+                            namespace_map[value_a] = dict()
+                        if value_c not in namespace_map[value_a]:
+                            namespace_map[value_a][value_c] = value_score
                         else:
-                            var_map[value_a][value_c] = var_map[value_a][value_c] + value_score
-    for value_a in var_map:
-        candidate_list = var_map[value_a]
+                            namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
+
+            elif node_type_a in ["FunctionDecl"]:
+                method_name_a = ast_node_a["identifier"]
+                method_name_c = ast_node_c["identifier"]
+                value_a = method_name_a + "("
+                value_c = method_name_c + "("
+                if value_a not in namespace_map:
+                    namespace_map[value_a] = dict()
+                if value_c not in namespace_map[value_a]:
+                    namespace_map[value_a][value_c] = value_score
+                else:
+                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
+
+            elif node_type_a in ["CallExpr"]:
+                children_a = ast_node_a["children"]
+                children_c = ast_node_c["children"]
+
+                method_name_a = children_a[0]["value"]
+                method_name_c = children_c[0]["value"]
+                value_a = method_name_a + "("
+                value_c = method_name_c + "("
+                if value_a not in namespace_map:
+                    namespace_map[value_a] = dict()
+                if value_c not in namespace_map[value_a]:
+                    namespace_map[value_a][value_c] = value_score
+                else:
+                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
+
+    for value_a in namespace_map:
+        candidate_list = namespace_map[value_a]
         max_score = 0
         best_candidate = None
         for candidate in candidate_list:
@@ -260,7 +288,7 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
     return refined_var_map
 
 
-def derive_function_map(ast_node_map, source_a, source_c, slice_file_a):
+def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
     function_map = dict()
 
     ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
@@ -308,7 +336,7 @@ def derive_function_map(ast_node_map, source_a, source_c, slice_file_a):
     return function_map
 
 
-def derive_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
+def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
     method_invocation_map = dict()
 
     ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
