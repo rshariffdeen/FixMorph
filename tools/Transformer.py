@@ -9,9 +9,9 @@ from ast import Generator as ASTGenerator
 from tools import Extractor, Oracle, Logger, Filter, Emitter
 
 
-def transform_source_file(source_path, ast_script, output_file=None):
+def transform_source_file(source_path, ast_script, output_file=None, ast_script_path=Definitions.FILE_AST_SCRIPT):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    with open(Definitions.FILE_AST_SCRIPT, "w") as script_file:
+    with open(ast_script_path, "w") as script_file:
         for script_line in ast_script:
             if script_line != ast_script[-1]:
                 script_line = script_line + "\n"
@@ -25,7 +25,7 @@ def transform_source_file(source_path, ast_script, output_file=None):
         if Values.TARGET_REQUIRE_MACRO:
             transform_command += " " + Values.TARGET_PRE_PROCESS_MACRO + " "
 
-    transform_command += " -script=" + Definitions.FILE_AST_SCRIPT + " -source=" + source_path + \
+    transform_command += " -script=" + ast_script_path + " -source=" + source_path + \
          " -destination=" + source_path + " -target=" + source_path + " -map=" + Definitions.FILE_VAR_MAP
 
     if source_path[-1] == 'h':
