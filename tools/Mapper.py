@@ -164,18 +164,21 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         if ast_node_a:
             node_type_a = ast_node_a['type']
             if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
+                identifier_a = ast_node_a["value"]
                 if "identifier" in ast_node_a.keys():
                     identifier_a = ast_node_a['identifier']
-                    if ast_node_c:
-                        node_type_c = ast_node_c['type']
-                        if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
+                if ast_node_c:
+                    node_type_c = ast_node_c['type']
+                    if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
+                        identifier_c = ast_node_c['value']
+                        if "identifier" in ast_node_c.keys():
                             identifier_c = ast_node_c['identifier']
-                            if identifier_a not in namespace_map:
-                                namespace_map[identifier_a] = dict()
-                            if identifier_c not in namespace_map[identifier_a]:
-                                namespace_map[identifier_a][identifier_c] = value_score
-                            else:
-                                namespace_map[identifier_a][identifier_c] = namespace_map[identifier_a][identifier_c] + value_score
+                        if identifier_a not in namespace_map:
+                            namespace_map[identifier_a] = dict()
+                        if identifier_c not in namespace_map[identifier_a]:
+                            namespace_map[identifier_a][identifier_c] = value_score
+                        else:
+                            namespace_map[identifier_a][identifier_c] = namespace_map[identifier_a][identifier_c] + value_score
 
             elif node_type_a == "Macro":
                 if 'value' in ast_node_a.keys():
