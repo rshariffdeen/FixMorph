@@ -271,9 +271,9 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
                 best_candidate = candidate
                 max_score = candidate_score
         if "(" in value_a:
-            value_a = value_a.split("(")[0]
+            value_a = value_a.split("(")[0] + "("
         if "(" in best_candidate:
-            best_candidate = best_candidate.split("(")[0]
+            best_candidate = best_candidate.split("(")[0] + "("
         if not value_a or not best_candidate:
             continue
         if any(token in str(value_a).lower() for token in BREAK_LIST):
