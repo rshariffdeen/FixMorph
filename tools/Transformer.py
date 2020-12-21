@@ -26,7 +26,7 @@ def transform_source_file(source_path, ast_script, output_file=None, ast_script_
             transform_command += " " + Values.TARGET_PRE_PROCESS_MACRO + " "
 
     transform_command += " -script=" + ast_script_path + " -source=" + source_path + \
-         " -destination=" + source_path + " -target=" + source_path + " -map=" + Definitions.FILE_VAR_MAP
+         " -destination=" + source_path + " -target=" + source_path + " -map=" + Definitions.FILE_NAMESPACE_MAP
 
     if source_path[-1] == 'h':
         transform_command += " --"

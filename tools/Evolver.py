@@ -212,7 +212,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
                 var_map[var] = str(var_info['value'])
 
         Values.VAR_MAP[(file_a, file_c)] = var_map
-        Writer.write_var_map(var_map, Definitions.FILE_VAR_MAP)
+        Writer.write_var_map(var_map, Definitions.FILE_NAMESPACE_MAP)
         offset = len(target_ast['children']) - 1
         position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
         for label in missing_label_list:

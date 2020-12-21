@@ -49,7 +49,7 @@ def execute_ast_transformation(script_path, source_file_info):
 
     parameters += " -script=" + script_path + " -source=" + file_a
     parameters += " -destination=" + file_b + " -target=" + file_c
-    parameters += " -map=" + Definitions.FILE_VAR_MAP
+    parameters += " -map=" + Definitions.FILE_NAMESPACE_MAP
 
     patch_command = Definitions.PATCH_COMMAND + parameters + " > " + Definitions.FILE_TEMP_FIX
 
