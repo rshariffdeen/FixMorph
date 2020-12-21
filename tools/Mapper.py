@@ -164,7 +164,7 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
         if ast_node_a:
             node_type_a = ast_node_a['type']
             if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
-                if "identifer" in ast_node_a.keys():
+                if "identifier" in ast_node_a.keys():
                     identifier_a = ast_node_a['identifier']
                     if ast_node_c:
                         node_type_c = ast_node_c['type']
