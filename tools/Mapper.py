@@ -167,12 +167,17 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
                 identifier_a = ast_node_a["value"]
                 if "identifier" in ast_node_a.keys():
                     identifier_a = ast_node_a['identifier']
+                if node_type_a == "DeclRefExpr" and ast_node_a["ref_type"] == "FunctionDecl":
+                    identifier_a = identifier_a + "("
                 if ast_node_c:
                     node_type_c = ast_node_c['type']
                     if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
                         identifier_c = ast_node_c['value']
                         if "identifier" in ast_node_c.keys():
                             identifier_c = ast_node_c['identifier']
+                        if node_type_c == "DeclRefExpr" and ast_node_c["ref_type"] == "FunctionDecl":
+                            identifier_c = identifier_c + "("
+
                         if identifier_a not in namespace_map:
                             namespace_map[identifier_a] = dict()
                         if identifier_c not in namespace_map[identifier_a]:
