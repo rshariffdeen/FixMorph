@@ -7,9 +7,9 @@ void testFunc(int a, char* str){
 }
 
 int main( ) {
-//    int i = 0;
-//    testFunc(i, "test");
-//    testFunc(i, "test2");
+    int i = 0;
+    testFunc(i, "test");
+    testFunc(3, "test2");
     printf("\ntest function\n");
     return 0;
 }
