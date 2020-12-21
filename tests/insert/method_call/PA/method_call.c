@@ -2,11 +2,15 @@
 #include <string.h>
 #include <ctype.h>  
 
-void testFunc(int a, char* str){
+void testLocalRefA(int a, char* str){
     printf("the value of a is %d %s\n", a, str);
 }
 
+void testGlobalRefA(char* str){
+    printf("the value of a is %d %s\n", str);
+}
+
 int main( ) {
-    testFunc(3, "test2");
+    testLocalRefA(3, "test2");
     return 0;
 }
