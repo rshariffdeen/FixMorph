@@ -249,6 +249,9 @@ def derive_var_map(ast_node_map, source_a, source_c, slice_file_a):
             continue
         if any(token in str(best_candidate).lower() for token in BREAK_LIST):
             continue
+
+        # generate all possible member relations with each var mapping
+        refined_var_map["." + value_a.split(".")[-1]] = "." + best_candidate.split(".")[-1]
         refined_var_map[value_a] = best_candidate
     Values.VAR_MAP[(source_a, source_c)] = refined_var_map
     Writer.write_var_map(refined_var_map, Definitions.FILE_VAR_MAP)
