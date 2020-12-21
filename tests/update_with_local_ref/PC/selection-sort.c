@@ -15,7 +15,7 @@ int sort(struct Author author_list[], int length) {
   while (a < length) {
     author_id = author_list[a].user_id;
     rank = author_list[a].rank;
-    min = rank;
+    minimum = rank;
     position = a;
     for (b = a + 1; b < length; b++) {
       if (author_list[b].rank < minimum) {
