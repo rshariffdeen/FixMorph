@@ -106,7 +106,7 @@ def generate(generated_script_files):
             replace_file(slice_file_a, vector_source_a)
             replace_file(slice_file_c, vector_source_c)
 
-            map_file_name = Definitions.DIRECTORY_TMP + "/diff_script_AC"
+            map_file_name = Definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
             if not Values.USE_CACHE:
                 generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
