@@ -49,7 +49,7 @@ def save_values():
     save_current_state()
 
 
-def map():
+def start():
     emitter.title("Variable Mapping")
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_MAPPING]:

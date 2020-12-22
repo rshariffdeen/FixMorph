@@ -102,7 +102,7 @@ def save_values():
     save_current_state()
 
 
-def extract():
+def start():
     emitter.title("Extract AST Transformation")
     # Using all previous structures to transplant patch
     load_values()

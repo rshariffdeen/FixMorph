@@ -28,7 +28,7 @@ def safe_exec(function_def, title, *args):
     return result
 
 
-def build():
+def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.title("Building Projects")
     if values.PHASE_SETTING[definitions.PHASE_BUILD]:

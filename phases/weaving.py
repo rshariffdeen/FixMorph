@@ -157,7 +157,7 @@ def weave_slices():
     weaver.weave_slice(slice_info)
 
 
-def weave():
+def start():
     global modified_source_list
     emitter.title("Applying transformation")
     load_values()

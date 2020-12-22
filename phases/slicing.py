@@ -91,11 +91,8 @@ def revert_definitions(file_list_to_patch):
             vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
 
             emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
-
-
         except Exception as e:
             error_exit("something went wrong with slicing phase")
-
 
 
 def safe_exec(function_def, title, *args):
@@ -118,7 +115,7 @@ def safe_exec(function_def, title, *args):
     return result
 
 
-def slice():
+def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.title("Slicing Source Files")
     if values.PHASE_SETTING[definitions.PHASE_SLICING]:

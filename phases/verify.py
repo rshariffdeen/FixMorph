@@ -88,7 +88,7 @@ def set_values():
     FILE_EXPLOIT_OUTPUT = definitions.DIRECTORY_OUTPUT + "/program-output"
 
 
-def verify():
+def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.title("Patch Verification")
     set_values()

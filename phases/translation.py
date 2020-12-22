@@ -52,7 +52,7 @@ def save_values():
     save_current_state()
 
 
-def translate():
+def start():
     global translated_script_list
     emitter.title("Translate AST Script")
     load_values()

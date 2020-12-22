@@ -107,7 +107,7 @@ def save_values():
     save_current_state()
 
 
-def diff():
+def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.title("Analysing Changes")
     load_values()

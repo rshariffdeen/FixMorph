@@ -158,7 +158,7 @@ def segment_code(diff_info, project, out_file_path):
     identifier.identify_code_segment(diff_info, project, out_file_path)
 
 
-def compare():
+def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global original_diff_info, ported_diff_info, transplanted_diff_info
     emitter.title("Comparison with Manual Porting")

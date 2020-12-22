@@ -71,7 +71,7 @@ def safe_exec(function_def, title, *args):
     return result
 
 
-def detect():
+def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.title("Clone Detection")
     load_values()
