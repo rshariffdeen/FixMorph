@@ -17,10 +17,6 @@ void testGlobalRefA(char* str){
 
 int main( ) {
     int i = 2;
-
-    if (i == 2){
-       testGlobalRefRef();
-       testLocalRefA(i, "test");
-    }
+    testLocalRefA(i, "test");
     return 0;
 }
