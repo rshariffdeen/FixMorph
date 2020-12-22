@@ -245,8 +245,9 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
                 identifier_a = ast_node_a["value"]
                 if "identifier" in ast_node_a.keys():
                     identifier_a = ast_node_a['identifier']
-                if node_type_a == "DeclRefExpr" and ast_node_a["ref_type"] == "FunctionDecl":
-                    identifier_a = identifier_a + "("
+                if node_type_a == "DeclRefExpr":
+                    if "ref_type" in ast_node_a and ast_node_a["ref_type"] == "FunctionDecl":
+                        identifier_a = identifier_a + "("
                 if ast_node_c:
                     node_type_c = ast_node_c['type']
                     if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
