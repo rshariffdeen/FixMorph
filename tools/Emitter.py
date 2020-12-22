@@ -2,7 +2,7 @@
 
 import sys
 import os
-from common import Definitions, Values
+from common import definitions, values
 from tools import Logger
 from datetime import datetime
 import textwrap
@@ -23,7 +23,7 @@ rows, columns = os.popen('stty size', 'r').read().split()
 
 
 def write(print_message, print_color, new_line=True, prefix=None, indent_level=0):
-    if not Values.silence_emitter:
+    if not values.silence_emitter:
         message = "\033[K" + print_color + str(print_message) + '\x1b[0m'
         if prefix:
             prefix = "\033[K" + print_color + str(prefix) + '\x1b[0m'
@@ -56,7 +56,7 @@ def sub_sub_title(sub_title):
 
 
 def command(message):
-    if Values.DEBUG:
+    if values.DEBUG:
         prefix = "\t\t[command] "
         write(message, ROSE, prefix=prefix, indent_level=2)
     Logger.command(message)
@@ -76,7 +76,7 @@ def highlight(message, jump_line=True):
 
 
 def information(message, jump_line=True):
-    if Values.DEBUG:
+    if values.DEBUG:
         write(message, GREY, jump_line)
     Logger.information(message)
 
@@ -127,14 +127,14 @@ def warning(message):
 
 
 def debug(message):
-    if Values.DEBUG:
+    if values.DEBUG:
         prefix = "\t\t[debug] "
         write(message, GREY, prefix=prefix, indent_level=2)
     Logger.debug(message)
 
 
 def data(message, info=None):
-    if Values.DEBUG_DATA:
+    if values.DEBUG_DATA:
         prefix = "\t\t[data] "
         write(message, GREY, prefix=prefix, indent_level=2)
         if info:
@@ -150,53 +150,53 @@ def start():
 
 def end(time_info):
     statistics("\nRun time statistics:\n-----------------------\n")
-    statistics("Initialization: " + time_info[Definitions.KEY_DURATION_INITIALIZATION] + " minutes")
-    statistics("Build Analysis: " + time_info[Definitions.KEY_DURATION_BUILD_ANALYSIS] + " minutes")
-    statistics("Diff Analysis: " + time_info[Definitions.KEY_DURATION_DIFF_ANALYSIS] + " minutes")
-    statistics("Clone Analysis: " + time_info[Definitions.KEY_DURATION_CLONE_ANALYSIS] + " minutes")
-    statistics("Slicing: " + time_info[Definitions.KEY_DURATION_SLICE] + " minutes")
-    statistics("AST Analysis: " + time_info[Definitions.KEY_DURATION_EXTRACTION] + " minutes")
-    statistics("Map Generation: " + time_info[Definitions.KEY_DURATION_MAP_GENERATION] + " minutes")
-    statistics("Translation: " + time_info[Definitions.KEY_DURATION_TRANSLATION] + " minutes")
-    statistics("Evolution: " + time_info[Definitions.KEY_DURATION_EVOLUTION] + " minutes")
-    statistics("Transplantation: " + time_info[Definitions.KEY_DURATION_TRANSPLANTATION] + " minutes")
-    statistics("Verification: " + time_info[Definitions.KEY_DURATION_VERIFICATION] + " minutes")
+    statistics("Initialization: " + time_info[definitions.KEY_DURATION_INITIALIZATION] + " minutes")
+    statistics("Build Analysis: " + time_info[definitions.KEY_DURATION_BUILD_ANALYSIS] + " minutes")
+    statistics("Diff Analysis: " + time_info[definitions.KEY_DURATION_DIFF_ANALYSIS] + " minutes")
+    statistics("Clone Analysis: " + time_info[definitions.KEY_DURATION_CLONE_ANALYSIS] + " minutes")
+    statistics("Slicing: " + time_info[definitions.KEY_DURATION_SLICE] + " minutes")
+    statistics("AST Analysis: " + time_info[definitions.KEY_DURATION_EXTRACTION] + " minutes")
+    statistics("Map Generation: " + time_info[definitions.KEY_DURATION_MAP_GENERATION] + " minutes")
+    statistics("Translation: " + time_info[definitions.KEY_DURATION_TRANSLATION] + " minutes")
+    statistics("Evolution: " + time_info[definitions.KEY_DURATION_EVOLUTION] + " minutes")
+    statistics("Transplantation: " + time_info[definitions.KEY_DURATION_TRANSPLANTATION] + " minutes")
+    statistics("Verification: " + time_info[definitions.KEY_DURATION_VERIFICATION] + " minutes")
     # statistics("Reverse Transplantation: " + time_info[Definitions.KEY_DURATION_REVERSE] + " minutes")
     # statistics("Evaluation: " + time_info[Definitions.KEY_DURATION_EVALUATION] + " minutes")
     # statistics("Comparison: " + time_info[Definitions.KEY_DURATION_COMPARISON] + " minutes")
     # statistics("Summarizing: " + time_info[Definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
-    success("\nCrochet finished successfully after " + time_info[Definitions.KEY_DURATION_TOTAL] + " minutes\n")
+    success("\nCrochet finished successfully after " + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
 
 
 def help():
-    print("Usage: python crochet [OPTIONS] " + Definitions.ARG_CONF_FILE + "$FILE_PATH")
+    print("Usage: python crochet [OPTIONS] " + definitions.ARG_CONF_FILE + "$FILE_PATH")
 
     print("Options are:")
-    print("\t" + Definitions.ARG_DEBUG + "\t| " + "enable debugging information")
+    print("\t" + definitions.ARG_DEBUG + "\t| " + "enable debugging information")
 
     print("Skip Phases\n-----------------------\n")
-    print("\t" + Definitions.ARG_SKIP_BUILD + "\t| " + "skip build")
-    print("\t" + Definitions.ARG_SKIP_SUMMARY + "\t| " + "skip diff analysis")
-    print("\t" + Definitions.ARG_SKIP_VEC_GEN + "\t| " + "disable vector generation")
-    print("\t" + Definitions.ARG_SKIP_DETECT + "\t| " + "skip clone analysis")
-    print("\t" + Definitions.ARG_SKIP_EXTRACT + "\t| " + "skip AST analysis")
-    print("\t" + Definitions.ARG_SKIP_MAP + "\t| " + "skip variable analysis")
-    print("\t" + Definitions.ARG_SKIP_TRANSLATE + "\t| " + "skip translation")
-    print("\t" + Definitions.ARG_SKIP_WEAVE + "\t| " + "skip transplant")
-    print("\t" + Definitions.ARG_SKIP_VERIFY + "\t| " + "skip verification")
+    print("\t" + definitions.ARG_SKIP_BUILD + "\t| " + "skip build")
+    print("\t" + definitions.ARG_SKIP_SUMMARY + "\t| " + "skip diff analysis")
+    print("\t" + definitions.ARG_SKIP_VEC_GEN + "\t| " + "disable vector generation")
+    print("\t" + definitions.ARG_SKIP_DETECT + "\t| " + "skip clone analysis")
+    print("\t" + definitions.ARG_SKIP_EXTRACT + "\t| " + "skip AST analysis")
+    print("\t" + definitions.ARG_SKIP_MAP + "\t| " + "skip variable analysis")
+    print("\t" + definitions.ARG_SKIP_TRANSLATE + "\t| " + "skip translation")
+    print("\t" + definitions.ARG_SKIP_WEAVE + "\t| " + "skip transplant")
+    print("\t" + definitions.ARG_SKIP_VERIFY + "\t| " + "skip verification")
 
     print("Run Only Phases\n-----------------------\n")
-    print("\t" + Definitions.ARG_ONLY_BUILD + "\t| " + "run only build step")
-    print("\t" + Definitions.ARG_ONLY_DIFF + "\t| " + "run only differentiation")
-    print("\t" + Definitions.ARG_ONLY_DETECT + "\t| " + "run only detection")
-    print("\t" + Definitions.ARG_ONLY_SLICE + "\t| " + "run only slicing")
-    print("\t" + Definitions.ARG_ONLY_EXTRACT + "\t| " + "run only extraction")
-    print("\t" + Definitions.ARG_ONLY_MAP + "\t| " + "run only mapping")
-    print("\t" + Definitions.ARG_ONLY_TRANSLATE + "\t| " + "run only translation")
-    print("\t" + Definitions.ARG_ONLY_EVOLVE + "\t| " + "run only evolution")
-    print("\t" + Definitions.ARG_ONLY_WEAVE + "\t| " + "run only transplantation")
-    print("\t" + Definitions.ARG_ONLY_VERIFY + "\t| " + "run only verification")
-    print("\t" + Definitions.ARG_ONLY_COMPARE + "\t| " + "run only comparison")
-    print("\t" + Definitions.ARG_ONLY_SUMMARY + "\t| " + "run only summarize")
+    print("\t" + definitions.ARG_ONLY_BUILD + "\t| " + "run only build step")
+    print("\t" + definitions.ARG_ONLY_DIFF + "\t| " + "run only differentiation")
+    print("\t" + definitions.ARG_ONLY_DETECT + "\t| " + "run only detection")
+    print("\t" + definitions.ARG_ONLY_SLICE + "\t| " + "run only slicing")
+    print("\t" + definitions.ARG_ONLY_EXTRACT + "\t| " + "run only extraction")
+    print("\t" + definitions.ARG_ONLY_MAP + "\t| " + "run only mapping")
+    print("\t" + definitions.ARG_ONLY_TRANSLATE + "\t| " + "run only translation")
+    print("\t" + definitions.ARG_ONLY_EVOLVE + "\t| " + "run only evolution")
+    print("\t" + definitions.ARG_ONLY_WEAVE + "\t| " + "run only transplantation")
+    print("\t" + definitions.ARG_ONLY_VERIFY + "\t| " + "run only verification")
+    print("\t" + definitions.ARG_ONLY_COMPARE + "\t| " + "run only comparison")
+    print("\t" + definitions.ARG_ONLY_SUMMARY + "\t| " + "run only summarize")
 
 

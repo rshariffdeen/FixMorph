@@ -6,8 +6,8 @@ import sys
 import os
 from tools import Emitter, Logger
 import collections
-from common import Definitions
-from common.Utilities import error_exit, clean_parse
+from common import definitions
+from common.utilities import error_exit, clean_parse
 
 
 def collect_instruction_list(script_file_path):
@@ -22,69 +22,69 @@ def collect_instruction_list(script_file_path):
             script_line = script_line.strip().replace("\n", '')
             line = script_line.split(" ")
             # Special case: Update and Move nodeA into nodeB2
-            if len(line) > 3 and line[0] == Definitions.UPDATE and line[1] == Definitions.AND and \
-                    line[2] == Definitions.MOVE:
-                instruction = Definitions.UPDATEMOVE
+            if len(line) > 3 and line[0] == definitions.UPDATE and line[1] == definitions.AND and \
+                    line[2] == definitions.MOVE:
+                instruction = definitions.UPDATEMOVE
                 content = " ".join(line[3:])
 
             else:
                 instruction = line[0]
                 content = " ".join(line[1:])
             # Match nodeA to nodeB
-            if instruction == Definitions.MATCH:
+            if instruction == definitions.MATCH:
                 try:
-                    node_a, node_b = clean_parse(content, Definitions.TO)
+                    node_a, node_b = clean_parse(content, definitions.TO)
                     map_ab[node_b] = str(node_a).strip()
                 except Exception as e:
                     error_exit(e, "Something went wrong in MATCH (AB).", line, instruction, content)
 
             # Update nodeA to nodeB (only care about value)
-            elif instruction == Definitions.UPDATE:
+            elif instruction == definitions.UPDATE:
                 try:
-                    node_a, node_b = clean_parse(content, Definitions.TO)
+                    node_a, node_b = clean_parse(content, definitions.TO)
                     # if "TypeLoc" not in node_a:
                     instruction_list.append((instruction, node_a, node_b))
                 except Exception as e:
                     error_exit(e, "Something went wrong in UPDATE.")
                     # Delete nodeA
-            elif instruction == Definitions.DELETE:
+            elif instruction == definitions.DELETE:
                 try:
                     node_a = content
                     instruction_list.append((instruction, node_a))
                 except Exception as e:
                     error_exit(e, "Something went wrong in DELETE.")
             # Move nodeA into nodeB at pos
-            elif instruction == Definitions.MOVE:
+            elif instruction == definitions.MOVE:
                 try:
-                    node_a, node_b = clean_parse(content, Definitions.INTO)
-                    node_b_at = node_b.split(Definitions.AT)
-                    node_b = Definitions.AT.join(node_b_at[:-1])
+                    node_a, node_b = clean_parse(content, definitions.INTO)
+                    node_b_at = node_b.split(definitions.AT)
+                    node_b = definitions.AT.join(node_b_at[:-1])
                     pos = node_b_at[-1]
                     instruction_list.append((instruction, node_a, node_b, pos))
                 except Exception as e:
                     error_exit(e, "Something went wrong in MOVE.")
             # Update nodeA into matching node in B and move into nodeB at pos
-            elif instruction == Definitions.UPDATEMOVE:
+            elif instruction == definitions.UPDATEMOVE:
                 try:
-                    node_a, node_b = clean_parse(content, Definitions.INTO)
-                    node_b_at = node_b.split(Definitions.AT)
-                    node_b = Definitions.AT.join(node_b_at[:-1])
+                    node_a, node_b = clean_parse(content, definitions.INTO)
+                    node_b_at = node_b.split(definitions.AT)
+                    node_b = definitions.AT.join(node_b_at[:-1])
                     pos = node_b_at[-1]
                     instruction_list.append((instruction, node_a, node_b, pos))
                 except Exception as e:
                     error_exit(e, "Something went wrong in MOVE.")
                     # Insert nodeB1 into nodeB2 at pos
-            elif instruction == Definitions.INSERT:
+            elif instruction == definitions.INSERT:
                 try:
-                    node_a, node_b = clean_parse(content, Definitions.INTO)
+                    node_a, node_b = clean_parse(content, definitions.INTO)
                     if "TranslationUnitDecl" in node_b:
                         skip_list.append(node_a)
                         continue
                     if node_b in skip_list:
                         skip_list.append(node_a)
                         continue
-                    node_b_at = node_b.split(Definitions.AT)
-                    node_b = Definitions.AT.join(node_b_at[:-1])
+                    node_b_at = node_b.split(definitions.AT)
+                    node_b = definitions.AT.join(node_b_at[:-1])
                     pos = node_b_at[-1]
                     instruction_list.append((instruction, node_a, node_b, pos))
                     inserted_node_list.append(node_a)

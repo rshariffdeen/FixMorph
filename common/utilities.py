@@ -5,13 +5,13 @@ import sys
 import subprocess
 import pickle
 from tools import Logger, Emitter, Writer, Reader
-from common import Definitions, Values
+from common import definitions, values
 
 
 def execute_command(command, show_output=True):
     # Print executed command and execute it in console
     Emitter.command(command)
-    command = "{ " + command + " ;} 2> " + Definitions.FILE_ERROR_LOG
+    command = "{ " + command + " ;} 2> " + definitions.FILE_ERROR_LOG
     if not show_output:
         command += " > /dev/null"
     # print(command)
@@ -22,40 +22,40 @@ def execute_command(command, show_output=True):
 
 
 def save_current_state():
-    pickle.dump(Values.Project_A, open(Definitions.FILE_PROJECT_A, 'wb'))
-    pickle.dump(Values.Project_B, open(Definitions.FILE_PROJECT_B, 'wb'))
-    pickle.dump(Values.Project_C, open(Definitions.FILE_PROJECT_C, 'wb'))
-    pickle.dump(Values.Project_D, open(Definitions.FILE_PROJECT_D, 'wb'))
-    pickle.dump(Values.map_namespace, open(Definitions.FILE_VAR_MAP_STORE, 'wb'))
-    pickle.dump(Values.VECTOR_MAP, open(Definitions.FILE_VEC_MAP_STORE, 'wb'))
-    pickle.dump(Values.missing_header_list, open(Definitions.FILE_MISSING_HEADERS, 'wb'))
-    pickle.dump(Values.missing_macro_list, open(Definitions.FILE_MISSING_MACROS, 'wb'))
-    pickle.dump(Values.missing_function_list, open(Definitions.FILE_MISSING_FUNCTIONS, 'wb'))
-    pickle.dump(Values.missing_data_type_list, open(Definitions.FILE_MISSING_TYPES, 'wb'))
+    pickle.dump(values.Project_A, open(definitions.FILE_PROJECT_A, 'wb'))
+    pickle.dump(values.Project_B, open(definitions.FILE_PROJECT_B, 'wb'))
+    pickle.dump(values.Project_C, open(definitions.FILE_PROJECT_C, 'wb'))
+    pickle.dump(values.Project_D, open(definitions.FILE_PROJECT_D, 'wb'))
+    pickle.dump(values.map_namespace, open(definitions.FILE_VAR_MAP_STORE, 'wb'))
+    pickle.dump(values.VECTOR_MAP, open(definitions.FILE_VEC_MAP_STORE, 'wb'))
+    pickle.dump(values.missing_header_list, open(definitions.FILE_MISSING_HEADERS, 'wb'))
+    pickle.dump(values.missing_macro_list, open(definitions.FILE_MISSING_MACROS, 'wb'))
+    pickle.dump(values.missing_function_list, open(definitions.FILE_MISSING_FUNCTIONS, 'wb'))
+    pickle.dump(values.missing_data_type_list, open(definitions.FILE_MISSING_TYPES, 'wb'))
 
 
 def load_state():
-    Values.Project_A = pickle.load(open(Definitions.FILE_PROJECT_A, 'rb'))
-    Values.Project_B = pickle.load(open(Definitions.FILE_PROJECT_B, 'rb'))
-    Values.Project_C = pickle.load(open(Definitions.FILE_PROJECT_C, 'rb'))
-    Values.Project_D = pickle.load(open(Definitions.FILE_PROJECT_D, 'rb'))
-    Values.map_namespace = pickle.load(open(Definitions.FILE_VAR_MAP_STORE, 'rb'))
-    Values.VECTOR_MAP = pickle.load(open(Definitions.FILE_VEC_MAP_STORE, 'rb'))
-    Values.missing_function_list = pickle.load(open(Definitions.FILE_MISSING_FUNCTIONS, 'rb'))
-    Values.missing_data_type_list = pickle.load(open(Definitions.FILE_MISSING_TYPES, 'rb'))
-    Values.missing_macro_list = pickle.load(open(Definitions.FILE_MISSING_MACROS, 'rb'))
-    Values.missing_header_list = pickle.load(open(Definitions.FILE_MISSING_HEADERS, 'rb'))
+    values.Project_A = pickle.load(open(definitions.FILE_PROJECT_A, 'rb'))
+    values.Project_B = pickle.load(open(definitions.FILE_PROJECT_B, 'rb'))
+    values.Project_C = pickle.load(open(definitions.FILE_PROJECT_C, 'rb'))
+    values.Project_D = pickle.load(open(definitions.FILE_PROJECT_D, 'rb'))
+    values.map_namespace = pickle.load(open(definitions.FILE_VAR_MAP_STORE, 'rb'))
+    values.VECTOR_MAP = pickle.load(open(definitions.FILE_VEC_MAP_STORE, 'rb'))
+    values.missing_function_list = pickle.load(open(definitions.FILE_MISSING_FUNCTIONS, 'rb'))
+    values.missing_data_type_list = pickle.load(open(definitions.FILE_MISSING_TYPES, 'rb'))
+    values.missing_macro_list = pickle.load(open(definitions.FILE_MISSING_MACROS, 'rb'))
+    values.missing_header_list = pickle.load(open(definitions.FILE_MISSING_HEADERS, 'rb'))
 
 
 def create_base_directories():
-    if not os.path.isdir(Definitions.DIRECTORY_LOG_BASE):
-        os.makedirs(Definitions.DIRECTORY_LOG_BASE)
+    if not os.path.isdir(definitions.DIRECTORY_LOG_BASE):
+        os.makedirs(definitions.DIRECTORY_LOG_BASE)
 
-    if not os.path.isdir(Definitions.DIRECTORY_OUTPUT_BASE):
-        os.makedirs(Definitions.DIRECTORY_OUTPUT_BASE)
+    if not os.path.isdir(definitions.DIRECTORY_OUTPUT_BASE):
+        os.makedirs(definitions.DIRECTORY_OUTPUT_BASE)
 
-    if not os.path.isdir(Definitions.DIRECTORY_BACKUP):
-        os.makedirs(Definitions.DIRECTORY_BACKUP)
+    if not os.path.isdir(definitions.DIRECTORY_BACKUP):
+        os.makedirs(definitions.DIRECTORY_BACKUP)
 
 
 def error_exit(*args):
@@ -81,7 +81,7 @@ def clean_files():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.information("Removing other residual files...")
     if os.path.isdir("output"):
-        clean_command = "rm -rf " + Definitions.DIRECTORY_OUTPUT
+        clean_command = "rm -rf " + definitions.DIRECTORY_OUTPUT
         execute_command(clean_command)
 
 
@@ -105,13 +105,13 @@ def get_file_extension_list(src_path, output_file_name):
 
 def backup_file(file_path, backup_name):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    backup_command = "cp " + file_path + " " + Definitions.DIRECTORY_BACKUP + "/" + backup_name
+    backup_command = "cp " + file_path + " " + definitions.DIRECTORY_BACKUP + "/" + backup_name
     execute_command(backup_command)
 
 
 def restore_file(file_path, backup_name):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    restore_command = "cp " + Definitions.DIRECTORY_BACKUP + "/" + backup_name + " " + file_path
+    restore_command = "cp " + definitions.DIRECTORY_BACKUP + "/" + backup_name + " " + file_path
     execute_command(restore_command)
 
 
@@ -124,7 +124,7 @@ def reset_git(source_directory):
 def show_partial_diff(source_path_a, source_path_b):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.highlight("\tTransplanted Code")
-    output_file = Definitions.FILE_PARTIAL_PATCH
+    output_file = definitions.FILE_PARTIAL_PATCH
     diff_command = "diff -ENZBbwr " + source_path_a + " " + source_path_b + " > " + output_file
     execute_command(diff_command)
     with open(output_file, 'r', encoding='utf8', errors="ignore") as diff_file:

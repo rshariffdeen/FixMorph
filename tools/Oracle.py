@@ -5,8 +5,8 @@
 import sys
 import os
 from ast import Generator
-from common import Definitions, Values
-from common.Utilities import error_exit
+from common import definitions, values
+from common.utilities import error_exit
 from six.moves import cStringIO
 from pysmt.smtlib.parser import SmtLibParser
 from pysmt.shortcuts import is_sat
@@ -178,14 +178,14 @@ def is_declaration_line(source_file, line_number):
 
 def did_program_crash(program_output):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if any(crash_word in str(program_output).lower() for crash_word in Definitions.crash_word_list):
+    if any(crash_word in str(program_output).lower() for crash_word in definitions.crash_word_list):
         return True
     return False
 
 
 def any_runtime_error(program_output):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if any(error_word in str(program_output).lower() for error_word in Definitions.error_word_list):
+    if any(error_word in str(program_output).lower() for error_word in definitions.error_word_list):
         return True
     return False
 

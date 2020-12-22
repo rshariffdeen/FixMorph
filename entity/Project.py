@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from common.Utilities import error_exit, clean_files, execute_command
+from common.utilities import error_exit, clean_files, execute_command
 from tools import Emitter
 
 

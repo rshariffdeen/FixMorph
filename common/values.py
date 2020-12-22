@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-from common import Definitions
+from common import definitions
 
 Project_A = None
 Project_B = None
@@ -25,20 +25,20 @@ count_trans_localized_N = 0
 
 
 PHASE_SETTING = {
-    Definitions.PHASE_BUILD: 1,
-    Definitions.PHASE_DIFF: 1,
-    Definitions.PHASE_DETECTION: 1,
-    Definitions.PHASE_SLICING: 1,
-    Definitions.PHASE_EXTRACTION: 1,
-    Definitions.PHASE_MAPPING: 1,
-    Definitions.PHASE_TRANSLATION: 1,
-    Definitions.PHASE_EVOLUTION: 1,
-    Definitions.PHASE_WEAVE: 1,
-    Definitions.PHASE_VERIFY: 1,
-    Definitions.PHASE_REVERSE: 1,
-    Definitions.PHASE_EVALUATE: 1,
-    Definitions.PHASE_COMPARE: 1,
-    Definitions.PHASE_SUMMARIZE: 1,
+    definitions.PHASE_BUILD: 1,
+    definitions.PHASE_DIFF: 1,
+    definitions.PHASE_DETECTION: 1,
+    definitions.PHASE_SLICING: 1,
+    definitions.PHASE_EXTRACTION: 1,
+    definitions.PHASE_MAPPING: 1,
+    definitions.PHASE_TRANSLATION: 1,
+    definitions.PHASE_EVOLUTION: 1,
+    definitions.PHASE_WEAVE: 1,
+    definitions.PHASE_VERIFY: 1,
+    definitions.PHASE_REVERSE: 1,
+    definitions.PHASE_EVALUATE: 1,
+    definitions.PHASE_COMPARE: 1,
+    definitions.PHASE_SUMMARIZE: 1,
 }
 
 STANDARD_FUNCTION_LIST = list()

@@ -1,5 +1,5 @@
-from common import Definitions, Values
-from common.Utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
+from common import definitions, values
+from common.utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import Emitter, Logger, Finder, Converter, Writer
 from ast import Generator
 import sys
@@ -24,16 +24,16 @@ def map_ast_from_source(source_a, source_b, script_file_path):
 def generate_map(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
-    Emitter.normal("\t\t" + file_a + Definitions.TO + file_b + "...")
+    Emitter.normal("\t\t" + file_a + definitions.TO + file_b + "...")
     try:
         extra_arg = ""
         if file_a[-1] == 'h':
             extra_arg = " --"
-        command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches "
-        if Values.DONOR_REQUIRE_MACRO:
-            command += " " + Values.DONOR_PRE_PROCESS_MACRO + " "
-        if Values.TARGET_REQUIRE_MACRO:
-            command += " " + Values.TARGET_PRE_PROCESS_MACRO + " "
+        command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
+        if values.DONOR_REQUIRE_MACRO:
+            command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
+        if values.TARGET_REQUIRE_MACRO:
+            command += " " + values.TARGET_PRE_PROCESS_MACRO + " "
         command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         # command += "| grep '^Match ' "
         command += " > " + output_file
@@ -80,9 +80,9 @@ def get_mapping(map_file_name):
             line = line.split(" ")
             operation = line[0]
             content = " ".join(line[1:])
-            if operation == Definitions.MATCH:
+            if operation == definitions.MATCH:
                 try:
-                    node_a, node_c = clean_parse(content, Definitions.TO)
+                    node_a, node_c = clean_parse(content, definitions.TO)
                     node_map[node_a] = node_c
                 except Exception as exception:
                     error_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
@@ -101,16 +101,16 @@ def generate_ast_map(generated_script_files):
 
         # extend namespace mapping using global reference
         Emitter.sub_sub_title("merging local and global references")
-        for vector_pair in Values.map_namespace_global:
-            map_global = Values.map_namespace_global[vector_pair]
-            map_local = Values.map_namespace_local[vector_pair]
+        for vector_pair in values.map_namespace_global:
+            map_global = values.map_namespace_global[vector_pair]
+            map_local = values.map_namespace_local[vector_pair]
             map_merged = map_local
             for name_a in map_global:
                 if name_a not in map_merged:
                     map_merged[name_a] = map_global[name_a]
-            Values.map_namespace[vector_pair] = map_merged
+            values.map_namespace[vector_pair] = map_merged
 
-        Writer.write_var_map(map_merged, Definitions.FILE_NAMESPACE_MAP)
+        Writer.write_var_map(map_merged, definitions.FILE_NAMESPACE_MAP)
 
     return ast_map_info
 
@@ -127,8 +127,8 @@ def generate_global_reference(generated_script_files):
             vector_source_a = get_source_name_from_slice(slice_file_a)
             vector_source_c = get_source_name_from_slice(slice_file_c)
 
-            map_file_name = Definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1].replace(".slice", "") + ".map"
-            if not Values.USE_CACHE:
+            map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1].replace(".slice", "") + ".map"
+            if not values.USE_CACHE:
                 generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
             Emitter.data(ast_node_map)
@@ -137,18 +137,18 @@ def generate_global_reference(generated_script_files):
             Emitter.normal("\tupdating map using anti-unification")
             Emitter.data(ast_node_map)
             refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            Values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
-            Writer.write_var_map(refined_var_map, Definitions.FILE_NAMESPACE_MAP_GLOBAL)
+            values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
+            Writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_GLOBAL)
 
             Emitter.normal("\tderiving method invocation map")
             method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.data("method invocation map", method_invocation_map)
-            Values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
+            values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
 
             Emitter.normal("\tderiving function signature map")
             function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.data("function map", function_map)
-            Values.FUNCTION_MAP_GLOBAL[(vector_source_a, vector_source_c)] = function_map
+            values.FUNCTION_MAP_GLOBAL[(vector_source_a, vector_source_c)] = function_map
 
             variable_map_info[file_list] = ast_node_map
             # variable_map_info[file_list] = dict()
@@ -174,8 +174,8 @@ def generate_local_reference(generated_script_files):
             replace_file(slice_file_a, vector_source_a)
             replace_file(slice_file_c, vector_source_c)
 
-            map_file_name = Definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
-            if not Values.USE_CACHE:
+            map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
+            if not values.USE_CACHE:
                 generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
             Emitter.data(ast_node_map)
@@ -184,18 +184,18 @@ def generate_local_reference(generated_script_files):
             Emitter.normal("\tupdating map using anti-unification")
             Emitter.data(ast_node_map)
             refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            Values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
-            Writer.write_var_map(refined_var_map, Definitions.FILE_NAMESPACE_MAP_LOCAL)
+            values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
+            Writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
 
             Emitter.normal("\tderiving method invocation map")
             method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.data("method invocation map", method_invocation_map)
-            Values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
+            values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
 
             Emitter.normal("\tderiving function signature map")
             function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.data("function map", function_map)
-            Values.FUNCTION_MAP_LOCAL[(vector_source_a, vector_source_c)] = function_map
+            values.FUNCTION_MAP_LOCAL[(vector_source_a, vector_source_c)] = function_map
 
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
@@ -210,8 +210,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     namespace_map = dict()
     refined_var_map = dict()
 
-    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO,  regenerate=True)
+    ast_tree_a = Generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = Generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
     neighbor_ast = None
     neighbor_ast_range = None
@@ -377,8 +377,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
 def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
     function_map = dict()
 
-    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO,  regenerate=True)
+    ast_tree_a = Generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = Generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
     for ast_node_txt_a in ast_node_map:
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
@@ -405,15 +405,15 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
                         node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
                         ast_node_c = Finder.search_ast_node_by_id(ast_tree_c, node_id_c)
                         if ast_node_c in children_c:
-                            arg_operation.append((Definitions.MATCH, i, children_c.index(ast_node_c)))
+                            arg_operation.append((definitions.MATCH, i, children_c.index(ast_node_c)))
                         else:
-                            arg_operation.append((Definitions.DELETE, i))
+                            arg_operation.append((definitions.DELETE, i))
                     else:
-                        arg_operation.append((Definitions.DELETE, i))
+                        arg_operation.append((definitions.DELETE, i))
                 for i in range(1, len(children_c)):
                     node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
                     if node_txt_c not in ast_node_map.values():
-                        arg_operation.append((Definitions.INSERT, i, children_c[i]["value"]))
+                        arg_operation.append((definitions.INSERT, i, children_c[i]["value"]))
 
                 function_map[method_name] = arg_operation
     return function_map
@@ -422,8 +422,8 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
 def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
     method_invocation_map = dict()
 
-    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO,  regenerate=True)
+    ast_tree_a = Generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = Generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
     for ast_node_txt_a in ast_node_map:
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
@@ -450,15 +450,15 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
                         node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
                         ast_node_c = Finder.search_ast_node_by_id(ast_tree_c, node_id_c)
                         if ast_node_c in children_c:
-                            arg_operation.append((Definitions.MATCH, i, children_c.index(ast_node_c)))
+                            arg_operation.append((definitions.MATCH, i, children_c.index(ast_node_c)))
                         else:
-                            arg_operation.append((Definitions.DELETE, i))
+                            arg_operation.append((definitions.DELETE, i))
                     else:
-                        arg_operation.append((Definitions.DELETE, i))
+                        arg_operation.append((definitions.DELETE, i))
                 for i in range(1, len(children_c)):
                     node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
                     if node_txt_c not in ast_node_map.values():
-                        arg_operation.append((Definitions.INSERT, i, children_c[i]["value"]))
+                        arg_operation.append((definitions.INSERT, i, children_c[i]["value"]))
 
                 method_invocation_map[method_name] = arg_operation
     return method_invocation_map
@@ -466,8 +466,8 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
 
 # adjust the mapping via anti-unification
 def extend_mapping(ast_node_map, map_file_name, source_a, source_c):
-    ast_tree_a = Generator.get_ast_json(source_a, Values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = Generator.get_ast_json(source_c, Values.TARGET_REQUIRE_MACRO,  regenerate=True)
+    ast_tree_a = Generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = Generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
     with open(map_file_name, 'r') as ast_map:
         line = ast_map.readline().strip()
@@ -475,9 +475,9 @@ def extend_mapping(ast_node_map, map_file_name, source_a, source_c):
             line = line.split(" ")
             operation = line[0]
             content = " ".join(line[1:])
-            if operation == Definitions.MATCH:
+            if operation == definitions.MATCH:
                 try:
-                    node_a, node_c = clean_parse(content, Definitions.TO)
+                    node_a, node_c = clean_parse(content, definitions.TO)
                     ast_node_id_a = int(str(node_a).split("(")[1].split(")")[0])
                     ast_node_id_c = int(str(node_c).split("(")[1].split(")")[0])
                     ast_node_a = Finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)

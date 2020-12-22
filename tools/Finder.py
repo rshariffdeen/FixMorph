@@ -5,8 +5,8 @@
 import sys
 from ast import Generator, Vector
 from tools import Oracle, Logger, Extractor, Emitter
-from common.Utilities import execute_command, error_exit, find_files
-from common import Definitions
+from common.utilities import execute_command, error_exit, find_files
+from common import definitions
 
 FILE_GREP_RESULT = ""
 
@@ -31,7 +31,7 @@ def search_vector_list(project, extension, vec_type):
         rxt = "h"
 
     Emitter.normal("\tanalysing vectors for " + vec_type + " segments in " + project.name + "...")
-    filepath = Definitions.DIRECTORY_OUTPUT + "/vectors_" + rxt + "_" + project.name
+    filepath = definitions.DIRECTORY_OUTPUT + "/vectors_" + rxt + "_" + project.name
     find_files(project.path, extension, filepath, None)
     with open(filepath, "r", errors='replace') as file:
         files = [vec.strip() for vec in file.readlines()]
@@ -192,7 +192,7 @@ def find_header_file(query, source_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global FILE_GREP_RESULT
     project_dir = Extractor.extract_project_path(source_path)
-    FILE_GREP_RESULT = Definitions.DIRECTORY_OUTPUT + "/grep-output"
+    FILE_GREP_RESULT = definitions.DIRECTORY_OUTPUT + "/grep-output"
     search_command = "cd " + project_dir + ";"
     search_command += "grep -inr -e \"" + query + "\" . | grep define"
     search_command += " > " + FILE_GREP_RESULT

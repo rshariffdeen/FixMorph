@@ -2,11 +2,11 @@
 
 ''' Main vector generation functions '''
 
-from common.Utilities import error_exit, execute_command, backup_file, restore_file
+from common.utilities import error_exit, execute_command, backup_file, restore_file
 from ast import Vector, AST
 from tools import Logger, Emitter
 import sys
-from common import Definitions, Values
+from common import definitions, values
 import json
 import os
 import io
@@ -37,11 +37,11 @@ def ast_dump(file_path, output_path, is_header=True, use_macro=False, use_local=
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dump_command = APP_AST_DIFF + " -ast-dump-json "
     if use_macro:
-        dump_command += " " + Values.PRE_PROCESS_MACRO + "  "
+        dump_command += " " + values.PRE_PROCESS_MACRO + "  "
     dump_command += file_path
     if file_path[-1] == 'h' or use_local:
         dump_command += " --"
-    error_file = Definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
+    error_file = definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
     dump_command += " 2> " + error_file + " > " + output_path
     return_code = execute_command(dump_command)
     Emitter.debug("return code:" + str(return_code))
@@ -51,7 +51,7 @@ def ast_dump(file_path, output_path, is_header=True, use_macro=False, use_local=
 def get_ast_json(file_path, use_macro=False, regenerate=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
-    if not (os.path.exists(json_file) and not Values.USE_CACHE) or regenerate:
+    if not (os.path.exists(json_file) and not values.USE_CACHE) or regenerate:
         generate_json(file_path, use_macro, regenerate)
     # ast_dump(file_path, json_file, False, use_macro)
     if os.stat(json_file).st_size == 0:
@@ -64,7 +64,7 @@ def get_ast_json(file_path, use_macro=False, regenerate=False):
 def generate_json(file_path, use_macro=False, regenerate=False, use_local=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
-    if not (os.path.exists(json_file) and not Values.USE_CACHE) or regenerate:
+    if not (os.path.exists(json_file) and not values.USE_CACHE) or regenerate:
         ast_dump(file_path, json_file, False, use_macro, use_local)
     return AST.load_from_file(json_file)
 
@@ -73,9 +73,9 @@ def convert_to_llvm(file_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     try:
         backup_name = "last.c"
-        convert_file_path = Definitions.DIRECTORY_OUTPUT + "/temp_llvm.c"
+        convert_file_path = definitions.DIRECTORY_OUTPUT + "/temp_llvm.c"
         backup_file(file_path, backup_name)
-        format_command = APP_FORMAT_LLVM + file_path + "> " + convert_file_path + " 2>" + Definitions.FILE_ERROR_LOG
+        format_command = APP_FORMAT_LLVM + file_path + "> " + convert_file_path + " 2>" + definitions.FILE_ERROR_LOG
         replace_command = format_command + ";" + "cp " + convert_file_path + " " + file_path
         execute_command(replace_command)
     except Exception as exception:
@@ -156,11 +156,11 @@ def generate_ast_script(source_a, source_b, outfile_path, dump_matches=False):
     extra_args = " "
     if dump_matches:
         extra_args = " -dump-matches "
-    generate_command = APP_AST_DIFF + " -s=" + Values.AST_DIFF_SIZE + extra_args
+    generate_command = APP_AST_DIFF + " -s=" + values.AST_DIFF_SIZE + extra_args
     generate_command += source_a + " " + source_b
     if source_a[-1] == 'h':
         generate_command += " --"
-    generate_command += " 2> " + Definitions.FILE_AST_DIFF_ERROR
+    generate_command += " 2> " + definitions.FILE_AST_DIFF_ERROR
     if dump_matches:
         generate_command += " | grep -P '^Match ' | grep -P '^Match '"
     generate_command += " > " + outfile_path

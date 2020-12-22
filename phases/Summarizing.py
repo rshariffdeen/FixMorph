@@ -8,8 +8,8 @@ import os
 import io
 import json
 from git import Repo
-from common.Utilities import execute_command, error_exit, save_current_state, load_state
-from common import Definitions, Values
+from common.utilities import execute_command, error_exit, save_current_state, load_state
+from common import definitions, values
 from ast import Vector, Parser
 import difflib
 from tools import Logger, Emitter, Identifier, Writer, Generator, Solver, Differ, Merger
@@ -30,24 +30,24 @@ transplanted_diff_info = dict()
 
 def analyse_source_diff(path_a, path_b):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Differ.diff_files(Definitions.FILE_DIFF_ALL,
-                      Definitions.FILE_DIFF_C,
-                      Definitions.FILE_DIFF_H,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS_A,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS_B,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS,
+    Differ.diff_files(definitions.FILE_DIFF_ALL,
+                      definitions.FILE_DIFF_C,
+                      definitions.FILE_DIFF_H,
+                      definitions.FILE_EXCLUDED_EXTENSIONS_A,
+                      definitions.FILE_EXCLUDED_EXTENSIONS_B,
+                      definitions.FILE_EXCLUDED_EXTENSIONS,
                       path_a,
                       path_b)
 
     Emitter.sub_sub_title("analysing untracked files")
-    untracked_file_list = Generator.generate_untracked_file_list(Definitions.FILE_EXCLUDED_EXTENSIONS, path_a)
+    untracked_file_list = Generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, path_a)
     Emitter.sub_sub_title("analysing header files")
-    diff_h_file_list = Differ.diff_h_files(Definitions.FILE_DIFF_H, path_a, untracked_file_list)
+    diff_h_file_list = Differ.diff_h_files(definitions.FILE_DIFF_H, path_a, untracked_file_list)
     Emitter.sub_sub_title("analysing C/CPP source files")
-    diff_c_file_list = Differ.diff_c_files(Definitions.FILE_DIFF_C, path_b, untracked_file_list)
+    diff_c_file_list = Differ.diff_c_files(definitions.FILE_DIFF_C, path_b, untracked_file_list)
     Emitter.sub_sub_title("analysing changed code lines")
-    diff_info_c = Differ.diff_line(diff_c_file_list, Definitions.FILE_TEMP_DIFF)
-    diff_info_h = Differ.diff_line(diff_h_file_list, Definitions.FILE_TEMP_DIFF)
+    diff_info_c = Differ.diff_line(diff_c_file_list, definitions.FILE_TEMP_DIFF)
+    diff_info_h = Differ.diff_line(diff_h_file_list, definitions.FILE_TEMP_DIFF)
     diff_info = Merger.merge_diff_info(diff_info_c, diff_info_h)
     return diff_info
 
@@ -59,7 +59,7 @@ def analyse_ast_diff(path_a, path_b, diff_info):
     updated_diff_info = Differ.diff_ast(diff_info,
                                         path_a,
                                         path_b,
-                                        Definitions.FILE_AST_SCRIPT)
+                                        definitions.FILE_AST_SCRIPT)
     return updated_diff_info
 
 
@@ -67,39 +67,39 @@ def load_values():
     global FILE_DIFF_C, FILE_DIFF_H, FILE_DIFF_ALL
     global FILE_AST_SCRIPT, FILE_AST_DIFF_ERROR
     global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
-    Definitions.FILE_ORIG_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/orig-diff-info"
-    Definitions.FILE_PORT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/port-diff-info"
-    Definitions.FILE_TRANSPLANT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/transplant-diff-info"
-    Definitions.FILE_ORIG_DIFF = Definitions.DIRECTORY_OUTPUT + "/orig-diff"
-    Definitions.FILE_PORT_DIFF = Definitions.DIRECTORY_OUTPUT + "/port-diff"
-    Definitions.FILE_TRANSPLANT_DIFF = Definitions.DIRECTORY_OUTPUT + "/transplant-diff"
+    definitions.FILE_ORIG_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/orig-diff-info"
+    definitions.FILE_PORT_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/port-diff-info"
+    definitions.FILE_TRANSPLANT_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/transplant-diff-info"
+    definitions.FILE_ORIG_DIFF = definitions.DIRECTORY_OUTPUT + "/orig-diff"
+    definitions.FILE_PORT_DIFF = definitions.DIRECTORY_OUTPUT + "/port-diff"
+    definitions.FILE_TRANSPLANT_DIFF = definitions.DIRECTORY_OUTPUT + "/transplant-diff"
 
 
 
 def save_values():
-    Writer.write_as_json(ported_diff_info, Definitions.FILE_PORT_DIFF_INFO)
-    Writer.write_as_json(original_diff_info, Definitions.FILE_ORIG_DIFF_INFO)
-    Writer.write_as_json(transplanted_diff_info, Definitions.FILE_TRANSPLANT_DIFF_INFO)
+    Writer.write_as_json(ported_diff_info, definitions.FILE_PORT_DIFF_INFO)
+    Writer.write_as_json(original_diff_info, definitions.FILE_ORIG_DIFF_INFO)
+    Writer.write_as_json(transplanted_diff_info, definitions.FILE_TRANSPLANT_DIFF_INFO)
     file_list_a = set()
     file_list_c = set()
     for path_a in original_diff_info:
         path_a = path_a.split(":")[0]
         file_list_a.add(path_a)
     for path_a in file_list_a:
-        path_b = path_a.replace(Values.Project_A.path, Values.Project_B.path)
-        diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + Definitions.FILE_ORIG_DIFF
+        path_b = path_a.replace(values.Project_A.path, values.Project_B.path)
+        diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + definitions.FILE_ORIG_DIFF
         execute_command(diff_command)
     for path_c in ported_diff_info:
         path_c = path_c.split(":")[0]
         file_list_c.add(path_c)
     for path_c in file_list_c:
-        path_e = path_c.replace(Values.Project_C.path, Values.Project_E.path)
-        diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + Definitions.FILE_PORT_DIFF
+        path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
+        diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + definitions.FILE_PORT_DIFF
         execute_command(diff_command)
 
     for path_c in file_list_c:
-        path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
-        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + Definitions.FILE_TRANSPLANT_DIFF
+        path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
+        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + definitions.FILE_TRANSPLANT_DIFF
         execute_command(diff_command)
     save_current_state()
 
@@ -135,10 +135,10 @@ def safe_exec(function_def, title, *args):
 
 def get_source_line_numbers(path_a):
     number_list = list()
-    if Values.PATH_A in path_a:
-        path_b = path_a.replace(Values.PATH_A, Values.PATH_B)
+    if values.PATH_A in path_a:
+        path_b = path_a.replace(values.PATH_A, values.PATH_B)
     else:
-        path_b = path_a.replace(Values.PATH_C, Values.PATH_E)
+        path_b = path_a.replace(values.PATH_C, values.PATH_E)
 
     file_a = open(path_a, "rt").readlines()
     file_b = open(path_b, "rt").readlines()
@@ -160,7 +160,7 @@ def get_ast_json(file_path):
     dump_command = "crochet-diff -ast-dump-json " + file_path
     if file_path[-1] == 'h':
         dump_command += " --"
-    error_file = Definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
+    error_file = definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
     dump_command += " 2> " + error_file + " > " + json_file
     if os.stat(json_file).st_size == 0:
         return None
@@ -171,10 +171,10 @@ def get_ast_json(file_path):
 
 def get_variable_list(path_a):
     var_list = list()
-    if Values.PATH_A in path_a:
-        path_b = path_a.replace(Values.PATH_A, Values.PATH_B)
+    if values.PATH_A in path_a:
+        path_b = path_a.replace(values.PATH_A, values.PATH_B)
     else:
-        path_b = path_a.replace(Values.PATH_C, Values.PATH_E)
+        path_b = path_a.replace(values.PATH_C, values.PATH_E)
 
     ast_script = get_ast_script(path_a, path_b)
     ast_a = get_ast_json(path_a)
@@ -206,9 +206,9 @@ def get_ast_script(source_a, source_b):
     generate_command += source_a + " " + source_b
     if source_a[-1] == 'h':
         generate_command += " --"
-    generate_command += " > " + Definitions.FILE_AST_SCRIPT
+    generate_command += " > " + definitions.FILE_AST_SCRIPT
     execute_command(generate_command, False)
-    with open(Definitions.FILE_AST_SCRIPT, "r") as script_file:
+    with open(definitions.FILE_AST_SCRIPT, "r") as script_file:
         ast_script = script_file.readlines()
     return ast_script
 
@@ -339,12 +339,12 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x, source_map):
     ast_script_list_x = dict()
     summary_ast_list = list()
     for file_path_b in file_list_b:
-        file_path_a = file_path_b.replace(path_b, Values.PATH_A)
+        file_path_a = file_path_b.replace(path_b, values.PATH_A)
         ast_script_b = get_ast_script(file_path_a, file_path_b)
         ast_script_list_b[file_path_b] = ast_script_b
 
     for file_path_x in file_list_x:
-        file_path_c = file_path_x.replace(path_x, Values.PATH_C)
+        file_path_c = file_path_x.replace(path_x, values.PATH_C)
         ast_script_x = get_ast_script(file_path_c, file_path_x)
         ast_script_list_x[file_path_x] = ast_script_x
     # print(ast_script_list_b)
@@ -369,7 +369,7 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x, source_map):
 
 
 def extract_header_files(file_path):
-    result_file = Definitions.DIRECTORY_TMP + "/headers"
+    result_file = definitions.DIRECTORY_TMP + "/headers"
     extract_command = "cat " + file_path + " | grep '#include' > " + result_file
     execute_command(extract_command)
     with open(result_file, "r") as result_file:
@@ -384,12 +384,12 @@ def check_header_files(file_mapping, path_x):
     for file_b in file_mapping:
         file_x = file_mapping[file_b]
         if file_b[-1] == "c":
-            file_a = file_b.replace(Values.PATH_B, Values.PATH_A)
+            file_a = file_b.replace(values.PATH_B, values.PATH_A)
             header_list_a = extract_header_files(file_a)
             header_list_b = extract_header_files(file_b)
             additional_header_list_b = list(set(header_list_b) - set(header_list_a))
             deleted_header_list_b = list(set(header_list_a) - set(header_list_b))
-            file_c = file_x.replace(path_x, Values.PATH_C)
+            file_c = file_x.replace(path_x, values.PATH_C)
             header_list_c = extract_header_files(file_c)
             header_list_x = extract_header_files(file_x)
             additional_header_list_x = list(set(header_list_x) - set(header_list_c))
@@ -483,20 +483,20 @@ def summarize():
     Emitter.title("Ported Patch Analysis")
     load_values()
 
-    if Values.PHASE_SETTING[Definitions.PHASE_SUMMARIZE]:
-        if not Values.PATH_E:
+    if values.PHASE_SETTING[definitions.PHASE_SUMMARIZE]:
+        if not values.PATH_E:
             Emitter.special("\n\t-skipping this phase-")
         else:
             # classify_porting(Values.PATH_B, Values.Project_D.path)
-            clear_values(Values.Project_A)
+            clear_values(values.Project_A)
             original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
-                                               Values.PATH_A, Values.PATH_B)
-            segment_code(original_diff_info, Values.Project_A, Definitions.FILE_ORIG_N)
+                                           values.PATH_A, values.PATH_B)
+            segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
 
-            clear_values(Values.Project_C)
+            clear_values(values.Project_C)
             ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
-                                               Values.PATH_C, Values.PATH_E)
-            segment_code(ported_diff_info, Values.Project_C, Definitions.FILE_PORT_N)
+                                         values.PATH_C, values.PATH_E)
+            segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
 
         save_values()
     else:

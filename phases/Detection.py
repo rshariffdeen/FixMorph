@@ -3,8 +3,8 @@
 
 
 import time, sys
-from common.Utilities import execute_command, error_exit, save_current_state, load_state
-from common import Definitions, Values
+from common.utilities import execute_command, error_exit, save_current_state, load_state
+from common import definitions, values
 from ast import Vector, Parser
 from tools import Logger, Emitter, Detector, Writer, Generator, Reader
 
@@ -16,16 +16,16 @@ def generate_target_vectors():
     Emitter.sub_sub_title("Generating vector files for all code segments in Target")
     gen_header = False
     gen_source = False
-    diff_file_list = Values.original_diff_info.keys()
+    diff_file_list = values.original_diff_info.keys()
     for diff_file in diff_file_list:
         if ".c" in diff_file:
             gen_source = True
         elif ".h" in diff_file:
             gen_header = True
     if gen_header:
-        Generator.generate_vectors("*\.h", Definitions.FILE_FIND_RESULT, Values.Project_C, diff_file_list)
+        Generator.generate_vectors("*\.h", definitions.FILE_FIND_RESULT, values.Project_C, diff_file_list)
     if gen_source:
-        Generator.generate_vectors("*\.c", Definitions.FILE_FIND_RESULT, Values.Project_C, diff_file_list)
+        Generator.generate_vectors("*\.c", definitions.FILE_FIND_RESULT, values.Project_C, diff_file_list)
 
 
 def find_clones():
@@ -36,18 +36,18 @@ def find_clones():
 
 
 def load_values():
-    if not Values.original_diff_info:
-        Values.original_diff_info = Reader.read_json(Definitions.FILE_DIFF_INFO)
+    if not values.original_diff_info:
+        values.original_diff_info = Reader.read_json(definitions.FILE_DIFF_INFO)
         load_state()
-    Definitions.FILE_CLONE_INFO = Definitions.DIRECTORY_OUTPUT + "/clone-info"
-    Definitions.FILE_VECTOR_MAP = Definitions.DIRECTORY_OUTPUT + "/vector-map"
-    Definitions.FILE_AST_MAP = Definitions.DIRECTORY_OUTPUT + "/ast-map"
+    definitions.FILE_CLONE_INFO = definitions.DIRECTORY_OUTPUT + "/clone-info"
+    definitions.FILE_VECTOR_MAP = definitions.DIRECTORY_OUTPUT + "/vector-map"
+    definitions.FILE_AST_MAP = definitions.DIRECTORY_OUTPUT + "/ast-map"
 
 
 def save_values():
-    Writer.write_clone_list(clone_list, Definitions.FILE_CLONE_INFO)
-    Writer.write_as_json(Values.VECTOR_MAP, Definitions.FILE_VECTOR_MAP)
-    Values.file_list_to_patch = clone_list
+    Writer.write_clone_list(clone_list, definitions.FILE_CLONE_INFO)
+    Writer.write_as_json(values.VECTOR_MAP, definitions.FILE_VECTOR_MAP)
+    values.file_list_to_patch = clone_list
     save_current_state()
 
 
@@ -75,8 +75,8 @@ def detect():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Clone Detection")
     load_values()
-    if Values.PHASE_SETTING[Definitions.PHASE_DETECTION]:
-        if not Values.SKIP_VEC_GEN:
+    if values.PHASE_SETTING[definitions.PHASE_DETECTION]:
+        if not values.SKIP_VEC_GEN:
             safe_exec(generate_target_vectors, "generating vectors for target")
         safe_exec(find_clones, "finding clones in target")
         save_values()

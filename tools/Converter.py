@@ -4,7 +4,7 @@
 
 import sys
 import os
-from common.Utilities import error_exit, execute_command
+from common.utilities import error_exit, execute_command
 from tools import Logger
 
 

@@ -1,27 +1,27 @@
 import sys
 import time
-from common import Definitions, Values
-from common.Utilities import execute_command, error_exit, save_current_state
+from common import definitions, values
+from common.utilities import execute_command, error_exit, save_current_state
 from tools import Emitter, Reader, Writer, Logger, Mapper
 
 
 def generate_map():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Values.ast_map = Mapper.generate_ast_map(Values.generated_script_files)
+    values.ast_map = Mapper.generate_ast_map(values.generated_script_files)
 
 
 def load_values():
-    if not Values.generated_script_files:
+    if not values.generated_script_files:
         script_info = dict()
-        script_list = Reader.read_json(Definitions.FILE_SCRIPT_INFO)
+        script_list = Reader.read_json(definitions.FILE_SCRIPT_INFO)
         for (vec_path_info, vec_info) in script_list:
             script_info[(vec_path_info[0], vec_path_info[1], vec_path_info[2])] = vec_info
-        Values.generated_script_files = script_info
+        values.generated_script_files = script_info
 
-    Definitions.FILE_MAP_INFO = Definitions.DIRECTORY_OUTPUT + "/map-info"
-    Definitions.FILE_NAMESPACE_MAP = Definitions.DIRECTORY_OUTPUT + "/namespace-map"
-    Definitions.FILE_NAMESPACE_MAP_LOCAL = Definitions.DIRECTORY_OUTPUT + "/namespace-map-local"
-    Definitions.FILE_NAMESPACE_MAP_GLOBAL = Definitions.DIRECTORY_OUTPUT + "/namespace-map-global"
+    definitions.FILE_MAP_INFO = definitions.DIRECTORY_OUTPUT + "/map-info"
+    definitions.FILE_NAMESPACE_MAP = definitions.DIRECTORY_OUTPUT + "/namespace-map"
+    definitions.FILE_NAMESPACE_MAP_LOCAL = definitions.DIRECTORY_OUTPUT + "/namespace-map-local"
+    definitions.FILE_NAMESPACE_MAP_GLOBAL = definitions.DIRECTORY_OUTPUT + "/namespace-map-global"
 
 
 def safe_exec(function_def, title, *args):
@@ -45,7 +45,7 @@ def safe_exec(function_def, title, *args):
 
 
 def save_values():
-    Writer.write_map_info(Values.ast_map, Definitions.FILE_MAP_INFO)
+    Writer.write_map_info(values.ast_map, definitions.FILE_MAP_INFO)
     save_current_state()
 
 
@@ -53,8 +53,8 @@ def map():
     Emitter.title("Variable Mapping")
     load_values()
 
-    if Values.PHASE_SETTING[Definitions.PHASE_MAPPING]:
-        if not Values.generated_script_files:
+    if values.PHASE_SETTING[definitions.PHASE_MAPPING]:
+        if not values.generated_script_files:
             error_exit("no ast to map")
         safe_exec(generate_map, 'derivation of variable/data-structure map')
         save_values()

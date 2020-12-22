@@ -3,20 +3,20 @@
 
 
 import sys
-from common.Utilities import execute_command, error_exit, find_files, get_file_extension_list
+from common.utilities import execute_command, error_exit, find_files, get_file_extension_list
 from tools import Emitter, Finder, Logger
-from common import Definitions, Values
+from common import definitions, values
 from ast import Vector, Parser, Generator
 
 
 def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
     try:
-        Generator.generate_ast_script(Values.Project_A.path + file_a, Values.Project_C.path + file_c, Definitions.FILE_AST_MAP, True)
+        Generator.generate_ast_script(values.Project_A.path + file_a, values.Project_C.path + file_c, definitions.FILE_AST_MAP, True)
         # generate_ast_map(Definitions.Pa.path + file_a, Definitions.Pc.path + file_c)
     except Exception as e:
         error_exit(e, "Error at generate_ast_map.")
 
-    function_a = Values.Project_A.function_list[Values.Project_A.path + file_a][func_name_a]
+    function_a = values.Project_A.function_list[values.Project_A.path + file_a][func_name_a]
     variable_list_a = function_a.variables.copy()
 
     while '' in variable_list_a:
@@ -25,28 +25,28 @@ def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
     variable_list_a = [i.split(" ")[-1] for i in variable_list_a]
 
     # print(Values.Project_C.functions[Values.Project_C.path + file_c])
-    Generator.generate_function_list(Values.Project_C, Values.Project_C.path + file_c)
+    Generator.generate_function_list(values.Project_C, values.Project_C.path + file_c)
 
-    function_c = Values.Project_C.function_list[Values.Project_C.path + file_c][func_name_c]
+    function_c = values.Project_C.function_list[values.Project_C.path + file_c][func_name_c]
     variable_list_c = function_c.variables
     while '' in variable_list_c:
         variable_list_c.remove('')
-    json_file_a = Values.Project_A.path + file_a + ".AST"
+    json_file_a = values.Project_A.path + file_a + ".AST"
     ast_a = Parser.AST_from_file(json_file_a)
-    json_file_c = Values.Project_C.path + file_c + ".AST"
+    json_file_c = values.Project_C.path + file_c + ".AST"
     ast_c = Parser.AST_from_file(json_file_c)
     ast_map = dict()
 
     try:
-        with open(Definitions.FILE_AST_MAP, "r",) as ast_map_file:
+        with open(definitions.FILE_AST_MAP, "r", ) as ast_map_file:
             map_line = ast_map_file.readline().strip()
             while map_line:
-                node_a, node_c = clean_parse(map_line, Definitions.TO)
+                node_a, node_c = clean_parse(map_line, definitions.TO)
                 var_a = id_from_string(node_a)
-                var_a = ast_a[var_a].value_calc(Values.Project_A.path + file_a)
+                var_a = ast_a[var_a].value_calc(values.Project_A.path + file_a)
 
                 var_c = id_from_string(node_c)
-                var_c = ast_c[var_c].value_calc(Values.Project_C.path + file_c)
+                var_c = ast_c[var_c].value_calc(values.Project_C.path + file_c)
 
                 if var_a in variable_list_a:
                     if var_a not in ast_map.keys():
@@ -101,7 +101,7 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
         file_path_a = vector_a[0]
         matrix_a = vector_a[1]
 
-        possible_candidate_path = file_path_a.replace(Values.Project_A.path, Values.Project_C.path)
+        possible_candidate_path = file_path_a.replace(values.Project_A.path, values.Project_C.path)
         possible_candidate = None
         possible_candidate_distance = 0.0
 
@@ -161,8 +161,8 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
 
 def detect_struct_clones():
     extension = "*.struct_*\.vec"
-    vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'struct')
-    vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'struct')
+    vector_list_a = Finder.search_vector_list(values.Project_A, extension, 'struct')
+    vector_list_c = Finder.search_vector_list(values.Project_C, extension, 'struct')
     clone_list = []
     factor = 2
     UNKNOWN = "#UNKNOWN#"
@@ -174,22 +174,22 @@ def detect_struct_clones():
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split(".struct_")
-        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
-        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, '')
+        vector_source_a = str(vector_source_a).replace(values.Project_A.path, '')
+        candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         Emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
-        Values.VECTOR_MAP[vector_path_a] = candidate_file_path
+        values.VECTOR_MAP[vector_path_a] = candidate_file_path
     return clone_list
 
 
 def detect_enum_clones():
     extension = "*.enum_*\.vec"
-    vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'enum')
-    vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'enum')
+    vector_list_a = Finder.search_vector_list(values.Project_A, extension, 'enum')
+    vector_list_c = Finder.search_vector_list(values.Project_C, extension, 'enum')
     clone_list = []
     factor = 2
     UNKNOWN = "#UNKNOWN#"
@@ -201,22 +201,22 @@ def detect_enum_clones():
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split(".enum_")
-        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
-        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, '')
+        vector_source_a = str(vector_source_a).replace(values.Project_A.path, '')
+        candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         Emitter.success("\t\t\tEnum Definition: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
-        Values.VECTOR_MAP[vector_path_a] = candidate_file_path
+        values.VECTOR_MAP[vector_path_a] = candidate_file_path
     return clone_list
 
 
 def detect_function_clones():
     extension = "*.func_*\.vec"
-    vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'function')
-    vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'function')
+    vector_list_a = Finder.search_vector_list(values.Project_A, extension, 'function')
+    vector_list_c = Finder.search_vector_list(values.Project_C, extension, 'function')
     clone_list = []
     factor = 2
     UNKNOWN = "#UNKNOWN#"
@@ -238,22 +238,22 @@ def detect_function_clones():
                     best_candidate = (candidate_path, distance)
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split(".func_")
-        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
-        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, '')
+        vector_source_a = str(vector_source_a).replace(values.Project_A.path, '')
+        candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         Emitter.success("\t\t\tFunction: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
-        Values.VECTOR_MAP[vector_path_a] = candidate_file_path
+        values.VECTOR_MAP[vector_path_a] = candidate_file_path
     return clone_list
 
 
 def detect_decl_clones():
     extension = "*.var_*\.vec"
-    vector_list_a = Finder.search_vector_list(Values.Project_A, extension, 'global variable')
-    vector_list_c = Finder.search_vector_list(Values.Project_C, extension, 'global variable')
+    vector_list_a = Finder.search_vector_list(values.Project_A, extension, 'global variable')
+    vector_list_c = Finder.search_vector_list(values.Project_C, extension, 'global variable')
     clone_list = []
     factor = 2
     UNKNOWN = "#UNKNOWN#"
@@ -265,15 +265,15 @@ def detect_decl_clones():
         best_candidate = candidate_list[0]
         candidate_file_path = best_candidate[0]
         candidate_source_path, candidate_name = candidate_file_path.split(".var_")
-        vector_source_a = str(vector_source_a).replace(Values.Project_A.path, '')
-        candidate_source_path = str(candidate_source_path).replace(Values.Project_C.path, '')
+        vector_source_a = str(vector_source_a).replace(values.Project_A.path, '')
+        candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
         Emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         Emitter.success("\t\t\tDeclaration: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         Emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
-        Values.VECTOR_MAP[vector_path_a] = candidate_file_path
+        values.VECTOR_MAP[vector_path_a] = candidate_file_path
     return clone_list
 
 
@@ -283,19 +283,19 @@ def detect_clones():
     enum_clones = list()
     decl_clones = list()
     function_clones = list()
-    if Values.IS_STRUCT:
+    if values.IS_STRUCT:
         Emitter.sub_sub_title("Finding clone structures in Target")
         struct_clones = detect_struct_clones()
         # print(struct_clones)
-    if Values.IS_ENUM:
+    if values.IS_ENUM:
         Emitter.sub_sub_title("Finding clone enum in Target")
         enum_clones = detect_enum_clones()
         # print(enum_clones)
-    if Values.IS_FUNCTION:
+    if values.IS_FUNCTION:
         Emitter.sub_sub_title("Finding clone functions in Target")
         function_clones = detect_function_clones()
         # print(function_clones)
-    if Values.IS_TYPEDEC:
+    if values.IS_TYPEDEC:
         Emitter.sub_sub_title("Finding clone variable declaration in Target")
         decl_clones = detect_decl_clones()
         # print(function_clones)

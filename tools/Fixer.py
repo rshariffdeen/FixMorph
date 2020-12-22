@@ -3,8 +3,8 @@
 
 
 import sys, os
-from common.Utilities import execute_command, error_exit, show_partial_diff, backup_file, get_code
-from common import Definitions
+from common.utilities import execute_command, error_exit, show_partial_diff, backup_file, get_code
+from common import definitions
 from ast import Generator
 from tools import Logger, Finder, Emitter
 
@@ -86,13 +86,13 @@ def fix_return_type(source_file, source_location):
         new_statement = "return;\n"
         backup_file(source_file, FILENAME_BACKUP)
         replace_code(new_statement, source_file, start_line)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_file)
     elif function_return_type.strip() == "int":
         new_statement = "return -1;\n"
         backup_file(source_file, FILENAME_BACKUP)
         replace_code(new_statement, source_file, start_line)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_file)
     else:
         error_exit("NEW RETURN TYPE!")
@@ -116,13 +116,13 @@ def fix_label_error(source_file, source_location):
         new_statement = "return;\n"
         backup_file(source_file, FILENAME_BACKUP)
         replace_code(new_statement, source_file, start_line)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_file)
     elif function_return_type.strip() == "int":
         new_statement = "return -1;\n"
         backup_file(source_file, FILENAME_BACKUP)
         replace_code(new_statement, source_file, start_line)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_file)
     else:
         error_exit("NEW RETURN TYPE!")
@@ -137,7 +137,7 @@ def fix_bracket(source_file, source_location):
     new_statement = "\n"
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
-    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
     show_partial_diff(backup_file_path, source_file)
 
 
@@ -158,13 +158,13 @@ def fix_argument_errors(source_file, source_location):
         new_statement = "return;\n"
         backup_file(source_file, FILENAME_BACKUP)
         replace_code(new_statement, source_file, start_line)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_file)
     elif function_return_type.strip() == "int":
         new_statement = "return -1;\n"
         backup_file(source_file, FILENAME_BACKUP)
         replace_code(new_statement, source_file, start_line)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_file)
     else:
         error_exit("NEW RETURN TYPE!")
@@ -218,7 +218,7 @@ def fix_initialization_error(source_file, source_location):
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
-    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
     show_partial_diff(backup_file_path, source_file)
 
 
@@ -233,7 +233,7 @@ def fix_unknown_function_calls(source_file, source_location):
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
-    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
     show_partial_diff(backup_file_path, source_file)
 
 
@@ -248,7 +248,7 @@ def fix_redeclaration_error(source_file, source_location):
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
-    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
     show_partial_diff(backup_file_path, source_file)
 
 
@@ -263,7 +263,7 @@ def fix_comma_error(source_file, source_location):
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
-    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
     show_partial_diff(backup_file_path, source_file)
 
 
@@ -278,7 +278,7 @@ def fix_semicolon_error(source_file, source_location):
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
-    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
     show_partial_diff(backup_file_path, source_file)
 
 
@@ -296,7 +296,7 @@ def fix_paranthese_error(source_file, source_location, remove=False):
     Emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
-    backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
     show_partial_diff(backup_file_path, source_file)
 
 
@@ -320,7 +320,7 @@ def check_syntax_errors(modified_source_list):
 
 def set_values():
     global FILE_SYNTAX_ERRORS
-    FILE_SYNTAX_ERRORS = Definitions.DIRECTORY_OUTPUT + "/syntax-errors"
+    FILE_SYNTAX_ERRORS = definitions.DIRECTORY_OUTPUT + "/syntax-errors"
 
 
 def check(modified_source_list):

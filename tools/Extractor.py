@@ -1,9 +1,9 @@
 import sys
 import re
 from tools import Logger, Emitter, Finder
-from common.Utilities import execute_command, get_file_list, error_exit, is_intersect
+from common.utilities import execute_command, get_file_list, error_exit, is_intersect
 import os
-from common import Definitions, Values
+from common import definitions, values
 from ast import Generator
 
 
@@ -24,9 +24,9 @@ def extract_child_id_list(ast_node):
 def extract_macro_definitions(source_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.information("\t\t[info] extracting macro definitions from\n\t\t" + str(source_path))
-    extract_command = "clang -E -dD -dM " + source_path + " > " + Definitions.FILE_MACRO_DEF
+    extract_command = "clang -E -dD -dM " + source_path + " > " + definitions.FILE_MACRO_DEF
     execute_command(extract_command)
-    with open(Definitions.FILE_MACRO_DEF, "r") as macro_file:
+    with open(definitions.FILE_MACRO_DEF, "r") as macro_file:
         macro_def_list = macro_file.readlines()
         return macro_def_list
 
@@ -37,8 +37,8 @@ def extract_complete_function_node(function_def_node, source_path):
     source_dir = "/".join(source_path.split("/")[:-1])
     # print(source_dir)
     if len(function_def_node['children']) > 1:
-        if Values.IS_LINUX_KERNEL:
-            source_file_loc = Values.PATH_B + "/" + function_def_node['file']
+        if values.IS_LINUX_KERNEL:
+            source_file_loc = values.PATH_B + "/" + function_def_node['file']
         else:
             source_file_loc = source_dir + "/" + function_def_node['file']
         # print(source_file_loc)
@@ -66,7 +66,7 @@ def extract_complete_function_node(function_def_node, source_path):
                     if source_file_name in file_name and file_name[-2:] == ".c":
                         source_file_loc = file_name
                         break
-                if search_dir in [Values.PATH_A, Values.PATH_B, Values.PATH_C]:
+                if search_dir in [values.PATH_A, values.PATH_B, values.PATH_C]:
                     return None, None
                 search_dir = os.path.dirname(search_dir)
 
@@ -274,7 +274,7 @@ def extract_macro_definition(ast_node, source_file, target_file):
             identifier = str(ast_node['value'])
             identifier = identifier.split("(")[0]
             # print(identifier)
-            if identifier in Values.STANDARD_MACRO_LIST:
+            if identifier in values.STANDARD_MACRO_LIST:
                 return macro_list
             else:
                 start_line = int(ast_node['start line'])
@@ -290,7 +290,7 @@ def extract_macro_definition(ast_node, source_file, target_file):
                         # print(identifier)
                         if str(identifier).isdigit():
                             continue
-                        if identifier in Values.STANDARD_MACRO_LIST:
+                        if identifier in values.STANDARD_MACRO_LIST:
                             continue
                         if "(" in identifier:
                             identifier = identifier.split("(")[0]
@@ -594,18 +594,18 @@ def extract_unique_in_order(list):
 
 def extract_project_path(source_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if Values.PATH_A + "/" in source_path:
-        return Values.PATH_A
-    elif Values.PATH_B in source_path:
-        return Values.PATH_B
-    elif Values.PATH_C in source_path:
-        return Values.PATH_C
+    if values.PATH_A + "/" in source_path:
+        return values.PATH_A
+    elif values.PATH_B in source_path:
+        return values.PATH_B
+    elif values.PATH_C in source_path:
+        return values.PATH_C
 
 
 def extract_header_list(source_path):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     header_list = list()
-    output_file_path = Definitions.DIRECTORY_TMP + "/header-list"
+    output_file_path = definitions.DIRECTORY_TMP + "/header-list"
     extract_command = "cat " + source_path + " | grep '#include' > " + output_file_path
     execute_command(extract_command)
     with open(output_file_path, 'r') as output_file:
@@ -615,7 +615,7 @@ def extract_header_list(source_path):
 
 def extract_pre_macro_list(source_file):
     macro_command = ""
-    result_file = Definitions.DIRECTORY_TMP + "/result"
+    result_file = definitions.DIRECTORY_TMP + "/result"
     cat_command = "cat " + source_file + " | grep '#if' > " + result_file
     execute_command(cat_command)
     pre_macro_list = set()
@@ -636,7 +636,7 @@ def extract_pre_macro_list(source_file):
                 for token in token_list[1:]:
                     macro = token.split(" ")[0]
                     pre_macro_list.add(macro.replace(")", "").replace("(", ""))
-    if Values.PATH_A in source_file or Values.PATH_B in source_file:
+    if values.PATH_A in source_file or values.PATH_B in source_file:
         pre_process_arg = " --extra-arg-a=\"-D {}=1 \" "
     else:
         pre_process_arg = " --extra-arg-c=\"-D {}=1 \" "
@@ -648,7 +648,7 @@ def extract_pre_macro_list(source_file):
 def extract_neighborhood(source_path, segment_code, segment_identifier, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     ast_tree = Generator.get_ast_json(source_path, use_macro)
-    segment_type = Values.segment_map[segment_code]
+    segment_type = values.segment_map[segment_code]
     ast_script = list()
     segment_found = False
     for ast_node in ast_tree['children']:

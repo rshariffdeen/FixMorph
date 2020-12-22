@@ -6,10 +6,10 @@ import sys
 import os
 import io
 import json
-from common.Utilities import execute_command, get_file_extension_list, error_exit
+from common.utilities import execute_command, get_file_extension_list, error_exit
 from ast import Generator
 from tools import Mapper, Logger, Filter, Emitter
-from common import Values, Definitions
+from common import values, definitions
 from git import Repo
 
 
@@ -21,9 +21,9 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
 
     extensions = get_file_extension_list(project_path_a, output_ext_a)
     extensions = extensions.union(get_file_extension_list(project_path_b, output_ext_b))
-    untrack_file = Definitions.FILE_GIT_UNTRACKED_FILES
+    untrack_file = definitions.FILE_GIT_UNTRACKED_FILES
 
-    if Values.IS_LINUX_KERNEL:
+    if values.IS_LINUX_KERNEL:
         repo = Repo(project_path_b)
         patch_commit = repo.head.commit
         parent_commit = patch_commit.parents[0]
@@ -55,7 +55,7 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
         return
 
     untracked_list_command = "cd " + project_path_a + ";" + "touch " + untrack_file
-    if Values.VC == "git":
+    if values.VC == "git":
         untracked_list_command += "git ls-files --others  > " + untrack_file + ";"
         untracked_list_command += "cd " + project_path_b + ";"
         untracked_list_command += "git ls-files --others  >> " + untrack_file

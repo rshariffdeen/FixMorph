@@ -4,8 +4,8 @@
 
 import os
 import time
-from common import Definitions, Values
-from common.Utilities import execute_command, error_exit, save_current_state, backup_file_orig, restore_file_orig, replace_file
+from common import definitions, values
+from common.utilities import execute_command, error_exit, save_current_state, backup_file_orig, restore_file_orig, replace_file
 from tools import Emitter, Collector, Reader, Writer, Slicer
 from ast import Vector
 
@@ -19,9 +19,9 @@ def generate_edit_script(file_a, file_b, output_file):
         extra_arg = ""
         if file_a[-1] == 'h':
             extra_arg = " --"
-        command = Definitions.DIFF_COMMAND + " -s=" + Definitions.DIFF_SIZE + " -dump-matches "
-        if Values.DONOR_REQUIRE_MACRO:
-            command += " " + Values.DONOR_PRE_PROCESS_MACRO + " "
+        command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
+        if values.DONOR_REQUIRE_MACRO:
+            command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
         command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += " > " + output_file
         execute_command(command, False)
@@ -32,15 +32,15 @@ def generate_edit_script(file_a, file_b, output_file):
 def generate_script_for_files(file_list_to_patch):
     global generated_script_list
     generated_source_list = list()
-    script_file_ab = Definitions.DIRECTORY_TMP + "/diff_script_AB"
+    script_file_ab = definitions.DIRECTORY_TMP + "/diff_script_AB"
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
         segment_code = vec_path_a.split(".")[-2].split("_")[0]
         try:
             split_regex = "." + segment_code + "_"
             vector_source_a, vector_name_a = vec_path_a.split(split_regex)
-            vector_source_b = vector_source_a.replace(Values.Project_A.path, Values.Project_B.path)
+            vector_source_b = vector_source_a.replace(values.Project_A.path, values.Project_B.path)
             vector_source_c, vector_name_c = vec_path_c.split(split_regex)
-            vector_name_b = vector_name_a.replace(Values.PATH_A, Values.PATH_B)
+            vector_name_b = vector_name_a.replace(values.PATH_A, values.PATH_B)
             # if vector_source_a in generated_source_list:
             #     continue
 
@@ -59,7 +59,7 @@ def generate_script_for_files(file_list_to_patch):
             restore_file_orig(vector_source_b)
 
             original_script, inserted_node_list, map_ab = Collector.collect_instruction_list(script_file_ab)
-            Values.NODE_MAP[(slice_file_a, slice_file_b)] = map_ab
+            values.NODE_MAP[(slice_file_a, slice_file_b)] = map_ab
             if not original_script:
                 error_exit("failed to extract AST transformation")
             generated_data = (original_script, inserted_node_list, map_ab)
@@ -89,16 +89,16 @@ def safe_exec(function_def, title, *args):
 
 
 def load_values():
-    if not Values.file_list_to_patch:
-        clone_list = Reader.read_json(Definitions.FILE_CLONE_INFO)
-        Values.file_list_to_patch = clone_list
-    Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
-    Definitions.FILE_MACRO_DEF = Definitions.DIRECTORY_TMP + "/macro-def"
+    if not values.file_list_to_patch:
+        clone_list = Reader.read_json(definitions.FILE_CLONE_INFO)
+        values.file_list_to_patch = clone_list
+    definitions.FILE_SCRIPT_INFO = definitions.DIRECTORY_OUTPUT + "/script-info"
+    definitions.FILE_MACRO_DEF = definitions.DIRECTORY_TMP + "/macro-def"
 
 
 def save_values():
-    Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
-    Values.generated_script_files = generated_script_list
+    Writer.write_script_info(generated_script_list, definitions.FILE_SCRIPT_INFO)
+    values.generated_script_files = generated_script_list
     save_current_state()
 
 
@@ -106,10 +106,10 @@ def extract():
     Emitter.title("Extract AST Transformation")
     # Using all previous structures to transplant patch
     load_values()
-    if Values.PHASE_SETTING[Definitions.PHASE_EXTRACTION]:
-        if not Values.file_list_to_patch:
+    if values.PHASE_SETTING[definitions.PHASE_EXTRACTION]:
+        if not values.file_list_to_patch:
             error_exit("no clone file detected to generate AST")
-        safe_exec(generate_script_for_files, "extraction of AST transformation", Values.file_list_to_patch)
+        safe_exec(generate_script_for_files, "extraction of AST transformation", values.file_list_to_patch)
         save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

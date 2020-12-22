@@ -1,5 +1,5 @@
-from common import Definitions, Values
-from common.Utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
+from common import definitions, values
+from common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
 from tools import Emitter, Logger, Finder, Extractor, Identifier
 from ast import Generator
 
@@ -27,7 +27,7 @@ def execute_ast_transformation(script_path, source_file_info):
     file_a, file_b, file_c, file_d = source_file_info
     Emitter.normal("\t[action] executing AST transformation")
 
-    output_file = Definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
+    output_file = definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
     backup_command = ""
     # We add file_c into our dict (changes) to be able to backup and copy it
 
@@ -35,28 +35,28 @@ def execute_ast_transformation(script_path, source_file_info):
         filename = file_c.split("/")[-1]
         backup_file = str(file_index) + "_" + filename
         backup_file_list[file_c] = backup_file
-        backup_command += "cp " + file_c + " " + Definitions.DIRECTORY_BACKUP + "/" + backup_file
+        backup_command += "cp " + file_c + " " + definitions.DIRECTORY_BACKUP + "/" + backup_file
     # print(backup_command)
     execute_command(backup_command)
 
-    parameters = " -s=" + Definitions.PATCH_SIZE
+    parameters = " -s=" + definitions.PATCH_SIZE
 
-    if Values.DONOR_REQUIRE_MACRO:
-        parameters += " " + Values.DONOR_PRE_PROCESS_MACRO + " "
+    if values.DONOR_REQUIRE_MACRO:
+        parameters += " " + values.DONOR_PRE_PROCESS_MACRO + " "
 
-    if Values.TARGET_REQUIRE_MACRO:
-        parameters += " " + Values.TARGET_PRE_PROCESS_MACRO + " "
+    if values.TARGET_REQUIRE_MACRO:
+        parameters += " " + values.TARGET_PRE_PROCESS_MACRO + " "
 
     parameters += " -script=" + script_path + " -source=" + file_a
     parameters += " -destination=" + file_b + " -target=" + file_c
-    parameters += " -map=" + Definitions.FILE_NAMESPACE_MAP
+    parameters += " -map=" + definitions.FILE_NAMESPACE_MAP
 
-    patch_command = Definitions.PATCH_COMMAND + parameters + " > " + Definitions.FILE_TEMP_FIX
+    patch_command = definitions.PATCH_COMMAND + parameters + " > " + definitions.FILE_TEMP_FIX
 
     ret_code = int(execute_command(patch_command))
 
     if ret_code == 0:
-        move_command = "cp " + Definitions.FILE_TEMP_FIX + " " + file_d
+        move_command = "cp " + definitions.FILE_TEMP_FIX + " " + file_d
         execute_command(move_command)
         show_partial_diff(file_c, file_d)
 
@@ -66,7 +66,7 @@ def execute_ast_transformation(script_path, source_file_info):
     if os.stat(file_d).st_size == 0:
         error_exit("\t AST transformation FAILED")
 
-    if Values.BREAK_WEAVE:
+    if values.BREAK_WEAVE:
         exit()
 
     return ret_code
@@ -74,8 +74,8 @@ def execute_ast_transformation(script_path, source_file_info):
 
 def show_patch(file_a, file_b, file_c, file_d, index):
     Emitter.highlight("\tOriginal Patch")
-    original_patch_file_name = Definitions.DIRECTORY_OUTPUT + "/" + index + "-original-patch"
-    generated_patch_file_name = Definitions.DIRECTORY_OUTPUT + "/" + index + "-generated-patch"
+    original_patch_file_name = definitions.DIRECTORY_OUTPUT + "/" + index + "-original-patch"
+    generated_patch_file_name = definitions.DIRECTORY_OUTPUT + "/" + index + "-generated-patch"
     diff_command = "diff -ENZBbwr " + file_a + " " + file_b + " > " + original_patch_file_name
     execute_command(diff_command)
     with open(original_patch_file_name, 'r', encoding='utf8', errors="ignore") as diff:
@@ -155,7 +155,7 @@ def weave_headers(missing_header_list, modified_source_list):
         insert_code(transplant_code, target_file, def_insert_line)
         if target_file not in modified_source_list:
             modified_source_list.append(target_file)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, target_file)
 
     # for source_file_c in modified_source_list:
@@ -198,7 +198,7 @@ def weave_definitions(missing_definition_list, modified_source_list):
                     if def_name in macro_def.split(" "):
                         transplant_code += "\n" + macro_def + "\n"
 
-        if transplant_code == "" and not Values.BACKPORT:
+        if transplant_code == "" and not values.BACKPORT:
             header_file = Finder.find_header_file(def_name, source_file)
             # print(header_file)
             if header_file is not None:
@@ -218,7 +218,7 @@ def weave_definitions(missing_definition_list, modified_source_list):
         insert_code(transplant_code, target_file, def_insert_line)
         if target_file not in modified_source_list:
             modified_source_list.append(target_file)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, target_file)
     return modified_source_list
 
@@ -245,7 +245,7 @@ def weave_data_type(missing_data_type_list, modified_source_list):
         insert_code(transplant_code, target_file, def_insert_line)
         if target_file not in modified_source_list:
             modified_source_list.append(target_file)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, target_file)
     return modified_source_list
 
@@ -282,27 +282,27 @@ def weave_functions(missing_function_list, modified_source_list):
         insert_code(original_function, source_path_d, def_insert_point)
         if source_path_d not in modified_source_list:
             modified_source_list.append(source_path_d)
-        backup_file_path = Definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_path_d)
     return modified_source_list
 
 
 def weave_code(file_a, file_b, file_c, script_file_name, modified_source_list):
-    if Values.DONOR_REQUIRE_MACRO:
-        Values.PRE_PROCESS_MACRO = Values.DONOR_PRE_PROCESS_MACRO
-    if Values.TARGET_REQUIRE_MACRO:
-        Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
+    if values.DONOR_REQUIRE_MACRO:
+        values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
+    if values.TARGET_REQUIRE_MACRO:
+        values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
 
-    file_d = str(file_c).replace(Values.Project_C.path, Values.Project_D.path)
+    file_d = str(file_c).replace(values.Project_C.path, values.Project_D.path)
 
     # Check for an edit script
     # script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_script"
-    syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_syntax_errors"
+    syntax_error_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_syntax_errors"
 
     file_info = file_a, file_b, file_c, file_d
     execute_ast_transformation(script_file_name, file_info)
     # We fix basic syntax errors that could have been introduced by the patch
-    fix_command = Definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
+    fix_command = definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
 
     if file_c[-1] == 'h':
         fix_command += " --"
@@ -318,7 +318,7 @@ def weave_code(file_a, file_b, file_c, script_file_name, modified_source_list):
 
 def weave_slice(slice_info):
     for source_file_d, source_file_b in slice_info:
-        source_file_c = source_file_d.replace(Values.Project_D.path, Values.PATH_C)
+        source_file_c = source_file_d.replace(values.Project_D.path, values.PATH_C)
         Emitter.normal("\t\t" + source_file_d)
         slice_list = slice_info[(source_file_d, source_file_b)]
         weave_list = dict()
@@ -326,14 +326,14 @@ def weave_slice(slice_info):
             segment_code = slice_file.replace(source_file_d + ".", "").split(".")[0]
             segment_identifier = slice_file.split("." + segment_code + ".")[-1].replace(".slice", "")
             Emitter.normal("\t\t\tweaving slice " + segment_identifier)
-            segment_type = Values.segment_map[segment_code]
+            segment_type = values.segment_map[segment_code]
             backup_file_orig(source_file_d)
             replace_file(slice_file, source_file_d)
-            if Values.TARGET_REQUIRE_MACRO:
-                Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
-            ast_tree_slice = Generator.get_ast_json(source_file_d, Values.TARGET_REQUIRE_MACRO, True)
+            if values.TARGET_REQUIRE_MACRO:
+                values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
+            ast_tree_slice = Generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
             restore_file_orig(source_file_d)
-            ast_tree_source = Generator.get_ast_json(source_file_d, Values.TARGET_REQUIRE_MACRO, True)
+            ast_tree_source = Generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
             segment_node_slice = Finder.search_node(ast_tree_slice, segment_type, segment_identifier)
             segment_node_source = Finder.search_node(ast_tree_source, segment_type, segment_identifier)
             start_line_source = int(segment_node_source['start line'])
@@ -348,5 +348,5 @@ def weave_slice(slice_info):
             delete_code(source_file_d, start_line_source, end_line_source)
             insert_code_range(slice_code, source_file_d, start_line_source)
 
-        source_file_a = source_file_b.replace(Values.PATH_B, Values.PATH_A)
+        source_file_a = source_file_b.replace(values.PATH_B, values.PATH_A)
         show_patch(source_file_a, source_file_b, source_file_c, source_file_d, segment_identifier)

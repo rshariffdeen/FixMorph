@@ -6,11 +6,11 @@ import io
 import os
 
 import json
-from common.Utilities import execute_command, error_exit, find_files, get_file_extension_list
+from common.utilities import execute_command, error_exit, find_files, get_file_extension_list
 from tools import Emitter, Logger, Extractor, Finder, Merger
 from ast import Vector, Parser, Generator as ASTGenerator
-from common.Utilities import error_exit, clean_parse
-from common import Definitions, Values
+from common.utilities import error_exit, clean_parse
+from common import definitions, values
 
 
 def find_source_file(diff_file_list, project, log_file, file_extension):
@@ -21,13 +21,13 @@ def find_source_file(diff_file_list, project, log_file, file_extension):
     for source_loc in diff_file_list:
         file_path_list = set()
         source_path, line_number = source_loc.split(":")
-        source_path = source_path.replace(Values.PATH_A, "")
+        source_path = source_path.replace(values.PATH_A, "")
         source_path = source_path[1:]
         if source_path in source_file_list:
             continue
         source_file_list.append(source_path)
-        git_query = "cd " + Values.PATH_A + ";"
-        result_file = Definitions.DIRECTORY_TMP + "/list"
+        git_query = "cd " + values.PATH_A + ";"
+        result_file = definitions.DIRECTORY_TMP + "/list"
         git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
         execute_command(git_query)
         with open(result_file, 'r') as tmp_file:
@@ -62,7 +62,7 @@ def iterate_path(source_path, project, file_extension, log_file):
     regex = None
     file_name = source_path.split("/")[-1][:-2]
     source_dir = source_path[:str(source_path).find(file_name)]
-    source_dir = source_dir.replace(Values.PATH_A, "")
+    source_dir = source_dir.replace(values.PATH_A, "")
     if regex is None:
         regex = file_name
     else:
@@ -98,7 +98,7 @@ def generate_segmentation(source_file, use_macro=False):
         return None
 
     source_file_pattern = [source_file, source_file.split("/")[-1],
-                           source_file.replace(Values.Project_C.path, '')[1:], source_file.replace(Values.Project_C.path, '')]
+                           source_file.replace(values.Project_C.path, '')[1:], source_file.replace(values.Project_C.path, '')]
     for ast_node in ast_tree['children']:
         # print(ast_node)
         node_type = str(ast_node["type"])
@@ -152,9 +152,9 @@ def create_vectors(project, source_file, segmentation_list):
     enum_list, function_list, macro_list, \
     struct_list, type_def_list, def_list, decl_list, definition_list = segmentation_list
 
-    if Values.IS_FUNCTION:
+    if values.IS_FUNCTION:
         # Emitter.normal("\t\t\tgenerating function vectors")
-        vector_list_a = Finder.search_vector_list(Values.Project_A, "*.func_*\.vec", 'func')
+        vector_list_a = Finder.search_vector_list(values.Project_A, "*.func_*\.vec", 'func')
         function_name_list_a = list()
         function_name_list_c = dict()
         filtered_function_list = list()
@@ -180,14 +180,14 @@ def create_vectors(project, source_file, segmentation_list):
 
         ASTGenerator.get_vars(project, source_file, definition_list)
 
-    if Values.IS_STRUCT:
+    if values.IS_STRUCT:
         # Emitter.normal("\t\t\tgenerating struct vectors")
         for struct_name, begin_line, finish_line in struct_list:
             struct_name = "struct_" + struct_name.split(";")[0]
             project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name, begin_line,
                                                                           finish_line, True)
 
-    if Values.IS_TYPEDEC:
+    if values.IS_TYPEDEC:
         # Emitter.normal("\t\t\tgenerating struct vectors")
         for var_name, begin_line, finish_line in decl_list:
             var_name = "var_" + var_name.split(";")[0]
@@ -196,14 +196,14 @@ def create_vectors(project, source_file, segmentation_list):
             project.decl_list[source_file][var_name] = Vector.Vector(source_file, var_name, begin_line, finish_line,
                                                                      True)
 
-    if Values.IS_MACRO:
+    if values.IS_MACRO:
         # Emitter.normal("\t\t\tgenerating macro vectors")
         for macro_name, begin_line, finish_line in macro_list:
             macro_name = "macro_" + macro_name
             project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name, begin_line,
                                                                         finish_line, True)
 
-    if Values.IS_ENUM:
+    if values.IS_ENUM:
         # Emitter.normal("\t\t\tgenerating enum vectors")
         count = 0
         for enum_name, begin_line, finish_line in enum_list:
@@ -222,7 +222,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
 
     # intelligently generate vectors
     regex = None
-    if Values.BACKPORT or Values.FORK:
+    if values.BACKPORT or values.FORK:
         find_source_file(diff_file_list, project, log_file, file_extension)
     else:
         find_files(project.path, file_extension, log_file, regex)
@@ -237,7 +237,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
             # if source_file != "/data/linux/3/v3_16/mm/hugetlb.c":
             #     source_file = file_list.readline().strip()
             #     continue
-            Values.TARGET_PRE_PROCESS_MACRO = Extractor.extract_pre_macro_list(source_file)
+            values.TARGET_PRE_PROCESS_MACRO = Extractor.extract_pre_macro_list(source_file)
 
             try:
                 segmentation_list = generate_segmentation(source_file)
@@ -257,17 +257,17 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
 def generate_ast_json(file_path, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
-    macro_list = Values.TARGET_PRE_PROCESS_MACRO
-    if Values.PATH_A in file_path:
-        macro_list = Values.DONOR_PRE_PROCESS_MACRO
-    dump_command = Definitions.APP_AST_DIFF + " -ast-dump-json "
+    macro_list = values.TARGET_PRE_PROCESS_MACRO
+    if values.PATH_A in file_path:
+        macro_list = values.DONOR_PRE_PROCESS_MACRO
+    dump_command = definitions.APP_AST_DIFF + " -ast-dump-json "
     if use_macro:
         dump_command += " " + macro_list + "  "
     dump_command += file_path
     if file_path[-1] == 'h':
         dump_command += " --"
 
-    error_file = Definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
+    error_file = definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
     dump_command += " 2> " + error_file + " > " + json_file
 
     return_code = execute_command(dump_command)

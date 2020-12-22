@@ -3,7 +3,7 @@
 
 
 import sys
-from common.Utilities import execute_command, get_file_extension_list, error_exit
+from common.utilities import execute_command, get_file_extension_list, error_exit
 from ast import Generator, AST
 from tools import Mapper, Finder, Logger, Extractor, Emitter
 

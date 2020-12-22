@@ -1,5 +1,5 @@
-from common import Definitions, Values
-from common.Utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
+from common import definitions, values
+from common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
 from tools import Emitter, Logger, Finder, Extractor, Identifier, Writer
 from ast import Generator
 
@@ -22,7 +22,7 @@ def evolve_definitions(missing_definition_list):
         target_file = macro_info['target']
         def_node_list = Extractor.extract_macro_definitions(source_file)
         if not ast_b:
-            ast_b = Generator.get_ast_json(source_file, use_macro=Values.DONOR_REQUIRE_MACRO)
+            ast_b = Generator.get_ast_json(source_file, use_macro=values.DONOR_REQUIRE_MACRO)
             def_node_list = Extractor.extract_def_node_list(ast_b)
         if def_name in def_node_list:
             def_node = def_node_list[def_name]
@@ -120,24 +120,24 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
     missing_header_list = dict()
     missing_data_type_list = dict()
 
-    if Values.DONOR_REQUIRE_MACRO:
-        Values.PRE_PROCESS_MACRO = Values.DONOR_PRE_PROCESS_MACRO
-    ast_map_a = Generator.get_ast_json(file_a, Values.DONOR_REQUIRE_MACRO, True)
-    ast_map_b = Generator.get_ast_json(file_b, Values.DONOR_REQUIRE_MACRO, True)
+    if values.DONOR_REQUIRE_MACRO:
+        values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
+    ast_map_a = Generator.get_ast_json(file_a, values.DONOR_REQUIRE_MACRO, True)
+    ast_map_b = Generator.get_ast_json(file_b, values.DONOR_REQUIRE_MACRO, True)
 
-    if Values.TARGET_REQUIRE_MACRO:
-        Values.PRE_PROCESS_MACRO = Values.TARGET_PRE_PROCESS_MACRO
-    ast_map_c = Generator.get_ast_json(file_c, Values.TARGET_REQUIRE_MACRO, True)
+    if values.TARGET_REQUIRE_MACRO:
+        values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
+    ast_map_c = Generator.get_ast_json(file_c, values.TARGET_REQUIRE_MACRO, True)
 
-    file_d = str(file_c).replace(Values.Project_C.path, Values.Project_D.path)
+    file_d = str(file_c).replace(values.Project_C.path, values.Project_D.path)
 
     # Check for an edit script
-    script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_script"
-    syntax_error_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_syntax_errors"
+    script_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_script"
+    syntax_error_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_syntax_errors"
     neighborhood_a = Extractor.extract_neighborhood(file_a, seg_code, seg_id_a)
     neighborhood_b = Extractor.extract_neighborhood(file_b, seg_code, seg_id_a)
     neighborhood_c = Extractor.extract_neighborhood(file_c, seg_code, seg_id_c)
-    var_map = Values.map_namespace[(file_a, file_c)]
+    var_map = values.map_namespace[(file_a, file_c)]
     with open(script_file_name, 'w') as script_file:
         count = 0
         for instruction in instruction_list:
@@ -211,8 +211,8 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
             elif "value" in var_info.keys():
                 var_map[var] = str(var_info['value'])
 
-        Values.map_namespace[(file_a, file_c)] = var_map
-        Writer.write_var_map(var_map, Definitions.FILE_NAMESPACE_MAP)
+        values.map_namespace[(file_a, file_c)] = var_map
+        Writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP)
         offset = len(target_ast['children']) - 1
         position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
         for label in missing_label_list:

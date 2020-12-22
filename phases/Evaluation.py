@@ -1,7 +1,7 @@
 import time
 import sys
-from common import Values, Definitions
-from common.Utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
+from common import values, definitions
+from common.utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import Emitter, Evolver, Reader, Logger, Merger
 
 
@@ -25,17 +25,17 @@ def safe_exec(function_def, title, *args):
 
 def evaluate_code():
     global file_index
-    if not Values.translated_script_for_files:
+    if not values.translated_script_for_files:
         error_exit("nothing to evolve")
-    for file_list, generated_data in Values.translated_script_for_files.items():
+    for file_list, generated_data in values.translated_script_for_files.items():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
-        slice_file_d = slice_file_c.replace(Values.PATH_C, Values.Project_D.path)
+        slice_file_d = slice_file_c.replace(values.PATH_C, values.Project_D.path)
         vector_source_a = get_source_name_from_slice(slice_file_a)
         vector_source_b = get_source_name_from_slice(slice_file_b)
         vector_source_c = get_source_name_from_slice(slice_file_c)
-        vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
+        vector_source_d = vector_source_c.replace(values.PATH_C, values.Project_D.path)
 
         backup_file_orig(vector_source_a)
         backup_file_orig(vector_source_b)
@@ -69,17 +69,17 @@ def evaluate_code():
                                                     segment_code
                                                     )
         file_index += 1
-        if Values.missing_function_list:
+        if values.missing_function_list:
             if identified_function_list:
-                Values.missing_function_list = Values.missing_function_list.update(identified_function_list)
+                values.missing_function_list = values.missing_function_list.update(identified_function_list)
         else:
-            Values.missing_function_list = identified_function_list
+            values.missing_function_list = identified_function_list
 
-        if Values.missing_macro_list:
+        if values.missing_macro_list:
             if identified_macro_list:
-                Values.missing_macro_list = Merger.merge_macro_info(Values.missing_macro_list, identified_macro_list)
+                values.missing_macro_list = Merger.merge_macro_info(values.missing_macro_list, identified_macro_list)
         else:
-            Values.missing_macro_list = identified_macro_list
+            values.missing_macro_list = identified_macro_list
 
         restore_file_orig(vector_source_a)
         restore_file_orig(vector_source_b)
@@ -90,15 +90,15 @@ def evaluate_code():
 
 def load_values():
     load_state()
-    if not Values.translated_script_for_files:
+    if not values.translated_script_for_files:
         script_info = dict()
-        script_list = Reader.read_json(Definitions.FILE_TRANSLATED_SCRIPT_INFO)
+        script_list = Reader.read_json(definitions.FILE_TRANSLATED_SCRIPT_INFO)
         for (path_info, trans_script_info) in script_list:
             script_info[(path_info[0], path_info[1], path_info[2])] = trans_script_info
-        Values.translated_script_for_files = script_info
+        values.translated_script_for_files = script_info
 
-    Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
-    Definitions.FILE_TEMP_FIX = Definitions.DIRECTORY_TMP + "/temp-fix"
+    definitions.FILE_SCRIPT_INFO = definitions.DIRECTORY_OUTPUT + "/script-info"
+    definitions.FILE_TEMP_FIX = definitions.DIRECTORY_TMP + "/temp-fix"
 
 
 def save_values():
@@ -108,7 +108,7 @@ def save_values():
 def evaluate():
     Emitter.title("Evaluating transformation")
     load_values()
-    if Values.PHASE_SETTING[Definitions.PHASE_EVALUATE]:
+    if values.PHASE_SETTING[definitions.PHASE_EVALUATE]:
         safe_exec(evaluate_code, "evaluate code slices")
         save_values()
     else:

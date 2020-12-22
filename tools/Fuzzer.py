@@ -4,7 +4,7 @@
 
 import sys
 from tools import Logger, Emitter
-from common.Utilities import execute_command
+from common.utilities import execute_command
 
 
 def generate_files(poc_path, output_directory):

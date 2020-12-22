@@ -1,7 +1,7 @@
 import time
 import sys
-from common import Values, Definitions
-from common.Utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
+from common import values, definitions
+from common.utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import Emitter, Weaver, Reader, Logger, Fixer, Merger
 
 file_index = 1
@@ -35,22 +35,22 @@ def safe_exec(function_def, title, *args):
 def transplant_missing_header():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list
-    if Values.missing_header_list:
-        modified_source_list = Weaver.weave_headers(Values.missing_header_list, modified_source_list)
+    if values.missing_header_list:
+        modified_source_list = Weaver.weave_headers(values.missing_header_list, modified_source_list)
 
 
 def transplant_missing_macros():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list, missing_macro_list
-    if Values.missing_macro_list:
-        modified_source_list = Weaver.weave_definitions(Values.missing_macro_list, modified_source_list)
+    if values.missing_macro_list:
+        modified_source_list = Weaver.weave_definitions(values.missing_macro_list, modified_source_list)
 
 
 def transplant_missing_data_types():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list
-    if Values.missing_data_type_list:
-        modified_source_list = Weaver.weave_data_type(Values.missing_data_type_list, modified_source_list)
+    if values.missing_data_type_list:
+        modified_source_list = Weaver.weave_data_type(values.missing_data_type_list, modified_source_list)
 
 
 def transplant_missing_functions():
@@ -63,15 +63,15 @@ def transplant_missing_functions():
 
 def reverse_transplant_code():
     global file_index, modified_source_list
-    for file_list, generated_data in Values.translated_script_for_files.items():
+    for file_list, generated_data in values.translated_script_for_files.items():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
-        slice_file_d = slice_file_c.replace(Values.PATH_C, Values.Project_D.path)
+        slice_file_d = slice_file_c.replace(values.PATH_C, values.Project_D.path)
         vector_source_a = get_source_name_from_slice(slice_file_a)
         vector_source_b = get_source_name_from_slice(slice_file_b)
         vector_source_c = get_source_name_from_slice(slice_file_c)
-        vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
+        vector_source_d = vector_source_c.replace(values.PATH_C, values.Project_D.path)
 
         backup_file_orig(vector_source_a)
         backup_file_orig(vector_source_b)
@@ -90,7 +90,7 @@ def reverse_transplant_code():
         Emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
         Emitter.emit_ast_script(original_script)
-        script_file_name = Definitions.DIRECTORY_OUTPUT + "/" + str(segment_identifier_c) + "_script"
+        script_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(segment_identifier_c) + "_script"
         translated_script = list()
         with open(script_file_name, "r") as script_file:
             translated_script = script_file.readlines()
@@ -113,38 +113,38 @@ def reverse_transplant_code():
 
 def load_values():
     load_state()
-    if not Values.translated_script_for_files:
+    if not values.translated_script_for_files:
         script_info = dict()
-        script_list = Reader.read_json(Definitions.FILE_TRANSLATED_SCRIPT_INFO)
+        script_list = Reader.read_json(definitions.FILE_TRANSLATED_SCRIPT_INFO)
         for (path_info, trans_script_info) in script_list:
             script_info[(path_info[0], path_info[1], path_info[2])] = trans_script_info
-        Values.translated_script_for_files = script_info
+        values.translated_script_for_files = script_info
 
-    Definitions.FILE_SCRIPT_INFO = Definitions.DIRECTORY_OUTPUT + "/script-info"
-    Definitions.FILE_TEMP_FIX = Definitions.DIRECTORY_TMP + "/temp-fix"
+    definitions.FILE_SCRIPT_INFO = definitions.DIRECTORY_OUTPUT + "/script-info"
+    definitions.FILE_TEMP_FIX = definitions.DIRECTORY_TMP + "/temp-fix"
 
 
 def save_values():
     global modified_source_list
     # Writer.write_script_info(generated_script_list, Definitions.FILE_SCRIPT_INFO)
-    Values.MODIFIED_SOURCE_LIST = modified_source_list
+    values.MODIFIED_SOURCE_LIST = modified_source_list
     save_current_state()
 
 
 def weave_slices():
     global file_index, missing_function_list, missing_macro_list, modified_source_list
-    if not Values.translated_script_for_files:
+    if not values.translated_script_for_files:
         error_exit("no slice to weave")
     slice_info = dict()
-    for file_list, generated_data in Values.translated_script_for_files.items():
+    for file_list, generated_data in values.translated_script_for_files.items():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
-        slice_file_d = slice_file_c.replace(Values.PATH_C, Values.Project_D.path)
+        slice_file_d = slice_file_c.replace(values.PATH_C, values.Project_D.path)
         vector_source_a = get_source_name_from_slice(slice_file_a)
         vector_source_b = get_source_name_from_slice(slice_file_b)
         vector_source_c = get_source_name_from_slice(slice_file_c)
-        vector_source_d = vector_source_c.replace(Values.PATH_C, Values.Project_D.path)
+        vector_source_d = vector_source_c.replace(values.PATH_C, values.Project_D.path)
         segment_type = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
         segment_identifier = slice_file_c.split("." + segment_type + ".")[-1].replace(".slice", "")
         if (vector_source_d, vector_source_b) not in slice_info:
@@ -159,7 +159,7 @@ def reverse():
     global modified_source_list
     Emitter.title("Applying reverse transformation")
     load_values()
-    if Values.PHASE_SETTING[Definitions.PHASE_WEAVE]:
+    if values.PHASE_SETTING[definitions.PHASE_WEAVE]:
         safe_exec(reverse_transplant_code, "reverse transforming slices")
         # safe_exec(weave_slices, "weaving slices")
         # if Values.missing_function_list:

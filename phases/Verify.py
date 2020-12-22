@@ -4,8 +4,8 @@
 
 import sys
 import time
-from common.Utilities import error_exit, execute_command
-from common import Values, Definitions
+from common.utilities import error_exit, execute_command
+from common import values, definitions
 from tools import Logger, Emitter, Verifier, Fuzzer
 
 
@@ -23,17 +23,17 @@ def verify_compilation():
 def verify_exploit():
     global FILE_EXPLOIT_OUTPUT
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Verifier.run_exploit(Values.Project_C.path,
-                         Values.EXPLOIT_C,
-                         Values.Project_D.path,
-                         Values.PATH_POC,
+    Verifier.run_exploit(values.Project_C.path,
+                         values.EXPLOIT_C,
+                         values.Project_D.path,
+                         values.PATH_POC,
                          FILE_EXPLOIT_OUTPUT,
-                         Definitions.crash_word_list
+                         definitions.crash_word_list
                          )
 
 
 def commit_changes():
-    commit_command = "cd " + Values.Project_D.path + ";"
+    commit_command = "cd " + values.Project_D.path + ";"
     commit_command += "git add *.c;"
     commit_command += "git add *.h;"
     commit_command += "git commit -m 'committing transplantation'"
@@ -47,9 +47,9 @@ def verify_behavior():
     total_fixes = 0
     for i in range(0, ITERATION_COUNT):
         Emitter.sub_sub_title("Iteration " + str(i+1))
-        file_extension = Fuzzer.generate_files(Values.PATH_POC, DIR_FUZZ_INPUT)
-        fixes, errors = Verifier.differential_test(file_extension, DIR_FUZZ_INPUT, Values.EXPLOIT_C,
-                               Values.PATH_C, Values.Project_D.path, DIR_FUZZ_OUTPUT_LOG)
+        file_extension = Fuzzer.generate_files(values.PATH_POC, DIR_FUZZ_INPUT)
+        fixes, errors = Verifier.differential_test(file_extension, DIR_FUZZ_INPUT, values.EXPLOIT_C,
+                                                   values.PATH_C, values.Project_D.path, DIR_FUZZ_OUTPUT_LOG)
         total_errors += errors
         total_fixes += fixes
 
@@ -83,9 +83,9 @@ def safe_exec(function_def, title, *args):
 
 def set_values():
     global DIR_FUZZ_INPUT, DIR_FUZZ_OUTPUT_LOG, FILE_EXPLOIT_OUTPUT
-    DIR_FUZZ_INPUT = Definitions.DIRECTORY_OUTPUT + "/fuzz-input"
-    DIR_FUZZ_OUTPUT_LOG = Definitions.DIRECTORY_OUTPUT + "/fuzz-output"
-    FILE_EXPLOIT_OUTPUT = Definitions.DIRECTORY_OUTPUT + "/program-output"
+    DIR_FUZZ_INPUT = definitions.DIRECTORY_OUTPUT + "/fuzz-input"
+    DIR_FUZZ_OUTPUT_LOG = definitions.DIRECTORY_OUTPUT + "/fuzz-output"
+    FILE_EXPLOIT_OUTPUT = definitions.DIRECTORY_OUTPUT + "/program-output"
 
 
 def verify():
@@ -93,11 +93,11 @@ def verify():
     Emitter.title("Patch Verification")
     set_values()
 
-    if Values.PHASE_SETTING[Definitions.PHASE_VERIFY]:
-        if not Values.MODIFIED_SOURCE_LIST:
+    if values.PHASE_SETTING[definitions.PHASE_VERIFY]:
+        if not values.MODIFIED_SOURCE_LIST:
             error_exit("no modified sources to verify")
         safe_exec(verify_compilation, "verifying compilation")
-        if Values.PATH_POC:
+        if values.PATH_POC:
             safe_exec(verify_exploit, "verifying exploit")
             safe_exec(verify_behavior, "verifying differential behavior")
         safe_exec(commit_changes, "committing changes to git")

@@ -8,8 +8,8 @@ import os
 import io
 import json
 from git import Repo
-from common.Utilities import execute_command, error_exit, save_current_state, clear_values
-from common import Definitions, Values
+from common.utilities import execute_command, error_exit, save_current_state, clear_values
+from common import definitions, values
 from ast import Vector, Parser
 import difflib
 from tools import Logger, Emitter, Identifier, Writer, Generator, Differ, Merger
@@ -30,24 +30,24 @@ transplanted_diff_info = dict()
 
 def analyse_source_diff(path_a, path_b):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Differ.diff_files(Definitions.FILE_DIFF_ALL,
-                      Definitions.FILE_DIFF_C,
-                      Definitions.FILE_DIFF_H,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS_A,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS_B,
-                      Definitions.FILE_EXCLUDED_EXTENSIONS,
+    Differ.diff_files(definitions.FILE_DIFF_ALL,
+                      definitions.FILE_DIFF_C,
+                      definitions.FILE_DIFF_H,
+                      definitions.FILE_EXCLUDED_EXTENSIONS_A,
+                      definitions.FILE_EXCLUDED_EXTENSIONS_B,
+                      definitions.FILE_EXCLUDED_EXTENSIONS,
                       path_a,
                       path_b)
 
     Emitter.sub_sub_title("analysing untracked files")
-    untracked_file_list = Generator.generate_untracked_file_list(Definitions.FILE_EXCLUDED_EXTENSIONS, path_a)
+    untracked_file_list = Generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, path_a)
     Emitter.sub_sub_title("analysing header files")
-    diff_h_file_list = Differ.diff_h_files(Definitions.FILE_DIFF_H, path_a, untracked_file_list)
+    diff_h_file_list = Differ.diff_h_files(definitions.FILE_DIFF_H, path_a, untracked_file_list)
     Emitter.sub_sub_title("analysing C/CPP source files")
-    diff_c_file_list = Differ.diff_c_files(Definitions.FILE_DIFF_C, path_b, untracked_file_list)
+    diff_c_file_list = Differ.diff_c_files(definitions.FILE_DIFF_C, path_b, untracked_file_list)
     Emitter.sub_sub_title("analysing changed code lines")
-    diff_info_c = Differ.diff_line(diff_c_file_list, Definitions.FILE_TEMP_DIFF)
-    diff_info_h = Differ.diff_line(diff_h_file_list, Definitions.FILE_TEMP_DIFF)
+    diff_info_c = Differ.diff_line(diff_c_file_list, definitions.FILE_TEMP_DIFF)
+    diff_info_h = Differ.diff_line(diff_h_file_list, definitions.FILE_TEMP_DIFF)
     diff_info = Merger.merge_diff_info(diff_info_c, diff_info_h)
     return diff_info
 
@@ -59,7 +59,7 @@ def analyse_ast_diff(path_a, path_b, diff_info):
     updated_diff_info = Differ.diff_ast(diff_info,
                                         path_a,
                                         path_b,
-                                        Definitions.FILE_AST_SCRIPT)
+                                        definitions.FILE_AST_SCRIPT)
     return updated_diff_info
 
 
@@ -67,50 +67,50 @@ def load_values():
     global FILE_DIFF_C, FILE_DIFF_H, FILE_DIFF_ALL
     global FILE_AST_SCRIPT, FILE_AST_DIFF_ERROR
     global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
-    Definitions.FILE_ORIG_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/orig-diff-info"
-    Definitions.FILE_PORT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/port-diff-info"
-    Definitions.FILE_TRANSPLANT_DIFF_INFO = Definitions.DIRECTORY_OUTPUT + "/transplant-diff-info"
-    Definitions.FILE_ORIG_DIFF = Definitions.DIRECTORY_OUTPUT + "/orig-diff"
-    Definitions.FILE_PORT_DIFF = Definitions.DIRECTORY_OUTPUT + "/port-diff"
-    Definitions.FILE_COMPARISON_RESULT = Definitions.DIRECTORY_OUTPUT + "/comparison-result"
-    Definitions.FILE_TRANSPLANT_DIFF = Definitions.DIRECTORY_OUTPUT + "/transplant-diff"
-    Definitions.FILE_PORT_N = Definitions.DIRECTORY_OUTPUT + "/n-port"
-    Definitions.FILE_TRANS_N = Definitions.DIRECTORY_OUTPUT + "/n-trans"
+    definitions.FILE_ORIG_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/orig-diff-info"
+    definitions.FILE_PORT_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/port-diff-info"
+    definitions.FILE_TRANSPLANT_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/transplant-diff-info"
+    definitions.FILE_ORIG_DIFF = definitions.DIRECTORY_OUTPUT + "/orig-diff"
+    definitions.FILE_PORT_DIFF = definitions.DIRECTORY_OUTPUT + "/port-diff"
+    definitions.FILE_COMPARISON_RESULT = definitions.DIRECTORY_OUTPUT + "/comparison-result"
+    definitions.FILE_TRANSPLANT_DIFF = definitions.DIRECTORY_OUTPUT + "/transplant-diff"
+    definitions.FILE_PORT_N = definitions.DIRECTORY_OUTPUT + "/n-port"
+    definitions.FILE_TRANS_N = definitions.DIRECTORY_OUTPUT + "/n-trans"
 
 
 def save_values():
-    Writer.write_as_json(ported_diff_info, Definitions.FILE_PORT_DIFF_INFO)
-    Writer.write_as_json(original_diff_info, Definitions.FILE_ORIG_DIFF_INFO)
-    Writer.write_as_json(transplanted_diff_info, Definitions.FILE_TRANSPLANT_DIFF_INFO)
+    Writer.write_as_json(ported_diff_info, definitions.FILE_PORT_DIFF_INFO)
+    Writer.write_as_json(original_diff_info, definitions.FILE_ORIG_DIFF_INFO)
+    Writer.write_as_json(transplanted_diff_info, definitions.FILE_TRANSPLANT_DIFF_INFO)
     file_list_a = set()
     file_list_c = set()
     for path_a in original_diff_info:
         path_a = path_a.split(":")[0]
         file_list_a.add(path_a)
     for path_a in file_list_a:
-        path_b = path_a.replace(Values.Project_A.path, Values.Project_B.path)
-        diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + Definitions.FILE_ORIG_DIFF
+        path_b = path_a.replace(values.Project_A.path, values.Project_B.path)
+        diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + definitions.FILE_ORIG_DIFF
         execute_command(diff_command)
     for path_c in ported_diff_info:
         path_c = path_c.split(":")[0]
         file_list_c.add(path_c)
 
     for path_c in file_list_c:
-        path_e = path_c.replace(Values.Project_C.path, Values.Project_E.path)
-        diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + Definitions.FILE_PORT_DIFF
+        path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
+        diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + definitions.FILE_PORT_DIFF
         execute_command(diff_command)
     for path_c in file_list_c:
-        path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
-        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + Definitions.FILE_TRANSPLANT_DIFF
+        path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
+        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + definitions.FILE_TRANSPLANT_DIFF
         execute_command(diff_command)
 
 
     is_identical = True
 
     for path_c in file_list_c:
-        temp_diff_file = Definitions.DIRECTORY_TMP + "/tmp-ast-diff"
-        path_e = path_c.replace(Values.Project_C.path, Values.Project_E.path)
-        path_d = path_c.replace(Values.Project_C.path, Values.Project_D.path)
+        temp_diff_file = definitions.DIRECTORY_TMP + "/tmp-ast-diff"
+        path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
+        path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
         diff_command = "diff " + path_d + " " + path_e + " > " + temp_diff_file
         execute_command(diff_command)
         if os.stat(temp_diff_file).st_size != 0:
@@ -120,7 +120,7 @@ def save_values():
                 is_identical = False
                 break
 
-    with open(Definitions.FILE_COMPARISON_RESULT, 'w') as result_file:
+    with open(definitions.FILE_COMPARISON_RESULT, 'w') as result_file:
         if is_identical:
             result = "IDENTICAL"
         else:
@@ -164,25 +164,25 @@ def compare():
     Emitter.title("Comparison with Manual Porting")
     load_values()
 
-    if Values.PHASE_SETTING[Definitions.PHASE_COMPARE]:
-        if not Values.PATH_E:
+    if values.PHASE_SETTING[definitions.PHASE_COMPARE]:
+        if not values.PATH_E:
             Emitter.special("\n\t-skipping this phase-")
 
         else:
-            clear_values(Values.Project_C)
+            clear_values(values.Project_C)
             ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
-                                         Values.PATH_C, Values.PATH_E)
+                                         values.PATH_C, values.PATH_E)
             # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
             #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
-            segment_code(ported_diff_info, Values.Project_C, Definitions.FILE_PORT_N)
+            segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
 
-            clear_values(Values.Project_C)
+            clear_values(values.Project_C)
             transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
-                                             Values.PATH_C, Values.Project_D.path)
+                                               values.PATH_C, values.Project_D.path)
             # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
             #                                  Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
-            segment_code(transplanted_diff_info, Values.Project_C, Definitions.FILE_TRANS_N)
-        if not Values.ANALYSE_N:
+            segment_code(transplanted_diff_info, values.Project_C, definitions.FILE_TRANS_N)
+        if not values.ANALYSE_N:
             save_values()
     else:
         Emitter.special("\n\t-skipping this phase-")

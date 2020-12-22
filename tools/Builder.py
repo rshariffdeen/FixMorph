@@ -4,8 +4,8 @@
 
 import os
 import sys
-from common.Utilities import execute_command, error_exit
-from common import Definitions, Values
+from common.utilities import execute_command, error_exit
+from common import definitions, values
 from tools import Logger, Emitter
 
 CC = "clang"
@@ -27,7 +27,7 @@ def config_project(project_path, is_llvm, custom_config_command=None, verify=Fal
     if custom_config_command is not None:
         if custom_config_command == "skip":
             return
-        elif Values.IS_LINUX_KERNEL:
+        elif values.IS_LINUX_KERNEL:
             config_command = custom_config_command
         else:
             if CC == "wllvm":
@@ -162,7 +162,7 @@ def build_project(project_path, build_command=None, verify=False):
     else:
         if build_command == "skip":
             return
-        elif Values.IS_LINUX_KERNEL:
+        elif values.IS_LINUX_KERNEL:
             build_command = "bear " + build_command
         elif "--no-static" in build_command:
             c_flags_Nstatic = C_FLAGS.replace("-static", "")
@@ -176,7 +176,7 @@ def build_project(project_path, build_command=None, verify=False):
                 build_command = remove_fsanitize(build_command)
             if "-j" not in build_command:
                 build_command = apply_flags(build_command)
-    build_command = dir_command + build_command + " > " + Definitions.FILE_MAKE_LOG + " 2>&1"
+    build_command = dir_command + build_command + " > " + definitions.FILE_MAKE_LOG + " 2>&1"
     # print(build_command)
     ret_code = execute_command(build_command)
     if int(ret_code) != 0:
@@ -188,7 +188,7 @@ def build_project(project_path, build_command=None, verify=False):
 def store_compile_database(project_path):
     dir_command = "cd " + project_path + ";"
     postfix = project_path[:-1].split("/")[-1]
-    store_file = Definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
+    store_file = definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
     store_database_command = dir_command + "cp compile_commands.json " + store_file
     execute_command(store_database_command)
 
@@ -196,7 +196,7 @@ def store_compile_database(project_path):
 def restore_compile_database(project_path):
     dir_command = "cd " + project_path + ";"
     postfix = project_path[:-1].split("/")[-1]
-    store_file = Definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
+    store_file = definitions.DIRECTORY_OUTPUT + "/compile_commands.json." + postfix
     if os.path.isfile(store_file):
         restore_database_command = dir_command + "cp " + store_file + " " + project_path + "/compile_commands.json"
         execute_command(restore_database_command)
@@ -205,77 +205,77 @@ def restore_compile_database(project_path):
 def build_all():
     Emitter.sub_sub_title("building projects")
 
-    Emitter.normal("\t" + Values.Project_A.path)
-    if not Values.BUILD_COMMAND_A:
-        build_project(Values.Project_A.path)
+    Emitter.normal("\t" + values.Project_A.path)
+    if not values.BUILD_COMMAND_A:
+        build_project(values.Project_A.path)
     else:
-        build_project(Values.Project_A.path, Values.BUILD_COMMAND_A)
+        build_project(values.Project_A.path, values.BUILD_COMMAND_A)
 
-    Emitter.normal("\t" + Values.Project_B.path)
-    if not Values.BUILD_COMMAND_A:
-        build_project(Values.Project_B.path)
+    Emitter.normal("\t" + values.Project_B.path)
+    if not values.BUILD_COMMAND_A:
+        build_project(values.Project_B.path)
     else:
-        build_project(Values.Project_B.path, Values.BUILD_COMMAND_A)
+        build_project(values.Project_B.path, values.BUILD_COMMAND_A)
 
-    Emitter.normal("\t" + Values.Project_C.path)
-    if not Values.BUILD_COMMAND_C:
-        build_project(Values.Project_C.path)
+    Emitter.normal("\t" + values.Project_C.path)
+    if not values.BUILD_COMMAND_C:
+        build_project(values.Project_C.path)
     else:
-        build_project(Values.Project_C.path, Values.BUILD_COMMAND_C)
+        build_project(values.Project_C.path, values.BUILD_COMMAND_C)
 
-    Emitter.normal("\t" + Values.Project_D.path)
-    if not Values.BUILD_COMMAND_C:
-        build_project(Values.Project_D.path)
+    Emitter.normal("\t" + values.Project_D.path)
+    if not values.BUILD_COMMAND_C:
+        build_project(values.Project_D.path)
     else:
-        build_project(Values.Project_D.path, Values.BUILD_COMMAND_C)
+        build_project(values.Project_D.path, values.BUILD_COMMAND_C)
 
-    if Values.PATH_E:
-        Emitter.normal("\t" + Values.Project_E.path)
-        if not Values.BUILD_COMMAND_C:
-            build_project(Values.Project_E.path)
+    if values.PATH_E:
+        Emitter.normal("\t" + values.Project_E.path)
+        if not values.BUILD_COMMAND_C:
+            build_project(values.Project_E.path)
         else:
-            build_project(Values.Project_E.path, Values.BUILD_COMMAND_C)
+            build_project(values.Project_E.path, values.BUILD_COMMAND_C)
 
 
 def config_all(is_llvm=False):
     Emitter.sub_sub_title("configuring projects")
 
-    Emitter.normal("\t" + Values.Project_A.path)
-    if not Values.CONFIG_COMMAND_A:
-        config_project(Values.Project_A.path, is_llvm)
+    Emitter.normal("\t" + values.Project_A.path)
+    if not values.CONFIG_COMMAND_A:
+        config_project(values.Project_A.path, is_llvm)
     else:
-        config_project(Values.Project_A.path, is_llvm, Values.CONFIG_COMMAND_A)
+        config_project(values.Project_A.path, is_llvm, values.CONFIG_COMMAND_A)
 
-    Emitter.normal("\t" + Values.Project_B.path)
-    if not Values.CONFIG_COMMAND_A:
-        config_project(Values.Project_B.path, is_llvm)
+    Emitter.normal("\t" + values.Project_B.path)
+    if not values.CONFIG_COMMAND_A:
+        config_project(values.Project_B.path, is_llvm)
     else:
-        config_project(Values.Project_B.path, is_llvm, Values.CONFIG_COMMAND_A)
+        config_project(values.Project_B.path, is_llvm, values.CONFIG_COMMAND_A)
 
-    Emitter.normal("\t" + Values.Project_C.path)
-    if not Values.CONFIG_COMMAND_C:
-        config_project(Values.Project_C.path, is_llvm)
+    Emitter.normal("\t" + values.Project_C.path)
+    if not values.CONFIG_COMMAND_C:
+        config_project(values.Project_C.path, is_llvm)
     else:
-        config_project(Values.Project_C.path, is_llvm, Values.CONFIG_COMMAND_C)
+        config_project(values.Project_C.path, is_llvm, values.CONFIG_COMMAND_C)
 
-    Emitter.normal("\t" + Values.Project_D.path)
-    if not Values.CONFIG_COMMAND_C:
-        config_project(Values.Project_D.path, is_llvm)
+    Emitter.normal("\t" + values.Project_D.path)
+    if not values.CONFIG_COMMAND_C:
+        config_project(values.Project_D.path, is_llvm)
     else:
-        config_project(Values.Project_D.path, is_llvm, Values.CONFIG_COMMAND_C)
+        config_project(values.Project_D.path, is_llvm, values.CONFIG_COMMAND_C)
 
-    if Values.PATH_E:
-        Emitter.normal("\t" + Values.Project_E.path)
-        if not Values.CONFIG_COMMAND_C:
-            config_project(Values.Project_E.path, is_llvm)
+    if values.PATH_E:
+        Emitter.normal("\t" + values.Project_E.path)
+        if not values.CONFIG_COMMAND_C:
+            config_project(values.Project_E.path, is_llvm)
         else:
-            config_project(Values.Project_E.path, is_llvm, Values.CONFIG_COMMAND_C)
+            config_project(values.Project_E.path, is_llvm, values.CONFIG_COMMAND_C)
 
 
 def build_normal():
     global CC, CXX, CXX_FLAGS, C_FLAGS, LD_FLAGS
     restore_all()
-    if not Values.ONLY_RESET:
+    if not values.ONLY_RESET:
         clean_all()
         CC = "clang"
         CXX = "clang++"
@@ -315,19 +315,19 @@ def build_instrumented_code(source_directory):
 
     build_command = "cd " + source_directory + ";"
     custom_build_command = ""
-    if (Values.PATH_A in source_directory) or (Values.PATH_B in source_directory):
-        if Values.BUILD_COMMAND_A is not None:
-            custom_build_command = Values.BUILD_COMMAND_A
+    if (values.PATH_A in source_directory) or (values.PATH_B in source_directory):
+        if values.BUILD_COMMAND_A is not None:
+            custom_build_command = values.BUILD_COMMAND_A
 
-    if Values.PATH_C in source_directory:
-        if Values.BUILD_COMMAND_C is not None:
-            custom_build_command = Values.BUILD_COMMAND_C
+    if values.PATH_C in source_directory:
+        if values.BUILD_COMMAND_C is not None:
+            custom_build_command = values.BUILD_COMMAND_C
 
     # print("custom command is " + custom_build_command)
 
     if not custom_build_command:
         build_command += "make CFLAGS=" + C_FLAGS + " "
-        build_command += "CXXFLAGS=" + CXX_FLAGS + " > " + Definitions.FILE_MAKE_LOG
+        build_command += "CXXFLAGS=" + CXX_FLAGS + " > " + definitions.FILE_MAKE_LOG
     else:
         if not os.path.isfile(source_directory + "/compile_commands.json"):
             custom_build_command = custom_build_command.replace("make", "bear make")
@@ -357,27 +357,27 @@ def build_verify():
     CXX = "clang++"
     CXX_FLAGS = "'-g -O0 -DNDEBUG'"
     C_FLAGS = "'-g -O0 -DNDEBUG'"
-    Emitter.normal("\t\t" + Values.Project_D.path)
-    clean_project(Values.Project_D.path)
+    Emitter.normal("\t\t" + values.Project_D.path)
+    clean_project(values.Project_D.path)
     # clean_project(Values.Project_C.path)
 
-    if Values.CONFIG_COMMAND_C:
-        config_project(Values.Project_D.path, False, Values.CONFIG_COMMAND_C, verify=True)
+    if values.CONFIG_COMMAND_C:
+        config_project(values.Project_D.path, False, values.CONFIG_COMMAND_C, verify=True)
         # config_project(Values.Project_C.path, False, Values.CONFIG_COMMAND_C)
     else:
-        config_project(Values.Project_D.path, False, verify=True)
+        config_project(values.Project_D.path, False, verify=True)
         # config_project(Values.Project_C.path, False)
 
-    if Values.BUILD_COMMAND_C:
-        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
-        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
-        build_project(Values.Project_D.path, Values.BUILD_COMMAND_C, verify=True)
+    if values.BUILD_COMMAND_C:
+        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
+        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
+        build_project(values.Project_D.path, values.BUILD_COMMAND_C, verify=True)
         # build_project(Values.Project_C.path, Values.BUILD_COMMAND_C)
     else:
-        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
-        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
+        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
+        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
         # build_project(Values.Project_C.path)
-        build_project(Values.Project_D.path, verify=True)
+        build_project(values.Project_D.path, verify=True)
 
 
 def build_asan():
@@ -388,8 +388,8 @@ def build_asan():
     CXX_FLAGS = "'-g -O0 -static'"
     C_FLAGS = "'-g -O0 -static'"
     config_all()
-    CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
-    C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + Values.ASAN_FLAG + "'"
+    CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
+    C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
     build_all()
 
 
@@ -409,7 +409,7 @@ def build_llvm():
 
 def restore_project(project_path, commit_id=None):
     restore_command = "cd " + project_path + ";"
-    if os.path.exists(project_path + "/.git") or Values.VC == 'git':
+    if os.path.exists(project_path + "/.git") or values.VC == 'git':
         if commit_id:
             restore_command += "git clean -fd; git reset --hard HEAD; git checkout " + commit_id
         else:
@@ -427,7 +427,7 @@ def restore_project(project_path, commit_id=None):
 
 def soft_restore_project(project_path):
     restore_command = "cd " + project_path + ";"
-    if os.path.exists(project_path + "/.git") or Values.VC == 'git':
+    if os.path.exists(project_path + "/.git") or values.VC == 'git':
         restore_command += "git reset --hard HEAD"
     elif os.path.exists(project_path + "/.svn"):
         restore_command += "svn revert -R .; "
@@ -442,33 +442,33 @@ def soft_restore_project(project_path):
 
 def restore_all():
     Emitter.sub_sub_title("restoring projects")
-    Emitter.normal("\t" + Values.Project_A.path)
-    restore_project(Values.Project_A.path)
-    Emitter.normal("\t" + Values.Project_B.path)
-    restore_project(Values.Project_B.path)
-    Emitter.normal("\t" + Values.Project_C.path)
-    restore_project(Values.Project_C.path)
-    if not Values.ANALYSE_N:
-        Emitter.normal("\t" + Values.Project_D.path)
-        restore_project(Values.Project_D.path, Values.COMMIT_C)
-    if Values.PATH_E:
-        Emitter.normal("\t" + Values.Project_E.path)
-        restore_project(Values.Project_E.path)
+    Emitter.normal("\t" + values.Project_A.path)
+    restore_project(values.Project_A.path)
+    Emitter.normal("\t" + values.Project_B.path)
+    restore_project(values.Project_B.path)
+    Emitter.normal("\t" + values.Project_C.path)
+    restore_project(values.Project_C.path)
+    if not values.ANALYSE_N:
+        Emitter.normal("\t" + values.Project_D.path)
+        restore_project(values.Project_D.path, values.COMMIT_C)
+    if values.PATH_E:
+        Emitter.normal("\t" + values.Project_E.path)
+        restore_project(values.Project_E.path)
 
 
 def soft_restore_all():
     Emitter.sub_sub_title("restoring(soft) projects")
-    Emitter.normal("\t" + Values.Project_A.path)
-    soft_restore_project(Values.Project_A.path)
-    Emitter.normal("\t" + Values.Project_B.path)
-    soft_restore_project(Values.Project_B.path)
-    Emitter.normal("\t" + Values.Project_C.path)
-    soft_restore_project(Values.Project_C.path)
-    Emitter.normal("\t" + Values.Project_D.path)
-    soft_restore_project(Values.Project_D.path)
-    if Values.PATH_E:
-        Emitter.normal("\t" + Values.Project_E.path)
-        soft_restore_project(Values.Project_E.path)
+    Emitter.normal("\t" + values.Project_A.path)
+    soft_restore_project(values.Project_A.path)
+    Emitter.normal("\t" + values.Project_B.path)
+    soft_restore_project(values.Project_B.path)
+    Emitter.normal("\t" + values.Project_C.path)
+    soft_restore_project(values.Project_C.path)
+    Emitter.normal("\t" + values.Project_D.path)
+    soft_restore_project(values.Project_D.path)
+    if values.PATH_E:
+        Emitter.normal("\t" + values.Project_E.path)
+        soft_restore_project(values.Project_E.path)
 
 
 def clean_project(project_path):
@@ -481,18 +481,18 @@ def clean_project(project_path):
 
 def clean_all():
     Emitter.sub_sub_title("cleaning projects")
-    Emitter.normal("\t" + Values.Project_A.path)
-    clean_project(Values.Project_A.path)
+    Emitter.normal("\t" + values.Project_A.path)
+    clean_project(values.Project_A.path)
 
-    Emitter.normal("\t" + Values.Project_B.path)
-    clean_project(Values.Project_B.path)
+    Emitter.normal("\t" + values.Project_B.path)
+    clean_project(values.Project_B.path)
 
-    Emitter.normal("\t" + Values.Project_C.path)
-    clean_project(Values.Project_C.path)
+    Emitter.normal("\t" + values.Project_C.path)
+    clean_project(values.Project_C.path)
 
-    Emitter.normal("\t" + Values.Project_D.path)
-    clean_project(Values.Project_D.path)
+    Emitter.normal("\t" + values.Project_D.path)
+    clean_project(values.Project_D.path)
 
-    if Values.PATH_E:
-        Emitter.normal("\t" + Values.Project_E.path)
-        clean_project(Values.Project_E.path)
+    if values.PATH_E:
+        Emitter.normal("\t" + values.Project_E.path)
+        clean_project(values.Project_E.path)

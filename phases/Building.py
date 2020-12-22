@@ -4,8 +4,8 @@
 import sys
 import time
 from tools import Emitter, Builder, Logger
-from common.Utilities import error_exit
-from common import Values, Definitions
+from common.utilities import error_exit
+from common import values, definitions
 
 
 def safe_exec(function_def, title, *args):
@@ -31,7 +31,7 @@ def safe_exec(function_def, title, *args):
 def build():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.title("Building Projects")
-    if Values.PHASE_SETTING[Definitions.PHASE_BUILD]:
+    if values.PHASE_SETTING[definitions.PHASE_BUILD]:
         safe_exec(Builder.build_normal, "building binaries")
     else:
         Emitter.special("\n\t-skipping this phase-")

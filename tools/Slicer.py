@@ -4,8 +4,8 @@
 
 import sys
 import os
-from common import Values, Definitions
-from common.Utilities import get_code, error_exit, execute_command
+from common import values, definitions
+from common.utilities import get_code, error_exit, execute_command
 from ast import Generator as ASTGenerator
 from tools import Extractor, Oracle, Logger, Filter, Emitter, Transformer
 
@@ -13,7 +13,7 @@ from tools import Extractor, Oracle, Logger, Filter, Emitter, Transformer
 def slice_source_file(source_path, segment_code, segment_identifier, project_path, use_macro=False):
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     ast_tree = ASTGenerator.get_ast_json(source_path, use_macro, True)
-    segment_type = Values.segment_map[segment_code]
+    segment_type = values.segment_map[segment_code]
     ast_script = list()
     source_relative_path = source_path.replace(project_path, ".")
     segment_found = False
@@ -36,7 +36,7 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
     # print(ast_script)
     output_file_name = "." + segment_code + "." + segment_identifier + ".slice"
     output_file_path = source_path + output_file_name
-    ast_script_path = Definitions.DIRECTORY_OUTPUT + "/" + output_file_path.split("/")[-1] + ".ast"
+    ast_script_path = definitions.DIRECTORY_OUTPUT + "/" + output_file_path.split("/")[-1] + ".ast"
     if ast_script:
         Transformer.transform_source_file(source_path, ast_script, output_file_path, ast_script_path)
         if os.stat(output_file_path).st_size == 0:

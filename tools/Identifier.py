@@ -5,9 +5,9 @@
 import sys
 import os
 
-from common.Utilities import error_exit, is_intersect, get_code
+from common.utilities import error_exit, is_intersect, get_code
 import collections
-from common import Values, Definitions
+from common import values, definitions
 from tools import Emitter, Logger, Extractor, Finder, Oracle, Converter, Merger
 from ast import Generator, Vector
 from tools import Generator as Gen
@@ -88,7 +88,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     Emitter.normal("\t\tanalysing for missing variables")
     missing_var_list = dict()
-    source_path_a = source_path_b.replace(Values.PATH_B, Values.PATH_A)
+    source_path_a = source_path_b.replace(values.PATH_B, values.PATH_A)
     # print(insert_node_b)
     ref_list = Extractor.extract_reference_node_list(insert_node_b)
     # print(ref_list)
@@ -198,7 +198,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                     #             info['ast-node'] = dec_list_a[identifier]
                     #             missing_var_list[identifier] = info
                 elif ref_type == "FunctionDecl":
-                    if identifier in Values.STANDARD_FUNCTION_LIST:
+                    if identifier in values.STANDARD_FUNCTION_LIST:
                         continue
                 elif node_type in ["ParmVarDecl"]:
                     # TODO: implement importing missing arguments
@@ -340,11 +340,11 @@ def identify_missing_definitions(function_node, missing_function_list):
                 if identifier not in dec_list:
                     missing_definition_list.append(identifier)
             elif ref_type == "FunctionDecl":
-                if identifier in Values.STANDARD_FUNCTION_LIST:
+                if identifier in values.STANDARD_FUNCTION_LIST:
                     continue
                 if identifier not in missing_function_list:
                     print(identifier)
-                    print(Values.STANDARD_FUNCTION_LIST)
+                    print(values.STANDARD_FUNCTION_LIST)
                     error_exit("FOUND NEW DEPENDENT FUNCTION")
     return list(set(missing_definition_list))
 
@@ -362,7 +362,7 @@ def identify_missing_macros(ast_node, source_file, target_file):
         for macro_name in node_macro_list:
             macro_name = macro_name.split("(")[0]
             if macro_name not in target_macro_list:
-                if macro_name not in Values.map_namespace:
+                if macro_name not in values.map_namespace:
                     missing_macro_list[macro_name] = node_macro_list[macro_name]
     else:
         macro_node_list = Extractor.extract_macro_node_list(ast_node)
@@ -375,7 +375,7 @@ def identify_missing_macros(ast_node, source_file, target_file):
         # print(macro_def_list)
         for macro_name in macro_def_list:
             if macro_name not in target_macro_list:
-                if macro_name not in Values.map_namespace:
+                if macro_name not in values.map_namespace:
                     missing_macro_list[macro_name] = macro_def_list[macro_name]
 
     # print(missing_macro_list)
@@ -396,12 +396,12 @@ def identify_missing_macros_in_func(function_node, source_file, target_file):
             node_child_count = len(ref_node['children'])
             if function_identifier in identifier or "(" in identifier:
                 continue
-            if identifier in Values.STANDARD_MACRO_LIST:
+            if identifier in values.STANDARD_MACRO_LIST:
                 continue
             if node_child_count:
                 for child_node in ref_node['children']:
                     identifier = str(child_node['value'])
-                    if identifier in Values.STANDARD_MACRO_LIST:
+                    if identifier in values.STANDARD_MACRO_LIST:
                         continue
                     if identifier not in dec_list:
                         if identifier not in missing_macro_list.keys():
@@ -475,7 +475,7 @@ def identify_insertion_points(candidate_function):
         insertion_point_list[exec_line] = score
         if score > best_score:
             best_score = score
-    if best_score == 0 and not Values.BACKPORT:
+    if best_score == 0 and not values.BACKPORT:
         print(unique_var_name_list)
         print(target_var_list)
         error_exit("no matching line")
@@ -535,7 +535,7 @@ def identify_divergent_point(byte_list, sym_path_info, trace_list, stack_info):
             count_latest = len(list(set(byte_list).intersection(bytes_latest)))
             if count_latest == count_common:
                 count_instant = 1
-                if Values.BACKPORT:
+                if values.BACKPORT:
                     return str(trace_loc_0), len(sym_path_list)
                 for sym_path in sym_path_list:
                     # print(sym_path)
@@ -555,7 +555,7 @@ def identify_divergent_point(byte_list, sym_path_info, trace_list, stack_info):
             bytes_latest = Extractor.extract_input_bytes_used(sym_path_latest)
             count_latest = len(list(set(byte_list).intersection(bytes_latest)))
             if count_latest == count_common:
-                if Values.BACKPORT:
+                if values.BACKPORT:
                     return str(trace_loc_0), len(sym_path_list)
                 count_instant = 1
                 for sym_path in sym_path_list:
@@ -576,7 +576,7 @@ def identify_divergent_point(byte_list, sym_path_info, trace_list, stack_info):
             bytes_latest = Extractor.extract_input_bytes_used(sym_path_latest)
             count_latest = len(list(set(byte_list).intersection(bytes_latest)))
             if count_latest == count_common:
-                if Values.BACKPORT:
+                if values.BACKPORT:
                     return str(trace_loc_0), len(sym_path_list)
                 count_instant = 1
                 for sym_path in sym_path_list:
@@ -721,7 +721,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
         function_name = "func_" + function_name.split("(")[0]
         for start_line, end_line in pertinent_lines:
             if is_intersect(begin_line, finish_line, start_line, end_line):
-                Values.IS_FUNCTION = True
+                values.IS_FUNCTION = True
                 if source_file not in project.function_list.keys():
                     project.function_list[source_file] = dict()
                 if function_name not in project.function_list[source_file]:
@@ -734,7 +734,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
         struct_name = "struct_" + struct_name.split(";")[0]
         for start_line, end_line in pertinent_lines:
             if is_intersect(begin_line, finish_line, start_line, end_line):
-                Values.IS_STRUCT = True
+                values.IS_STRUCT = True
                 if source_file not in project.struct_list.keys():
                     project.struct_list[source_file] = dict()
                 if struct_name not in project.struct_list[source_file]:
@@ -749,7 +749,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
         var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
         for start_line, end_line in pertinent_lines:
             if is_intersect(begin_line, finish_line, start_line, end_line):
-                Values.IS_TYPEDEC = True
+                values.IS_TYPEDEC = True
                 if source_file not in project.decl_list.keys():
                     project.decl_list[source_file] = dict()
                 if var_name not in project.decl_list[source_file]:
@@ -762,7 +762,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
         macro_name = "macro_" + macro_name
         for start_line, end_line in pertinent_lines:
             if is_intersect(begin_line, finish_line, start_line, end_line):
-                Values.IS_MACRO = True
+                values.IS_MACRO = True
                 if source_file not in project.macro_list.keys():
                     project.macro_list[source_file] = dict()
                 if macro_name not in project.macro_list[source_file]:
@@ -779,7 +779,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
             enum_name = "enum_" + str(count)
         for start_line, end_line in pertinent_lines:
             if is_intersect(begin_line, finish_line, start_line, end_line):
-                Values.IS_ENUM = True
+                values.IS_ENUM = True
 
                 if source_file not in project.enum_list.keys():
                     project.enum_list[source_file] = dict()
@@ -792,7 +792,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
     with open(out_file_path, "w") as out_file:
         for neighbor_name in neighbor_list:
             out_file.write(neighbor_name + "\n")
-    return Values.IS_ENUM or Values.IS_FUNCTION or Values.IS_MACRO or Values.IS_STRUCT or Values.IS_TYPEDEC
+    return values.IS_ENUM or values.IS_FUNCTION or values.IS_MACRO or values.IS_STRUCT or values.IS_TYPEDEC
 
 
 def identify_code_segment(diff_info, project, out_file_path):
@@ -809,13 +809,13 @@ def identify_code_segment(diff_info, project, out_file_path):
     for source_file in grouped_line_info:
         Emitter.normal("\t\t" + source_file)
         pertinent_lines = grouped_line_info[source_file]
-        Values.DONOR_PRE_PROCESS_MACRO = Extractor.extract_pre_macro_list(source_file)
+        values.DONOR_PRE_PROCESS_MACRO = Extractor.extract_pre_macro_list(source_file)
         segmentation_list = separate_segment(project, source_file)
         found_neighborhood = create_vectors(project, source_file, segmentation_list, pertinent_lines, out_file_path)
         if not found_neighborhood:
             segmentation_list = separate_segment(project, source_file, True)
             create_vectors(project, source_file, segmentation_list, pertinent_lines, out_file_path)
-            Values.DONOR_REQUIRE_MACRO = True
+            values.DONOR_REQUIRE_MACRO = True
 
 
 def identify_definition_segment(diff_info, project):
@@ -830,7 +830,7 @@ def identify_definition_segment(diff_info, project):
 
     for source_file_a in grouped_line_info:
         Emitter.normal("\t\t" + source_file_a)
-        source_file_b = source_file_a.replace(Values.PATH_A, Values.PATH_B)
+        source_file_b = source_file_a.replace(values.PATH_A, values.PATH_B)
         header_list_a = Extractor.extract_header_list(source_file_a)
         header_list_b = Extractor.extract_header_list(source_file_b)
         added_header_list = list(set(header_list_b) - set(header_list_a))
