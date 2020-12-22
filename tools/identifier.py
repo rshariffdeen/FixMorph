@@ -42,12 +42,12 @@ def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, inse
     return missing_label_list
 
 
-def identify_missing_functions(ast_map_b, ast_node, source_path_b, source_path_d, ast_map_c):
+def identify_missing_functions(ast_tree_a, ast_node, source_path_b, source_path_d, ast_tree_c):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\tanalysing for missing function calls")
     missing_function_list = dict()
     call_list = extractor.extract_call_node_list(ast_node)
-    function_list = extractor.extract_function_node_list(ast_map_c)
+    function_list = extractor.extract_function_node_list(ast_tree_c)
     # print(call_list)
     # print(skip_list)
     for call_expr in call_list:
@@ -60,7 +60,7 @@ def identify_missing_functions(ast_map_b, ast_node, source_path_b, source_path_d
         line_number = function_ref_node['start line']
         # print(line_number)
 
-        function_node = finder.search_function_node_by_name(ast_map_b, function_name)
+        function_node = finder.search_function_node_by_name(ast_tree_a, function_name)
         # print(function_node)
         if function_node is not None:
             # print(function_node)
