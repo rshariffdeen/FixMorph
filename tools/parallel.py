@@ -92,6 +92,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     pool.join()
 
     for id_a, id_c, score in result_list:
+        if id_a is None or id_c is None:
+            continue
         if id_a not in namespace_map:
             namespace_map[id_a] = dict()
         if id_c not in namespace_map[id_a]:
