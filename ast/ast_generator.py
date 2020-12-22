@@ -3,7 +3,7 @@
 ''' Main vector generation functions '''
 
 from common.utilities import error_exit, execute_command, backup_file, restore_file
-from ast_obj import vector, ast
+from ast import ast_vector, ast_obj
 from tools import logger, emitter
 import sys
 from common import definitions, values
@@ -22,7 +22,7 @@ skip_name_list = ["test", "tests", 'thirdparty', 'cmake', 'CMakeFiles']
 
 def generate_vector(file_path, f_or_struct, start_line, end_line, is_deckard=True):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    v = Vector.Vector(file_path, f_or_struct, start_line, end_line, is_deckard)
+    v = ast_vector.Vector(file_path, f_or_struct, start_line, end_line, is_deckard)
     if not v.vector:
         return None
     # if file_path in proj_attribute.keys():
@@ -66,7 +66,7 @@ def generate_json(file_path, use_macro=False, regenerate=False, use_local=False)
     json_file = file_path + ".AST"
     if not (os.path.exists(json_file) and not values.CONF_USE_CACHE) or regenerate:
         ast_dump(file_path, json_file, False, use_macro, use_local)
-    return ast.load_from_file(json_file)
+    return ast_obj.load_from_file(json_file)
 
 
 def convert_to_llvm(file_path):
@@ -184,7 +184,7 @@ def generate_function_list(project, source_file):
     project.function_list[source_file] = dict()
     for function_name, begin_line, finish_line in function_list:
         if function_name not in project.function_list[source_file]:
-            project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name, begin_line, finish_line, True)
+            project.function_list[source_file][function_name] = ast_vector.Vector(source_file, function_name, begin_line, finish_line, True)
     get_vars(project, source_file, definition_list)
 
 
@@ -205,7 +205,7 @@ def get_function_list_for_line_range(project, source_file, pertinent_lines):
                     project.function_list[source_file] = dict()
 
                 if function_name not in project.function_list[source_file]:
-                    project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name,
+                    project.function_list[source_file][function_name] = ast_vector.Vector(source_file, function_name,
                                                                                      begin_line, finish_line, True)
                     emitter.normal(
                         "\t\t\t" + function_name + " in " + source_file.replace(project.path, project.name + "/"))
