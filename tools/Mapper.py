@@ -336,6 +336,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
             elif node_type_a in ["CallExpr"]:
                 children_a = ast_node_a["children"]
                 children_c = ast_node_c["children"]
+                if len(children_a) < 1 or len(children_c) < 1:
+                    continue
                 if 'value' not in children_a[0].keys() or "value" not in children_c[0].keys():
                     continue
                 method_name_a = children_a[0]["value"]
