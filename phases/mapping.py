@@ -52,7 +52,6 @@ def save_values():
 def map():
     emitter.title("Variable Mapping")
     load_values()
-
     if values.PHASE_SETTING[definitions.PHASE_MAPPING]:
         if not values.generated_script_files:
             error_exit("no ast to map")

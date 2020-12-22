@@ -186,9 +186,9 @@ def update_configuration():
     definitions.DIRECTORY_TMP = definitions.DIRECTORY_OUTPUT + "/tmp"
     definitions.DIRECTORY_LOG = definitions.DIRECTORY_LOG_BASE + "/" + dir_name
 
-    if os.path.isdir(definitions.DIRECTORY_OUTPUT):
-        shutil.rmtree(definitions.DIRECTORY_OUTPUT)
-    os.mkdir(definitions.DIRECTORY_OUTPUT)
+    if not os.path.isdir(definitions.DIRECTORY_OUTPUT):
+        # shutil.rmtree(definitions.DIRECTORY_OUTPUT)
+        os.mkdir(definitions.DIRECTORY_OUTPUT)
 
     if not os.path.isdir(definitions.DIRECTORY_LOG):
         os.makedirs(definitions.DIRECTORY_LOG)
