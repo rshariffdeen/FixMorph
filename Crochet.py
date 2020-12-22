@@ -3,21 +3,98 @@
 
 
 import time
-from tools import emitter, logger
+import os
+import shutil
+from tools import emitter, logger, configuration
 from phases import initialization, building, differencing, detection, mapping, extraction, translation, \
     evolution, weaving, verify, summarizing, slicing, comparison, evaluation, reversing
-from common import definitions
-from common.utilities import error_exit, create_base_directories
+from common import definitions, values, utilities
 
 
-def run():
-    create_base_directories()
-    emitter.start()
+def set_env_value():
+    emitter.normal("setting environment values")
+    os.environ["PYTHONPATH"] = "/home/rshariffdeen/workspace/z3/build/python"
+    utilities.execute_command("export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python")
+
+
+
+def clean_data():
+    temp_dir = definitions.DIRECTORY_TMP
+    if os.path.isdir(temp_dir):
+        clean_command = "rm -rf " + temp_dir + "/*"
+        utilities.execute_command(clean_command)
+
+
+def create_files():
+    definitions.FILE_PROJECT_A = definitions.DIRECTORY_OUTPUT + "/project-A"
+    open(definitions.FILE_PROJECT_A, 'a').close()
+    definitions.FILE_PROJECT_B = definitions.DIRECTORY_OUTPUT + "/project-B"
+    open(definitions.FILE_PROJECT_B, 'a').close()
+    definitions.FILE_PROJECT_C = definitions.DIRECTORY_OUTPUT + "/project-C"
+    open(definitions.FILE_PROJECT_C, 'a').close()
+    definitions.FILE_PROJECT_D = definitions.DIRECTORY_OUTPUT + "/project-D"
+    open(definitions.FILE_PROJECT_D, 'a').close()
+    definitions.FILE_VAR_MAP_STORE = definitions.DIRECTORY_OUTPUT + "/var-map-store"
+    open(definitions.FILE_VAR_MAP_STORE, 'a').close()
+    definitions.FILE_VEC_MAP_STORE = definitions.DIRECTORY_OUTPUT + "/vec-map-store"
+    open(definitions.FILE_VEC_MAP_STORE, 'a').close()
+
+    definitions.FILE_MISSING_FUNCTIONS = definitions.DIRECTORY_OUTPUT + "/missing-functions"
+    open(definitions.FILE_MISSING_FUNCTIONS, 'a').close()
+    definitions.FILE_MISSING_HEADERS = definitions.DIRECTORY_OUTPUT + "/missing-headers"
+    open(definitions.FILE_MISSING_HEADERS, 'a').close()
+    definitions.FILE_MISSING_MACROS = definitions.DIRECTORY_OUTPUT + "/missing-macros"
+    open(definitions.FILE_MISSING_MACROS, 'a').close()
+    definitions.FILE_MISSING_TYPES = definitions.DIRECTORY_OUTPUT + "/missing-types"
+    open(definitions.FILE_MISSING_TYPES, 'a').close()
+
+    if values.CONF_PATH_E:
+        definitions.FILE_PROJECT_E = definitions.DIRECTORY_OUTPUT + "/project-E"
+        open(definitions.FILE_PROJECT_E, 'a').close()
+
+
+def bootstrap(arg_list):
+    emitter.title("Starting Crochet - Automated Code Transfer")
+    emitter.sub_title("Loading Configurations")
+    configuration.read_conf(arg_list)
+    if values.FILE_CONFIGURATION:
+        configuration.read_conf_file()
+    configuration.update_configuration()
+    configuration.update_phase_configuration(arg_list)
+    configuration.print_configuration()
+    set_env_value()
+
+
+def create_directories():
+    if not os.path.isdir(definitions.DIRECTORY_LOG_BASE):
+        os.makedirs(definitions.DIRECTORY_LOG_BASE)
+
+    if not os.path.isdir(definitions.DIRECTORY_OUTPUT_BASE):
+        os.makedirs(definitions.DIRECTORY_OUTPUT_BASE)
+
+    if not os.path.isdir(definitions.DIRECTORY_BACKUP):
+        os.makedirs(definitions.DIRECTORY_BACKUP)
+
+    if not os.path.isdir(definitions.DIRECTORY_LOG):
+        os.makedirs(definitions.DIRECTORY_LOG)
+
+    patch_dir = values.CONF_PATH_C + "-patch"
+    if os.path.isdir(patch_dir):
+        if definitions.DIRECTORY_TESTS in patch_dir:
+            shutil.rmtree(patch_dir)
+    if not os.path.isdir(patch_dir):
+        shutil.copytree(values.CONF_PATH_C, values.CONF_PATH_C + "-patch")
+
+
+def run(arg_list):
+    create_directories()
+    create_files()
+    logger.create()
     start_time = time.time()
     time_info = dict()
 
     time_check = time.time()
-    initialization.initialize()
+    bootstrap(arg_list)
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_INITIALIZATION] = str(duration)
 
@@ -99,7 +176,8 @@ def run():
     
     
 if __name__ == "__main__":
+    import sys
     try:
-        run()
+        run(sys.argv[1:])
     except KeyboardInterrupt as e:
-        error_exit("Program Interrupted by User")
+        utilities.error_exit("Program Interrupted by User")

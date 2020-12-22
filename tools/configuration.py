@@ -1,18 +1,16 @@
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-
 import os
 import sys
-import time
 import shutil
-import subprocess
-from common.utilities import execute_command
+from common import definitions, values, utilities
+from tools import emitter
 from entity import project
-from common import definitions, values
-from tools import emitter, logger
 
 
+def load_standard_list():
+    with open(definitions.FILE_STANDARD_FUNCTION_LIST, "r") as list_file:
+        values.STANDARD_FUNCTION_LIST = [line[:-1] for line in list_file]
+    with open(definitions.FILE_STANDARD_MACRO_LIST, "r") as list_file:
+        values.STANDARD_MACRO_LIST = [line[:-1] for line in list_file]
 
 
 def read_conf_file():
@@ -93,8 +91,6 @@ def read_conf_file():
                 values.BACKPORT = False
 
 
-
-
 def read_conf():
     emitter.normal("\treading configuration values")
     if len(sys.argv) > 1:
@@ -154,18 +150,77 @@ def read_conf():
         emitter.help()
         exit()
 
-    read_conf_file()
+
+def update_phase_configuration(arg_list):
+    if len(arg_list) > 0:
+        for arg in arg_list:
+            if "--skip-" in arg:
+                arg_phase = arg.replace("--skip-", "")
+                if arg_phase not in values.PHASE_SETTING:
+                    emitter.error("Invalid argument: " + arg)
+                    emitter.help()
+                    exit()
+                values.PHASE_SETTING[arg_phase] = 0
+            elif "--only-" in arg:
+                arg_phase = arg.replace("--only-", "")
+                if arg_phase not in values.PHASE_SETTING:
+                    emitter.error("Invalid argument: " + arg)
+                    emitter.help()
+                    exit()
+                for phase_name in values.PHASE_SETTING:
+                    values.PHASE_SETTING[phase_name] = 0
+                    if phase_name == arg_phase:
+                        values.PHASE_SETTING[phase_name] = 1
 
 
+def print_configuration():
+    emitter.configuration("output dir", definitions.DIRECTORY_OUTPUT)
 
 
-def initialize():
-    emitter.title("Initializing project for Transfer")
-    emitter.sub_title("loading configuration")
-    read_conf()
-    create_directories()
-    load_values()
-    create_files()
-    emitter.sub_title("set environment")
-    set_env_value()
+def update_configuration():
+    emitter.normal("updating configuration values")
+    # create log files and other directories
+    conf_file_name = values.FILE_CONFIGURATION.split("/")[-1]
+    project_name = values.FILE_CONFIGURATION.split("/")[-3]
+    dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
+
+    definitions.DIRECTORY_OUTPUT = definitions.DIRECTORY_OUTPUT_BASE + "/" + dir_name
+    definitions.DIRECTORY_TMP = definitions.DIRECTORY_OUTPUT + "/tmp"
+    definitions.DIRECTORY_LOG = definitions.DIRECTORY_LOG_BASE + "/" + dir_name
+
+    if os.path.isdir(definitions.DIRECTORY_OUTPUT):
+        shutil.rmtree(definitions.DIRECTORY_OUTPUT)
+    os.mkdir(definitions.DIRECTORY_OUTPUT)
+
+    input_dir = definitions.DIRECTORY_OUTPUT + "/fuzz-input"
+    output_dir = definitions.DIRECTORY_OUTPUT + "/fuzz-output"
+    if not os.path.isdir(input_dir):
+        os.makedirs(input_dir)
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    values.Project_A = project.Project(values.CONF_PATH_A, "Pa")
+    values.Project_B = project.Project(values.CONF_PATH_B, "Pb")
+    values.Project_C = project.Project(values.CONF_PATH_C, "Pc")
+    values.Project_D = project.Project(values.CONF_PATH_C + "-patch", "Pd")
+    if values.CONF_PATH_E:
+        values.Project_E = project.Project(values.CONF_PATH_E, "Pe")
+
+    load_standard_list()
+
+    definitions.FILE_AST_SCRIPT = definitions.DIRECTORY_TMP + "/ast-script"
+    definitions.FILE_TEMP_DIFF = definitions.DIRECTORY_TMP + "/temp_diff"
+    definitions.FILE_AST_MAP = definitions.DIRECTORY_TMP + "/ast-map"
+    definitions.FILE_AST_DIFF_ERROR = definitions.DIRECTORY_TMP + "/errors_ast_diff"
+    definitions.FILE_PARTIAL_PATCH = definitions.DIRECTORY_TMP + "/gen-patch"
+    definitions.FILE_EXCLUDED_EXTENSIONS = definitions.DIRECTORY_TMP + "/excluded-extensions"
+    definitions.FILE_EXCLUDED_EXTENSIONS_A = definitions.DIRECTORY_TMP + "/excluded-extensions-a"
+    definitions.FILE_EXCLUDED_EXTENSIONS_B = definitions.DIRECTORY_TMP + "/excluded-extensions-b"
+    definitions.FILE_GIT_UNTRACKED_FILES = definitions.DIRECTORY_TMP + "/untracked-list"
+    definitions.FILE_DIFF_C = definitions.DIRECTORY_TMP + "/diff_C"
+    definitions.FILE_DIFF_H = definitions.DIRECTORY_TMP + "/diff_H"
+    definitions.FILE_DIFF_ALL = definitions.DIRECTORY_TMP + "/diff_all"
+    definitions.FILE_FIND_RESULT = definitions.DIRECTORY_TMP + "/find_tmp"
+    definitions.FILE_TEMP_TRANSFORM = definitions.DIRECTORY_TMP + "/temp-transform"
+
 

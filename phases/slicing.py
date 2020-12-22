@@ -38,9 +38,9 @@ def slice_code(file_list_to_patch):
             vector_source_b = vector_source_a.replace(values.Project_A.path, values.Project_B.path)
             vector_source_c, vector_name_c = vec_path_c.split(split_regex)
 
-            vector_name_b = vector_name_a.replace(values.PATH_A, values.PATH_B)
-            vector_name_d = vector_name_c.replace(values.PATH_C, values.Project_D.path)
-            vector_source_d = vector_source_c.replace(values.PATH_C, values.Project_D.path)
+            vector_name_b = vector_name_a.replace(values.CONF_PATH_A, values.CONF_PATH_B)
+            vector_name_d = vector_name_c.replace(values.CONF_PATH_C, values.Project_D.path)
+            vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
 
             segment_identifier_a = vector_name_a.replace(".vec", "")
             segment_identifier_b = vector_name_b.replace(".vec", "")
@@ -57,16 +57,16 @@ def slice_code(file_list_to_patch):
 
             if values.DONOR_REQUIRE_MACRO:
                 values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
-            slicer.slice_source_file(vector_source_a, segment_code, segment_identifier_a, values.PATH_A, values.DONOR_REQUIRE_MACRO)
-            slicer.slice_source_file(vector_source_b, segment_code, segment_identifier_b, values.PATH_B, values.DONOR_REQUIRE_MACRO)
+            slicer.slice_source_file(vector_source_a, segment_code, segment_identifier_a, values.CONF_PATH_A, values.DONOR_REQUIRE_MACRO)
+            slicer.slice_source_file(vector_source_b, segment_code, segment_identifier_b, values.CONF_PATH_B, values.DONOR_REQUIRE_MACRO)
 
-            seg_found = slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""), values.PATH_C)
+            seg_found = slicer.slice_source_file(vector_source_c, segment_code, vector_name_c.replace(".vec", ""), values.CONF_PATH_C)
 
             if not seg_found:
                 values.TARGET_REQUIRE_MACRO = True
                 values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
                 seg_found = slicer.slice_source_file(vector_source_c, segment_code, segment_identifier_c,
-                                                     values.PATH_C, values.TARGET_REQUIRE_MACRO)
+                                                     values.CONF_PATH_C, values.TARGET_REQUIRE_MACRO)
 
             slicer.slice_source_file(vector_source_d, segment_code, segment_identifier_d,
                                      values.Project_D.path, values.TARGET_REQUIRE_MACRO)
@@ -86,9 +86,9 @@ def revert_definitions(file_list_to_patch):
             vector_source_b = vector_source_a.replace(values.Project_A.path, values.Project_B.path)
             vector_source_c, vector_name_c = vec_path_c.split(split_regex)
 
-            vector_name_b = vector_name_a.replace(values.PATH_A, values.PATH_B)
-            vector_name_d = vector_name_a.replace(values.PATH_C, values.Project_D.path)
-            vector_source_d = vector_source_c.replace(values.PATH_C, values.Project_D.path)
+            vector_name_b = vector_name_a.replace(values.CONF_PATH_A, values.CONF_PATH_B)
+            vector_name_d = vector_name_a.replace(values.CONF_PATH_C, values.Project_D.path)
+            vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
 
             emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
 

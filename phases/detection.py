@@ -5,7 +5,7 @@
 import time, sys
 from common.utilities import execute_command, error_exit, save_current_state, load_state
 from common import definitions, values
-from ast import Vector, Parser
+from ast import vector, parser
 from tools import logger, emitter, detector, writer, generator, reader
 
 clone_list = dict()

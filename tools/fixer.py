@@ -5,7 +5,7 @@
 import sys, os
 from common.utilities import execute_command, error_exit, show_partial_diff, backup_file, get_code
 from common import definitions
-from ast import Generator
+from ast import generator
 from tools import logger, finder, emitter
 
 
@@ -75,7 +75,7 @@ def fix_return_type(source_file, source_location):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\tfixing return type")
     line_number = int(source_location.split(":")[1])
-    ast_map = Generator.get_ast_json(source_file)
+    ast_map = generator.get_ast_json(source_file)
     function_node = finder.search_function_node_by_loc(ast_map, int(line_number), source_file)
     return_node = extract_return_node(function_node, line_number)
     function_definition = function_node['value']
@@ -103,7 +103,7 @@ def fix_label_error(source_file, source_location):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\tfixing label errors")
     line_number = int(source_location.split(":")[1])
-    ast_map = Generator.get_ast_json(source_file)
+    ast_map = generator.get_ast_json(source_file)
     function_node = finder.search_function_node_by_loc(ast_map, int(line_number), source_file)
     goto_node = extract_goto_node(function_node, line_number)
     function_definition = function_node['value']
@@ -145,7 +145,7 @@ def fix_argument_errors(source_file, source_location):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\tfixing argument errors")
     line_number = int(source_location.split(":")[1])
-    ast_map = Generator.get_ast_json(source_file)
+    ast_map = generator.get_ast_json(source_file)
     function_node = finder.search_function_node_by_loc(ast_map, int(line_number), source_file)
     goto_node = extract_goto_node(function_node, line_number)
     function_definition = function_node['value']

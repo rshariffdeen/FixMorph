@@ -24,9 +24,9 @@ def verify_exploit():
     global FILE_EXPLOIT_OUTPUT
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     verifier.run_exploit(values.Project_C.path,
-                         values.EXPLOIT_C,
+                         values.CONF_EXPLOIT_C,
                          values.Project_D.path,
-                         values.PATH_POC,
+                         values.CONF_PATH_POC,
                          FILE_EXPLOIT_OUTPUT,
                          definitions.crash_word_list
                          )
@@ -47,9 +47,9 @@ def verify_behavior():
     total_fixes = 0
     for i in range(0, ITERATION_COUNT):
         emitter.sub_sub_title("Iteration " + str(i + 1))
-        file_extension = fuzzer.generate_files(values.PATH_POC, DIR_FUZZ_INPUT)
-        fixes, errors = verifier.differential_test(file_extension, DIR_FUZZ_INPUT, values.EXPLOIT_C,
-                                                   values.PATH_C, values.Project_D.path, DIR_FUZZ_OUTPUT_LOG)
+        file_extension = fuzzer.generate_files(values.CONF_PATH_POC, DIR_FUZZ_INPUT)
+        fixes, errors = verifier.differential_test(file_extension, DIR_FUZZ_INPUT, values.CONF_EXPLOIT_C,
+                                                   values.CONF_PATH_C, values.Project_D.path, DIR_FUZZ_OUTPUT_LOG)
         total_errors += errors
         total_fixes += fixes
 
@@ -97,7 +97,7 @@ def verify():
         if not values.MODIFIED_SOURCE_LIST:
             error_exit("no modified sources to verify")
         safe_exec(verify_compilation, "verifying compilation")
-        if values.PATH_POC:
+        if values.CONF_PATH_POC:
             safe_exec(verify_exploit, "verifying exploit")
             safe_exec(verify_behavior, "verifying differential behavior")
         safe_exec(commit_changes, "committing changes to git")

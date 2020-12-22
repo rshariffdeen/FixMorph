@@ -6,12 +6,12 @@ import sys
 from common.utilities import execute_command, error_exit, find_files, get_file_extension_list
 from tools import emitter, finder, logger
 from common import definitions, values
-from ast import Vector, Parser, Generator
+from ast import vector, parser, generator
 
 
 def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
     try:
-        Generator.generate_ast_script(values.Project_A.path + file_a, values.Project_C.path + file_c, definitions.FILE_AST_MAP, True)
+        generator.generate_ast_script(values.Project_A.path + file_a, values.Project_C.path + file_c, definitions.FILE_AST_MAP, True)
         # generate_ast_map(Definitions.Pa.path + file_a, Definitions.Pc.path + file_c)
     except Exception as e:
         error_exit(e, "Error at generate_ast_map.")
@@ -25,16 +25,16 @@ def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
     variable_list_a = [i.split(" ")[-1] for i in variable_list_a]
 
     # print(Values.Project_C.functions[Values.Project_C.path + file_c])
-    Generator.generate_function_list(values.Project_C, values.Project_C.path + file_c)
+    generator.generate_function_list(values.Project_C, values.Project_C.path + file_c)
 
     function_c = values.Project_C.function_list[values.Project_C.path + file_c][func_name_c]
     variable_list_c = function_c.variables
     while '' in variable_list_c:
         variable_list_c.remove('')
     json_file_a = values.Project_A.path + file_a + ".AST"
-    ast_a = Parser.AST_from_file(json_file_a)
+    ast_a = parser.AST_from_file(json_file_a)
     json_file_c = values.Project_C.path + file_c + ".AST"
-    ast_c = Parser.AST_from_file(json_file_c)
+    ast_c = parser.AST_from_file(json_file_c)
     ast_map = dict()
 
     try:
@@ -114,7 +114,7 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
                 if matrix_c:
                     best_vector = vector_c
                     break
-        best_distance = Vector.Vector.dist(matrix_a, matrix_c)
+        best_distance = vector.Vector.dist(matrix_a, matrix_c)
         distance_matrix = dict()
 
         # Get best match candidate
@@ -122,12 +122,12 @@ def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
             matrix_c = vector_c[1]
             file_path_c = vector_c[0]
             if file_path_c == possible_candidate_path:
-                distance = Vector.Vector.dist(matrix_a, matrix_c)
+                distance = vector.Vector.dist(matrix_a, matrix_c)
                 distance_matrix[file_path_c] = distance
                 possible_candidate = vector_c
                 possible_candidate_distance = distance
             if matrix_c is not None:
-                distance = Vector.Vector.dist(matrix_a, matrix_c)
+                distance = vector.Vector.dist(matrix_a, matrix_c)
                 distance_matrix[file_path_c] = distance
                 if distance < best_distance:
                     best_vector = vector_c

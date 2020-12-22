@@ -206,70 +206,70 @@ def build_all():
     emitter.sub_sub_title("building projects")
 
     emitter.normal("\t" + values.Project_A.path)
-    if not values.BUILD_COMMAND_A:
+    if not values.CONF_BUILD_COMMAND_A:
         build_project(values.Project_A.path)
     else:
-        build_project(values.Project_A.path, values.BUILD_COMMAND_A)
+        build_project(values.Project_A.path, values.CONF_BUILD_COMMAND_A)
 
     emitter.normal("\t" + values.Project_B.path)
-    if not values.BUILD_COMMAND_A:
+    if not values.CONF_BUILD_COMMAND_A:
         build_project(values.Project_B.path)
     else:
-        build_project(values.Project_B.path, values.BUILD_COMMAND_A)
+        build_project(values.Project_B.path, values.CONF_BUILD_COMMAND_A)
 
     emitter.normal("\t" + values.Project_C.path)
-    if not values.BUILD_COMMAND_C:
+    if not values.CONF_BUILD_COMMAND_C:
         build_project(values.Project_C.path)
     else:
-        build_project(values.Project_C.path, values.BUILD_COMMAND_C)
+        build_project(values.Project_C.path, values.CONF_BUILD_COMMAND_C)
 
     emitter.normal("\t" + values.Project_D.path)
-    if not values.BUILD_COMMAND_C:
+    if not values.CONF_BUILD_COMMAND_C:
         build_project(values.Project_D.path)
     else:
-        build_project(values.Project_D.path, values.BUILD_COMMAND_C)
+        build_project(values.Project_D.path, values.CONF_BUILD_COMMAND_C)
 
-    if values.PATH_E:
+    if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)
-        if not values.BUILD_COMMAND_C:
+        if not values.CONF_BUILD_COMMAND_C:
             build_project(values.Project_E.path)
         else:
-            build_project(values.Project_E.path, values.BUILD_COMMAND_C)
+            build_project(values.Project_E.path, values.CONF_BUILD_COMMAND_C)
 
 
 def config_all(is_llvm=False):
     emitter.sub_sub_title("configuring projects")
 
     emitter.normal("\t" + values.Project_A.path)
-    if not values.CONFIG_COMMAND_A:
+    if not values.CONF_CONFIG_COMMAND_A:
         config_project(values.Project_A.path, is_llvm)
     else:
-        config_project(values.Project_A.path, is_llvm, values.CONFIG_COMMAND_A)
+        config_project(values.Project_A.path, is_llvm, values.CONF_CONFIG_COMMAND_A)
 
     emitter.normal("\t" + values.Project_B.path)
-    if not values.CONFIG_COMMAND_A:
+    if not values.CONF_CONFIG_COMMAND_A:
         config_project(values.Project_B.path, is_llvm)
     else:
-        config_project(values.Project_B.path, is_llvm, values.CONFIG_COMMAND_A)
+        config_project(values.Project_B.path, is_llvm, values.CONF_CONFIG_COMMAND_A)
 
     emitter.normal("\t" + values.Project_C.path)
-    if not values.CONFIG_COMMAND_C:
+    if not values.CONF_CONFIG_COMMAND_C:
         config_project(values.Project_C.path, is_llvm)
     else:
-        config_project(values.Project_C.path, is_llvm, values.CONFIG_COMMAND_C)
+        config_project(values.Project_C.path, is_llvm, values.CONF_CONFIG_COMMAND_C)
 
     emitter.normal("\t" + values.Project_D.path)
-    if not values.CONFIG_COMMAND_C:
+    if not values.CONF_CONFIG_COMMAND_C:
         config_project(values.Project_D.path, is_llvm)
     else:
-        config_project(values.Project_D.path, is_llvm, values.CONFIG_COMMAND_C)
+        config_project(values.Project_D.path, is_llvm, values.CONF_CONFIG_COMMAND_C)
 
-    if values.PATH_E:
+    if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)
-        if not values.CONFIG_COMMAND_C:
+        if not values.CONF_CONFIG_COMMAND_C:
             config_project(values.Project_E.path, is_llvm)
         else:
-            config_project(values.Project_E.path, is_llvm, values.CONFIG_COMMAND_C)
+            config_project(values.Project_E.path, is_llvm, values.CONF_CONFIG_COMMAND_C)
 
 
 def build_normal():
@@ -315,13 +315,13 @@ def build_instrumented_code(source_directory):
 
     build_command = "cd " + source_directory + ";"
     custom_build_command = ""
-    if (values.PATH_A in source_directory) or (values.PATH_B in source_directory):
-        if values.BUILD_COMMAND_A is not None:
-            custom_build_command = values.BUILD_COMMAND_A
+    if (values.CONF_PATH_A in source_directory) or (values.CONF_PATH_B in source_directory):
+        if values.CONF_BUILD_COMMAND_A is not None:
+            custom_build_command = values.CONF_BUILD_COMMAND_A
 
-    if values.PATH_C in source_directory:
-        if values.BUILD_COMMAND_C is not None:
-            custom_build_command = values.BUILD_COMMAND_C
+    if values.CONF_PATH_C in source_directory:
+        if values.CONF_BUILD_COMMAND_C is not None:
+            custom_build_command = values.CONF_BUILD_COMMAND_C
 
     # print("custom command is " + custom_build_command)
 
@@ -361,21 +361,21 @@ def build_verify():
     clean_project(values.Project_D.path)
     # clean_project(Values.Project_C.path)
 
-    if values.CONFIG_COMMAND_C:
-        config_project(values.Project_D.path, False, values.CONFIG_COMMAND_C, verify=True)
+    if values.CONF_CONFIG_COMMAND_C:
+        config_project(values.Project_D.path, False, values.CONF_CONFIG_COMMAND_C, verify=True)
         # config_project(Values.Project_C.path, False, Values.CONFIG_COMMAND_C)
     else:
         config_project(values.Project_D.path, False, verify=True)
         # config_project(Values.Project_C.path, False)
 
-    if values.BUILD_COMMAND_C:
-        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
-        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
-        build_project(values.Project_D.path, values.BUILD_COMMAND_C, verify=True)
+    if values.CONF_BUILD_COMMAND_C:
+        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+        build_project(values.Project_D.path, values.CONF_BUILD_COMMAND_C, verify=True)
         # build_project(Values.Project_C.path, Values.BUILD_COMMAND_C)
     else:
-        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
-        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
+        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
         # build_project(Values.Project_C.path)
         build_project(values.Project_D.path, verify=True)
 
@@ -388,8 +388,8 @@ def build_asan():
     CXX_FLAGS = "'-g -O0 -static'"
     C_FLAGS = "'-g -O0 -static'"
     config_all()
-    CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
-    C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.ASAN_FLAG + "'"
+    CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+    C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
     build_all()
 
 
@@ -409,7 +409,7 @@ def build_llvm():
 
 def restore_project(project_path, commit_id=None):
     restore_command = "cd " + project_path + ";"
-    if os.path.exists(project_path + "/.git") or values.VC == 'git':
+    if os.path.exists(project_path + "/.git") or values.CONF_VC == 'git':
         if commit_id:
             restore_command += "git clean -fd; git reset --hard HEAD; git checkout " + commit_id
         else:
@@ -427,7 +427,7 @@ def restore_project(project_path, commit_id=None):
 
 def soft_restore_project(project_path):
     restore_command = "cd " + project_path + ";"
-    if os.path.exists(project_path + "/.git") or values.VC == 'git':
+    if os.path.exists(project_path + "/.git") or values.CONF_VC == 'git':
         restore_command += "git reset --hard HEAD"
     elif os.path.exists(project_path + "/.svn"):
         restore_command += "svn revert -R .; "
@@ -450,8 +450,8 @@ def restore_all():
     restore_project(values.Project_C.path)
     if not values.ANALYSE_N:
         emitter.normal("\t" + values.Project_D.path)
-        restore_project(values.Project_D.path, values.COMMIT_C)
-    if values.PATH_E:
+        restore_project(values.Project_D.path, values.CONF_COMMIT_C)
+    if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)
         restore_project(values.Project_E.path)
 
@@ -466,7 +466,7 @@ def soft_restore_all():
     soft_restore_project(values.Project_C.path)
     emitter.normal("\t" + values.Project_D.path)
     soft_restore_project(values.Project_D.path)
-    if values.PATH_E:
+    if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)
         soft_restore_project(values.Project_E.path)
 
@@ -493,6 +493,6 @@ def clean_all():
     emitter.normal("\t" + values.Project_D.path)
     clean_project(values.Project_D.path)
 
-    if values.PATH_E:
+    if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)
         clean_project(values.Project_E.path)

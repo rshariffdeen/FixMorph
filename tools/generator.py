@@ -8,7 +8,7 @@ import os
 import json
 from common.utilities import execute_command, error_exit, find_files, get_file_extension_list
 from tools import emitter, logger, extractor, finder, merger
-from ast import Vector, Parser, Generator as ASTGenerator
+from ast import vector, parser, generator as ASTGenerator
 from common.utilities import error_exit, clean_parse
 from common import definitions, values
 
@@ -21,12 +21,12 @@ def find_source_file(diff_file_list, project, log_file, file_extension):
     for source_loc in diff_file_list:
         file_path_list = set()
         source_path, line_number = source_loc.split(":")
-        source_path = source_path.replace(values.PATH_A, "")
+        source_path = source_path.replace(values.CONF_PATH_A, "")
         source_path = source_path[1:]
         if source_path in source_file_list:
             continue
         source_file_list.append(source_path)
-        git_query = "cd " + values.PATH_A + ";"
+        git_query = "cd " + values.CONF_PATH_A + ";"
         result_file = definitions.DIRECTORY_TMP + "/list"
         git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
         execute_command(git_query)
@@ -62,7 +62,7 @@ def iterate_path(source_path, project, file_extension, log_file):
     regex = None
     file_name = source_path.split("/")[-1][:-2]
     source_dir = source_path[:str(source_path).find(file_name)]
-    source_dir = source_dir.replace(values.PATH_A, "")
+    source_dir = source_dir.replace(values.CONF_PATH_A, "")
     if regex is None:
         regex = file_name
     else:
@@ -175,7 +175,7 @@ def create_vectors(project, source_file, segmentation_list):
 
         for function_name, begin_line, finish_line in filtered_function_list:
             function_name = "func_" + function_name.split("(")[0]
-            project.function_list[source_file][function_name] = Vector.Vector(source_file, function_name, begin_line,
+            project.function_list[source_file][function_name] = vector.Vector(source_file, function_name, begin_line,
                                                                               finish_line, True)
 
         ASTGenerator.get_vars(project, source_file, definition_list)
@@ -184,7 +184,7 @@ def create_vectors(project, source_file, segmentation_list):
         # Emitter.normal("\t\t\tgenerating struct vectors")
         for struct_name, begin_line, finish_line in struct_list:
             struct_name = "struct_" + struct_name.split(";")[0]
-            project.struct_list[source_file][struct_name] = Vector.Vector(source_file, struct_name, begin_line,
+            project.struct_list[source_file][struct_name] = vector.Vector(source_file, struct_name, begin_line,
                                                                           finish_line, True)
 
     if values.IS_TYPEDEC:
@@ -193,14 +193,14 @@ def create_vectors(project, source_file, segmentation_list):
             var_name = "var_" + var_name.split(";")[0]
             var_type = (var_name.split("(")[1]).split(")")[0]
             var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
-            project.decl_list[source_file][var_name] = Vector.Vector(source_file, var_name, begin_line, finish_line,
+            project.decl_list[source_file][var_name] = vector.Vector(source_file, var_name, begin_line, finish_line,
                                                                      True)
 
     if values.IS_MACRO:
         # Emitter.normal("\t\t\tgenerating macro vectors")
         for macro_name, begin_line, finish_line in macro_list:
             macro_name = "macro_" + macro_name
-            project.macro_list[source_file][macro_name] = Vector.Vector(source_file, macro_name, begin_line,
+            project.macro_list[source_file][macro_name] = vector.Vector(source_file, macro_name, begin_line,
                                                                         finish_line, True)
 
     if values.IS_ENUM:
@@ -211,7 +211,7 @@ def create_vectors(project, source_file, segmentation_list):
             if "anonymous" in enum_name:
                 count = count + 1
                 enum_name = "enum_" + str(count)
-            project.enum_list[source_file][enum_name] = Vector.Vector(source_file, enum_name, begin_line, finish_line,
+            project.enum_list[source_file][enum_name] = vector.Vector(source_file, enum_name, begin_line, finish_line,
                                                                       True)
 
 
@@ -258,7 +258,7 @@ def generate_ast_json(file_path, use_macro=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
     macro_list = values.TARGET_PRE_PROCESS_MACRO
-    if values.PATH_A in file_path:
+    if values.CONF_PATH_A in file_path:
         macro_list = values.DONOR_PRE_PROCESS_MACRO
     dump_command = definitions.APP_AST_DIFF + " -ast-dump-json "
     if use_macro:

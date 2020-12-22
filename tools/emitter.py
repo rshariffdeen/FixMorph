@@ -142,10 +142,10 @@ def data(message, info=None):
     logger.data(message, info)
 
 
-def start():
-    logger.create()
-    now = datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)");
-    write("\n\n" + "#"*100 + "\n\n\tCrochet - Vertical Code Edit Transfer\n\tTest conducted on: " + now + "\n\n" + "#"*100, BLUE)
+def configuration(setting, value):
+    message = "\t[config] " + setting + ": " + str(value)
+    write(message, WHITE, True)
+    logger.configuration(setting + ":" + str(value))
 
 
 def end(time_info):

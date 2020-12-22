@@ -7,7 +7,7 @@ import time
 from common import definitions, values
 from common.utilities import execute_command, error_exit, save_current_state, backup_file_orig, restore_file_orig, replace_file
 from tools import emitter, collector, reader, writer, slicer
-from ast import Vector
+from ast import vector
 
 generated_script_list = dict()
 
@@ -40,7 +40,7 @@ def generate_script_for_files(file_list_to_patch):
             vector_source_a, vector_name_a = vec_path_a.split(split_regex)
             vector_source_b = vector_source_a.replace(values.Project_A.path, values.Project_B.path)
             vector_source_c, vector_name_c = vec_path_c.split(split_regex)
-            vector_name_b = vector_name_a.replace(values.PATH_A, values.PATH_B)
+            vector_name_b = vector_name_a.replace(values.CONF_PATH_A, values.CONF_PATH_B)
             # if vector_source_a in generated_source_list:
             #     continue
 

@@ -4,7 +4,7 @@ from tools import logger, emitter, finder
 from common.utilities import execute_command, get_file_list, error_exit, is_intersect
 import os
 from common import definitions, values
-from ast import Generator
+from ast import generator
 
 
 def extract_child_id_list(ast_node):
@@ -38,7 +38,7 @@ def extract_complete_function_node(function_def_node, source_path):
     # print(source_dir)
     if len(function_def_node['children']) > 1:
         if values.IS_LINUX_KERNEL:
-            source_file_loc = values.PATH_B + "/" + function_def_node['file']
+            source_file_loc = values.CONF_PATH_B + "/" + function_def_node['file']
         else:
             source_file_loc = source_dir + "/" + function_def_node['file']
         # print(source_file_loc)
@@ -66,11 +66,11 @@ def extract_complete_function_node(function_def_node, source_path):
                     if source_file_name in file_name and file_name[-2:] == ".c":
                         source_file_loc = file_name
                         break
-                if search_dir in [values.PATH_A, values.PATH_B, values.PATH_C]:
+                if search_dir in [values.CONF_PATH_A, values.CONF_PATH_B, values.CONF_PATH_C]:
                     return None, None
                 search_dir = os.path.dirname(search_dir)
 
-        ast_tree = Generator.get_ast_json(source_file_loc)
+        ast_tree = generator.get_ast_json(source_file_loc)
         function_node = finder.search_function_node_by_name(ast_tree, function_name)
         return function_node, source_file_loc
 
@@ -518,7 +518,7 @@ def extract_variable_list(source_path, start_line, end_line, only_in_range):
     # print(source_path, start_line, end_line)
     emitter.normal("\t\t\t\tgenerating variable(available) list")
     variable_list = list()
-    ast_map = Generator.get_ast_json(source_path)
+    ast_map = generator.get_ast_json(source_path)
     func_node = finder.search_function_node_by_loc(ast_map, int(end_line), source_path)
     if func_node is None:
         return variable_list
@@ -594,12 +594,12 @@ def extract_unique_in_order(list):
 
 def extract_project_path(source_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if values.PATH_A + "/" in source_path:
-        return values.PATH_A
-    elif values.PATH_B in source_path:
-        return values.PATH_B
-    elif values.PATH_C in source_path:
-        return values.PATH_C
+    if values.CONF_PATH_A + "/" in source_path:
+        return values.CONF_PATH_A
+    elif values.CONF_PATH_B in source_path:
+        return values.CONF_PATH_B
+    elif values.CONF_PATH_C in source_path:
+        return values.CONF_PATH_C
 
 
 def extract_header_list(source_path):
@@ -636,7 +636,7 @@ def extract_pre_macro_list(source_file):
                 for token in token_list[1:]:
                     macro = token.split(" ")[0]
                     pre_macro_list.add(macro.replace(")", "").replace("(", ""))
-    if values.PATH_A in source_file or values.PATH_B in source_file:
+    if values.CONF_PATH_A in source_file or values.CONF_PATH_B in source_file:
         pre_process_arg = " --extra-arg-a=\"-D {}=1 \" "
     else:
         pre_process_arg = " --extra-arg-c=\"-D {}=1 \" "
@@ -647,7 +647,7 @@ def extract_pre_macro_list(source_file):
 
 def extract_neighborhood(source_path, segment_code, segment_identifier, use_macro=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    ast_tree = Generator.get_ast_json(source_path, use_macro)
+    ast_tree = generator.get_ast_json(source_path, use_macro)
     segment_type = values.segment_map[segment_code]
     ast_script = list()
     segment_found = False

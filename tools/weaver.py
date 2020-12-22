@@ -1,7 +1,7 @@
 from common import definitions, values
 from common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
 from tools import emitter, logger, finder, extractor, identifier
-from ast import Generator
+from ast import generator
 
 import os
 import sys
@@ -263,7 +263,7 @@ def weave_functions(missing_function_list, modified_source_list):
         source_path_b = info['source_b']
         source_path_d = info['source_d']
         emitter.normal(function_name)
-        ast_map_b = Generator.get_ast_json(source_path_b)
+        ast_map_b = generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
         function_ref_node = finder.search_ast_node_by_id(ast_map_b, function_ref_node_id)
         function_def_node = finder.search_ast_node_by_id(ast_map_b, int(node_id))
@@ -318,7 +318,7 @@ def weave_code(file_a, file_b, file_c, script_file_name, modified_source_list):
 
 def weave_slice(slice_info):
     for source_file_d, source_file_b in slice_info:
-        source_file_c = source_file_d.replace(values.Project_D.path, values.PATH_C)
+        source_file_c = source_file_d.replace(values.Project_D.path, values.CONF_PATH_C)
         emitter.normal("\t\t" + source_file_d)
         slice_list = slice_info[(source_file_d, source_file_b)]
         weave_list = dict()
@@ -331,9 +331,9 @@ def weave_slice(slice_info):
             replace_file(slice_file, source_file_d)
             if values.TARGET_REQUIRE_MACRO:
                 values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
-            ast_tree_slice = Generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
+            ast_tree_slice = generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
             restore_file_orig(source_file_d)
-            ast_tree_source = Generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
+            ast_tree_source = generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
             segment_node_slice = finder.search_node(ast_tree_slice, segment_type, segment_identifier)
             segment_node_source = finder.search_node(ast_tree_source, segment_type, segment_identifier)
             start_line_source = int(segment_node_source['start line'])
@@ -348,5 +348,5 @@ def weave_slice(slice_info):
             delete_code(source_file_d, start_line_source, end_line_source)
             insert_code_range(slice_code, source_file_d, start_line_source)
 
-        source_file_a = source_file_b.replace(values.PATH_B, values.PATH_A)
+        source_file_a = source_file_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
         show_patch(source_file_a, source_file_b, source_file_c, source_file_d, segment_identifier)

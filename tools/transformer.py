@@ -5,7 +5,7 @@
 import sys
 from common import definitions, values
 from common.utilities import get_code, error_exit, execute_command
-from ast import Generator as ASTGenerator
+from ast import generator as ASTGenerator
 from tools import extractor, oracle, logger, filter, emitter
 
 
@@ -18,10 +18,10 @@ def transform_source_file(source_path, ast_script, output_file=None, ast_script_
             script_file.write(script_line)
 
     transform_command = definitions.PATCH_COMMAND + " -s=" + definitions.PATCH_SIZE
-    if values.PATH_A in source_path or values.PATH_B in source_path:
+    if values.CONF_PATH_A in source_path or values.CONF_PATH_B in source_path:
         if values.DONOR_REQUIRE_MACRO:
             transform_command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
-    if values.PATH_C in source_path or values.Project_D.path in source_path:
+    if values.CONF_PATH_C in source_path or values.Project_D.path in source_path:
         if values.TARGET_REQUIRE_MACRO:
             transform_command += " " + values.TARGET_PRE_PROCESS_MACRO + " "
 

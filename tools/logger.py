@@ -36,6 +36,12 @@ def log(log_message):
         log_file.write(log_message)
 
 
+def configuration(message):
+    message = str(message).strip().lower().replace("[config]", "")
+    message = "[CONFIGURATION]: " + str(message) + "\n"
+    log(message)
+
+
 def information(message):
     message = "[INFO]: " + str(message) + "\n"
     log(message)

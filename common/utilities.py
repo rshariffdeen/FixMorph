@@ -47,15 +47,6 @@ def load_state():
     values.missing_header_list = pickle.load(open(definitions.FILE_MISSING_HEADERS, 'rb'))
 
 
-def create_base_directories():
-    if not os.path.isdir(definitions.DIRECTORY_LOG_BASE):
-        os.makedirs(definitions.DIRECTORY_LOG_BASE)
-
-    if not os.path.isdir(definitions.DIRECTORY_OUTPUT_BASE):
-        os.makedirs(definitions.DIRECTORY_OUTPUT_BASE)
-
-    if not os.path.isdir(definitions.DIRECTORY_BACKUP):
-        os.makedirs(definitions.DIRECTORY_BACKUP)
 
 
 def error_exit(*args):

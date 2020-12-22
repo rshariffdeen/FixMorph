@@ -10,7 +10,7 @@ import json
 from git import Repo
 from common.utilities import execute_command, error_exit, save_current_state, clear_values
 from common import definitions, values
-from ast import Vector, Parser
+from ast import vector, parser
 import difflib
 from tools import logger, emitter, identifier, writer, generator, differ, merger
 
@@ -165,20 +165,20 @@ def compare():
     load_values()
 
     if values.PHASE_SETTING[definitions.PHASE_COMPARE]:
-        if not values.PATH_E:
+        if not values.CONF_PATH_E:
             emitter.special("\n\t-skipping this phase-")
 
         else:
             clear_values(values.Project_C)
             ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
-                                         values.PATH_C, values.PATH_E)
+                                         values.CONF_PATH_C, values.CONF_PATH_E)
             # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
             #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
             segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
 
             clear_values(values.Project_C)
             transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
-                                               values.PATH_C, values.Project_D.path)
+                                               values.CONF_PATH_C, values.Project_D.path)
             # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
             #                                  Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
             segment_code(transplanted_diff_info, values.Project_C, definitions.FILE_TRANS_N)

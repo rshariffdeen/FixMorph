@@ -10,7 +10,7 @@ import json
 from git import Repo
 from common.utilities import execute_command, error_exit, save_current_state, load_state
 from common import definitions, values
-from ast import Vector, Parser
+from ast import vector, parser
 import difflib
 from tools import logger, emitter, identifier, writer, generator, solver, differ, merger
 
@@ -135,10 +135,10 @@ def safe_exec(function_def, title, *args):
 
 def get_source_line_numbers(path_a):
     number_list = list()
-    if values.PATH_A in path_a:
-        path_b = path_a.replace(values.PATH_A, values.PATH_B)
+    if values.CONF_PATH_A in path_a:
+        path_b = path_a.replace(values.CONF_PATH_A, values.CONF_PATH_B)
     else:
-        path_b = path_a.replace(values.PATH_C, values.PATH_E)
+        path_b = path_a.replace(values.CONF_PATH_C, values.CONF_PATH_E)
 
     file_a = open(path_a, "rt").readlines()
     file_b = open(path_b, "rt").readlines()
@@ -171,10 +171,10 @@ def get_ast_json(file_path):
 
 def get_variable_list(path_a):
     var_list = list()
-    if values.PATH_A in path_a:
-        path_b = path_a.replace(values.PATH_A, values.PATH_B)
+    if values.CONF_PATH_A in path_a:
+        path_b = path_a.replace(values.CONF_PATH_A, values.CONF_PATH_B)
     else:
-        path_b = path_a.replace(values.PATH_C, values.PATH_E)
+        path_b = path_a.replace(values.CONF_PATH_C, values.CONF_PATH_E)
 
     ast_script = get_ast_script(path_a, path_b)
     ast_a = get_ast_json(path_a)
@@ -339,12 +339,12 @@ def has_patch_evolved(file_list_b, file_list_x, path_b, path_x, source_map):
     ast_script_list_x = dict()
     summary_ast_list = list()
     for file_path_b in file_list_b:
-        file_path_a = file_path_b.replace(path_b, values.PATH_A)
+        file_path_a = file_path_b.replace(path_b, values.CONF_PATH_A)
         ast_script_b = get_ast_script(file_path_a, file_path_b)
         ast_script_list_b[file_path_b] = ast_script_b
 
     for file_path_x in file_list_x:
-        file_path_c = file_path_x.replace(path_x, values.PATH_C)
+        file_path_c = file_path_x.replace(path_x, values.CONF_PATH_C)
         ast_script_x = get_ast_script(file_path_c, file_path_x)
         ast_script_list_x[file_path_x] = ast_script_x
     # print(ast_script_list_b)
@@ -384,12 +384,12 @@ def check_header_files(file_mapping, path_x):
     for file_b in file_mapping:
         file_x = file_mapping[file_b]
         if file_b[-1] == "c":
-            file_a = file_b.replace(values.PATH_B, values.PATH_A)
+            file_a = file_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
             header_list_a = extract_header_files(file_a)
             header_list_b = extract_header_files(file_b)
             additional_header_list_b = list(set(header_list_b) - set(header_list_a))
             deleted_header_list_b = list(set(header_list_a) - set(header_list_b))
-            file_c = file_x.replace(path_x, values.PATH_C)
+            file_c = file_x.replace(path_x, values.CONF_PATH_C)
             header_list_c = extract_header_files(file_c)
             header_list_x = extract_header_files(file_x)
             additional_header_list_x = list(set(header_list_x) - set(header_list_c))
@@ -484,18 +484,18 @@ def summarize():
     load_values()
 
     if values.PHASE_SETTING[definitions.PHASE_SUMMARIZE]:
-        if not values.PATH_E:
+        if not values.CONF_PATH_E:
             emitter.special("\n\t-skipping this phase-")
         else:
             # classify_porting(Values.PATH_B, Values.Project_D.path)
             clear_values(values.Project_A)
             original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
-                                           values.PATH_A, values.PATH_B)
+                                           values.CONF_PATH_A, values.CONF_PATH_B)
             segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
 
             clear_values(values.Project_C)
             ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
-                                         values.PATH_C, values.PATH_E)
+                                         values.CONF_PATH_C, values.CONF_PATH_E)
             segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
 
         save_values()

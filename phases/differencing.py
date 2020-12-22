@@ -39,15 +39,15 @@ def analyse_source_diff():
                       definitions.FILE_EXCLUDED_EXTENSIONS_A,
                       definitions.FILE_EXCLUDED_EXTENSIONS_B,
                       definitions.FILE_EXCLUDED_EXTENSIONS,
-                      values.PATH_A,
-                      values.PATH_B)
+                      values.CONF_PATH_A,
+                      values.CONF_PATH_B)
 
     emitter.sub_sub_title("analysing untracked files")
-    untracked_file_list = generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, values.PATH_A)
+    untracked_file_list = generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, values.CONF_PATH_A)
     emitter.sub_sub_title("analysing header files")
-    diff_h_file_list = differ.diff_h_files(definitions.FILE_DIFF_H, values.PATH_A, untracked_file_list)
+    diff_h_file_list = differ.diff_h_files(definitions.FILE_DIFF_H, values.CONF_PATH_A, untracked_file_list)
     emitter.sub_sub_title("analysing C/CPP source files")
-    diff_c_file_list = differ.diff_c_files(definitions.FILE_DIFF_C, values.PATH_A, untracked_file_list)
+    diff_c_file_list = differ.diff_c_files(definitions.FILE_DIFF_C, values.CONF_PATH_A, untracked_file_list)
     emitter.sub_sub_title("analysing changed code lines")
     diff_info_c = dict()
     diff_info_h = dict()
@@ -66,8 +66,8 @@ def analyse_ast_diff():
     if not diff_info:
         error_exit("no files modified in diff")
     diff_info = differ.diff_ast(diff_info,
-                                values.PATH_A,
-                                values.PATH_B,
+                                values.CONF_PATH_A,
+                                values.CONF_PATH_B,
                                 definitions.FILE_AST_SCRIPT)
 
 

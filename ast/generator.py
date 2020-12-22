@@ -3,7 +3,7 @@
 ''' Main vector generation functions '''
 
 from common.utilities import error_exit, execute_command, backup_file, restore_file
-from ast import Vector, AST
+from ast import Vector, ast
 from tools import logger, emitter
 import sys
 from common import definitions, values
@@ -51,7 +51,7 @@ def ast_dump(file_path, output_path, is_header=True, use_macro=False, use_local=
 def get_ast_json(file_path, use_macro=False, regenerate=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
-    if not (os.path.exists(json_file) and not values.USE_CACHE) or regenerate:
+    if not (os.path.exists(json_file) and not values.CONF_USE_CACHE) or regenerate:
         generate_json(file_path, use_macro, regenerate)
     # ast_dump(file_path, json_file, False, use_macro)
     if os.stat(json_file).st_size == 0:
@@ -64,9 +64,9 @@ def get_ast_json(file_path, use_macro=False, regenerate=False):
 def generate_json(file_path, use_macro=False, regenerate=False, use_local=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     json_file = file_path + ".AST"
-    if not (os.path.exists(json_file) and not values.USE_CACHE) or regenerate:
+    if not (os.path.exists(json_file) and not values.CONF_USE_CACHE) or regenerate:
         ast_dump(file_path, json_file, False, use_macro, use_local)
-    return AST.load_from_file(json_file)
+    return ast.load_from_file(json_file)
 
 
 def convert_to_llvm(file_path):
@@ -156,7 +156,7 @@ def generate_ast_script(source_a, source_b, outfile_path, dump_matches=False):
     extra_args = " "
     if dump_matches:
         extra_args = " -dump-matches "
-    generate_command = APP_AST_DIFF + " -s=" + values.AST_DIFF_SIZE + extra_args
+    generate_command = APP_AST_DIFF + " -s=" + values.CONF_AST_DIFF_SIZE + extra_args
     generate_command += source_a + " " + source_b
     if source_a[-1] == 'h':
         generate_command += " --"

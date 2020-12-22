@@ -69,11 +69,11 @@ def transplant_code():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
-        slice_file_d = slice_file_c.replace(values.PATH_C, values.Project_D.path)
+        slice_file_d = slice_file_c.replace(values.CONF_PATH_C, values.Project_D.path)
         vector_source_a = get_source_name_from_slice(slice_file_a)
         vector_source_b = get_source_name_from_slice(slice_file_b)
         vector_source_c = get_source_name_from_slice(slice_file_c)
-        vector_source_d = vector_source_c.replace(values.PATH_C, values.Project_D.path)
+        vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
 
         backup_file_orig(vector_source_a)
         backup_file_orig(vector_source_b)
@@ -142,11 +142,11 @@ def weave_slices():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
-        slice_file_d = slice_file_c.replace(values.PATH_C, values.Project_D.path)
+        slice_file_d = slice_file_c.replace(values.CONF_PATH_C, values.Project_D.path)
         vector_source_a = get_source_name_from_slice(slice_file_a)
         vector_source_b = get_source_name_from_slice(slice_file_b)
         vector_source_c = get_source_name_from_slice(slice_file_c)
-        vector_source_d = vector_source_c.replace(values.PATH_C, values.Project_D.path)
+        vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
         segment_type = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
         segment_identifier = slice_file_c.split("." + segment_type + ".")[-1].replace(".slice", "")
         if (vector_source_d, vector_source_b) not in slice_info:
