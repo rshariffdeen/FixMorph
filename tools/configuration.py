@@ -195,6 +195,13 @@ def update_configuration():
     if not os.path.isdir(definitions.DIRECTORY_LOG):
         os.makedirs(definitions.DIRECTORY_LOG)
 
+    patch_dir = values.CONF_PATH_C + "-patch"
+    if os.path.isdir(patch_dir):
+        if definitions.DIRECTORY_TESTS in patch_dir:
+            shutil.rmtree(patch_dir)
+    if not os.path.isdir(patch_dir):
+        shutil.copytree(values.CONF_PATH_C, values.CONF_PATH_C + "-patch")
+
     input_dir = definitions.DIRECTORY_OUTPUT + "/fuzz-input"
     output_dir = definitions.DIRECTORY_OUTPUT + "/fuzz-output"
     if not os.path.isdir(input_dir):
