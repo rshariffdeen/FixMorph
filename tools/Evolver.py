@@ -137,7 +137,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
     neighborhood_a = Extractor.extract_neighborhood(file_a, seg_code, seg_id_a)
     neighborhood_b = Extractor.extract_neighborhood(file_b, seg_code, seg_id_a)
     neighborhood_c = Extractor.extract_neighborhood(file_c, seg_code, seg_id_c)
-    var_map = Values.VAR_MAP[(file_a, file_c)]
+    var_map = Values.map_namespace[(file_a, file_c)]
     with open(script_file_name, 'w') as script_file:
         count = 0
         for instruction in instruction_list:
@@ -211,7 +211,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
             elif "value" in var_info.keys():
                 var_map[var] = str(var_info['value'])
 
-        Values.VAR_MAP[(file_a, file_c)] = var_map
+        Values.map_namespace[(file_a, file_c)] = var_map
         Writer.write_var_map(var_map, Definitions.FILE_NAMESPACE_MAP)
         offset = len(target_ast['children']) - 1
         position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
