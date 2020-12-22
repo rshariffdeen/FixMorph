@@ -91,10 +91,10 @@ def read_conf_file():
                 values.BACKPORT = False
 
 
-def read_conf():
+def read_conf(arg_list):
     emitter.normal("\treading configuration values")
-    if len(sys.argv) > 1:
-        for arg in sys.argv:
+    if len(arg_list) > 1:
+        for arg in arg_list:
             if definitions.ARG_DEBUG in arg:
                 values.DEBUG = True
             elif definitions.ARG_DEBUG_DATA in arg:
@@ -140,8 +140,6 @@ def read_conf():
                         values.PHASE_SETTING[phase] = 1
                     else:
                         values.PHASE_SETTING[phase] = 0
-            elif "Crochet.py" in arg:
-                continue
             else:
                 emitter.normal("Invalid argument: " + arg)
                 emitter.help()
