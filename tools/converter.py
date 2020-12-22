@@ -14,7 +14,6 @@ BINARY_CONVERTER = "extract-bc"
 
 def convert_cast_expr(ast_node, only_string=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    var_name = ""
     var_list = list()
     type_node = ast_node['children'][0]
     type_value = type_node['value']
@@ -23,23 +22,10 @@ def convert_cast_expr(ast_node, only_string=False):
         data_type = str(type_node['data_type'])
     param_node = ast_node['children'][1]
     param_node_type = param_node['type']
-    if param_node_type == "MemberExpr":
-        param_node_var_name = convert_member_expr(param_node, True)
-        var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
-    elif param_node_type == "DeclRefExpr":
-        var_name = "(" + type_value + ") " + param_node['value'] + " " + var_name
-    elif param_node_type == "CallExpr":
-        param_node_var_name = convert_call_expr(param_node, True)
-        var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
-    elif param_node_type == "IntegerLiteral":
-        var_name = "(" + type_value + ") " + param_node['value'] + " " + var_name
-    elif param_node_type == "ParenExpr":
-        param_node_var_name = convert_paren_node_to_expr(param_node, True)
-        var_name = "(" + type_value + ") " + param_node_var_name + " " + var_name
-    else:
-        print(param_node)
-        print(ast_node)
-        error_exit("Unhandled CStyleCAST")
+
+    var_name = "(" + type_value + ") " + get_node_value(param_node)
+    return var_name
+
     if only_string:
         return var_name
     return var_name, var_list
