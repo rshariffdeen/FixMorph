@@ -6,7 +6,7 @@ void testLocalRefA(int a, char* str){
     printf("the values are  %d %s\n", a, str);
 }
 
-void testGlobalRefRefA(){
+void testGlobalRefRef(){
     printf("this is sample print\n");
 }
 
