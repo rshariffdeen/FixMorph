@@ -16,7 +16,7 @@ def search_vector(file_path):
             content = vec_file.readline()
             if content:
                 vector = [int(s) for s in vec_file.readline().strip().split(" ")]
-                vector = vector.Vector.normed(vector)
+                vector = ast_vector.Vector.normed(vector)
                 return vector
             else:
                 emitter.information("Vector file is empty")
