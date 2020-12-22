@@ -120,7 +120,7 @@ def generate_global_reference(generated_script_files):
             vector_source_a = get_source_name_from_slice(slice_file_a)
             vector_source_c = get_source_name_from_slice(slice_file_c)
 
-            map_file_name = Definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
+            map_file_name = Definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1].replace(".slice", "") + ".map"
             if not Values.USE_CACHE:
                 generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = get_mapping(map_file_name)
