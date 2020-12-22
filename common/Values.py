@@ -120,8 +120,14 @@ IS_TYPEDEF = False
 IS_TYPEDEC = False
 VECTOR_MAP = dict()
 VAR_MAP = dict()
+VAR_MAP_LOCAL = dict()
+VAR_MAP_GLOBAL = dict()
 FUNCTION_MAP = dict()
+FUNCTION_MAP_LOCAL = dict()
+FUNCTION_MAP_GLOBAL = dict()
 Method_ARG_MAP = dict()
+Method_ARG_MAP_LOCAL = dict()
+Method_ARG_MAP_GLOBAL = dict()
 NODE_MAP = dict()
 
 DONOR_REQUIRE_MACRO = False

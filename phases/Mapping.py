@@ -7,7 +7,7 @@ from tools import Emitter, Reader, Writer, Logger, Mapper
 
 def generate_map():
     Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Values.ast_map = Mapper.generate(Values.generated_script_files)
+    Values.ast_map = Mapper.generate_ast_map(Values.generated_script_files)
 
 
 def load_values():
@@ -20,6 +20,8 @@ def load_values():
 
     Definitions.FILE_MAP_INFO = Definitions.DIRECTORY_OUTPUT + "/map-info"
     Definitions.FILE_NAMESPACE_MAP = Definitions.DIRECTORY_OUTPUT + "/namespace-map"
+    Definitions.FILE_NAMESPACE_MAP_LOCAL = Definitions.DIRECTORY_OUTPUT + "/namespace-map-local"
+    Definitions.FILE_NAMESPACE_MAP_GLOBAL = Definitions.DIRECTORY_OUTPUT + "/namespace-map-global"
 
 
 def safe_exec(function_def, title, *args):
