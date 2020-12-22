@@ -143,16 +143,16 @@ def run(arg_list):
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_VERIFICATION] = str(duration)
 
-    #
-    # time_check = time.time()
-    # Comparison.start()
-    # duration = format((time.time() - time_check) / 60, '.3f')
-    # time_info[Definitions.KEY_DURATION_COMPARISON] = str(duration)
-    #
-    # time_check = time.time()
-    # Summarizing.start()
-    # duration = format((time.time() - time_check) / 60, '.3f')
-    # time_info[Definitions.KEY_DURATION_SUMMARIZATION] = str(duration)
+
+    time_check = time.time()
+    comparison.start()
+    duration = format((time.time() - time_check) / 60, '.3f')
+    time_info[definitions.KEY_DURATION_COMPARISON] = str(duration)
+
+    time_check = time.time()
+    summarizing.start()
+    duration = format((time.time() - time_check) / 60, '.3f')
+    time_info[definitions.KEY_DURATION_SUMMARIZATION] = str(duration)
 
     # Final running time and exit message
     duration = format((time.time() - start_time) / 60, '.3f')
