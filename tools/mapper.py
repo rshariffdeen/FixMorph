@@ -117,7 +117,7 @@ def generate_global_reference(generated_script_files):
                 generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = parallel.get_mapping(map_file_name)
             emitter.data(ast_node_map)
-            ast_node_map = extend_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
+            ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
             emitter.data(ast_node_map)
             refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
@@ -158,7 +158,7 @@ def generate_local_reference(generated_script_files):
                 generate_map(vector_source_a, vector_source_c, map_file_name)
             ast_node_map = parallel.get_mapping(map_file_name)
             emitter.data(ast_node_map)
-            ast_node_map = extend_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
+            ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
             emitter.data(ast_node_map)
             refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map

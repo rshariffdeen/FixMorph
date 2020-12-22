@@ -1,6 +1,6 @@
 import multiprocessing as mp
 from common import definitions, values, utilities
-from tools import emitter, oracle, extractor, finder
+from tools import emitter, oracle, extractor, finder, mapper
 from typing import List, Dict, Optional
 from pysmt.shortcuts import is_sat, Not, And, TRUE
 from multiprocessing import TimeoutError
@@ -161,3 +161,38 @@ def get_mapping(map_file_name):
         node_map[node_a] = node_c
 
     return node_map
+
+
+# adjust the mapping via anti-unification
+def extend_mapping(ast_node_map, source_a, source_c):
+    global pool, result_list, expected_count
+    result_list = []
+
+    emitter.normal("\tupdating ast map using anti-unification")
+    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+
+    emitter.normal("\t\tstarting parallel computing")
+    pool = mp.Pool(mp.cpu_count())
+
+    for node_a in ast_node_map:
+        node_c = ast_node_map[node_a]
+        ast_node_id_a = int(str(node_a).split("(")[1].split(")")[0])
+        ast_node_id_c = int(str(node_c).split("(")[1].split(")")[0])
+        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+        # au_pairs = mapper.anti_unification(ast_node_a, ast_node_c)
+        pool.apply_async(mapper.anti_unification, args=(ast_node_a, ast_node_c),
+                         callback=collect_result)
+
+    pool.close()
+    emitter.normal("\t\twaiting for thread completion")
+    pool.join()
+
+    for au_pairs in result_list:
+        for au_pair_key in au_pairs:
+            au_pair_value = au_pairs[au_pair_key]
+            if au_pair_key not in ast_node_map:
+                ast_node_map[au_pair_key] = au_pair_value
+
+    return ast_node_map
