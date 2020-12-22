@@ -3,11 +3,16 @@
 #include <ctype.h>  
 
 void testLocalRefA(int a, char* str){
-    printf("the value of a is %d %s\n", a, str);
+    printf("the values are  %d %s\n", a, str);
+}
+
+void testGlobalRefRefA(){
+    printf("this is sample print\n");
 }
 
 void testGlobalRefA(char* str){
-    printf("the value of a is %d %s\n", str);
+     testGlobalRefRefA();
+     printf("the string is  %s\n", str);
 }
 
 int main( ) {
@@ -15,6 +20,7 @@ int main( ) {
     testLocalRefA(i, "test");
     testLocalRefA(3, "test2");
     testGlobalRefA("test global");
+    testGlobalRefRefA();
     printf("\ntest function\n");
     return 0;
 }
