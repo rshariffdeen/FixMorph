@@ -100,6 +100,7 @@ def generate_ast_map(generated_script_files):
         ast_map_info = ast_map_info_local
 
         # extend namespace mapping using global reference
+        Emitter.sub_sub_title("merging local and global references")
         for vector_pair in Values.map_namespace_global:
             map_global = Values.map_namespace_global[vector_pair]
             map_local = Values.map_namespace_local[vector_pair]
@@ -109,7 +110,7 @@ def generate_ast_map(generated_script_files):
                     map_merged[name_a] = map_global[name_a]
             Values.map_namespace[vector_pair] = map_merged
 
-        Writer.write_var_map(Values.map_namespace, Definitions.FILE_NAMESPACE_MAP)
+        Writer.write_var_map(map_merged, Definitions.FILE_NAMESPACE_MAP)
 
     return ast_map_info
 
