@@ -10,7 +10,7 @@ import json
 from git import Repo
 from common.utilities import execute_command, error_exit, save_current_state, load_state
 from common import definitions, values
-from ast import vector, parser
+from ast import ast_vector, ast_parser
 import difflib
 from tools import logger, emitter, identifier, writer, generator, solver, differ, merger
 

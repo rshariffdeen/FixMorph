@@ -4,7 +4,7 @@
 
 import sys
 from common.utilities import execute_command, get_file_extension_list, error_exit
-from ast import generator, ast
+from ast import ast_generator, ast_obj
 from tools import mapper, finder, logger, extractor, emitter
 
 
@@ -107,8 +107,8 @@ def merge_ast_script(ast_script, ast_node_a, ast_node_b, mapping_ba):
     deleted_node_list = list()
     replace_node_list = list()
     try:
-        ast_tree_a = ast.load_from_map(ast_node_a)
-        ast_tree_b = ast.load_from_map(ast_node_b)
+        ast_tree_a = ast_obj.load_from_map(ast_node_a)
+        ast_tree_b = ast_obj.load_from_map(ast_node_b)
     except:
         return None
     # print(ast_script)

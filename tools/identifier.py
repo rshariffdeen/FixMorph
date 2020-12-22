@@ -9,7 +9,7 @@ from common.utilities import error_exit, is_intersect, get_code
 import collections
 from common import values, definitions
 from tools import emitter, logger, extractor, finder, oracle, converter, merger
-from ast import generator, vector
+from ast import ast_generator, ast_vector
 from tools import generator as Gen
 
 
@@ -98,9 +98,9 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
     # print(dec_list_a.keys())
     dec_list_local_c = extractor.extract_decl_node_list(neighborhood_c)
     # print(dec_list_c.keys())
-    ast_tree_a = generator.get_ast_json(source_path_a)
-    ast_tree_b = generator.get_ast_json(source_path_b)
-    ast_tree_c = generator.get_ast_json(source_path_c)
+    ast_tree_a = ast_generator.get_ast_json(source_path_a)
+    ast_tree_b = ast_generator.get_ast_json(source_path_b)
+    ast_tree_c = ast_generator.get_ast_json(source_path_c)
     dec_list_global_a = extractor.extract_decl_node_list_global(ast_tree_a)
     dec_list_global_b = extractor.extract_decl_node_list_global(ast_tree_b)
     dec_list_global_c = extractor.extract_decl_node_list_global(ast_tree_c)
@@ -727,8 +727,8 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
                 if function_name not in project.function_list[source_file]:
                     emitter.success("\t\t\tFunction: " + function_name.replace("func_", ""))
                     neighbor_list.append(function_name)
-                    project.function_list[source_file][function_name] = vector.Vector(source_file, function_name,
-                                                                                      begin_line, finish_line, True)
+                    project.function_list[source_file][function_name] = ast_vector.Vector(source_file, function_name,
+                                                                                          begin_line, finish_line, True)
 
     for struct_name, begin_line, finish_line in struct_list:
         struct_name = "struct_" + struct_name.split(";")[0]
@@ -740,8 +740,8 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
                 if struct_name not in project.struct_list[source_file]:
                     emitter.success("\t\t\tStruct: " + struct_name.replace("struct_", ""))
                     neighbor_list.append(struct_name)
-                    project.struct_list[source_file][struct_name] = vector.Vector(source_file, struct_name,
-                                                                                  begin_line, finish_line, True)
+                    project.struct_list[source_file][struct_name] = ast_vector.Vector(source_file, struct_name,
+                                                                                      begin_line, finish_line, True)
 
     for var_name, begin_line, finish_line in decl_list:
         var_name = "var_" + var_name.split(";")[0]
@@ -755,8 +755,8 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
                 if var_name not in project.decl_list[source_file]:
                     emitter.success("\t\t\tVariable: " + var_name.replace("var_", ""))
                     neighbor_list.append(var_name)
-                    project.decl_list[source_file][var_name] = vector.Vector(source_file, var_name,
-                                                                             begin_line, finish_line, True)
+                    project.decl_list[source_file][var_name] = ast_vector.Vector(source_file, var_name,
+                                                                                 begin_line, finish_line, True)
 
     for macro_name, begin_line, finish_line in macro_list:
         macro_name = "macro_" + macro_name
@@ -768,8 +768,8 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
                 if macro_name not in project.macro_list[source_file]:
                     emitter.success("\t\t\tMacro: " + macro_name.replace("macro_", ""))
                     neighbor_list.append(macro_name)
-                    project.macro_list[source_file][macro_name] = vector.Vector(source_file, macro_name,
-                                                                                begin_line, finish_line, True)
+                    project.macro_list[source_file][macro_name] = ast_vector.Vector(source_file, macro_name,
+                                                                                    begin_line, finish_line, True)
 
     count = 0
     for enum_name, begin_line, finish_line in enum_list:
@@ -786,8 +786,8 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
                 if enum_name not in project.enum_list[source_file]:
                     emitter.success("\t\t\tEnum: " + enum_name.replace("enum_", ""))
                     neighbor_list.append(enum_name)
-                    project.enum_list[source_file][enum_name] = vector.Vector(source_file, enum_name,
-                                                                              begin_line, finish_line, True)
+                    project.enum_list[source_file][enum_name] = ast_vector.Vector(source_file, enum_name,
+                                                                                  begin_line, finish_line, True)
 
     with open(out_file_path, "w") as out_file:
         for neighbor_name in neighbor_list:

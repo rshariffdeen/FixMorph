@@ -4,7 +4,7 @@ from tools import logger, emitter, finder
 from common.utilities import execute_command, get_file_list, error_exit, is_intersect
 import os
 from common import definitions, values
-from ast import generator
+from ast import ast_generator
 
 
 def extract_child_id_list(ast_node):
@@ -70,7 +70,7 @@ def extract_complete_function_node(function_def_node, source_path):
                     return None, None
                 search_dir = os.path.dirname(search_dir)
 
-        ast_tree = generator.get_ast_json(source_file_loc)
+        ast_tree = ast_generator.get_ast_json(source_file_loc)
         function_node = finder.search_function_node_by_name(ast_tree, function_name)
         return function_node, source_file_loc
 
@@ -518,7 +518,7 @@ def extract_variable_list(source_path, start_line, end_line, only_in_range):
     # print(source_path, start_line, end_line)
     emitter.normal("\t\t\t\tgenerating variable(available) list")
     variable_list = list()
-    ast_map = generator.get_ast_json(source_path)
+    ast_map = ast_generator.get_ast_json(source_path)
     func_node = finder.search_function_node_by_loc(ast_map, int(end_line), source_path)
     if func_node is None:
         return variable_list
@@ -647,7 +647,7 @@ def extract_pre_macro_list(source_file):
 
 def extract_neighborhood(source_path, segment_code, segment_identifier, use_macro=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    ast_tree = generator.get_ast_json(source_path, use_macro)
+    ast_tree = ast_generator.get_ast_json(source_path, use_macro)
     segment_type = values.segment_map[segment_code]
     ast_script = list()
     segment_found = False

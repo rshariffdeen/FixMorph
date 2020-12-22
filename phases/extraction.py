@@ -7,7 +7,7 @@ import time
 from common import definitions, values
 from common.utilities import execute_command, error_exit, save_current_state, backup_file_orig, restore_file_orig, replace_file
 from tools import emitter, collector, reader, writer, slicer
-from ast import vector
+from ast import ast_vector
 
 generated_script_list = dict()
 

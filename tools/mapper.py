@@ -1,7 +1,7 @@
 from common import definitions, values
 from common.utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import emitter, logger, finder, converter, writer
-from ast import generator
+from ast import ast_generator
 import sys
 
 BREAK_LIST = [",", " ", " _", ";", "\n"]
@@ -9,7 +9,7 @@ BREAK_LIST = [",", " ", " _", ";", "\n"]
 
 def map_ast_from_source(source_a, source_b, script_file_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    generator.generate_ast_script(source_a, source_b, script_file_path, True)
+    ast_generator.generate_ast_script(source_a, source_b, script_file_path, True)
     mapping = dict()
     with open(script_file_path, 'r', encoding='utf8', errors="ignore") as script_file:
         script_lines = script_file.readlines()
@@ -210,8 +210,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     namespace_map = dict()
     refined_var_map = dict()
 
-    ast_tree_a = generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
     neighbor_ast = None
     neighbor_ast_range = None
@@ -382,8 +382,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
 def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
     function_map = dict()
 
-    ast_tree_a = generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
     for ast_node_txt_a in ast_node_map:
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
@@ -427,8 +427,8 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
 def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
     method_invocation_map = dict()
 
-    ast_tree_a = generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
     for ast_node_txt_a in ast_node_map:
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
@@ -471,8 +471,8 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
 
 # adjust the mapping via anti-unification
 def extend_mapping(ast_node_map, map_file_name, source_a, source_c):
-    ast_tree_a = generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
     with open(map_file_name, 'r') as ast_map:
         line = ast_map.readline().strip()

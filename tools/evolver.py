@@ -1,7 +1,7 @@
 from common import definitions, values
 from common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
 from tools import emitter, logger, finder, extractor, identifier, writer
-from ast import generator
+from ast import ast_generator
 
 import os
 import sys
@@ -22,7 +22,7 @@ def evolve_definitions(missing_definition_list):
         target_file = macro_info['target']
         def_node_list = extractor.extract_macro_definitions(source_file)
         if not ast_b:
-            ast_b = generator.get_ast_json(source_file, use_macro=values.DONOR_REQUIRE_MACRO)
+            ast_b = ast_generator.get_ast_json(source_file, use_macro=values.DONOR_REQUIRE_MACRO)
             def_node_list = extractor.extract_def_node_list(ast_b)
         if def_name in def_node_list:
             def_node = def_node_list[def_name]
@@ -88,7 +88,7 @@ def evolve_functions(missing_function_list):
         source_path_b = info['source_b']
         source_path_d = info['source_d']
         emitter.normal(function_name)
-        ast_map_b = generator.get_ast_json(source_path_b)
+        ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
         function_ref_node = finder.search_ast_node_by_id(ast_map_b, function_ref_node_id)
         function_def_node = finder.search_ast_node_by_id(ast_map_b, int(node_id))
@@ -122,12 +122,12 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
 
     if values.DONOR_REQUIRE_MACRO:
         values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
-    ast_map_a = generator.get_ast_json(file_a, values.DONOR_REQUIRE_MACRO, True)
-    ast_map_b = generator.get_ast_json(file_b, values.DONOR_REQUIRE_MACRO, True)
+    ast_map_a = ast_generator.get_ast_json(file_a, values.DONOR_REQUIRE_MACRO, True)
+    ast_map_b = ast_generator.get_ast_json(file_b, values.DONOR_REQUIRE_MACRO, True)
 
     if values.TARGET_REQUIRE_MACRO:
         values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
-    ast_map_c = generator.get_ast_json(file_c, values.TARGET_REQUIRE_MACRO, True)
+    ast_map_c = ast_generator.get_ast_json(file_c, values.TARGET_REQUIRE_MACRO, True)
 
     file_d = str(file_c).replace(values.Project_C.path, values.Project_D.path)
 

@@ -7,7 +7,7 @@ import os
 import io
 import json
 from common.utilities import execute_command, get_file_extension_list, error_exit
-from ast import generator
+from ast import ast_generator
 from tools import mapper, logger, filter, emitter
 from common import values, definitions
 from git import Repo
@@ -202,7 +202,7 @@ def diff_line(diff_file_list, output_file):
 def get_ast_script(source_a, source_b, script_file_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\tgenerating AST script")
-    generator.generate_ast_script(source_a, source_b, script_file_path)
+    ast_generator.generate_ast_script(source_a, source_b, script_file_path)
     with open(script_file_path, "r") as script_file:
         script_lines = script_file.readlines()
         return script_lines
@@ -231,8 +231,8 @@ def diff_ast(diff_info, project_path_a, project_path_b, script_file_path):
         source_path_b = str(source_path_a).replace(project_path_a, project_path_b)
         ast_script = get_ast_script(source_path_a, source_path_b, script_file_path)
         try:
-            ast_map_a = generator.get_ast_json(source_path_a)
-            ast_map_b = generator.get_ast_json(source_path_b)
+            ast_map_a = ast_generator.get_ast_json(source_path_a)
+            ast_map_b = ast_generator.get_ast_json(source_path_b)
             mapping_ba = mapper.map_ast_from_source(source_path_a, source_path_b, script_file_path)
         except Exception as e:
             print(e)

@@ -1,7 +1,7 @@
 from common import definitions, values
 from common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
 from tools import emitter, logger, finder, extractor, identifier
-from ast import generator
+from ast import ast_generator
 
 import os
 import sys
@@ -263,7 +263,7 @@ def weave_functions(missing_function_list, modified_source_list):
         source_path_b = info['source_b']
         source_path_d = info['source_d']
         emitter.normal(function_name)
-        ast_map_b = generator.get_ast_json(source_path_b)
+        ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
         function_ref_node = finder.search_ast_node_by_id(ast_map_b, function_ref_node_id)
         function_def_node = finder.search_ast_node_by_id(ast_map_b, int(node_id))
@@ -331,9 +331,9 @@ def weave_slice(slice_info):
             replace_file(slice_file, source_file_d)
             if values.TARGET_REQUIRE_MACRO:
                 values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
-            ast_tree_slice = generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
+            ast_tree_slice = ast_generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
             restore_file_orig(source_file_d)
-            ast_tree_source = generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
+            ast_tree_source = ast_generator.get_ast_json(source_file_d, values.TARGET_REQUIRE_MACRO, True)
             segment_node_slice = finder.search_node(ast_tree_slice, segment_type, segment_identifier)
             segment_node_source = finder.search_node(ast_tree_source, segment_type, segment_identifier)
             start_line_source = int(segment_node_source['start line'])

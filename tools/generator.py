@@ -8,7 +8,7 @@ import os
 import json
 from common.utilities import execute_command, error_exit, find_files, get_file_extension_list
 from tools import emitter, logger, extractor, finder, merger
-from ast import vector, parser, generator as ASTGenerator
+from ast import ast_vector, ast_parser, ast_generator as ASTGenerator
 from common.utilities import error_exit, clean_parse
 from common import definitions, values
 
@@ -175,8 +175,8 @@ def create_vectors(project, source_file, segmentation_list):
 
         for function_name, begin_line, finish_line in filtered_function_list:
             function_name = "func_" + function_name.split("(")[0]
-            project.function_list[source_file][function_name] = vector.Vector(source_file, function_name, begin_line,
-                                                                              finish_line, True)
+            project.function_list[source_file][function_name] = ast_vector.Vector(source_file, function_name, begin_line,
+                                                                                  finish_line, True)
 
         ASTGenerator.get_vars(project, source_file, definition_list)
 
@@ -184,8 +184,8 @@ def create_vectors(project, source_file, segmentation_list):
         # Emitter.normal("\t\t\tgenerating struct vectors")
         for struct_name, begin_line, finish_line in struct_list:
             struct_name = "struct_" + struct_name.split(";")[0]
-            project.struct_list[source_file][struct_name] = vector.Vector(source_file, struct_name, begin_line,
-                                                                          finish_line, True)
+            project.struct_list[source_file][struct_name] = ast_vector.Vector(source_file, struct_name, begin_line,
+                                                                              finish_line, True)
 
     if values.IS_TYPEDEC:
         # Emitter.normal("\t\t\tgenerating struct vectors")
@@ -193,15 +193,15 @@ def create_vectors(project, source_file, segmentation_list):
             var_name = "var_" + var_name.split(";")[0]
             var_type = (var_name.split("(")[1]).split(")")[0]
             var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
-            project.decl_list[source_file][var_name] = vector.Vector(source_file, var_name, begin_line, finish_line,
-                                                                     True)
+            project.decl_list[source_file][var_name] = ast_vector.Vector(source_file, var_name, begin_line, finish_line,
+                                                                         True)
 
     if values.IS_MACRO:
         # Emitter.normal("\t\t\tgenerating macro vectors")
         for macro_name, begin_line, finish_line in macro_list:
             macro_name = "macro_" + macro_name
-            project.macro_list[source_file][macro_name] = vector.Vector(source_file, macro_name, begin_line,
-                                                                        finish_line, True)
+            project.macro_list[source_file][macro_name] = ast_vector.Vector(source_file, macro_name, begin_line,
+                                                                            finish_line, True)
 
     if values.IS_ENUM:
         # Emitter.normal("\t\t\tgenerating enum vectors")
@@ -211,8 +211,8 @@ def create_vectors(project, source_file, segmentation_list):
             if "anonymous" in enum_name:
                 count = count + 1
                 enum_name = "enum_" + str(count)
-            project.enum_list[source_file][enum_name] = vector.Vector(source_file, enum_name, begin_line, finish_line,
-                                                                      True)
+            project.enum_list[source_file][enum_name] = ast_vector.Vector(source_file, enum_name, begin_line, finish_line,
+                                                                          True)
 
 
 def generate_vectors(file_extension, log_file, project, diff_file_list):

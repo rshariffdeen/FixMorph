@@ -6,7 +6,7 @@ import sys
 import os
 from common import values, definitions
 from common.utilities import get_code, error_exit, execute_command
-from ast import generator as ASTGenerator
+from ast import ast_generator as ASTGenerator
 from tools import extractor, oracle, logger, filter, emitter, transformer
 
 
