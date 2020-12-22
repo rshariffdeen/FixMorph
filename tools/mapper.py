@@ -24,7 +24,9 @@ def map_ast_from_source(source_a, source_b, script_file_path):
 def generate_map(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
-    emitter.normal("\t\t" + file_a + definitions.TO + file_b + "...")
+    emitter.normal("\tsource: " + file_a)
+    emitter.normal("\ttarget: " + file_b)
+    emitter.normal("\tgenerating ast map")
     try:
         extra_arg = ""
         if file_a[-1] == 'h':
@@ -38,7 +40,6 @@ def generate_map(file_a, file_b, output_file):
         # command += "| grep '^Match ' "
         command += " > " + output_file
         execute_command(command, False)
-        emitter.normal("\t\t\tmap generated")
     except Exception as e:
         error_exit(e, "Unexpected fail at generating map: " + output_file)
 
@@ -135,19 +136,13 @@ def generate_global_reference(generated_script_files):
             ast_node_map = get_mapping(map_file_name)
             emitter.data(ast_node_map)
             ast_node_map = extend_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
-
-            emitter.normal("\tupdating map using anti-unification")
             emitter.data(ast_node_map)
             refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_GLOBAL)
-
-            emitter.normal("\tderiving method invocation map")
             method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("method invocation map", method_invocation_map)
             values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
-
-            emitter.normal("\tderiving function signature map")
             function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("function map", function_map)
             values.FUNCTION_MAP_GLOBAL[(vector_source_a, vector_source_c)] = function_map
@@ -182,19 +177,13 @@ def generate_local_reference(generated_script_files):
             ast_node_map = get_mapping(map_file_name)
             emitter.data(ast_node_map)
             ast_node_map = extend_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
-
-            emitter.normal("\tupdating map using anti-unification")
             emitter.data(ast_node_map)
             refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
-
-            emitter.normal("\tderiving method invocation map")
             method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("method invocation map", method_invocation_map)
             values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
-
-            emitter.normal("\tderiving function signature map")
             function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("function map", function_map)
             values.FUNCTION_MAP_LOCAL[(vector_source_a, vector_source_c)] = function_map
@@ -211,7 +200,7 @@ def generate_local_reference(generated_script_files):
 def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     namespace_map = dict()
     refined_var_map = dict()
-
+    emitter.normal("\tderiving namespace map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
@@ -383,7 +372,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
 
 def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
     function_map = dict()
-
+    emitter.normal("\tderiving function signature map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
@@ -431,7 +420,7 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
 
 def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
     method_invocation_map = dict()
-
+    emitter.normal("\tderiving method invocation map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
@@ -476,6 +465,7 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
 
 # adjust the mapping via anti-unification
 def extend_mapping(ast_node_map, map_file_name, source_a, source_c):
+    emitter.normal("\tupdating ast map using anti-unification")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
