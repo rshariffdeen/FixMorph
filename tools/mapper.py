@@ -125,7 +125,7 @@ def generate_global_reference(generated_script_files):
             method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("method invocation map", method_invocation_map)
             values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
-            function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            function_map = parallel.extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("function map", function_map)
             values.FUNCTION_MAP_GLOBAL[(vector_source_a, vector_source_c)] = function_map
 
@@ -166,7 +166,7 @@ def generate_local_reference(generated_script_files):
             method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("method invocation map", method_invocation_map)
             values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
-            function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            function_map = parallel.extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("function map", function_map)
             values.FUNCTION_MAP_LOCAL[(vector_source_a, vector_source_c)] = function_map
 
@@ -177,54 +177,6 @@ def generate_local_reference(generated_script_files):
             # variable_map_info[file_list]['ast-map'] = ast_node_map
             # variable_map_info[file_list]['var-map'] = var_map
     return variable_map_info
-
-
-def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
-    function_map = dict()
-    emitter.normal("\tderiving function signature map")
-    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-
-    for ast_node_txt_a in ast_node_map:
-        ast_node_txt_c = ast_node_map[ast_node_txt_a]
-        ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
-        ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
-        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
-        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-
-        if ast_node_a and ast_node_c:
-            node_type_a = ast_node_a['type']
-            node_type_c = ast_node_c['type']
-            if node_type_a in ["FunctionDecl"] and node_type_c in ["FunctionDecl"]:
-                children_a = ast_node_a["children"]
-                children_c = ast_node_c["children"]
-                if len(children_a) < 1 or len(children_c) < 1:
-                    continue
-                method_signature_a = children_a[0]
-                method_signature_c = children_c[0]
-
-                method_name_a = ast_node_a["identifier"]
-                parameter_list_a = method_signature_a['children']
-                parameter_list_c = method_signature_c['children']
-                arg_operation = []
-                for i in range(1, len(parameter_list_a)):
-                    node_txt_a = parameter_list_a[i]["type"] + "(" + str(parameter_list_a[i]["id"]) + ")"
-                    if node_txt_a in ast_node_map.keys():
-                        node_txt_c = ast_node_map[node_txt_a]
-                        node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
-                        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, node_id_c)
-                        if ast_node_c in parameter_list_c:
-                            arg_operation.append((definitions.MATCH, i, parameter_list_c.index(ast_node_c)))
-                        else:
-                            arg_operation.append((definitions.DELETE, i))
-                    else:
-                        arg_operation.append((definitions.DELETE, i))
-                for i in range(1, len(parameter_list_c)):
-                    node_txt_c = parameter_list_c[i]["type"] + "(" + str(parameter_list_c[i]["id"]) + ")"
-                    if node_txt_c not in ast_node_map.values():
-                        arg_operation.append((definitions.INSERT, i, converter.get_node_value(parameter_list_c[i])))
-                function_map[method_name_a] = arg_operation
-    return function_map
 
 
 def anti_unification(ast_node_a, ast_node_c):

@@ -228,3 +228,30 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
             method_invocation_map[method_name] = arg_operation
 
     return method_invocation_map
+
+
+def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
+    function_map = dict()
+    emitter.normal("\tderiving function signature map")
+    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+
+    for ast_node_txt_a in ast_node_map:
+        ast_node_txt_c = ast_node_map[ast_node_txt_a]
+        ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
+        ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
+        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+        pool.apply_async(extractor.extract_method_signatures, args=(ast_node_a, ast_node_c, ast_node_map, ast_tree_c),
+                         callback=collect_result)
+
+    pool.close()
+    emitter.normal("\t\twaiting for thread completion")
+    pool.join()
+
+    for method_name, arg_operation in result_list:
+        if method_name is not None:
+            function_map[method_name] = arg_operation
+
+    return function_map
+
