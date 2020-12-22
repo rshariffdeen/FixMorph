@@ -254,8 +254,9 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
                         identifier_c = ast_node_c['value']
                         if "identifier" in ast_node_c.keys():
                             identifier_c = ast_node_c['identifier']
-                        if node_type_c == "DeclRefExpr" and ast_node_c["ref_type"] == "FunctionDecl":
-                            identifier_c = identifier_c + "("
+                        if node_type_c == "DeclRefExpr":
+                            if "ref_type" in ast_node_c and ast_node_c["ref_type"] == "FunctionDecl":
+                                identifier_c = identifier_c + "("
 
                         if identifier_a not in namespace_map:
                             namespace_map[identifier_a] = dict()
