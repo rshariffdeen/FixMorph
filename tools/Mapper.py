@@ -320,6 +320,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
                             namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
 
             elif node_type_a in ["FunctionDecl"]:
+                if "identifier" not in ast_node_a or "identifier" not in ast_node_c:
+                    continue
                 method_name_a = ast_node_a["identifier"]
                 method_name_c = ast_node_c["identifier"]
                 value_a = method_name_a + "("
@@ -334,7 +336,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
             elif node_type_a in ["CallExpr"]:
                 children_a = ast_node_a["children"]
                 children_c = ast_node_c["children"]
-
+                if 'value' not in children_a[0].keys() or "value" not in children_c[0].keys():
+                    continue
                 method_name_a = children_a[0]["value"]
                 method_name_c = children_c[0]["value"]
                 value_a = method_name_a + "("
