@@ -402,24 +402,27 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
                     continue
                 method_signature_a = children_a[0]
                 method_signature_c = children_c[0]
+
                 method_name_a = ast_node_a["identifier"]
+                parameter_list_a = method_signature_a['children']
+                parameter_list_c = method_signature_c['children']
                 arg_operation = []
-                for i in range(1, len(method_signature_a)):
-                    node_txt_a = method_signature_a[i]["type"] + "(" + str(method_signature_a[i]["id"]) + ")"
+                for i in range(1, len(parameter_list_a)):
+                    node_txt_a = parameter_list_a[i]["type"] + "(" + str(parameter_list_a[i]["id"]) + ")"
                     if node_txt_a in ast_node_map.keys():
                         node_txt_c = ast_node_map[node_txt_a]
                         node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
                         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, node_id_c)
-                        if ast_node_c in method_signature_c:
-                            arg_operation.append((definitions.MATCH, i, method_signature_c.index(ast_node_c)))
+                        if ast_node_c in parameter_list_c:
+                            arg_operation.append((definitions.MATCH, i, parameter_list_c.index(ast_node_c)))
                         else:
                             arg_operation.append((definitions.DELETE, i))
                     else:
                         arg_operation.append((definitions.DELETE, i))
-                for i in range(1, len(method_signature_c)):
-                    node_txt_c = method_signature_c[i]["type"] + "(" + str(method_signature_c[i]["id"]) + ")"
+                for i in range(1, len(parameter_list_c)):
+                    node_txt_c = parameter_list_c[i]["type"] + "(" + str(parameter_list_c[i]["id"]) + ")"
                     if node_txt_c not in ast_node_map.values():
-                        arg_operation.append((definitions.INSERT, i, converter.get_node_value(method_signature_c[i])))
+                        arg_operation.append((definitions.INSERT, i, converter.get_node_value(parameter_list_c[i])))
                 function_map[method_name_a] = arg_operation
     return function_map
 
