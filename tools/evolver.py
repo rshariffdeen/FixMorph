@@ -207,7 +207,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
             node_id_b = node_id_a
             instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
             instruction += " into " + position_c
-            script_lines.insert(instruction + "\n", 0)
+            script_lines.insert(0, instruction + "\n")
             emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
         elif "value" in var_info.keys():
             var_map[var] = str(var_info['value'])
@@ -226,7 +226,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
         node_id_b = node_id_a
         instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
         instruction += " into " + position_c
-        script_lines.insert(instruction + "\n", 0)
+        script_lines.insert(0, instruction + "\n")
         emitter.highlight("\t\tadditional label added with instruction: " + instruction)
 
     with open(script_file_name, 'w') as script_file:
