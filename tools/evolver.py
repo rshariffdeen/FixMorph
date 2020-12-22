@@ -172,14 +172,14 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
                                                                              file_d
                                                                              ))
 
-                # missing_var_list.update(Identifier.identify_missing_var(neighborhood_a,
-                #                                                         neighborhood_b,
-                #                                                         neighborhood_c,
-                #                                                         check_node,
-                #                                                         file_b,
-                #                                                         file_c,
-                #                                                         var_map
-                #                                                         ))
+                missing_var_list.update(identifier.identify_missing_var(neighborhood_a,
+                                                                        neighborhood_b,
+                                                                        neighborhood_c,
+                                                                        check_node,
+                                                                        file_b,
+                                                                        file_c,
+                                                                        var_map
+                                                                        ))
 
                 missing_label_list.update(identifier.identify_missing_labels(neighborhood_a,
                                                                              neighborhood_b,
