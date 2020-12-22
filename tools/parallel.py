@@ -236,6 +236,8 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
+    emitter.normal("\t\tstarting parallel computing")
+    pool = mp.Pool(mp.cpu_count())
     for ast_node_txt_a in ast_node_map:
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
         ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
