@@ -23,10 +23,10 @@ DIRECTORY_DATA = DIRECTORY_MAIN + "/data"
 # ------------------- Files --------------------
 
 FILE_MAIN_LOG = ""
-FILE_ERROR_LOG = DIRECTORY_LOG + "/log-error"
-FILE_LAST_LOG = DIRECTORY_LOG + "/log-latest"
-FILE_MAKE_LOG = DIRECTORY_LOG + "/log-make"
-FILE_COMMAND_LOG = DIRECTORY_LOG + "/log-command"
+FILE_ERROR_LOG = DIRECTORY_LOG_BASE + "/log-error"
+FILE_LAST_LOG = DIRECTORY_LOG_BASE + "/log-latest"
+FILE_MAKE_LOG = DIRECTORY_LOG_BASE + "/log-make"
+FILE_COMMAND_LOG = DIRECTORY_LOG_BASE + "/log-command"
 FILE_STANDARD_FUNCTION_LIST = DIRECTORY_DATA + "/standard-function-list"
 FILE_STANDARD_MACRO_LIST = DIRECTORY_DATA + "/standard-macro-list"
 

@@ -13,8 +13,6 @@ from common import definitions, values
 from tools import emitter, logger
 
 
-
-
 def read_conf_file():
     emitter.normal("\treading configuration file")
     if not os.path.exists(values.FILE_CONFIGURATION):

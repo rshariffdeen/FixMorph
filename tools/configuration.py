@@ -192,6 +192,9 @@ def update_configuration():
         shutil.rmtree(definitions.DIRECTORY_OUTPUT)
     os.mkdir(definitions.DIRECTORY_OUTPUT)
 
+    if not os.path.isdir(definitions.DIRECTORY_LOG):
+        os.makedirs(definitions.DIRECTORY_LOG)
+
     input_dir = definitions.DIRECTORY_OUTPUT + "/fuzz-input"
     output_dir = definitions.DIRECTORY_OUTPUT + "/fuzz-output"
     if not os.path.isdir(input_dir):

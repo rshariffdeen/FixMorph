@@ -9,7 +9,7 @@ from shutil import copyfile
 
 def create():
     log_file_name = "log-" + str(time.time())
-    log_file_path = definitions.DIRECTORY_LOG + "/" + log_file_name
+    log_file_path = definitions.DIRECTORY_LOG_BASE + "/" + log_file_name
     definitions.FILE_MAIN_LOG = log_file_path
     with open(definitions.FILE_MAIN_LOG, 'w+') as log_file:
         log_file.write("[Start] Crochet started at " + str(datetime.datetime.now()) + "\n")
@@ -93,6 +93,13 @@ def debug(message):
     log(message)
 
 
+def store():
+    copyfile(definitions.FILE_MAIN_LOG, definitions.DIRECTORY_LOG + "/log-latest")
+    copyfile(definitions.FILE_COMMAND_LOG, definitions.DIRECTORY_LOG + "/log-command")
+    copyfile(definitions.FILE_ERROR_LOG, definitions.DIRECTORY_LOG + "/log-error")
+    copyfile(definitions.FILE_MAKE_LOG, definitions.DIRECTORY_LOG + "/log-make")
+
+
 def end(time_duration):
     output("[END] Crochet ended at " + str(datetime.datetime.now()) + "\n\n")
     output("\nTime duration\n----------------------\n\n")
@@ -112,5 +119,5 @@ def end(time_duration):
     # output("Comparison: " + time_duration[Definitions.KEY_DURATION_COMPARISON] + " minutes")
     # output("Summarizing: " + time_duration[Definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
     output("\nCrochet finished successfully after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes\n")
-    copyfile(definitions.FILE_MAIN_LOG, definitions.DIRECTORY_OUTPUT + "/main-log")
+    store()
 

@@ -75,9 +75,6 @@ def create_directories():
     if not os.path.isdir(definitions.DIRECTORY_BACKUP):
         os.makedirs(definitions.DIRECTORY_BACKUP)
 
-    if not os.path.isdir(definitions.DIRECTORY_LOG):
-        os.makedirs(definitions.DIRECTORY_LOG)
-
     patch_dir = values.CONF_PATH_C + "-patch"
     if os.path.isdir(patch_dir):
         if definitions.DIRECTORY_TESTS in patch_dir:
