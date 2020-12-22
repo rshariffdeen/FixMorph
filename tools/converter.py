@@ -114,6 +114,8 @@ def get_node_value(ast_node):
         ast_value = convert_unary_node_to_expr(ast_node, True)
     elif ast_type == "ConditionalOperator":
         ast_value = convert_conditional_op_to_expr(ast_node, True)
+    elif ast_type == "PredefinedExpr":
+        ast_value = get_node_value(ast_node['children'][0])
     else:
         print(ast_node)
         error_exit("Unhandled child type in convert ast node")
