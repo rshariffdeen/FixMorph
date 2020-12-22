@@ -93,7 +93,7 @@ def read_conf_file():
 
 def read_conf(arg_list):
     emitter.normal("\treading configuration values")
-    if len(arg_list) > 1:
+    if len(arg_list) > 0:
         for arg in arg_list:
             if definitions.ARG_DEBUG in arg:
                 values.DEBUG = True
