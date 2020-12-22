@@ -105,6 +105,8 @@ def generate_ast_map(generated_script_files):
             if name_a not in Values.map_namespace_local:
                 Values.map_namespace[name_a] = Values.map_namespace_global[name_a]
 
+        Writer.write_var_map(Values.map_namespace, Definitions.FILE_NAMESPACE_MAP)
+
     return ast_map_info
 
 
@@ -130,7 +132,7 @@ def generate_global_reference(generated_script_files):
             Emitter.normal("\tupdating map using anti-unification")
             Emitter.data(ast_node_map)
             refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            Values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
+            Values.map_namespace_global = refined_var_map
             Writer.write_var_map(refined_var_map, Definitions.FILE_NAMESPACE_MAP_GLOBAL)
 
             Emitter.normal("\tderiving method invocation map")
@@ -177,7 +179,7 @@ def generate_local_reference(generated_script_files):
             Emitter.normal("\tupdating map using anti-unification")
             Emitter.data(ast_node_map)
             refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            Values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
+            Values.map_namespace_local = refined_var_map
             Writer.write_var_map(refined_var_map, Definitions.FILE_NAMESPACE_MAP_LOCAL)
 
             Emitter.normal("\tderiving method invocation map")
