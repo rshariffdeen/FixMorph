@@ -79,8 +79,10 @@ def convert_conditional_op_to_expr(ast_node, only_string=False):
     var_name = ""
     condition_exp = convert_binary_node_to_expr(ast_node['children'][0], True)
     true_node = ast_node['children'][1]
+    true_node_value = get_node_value(true_node)
     false_node = ast_node['children'][2]
-
+    false_node_value = get_node_value(false_node)
+    var_name = condition_exp + " ? " + true_node_value + " : " + false_node_value
     return var_name
 
 
@@ -110,6 +112,8 @@ def get_node_value(ast_node):
         ast_value = ""
     elif ast_type == "UnaryOperator":
         ast_value = convert_unary_node_to_expr(ast_node, True)
+    elif ast_type == "ConditionalOperator":
+        ast_value = convert_conditional_op_to_expr(ast_node, True)
     else:
         print(ast_node)
         error_exit("Unhandled child type in convert ast node")
