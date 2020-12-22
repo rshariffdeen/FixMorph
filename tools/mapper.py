@@ -1,6 +1,6 @@
 from common import definitions, values
 from common.utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
-from tools import emitter, logger, finder, converter, writer
+from tools import emitter, logger, finder, converter, writer, parallel
 from ast import ast_generator
 import sys
 
@@ -137,7 +137,7 @@ def generate_global_reference(generated_script_files):
             emitter.data(ast_node_map)
             ast_node_map = extend_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
             emitter.data(ast_node_map)
-            refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_GLOBAL)
             method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
@@ -178,7 +178,7 @@ def generate_local_reference(generated_script_files):
             emitter.data(ast_node_map)
             ast_node_map = extend_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
             emitter.data(ast_node_map)
-            refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
             method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
@@ -195,179 +195,6 @@ def generate_local_reference(generated_script_files):
             # variable_map_info[file_list]['ast-map'] = ast_node_map
             # variable_map_info[file_list]['var-map'] = var_map
     return variable_map_info
-
-
-def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
-    namespace_map = dict()
-    refined_var_map = dict()
-    emitter.normal("\tderiving namespace map")
-    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-
-    neighbor_ast = None
-    neighbor_ast_range = None
-    neighbor_type, neighbor_name, slice = str(slice_file_a).split("/")[-1].split(".c.")[-1].split(".")
-    if neighbor_type == "func":
-        neighbor_ast = finder.search_function_node_by_name(ast_tree_a, neighbor_name)
-    elif neighbor_type == "var":
-        neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
-        neighbor_ast = finder.search_node(ast_tree_a, "VarDecl", neighbor_name)
-    elif neighbor_type == "struct":
-        neighbor_ast = finder.search_node(ast_tree_a, "RecordDecl", neighbor_name)
-
-    if neighbor_ast:
-        neighbor_ast_range = (int(neighbor_ast['begin']), int(neighbor_ast['end']))
-    else:
-        error_exit("No neighbor AST Found")
-
-    for ast_node_txt_a in ast_node_map:
-        ast_node_txt_c = ast_node_map[ast_node_txt_a]
-        ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
-        ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
-        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
-        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-        value_score = 1
-        if ast_node_a:
-            if ast_node_id_a in range(neighbor_ast_range[0], neighbor_ast_range[1]):
-                value_score = 100
-        if ast_node_a:
-            node_type_a = ast_node_a['type']
-            if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
-                identifier_a = ast_node_a["value"]
-                if "identifier" in ast_node_a.keys():
-                    identifier_a = ast_node_a['identifier']
-                if node_type_a == "DeclRefExpr":
-                    if "ref_type" in ast_node_a and ast_node_a["ref_type"] == "FunctionDecl":
-                        identifier_a = identifier_a + "("
-                if ast_node_c:
-                    node_type_c = ast_node_c['type']
-                    if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
-                        identifier_c = ast_node_c['value']
-                        if "identifier" in ast_node_c.keys():
-                            identifier_c = ast_node_c['identifier']
-                        if node_type_c == "DeclRefExpr":
-                            if "ref_type" in ast_node_c and ast_node_c["ref_type"] == "FunctionDecl":
-                                identifier_c = identifier_c + "("
-
-                        if identifier_a not in namespace_map:
-                            namespace_map[identifier_a] = dict()
-                        if identifier_c not in namespace_map[identifier_a]:
-                            namespace_map[identifier_a][identifier_c] = value_score
-                        else:
-                            namespace_map[identifier_a][identifier_c] = namespace_map[identifier_a][identifier_c] + value_score
-
-            elif node_type_a == "Macro":
-                if 'value' in ast_node_a.keys():
-                    value_a = ast_node_a['value']
-                    if ast_node_c:
-                        node_type_c = ast_node_c['type']
-                        if node_type_c == "Macro":
-                            if 'value' in ast_node_c.keys():
-                                value_c = ast_node_c['value']
-                                if value_a not in namespace_map:
-                                    namespace_map[value_a] = dict()
-                                if value_c not in namespace_map[value_a]:
-                                    namespace_map[value_a][value_c] = value_score
-                                else:
-                                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
-
-            elif node_type_a == "LabelStmt":
-                if 'value' in ast_node_a.keys():
-                    value_a = ast_node_a['value']
-                    if ast_node_c:
-                        node_type_c = ast_node_c['type']
-                        if node_type_c == "LabelStmt":
-                            if 'value' in ast_node_c.keys():
-                                value_c = ast_node_c['value']
-                                if value_a not in namespace_map:
-                                    namespace_map[value_a] = dict()
-                                if value_c not in namespace_map[value_a]:
-                                    namespace_map[value_a][value_c] = value_score
-                                else:
-                                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
-
-            elif node_type_a in ["MemberExpr", "ArraySubscriptExpr"]:
-                # value_a = ast_node_a['value']
-                node_type_a = ast_node_a['type']
-                if node_type_a in ["MemberExpr"]:
-                    value_a = converter.convert_member_expr(ast_node_a, True)
-                elif node_type_a == "ArraySubscriptExpr":
-                    value_a = converter.convert_array_subscript(ast_node_a, True)
-
-                if ast_node_c:
-                    node_type_c = ast_node_c['type']
-                    if node_type_c in ["MemberExpr", "ArraySubscriptExpr"]:
-                        # value_c = ast_node_c['value']
-                        if node_type_c in ["MemberExpr"]:
-                            value_c = converter.convert_member_expr(ast_node_c, True)
-                        elif node_type_c == "ArraySubscriptExpr":
-                            value_c = converter.convert_array_subscript(ast_node_c, True)
-
-                        if value_a not in namespace_map:
-                            namespace_map[value_a] = dict()
-                        if value_c not in namespace_map[value_a]:
-                            namespace_map[value_a][value_c] = value_score
-                        else:
-                            namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
-
-            elif node_type_a in ["FunctionDecl"]:
-                if "identifier" not in ast_node_a or "identifier" not in ast_node_c:
-                    continue
-                method_name_a = ast_node_a["identifier"]
-                method_name_c = ast_node_c["identifier"]
-                value_a = method_name_a + "("
-                value_c = method_name_c + "("
-                if value_a not in namespace_map:
-                    namespace_map[value_a] = dict()
-                if value_c not in namespace_map[value_a]:
-                    namespace_map[value_a][value_c] = value_score
-                else:
-                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
-
-            elif node_type_a in ["CallExpr"]:
-                children_a = ast_node_a["children"]
-                children_c = ast_node_c["children"]
-                if len(children_a) < 1 or len(children_c) < 1:
-                    continue
-                if 'value' not in children_a[0].keys() or "value" not in children_c[0].keys():
-                    continue
-                method_name_a = children_a[0]["value"]
-                method_name_c = children_c[0]["value"]
-                value_a = method_name_a + "("
-                value_c = method_name_c + "("
-                if value_a not in namespace_map:
-                    namespace_map[value_a] = dict()
-                if value_c not in namespace_map[value_a]:
-                    namespace_map[value_a][value_c] = value_score
-                else:
-                    namespace_map[value_a][value_c] = namespace_map[value_a][value_c] + value_score
-
-    for value_a in namespace_map:
-        candidate_list = namespace_map[value_a]
-        max_score = 0
-        best_candidate = None
-        for candidate in candidate_list:
-            candidate_score = candidate_list[candidate]
-            if max_score < candidate_score:
-                best_candidate = candidate
-                max_score = candidate_score
-        if "(" in value_a:
-            value_a = value_a.split("(")[0] + "("
-        if "(" in best_candidate:
-            best_candidate = best_candidate.split("(")[0] + "("
-        if not value_a or not best_candidate:
-            continue
-        if any(token in str(value_a).lower() for token in BREAK_LIST):
-            continue
-        if any(token in str(best_candidate).lower() for token in BREAK_LIST):
-            continue
-
-        # generate all possible member relations with each var mapping
-        if "." in value_a and "." in best_candidate:
-            refined_var_map["." + value_a.split(".")[-1]] = "." + best_candidate.split(".")[-1]
-        refined_var_map[value_a] = best_candidate
-
-    return refined_var_map
 
 
 def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
