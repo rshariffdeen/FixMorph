@@ -740,3 +740,35 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
                     identifier_c = method_name_c + "("
 
     return identifier_a, identifier_c, value_score
+
+
+def extract_method_invocations(ast_node_a, ast_node_c, ast_node_map, ast_tree_c):
+    method_name = None
+    arg_operation = []
+    if ast_node_a and ast_node_c:
+        node_type_a = ast_node_a['type']
+        node_type_c = ast_node_c['type']
+        if node_type_a in ["CallExpr"] and node_type_c in ["CallExpr"]:
+            children_a = ast_node_a["children"]
+            children_c = ast_node_c["children"]
+            if len(children_a) < 1 or len(children_c) < 1 or len(children_a) == len(children_c):
+                return None, []
+            method_name = children_a[0]["value"]
+            for i in range(1, len(children_a)):
+                node_txt_a = children_a[i]["type"] + "(" + str(children_a[i]["id"]) + ")"
+                if node_txt_a in ast_node_map.keys():
+                    node_txt_c = ast_node_map[node_txt_a]
+                    node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
+                    ast_node_c = finder.search_ast_node_by_id(ast_tree_c, node_id_c)
+                    if ast_node_c in children_c:
+                        arg_operation.append((definitions.MATCH, i, children_c.index(ast_node_c)))
+                    else:
+                        arg_operation.append((definitions.DELETE, i))
+                else:
+                    arg_operation.append((definitions.DELETE, i))
+            for i in range(1, len(children_c)):
+                node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
+                if node_txt_c not in ast_node_map.values():
+                    arg_operation.append((definitions.INSERT, i, converter.get_node_value(children_c[i])))
+    return method_name, arg_operation
+

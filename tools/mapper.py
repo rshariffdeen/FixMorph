@@ -122,7 +122,7 @@ def generate_global_reference(generated_script_files):
             refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_GLOBAL)
-            method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("method invocation map", method_invocation_map)
             values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
             function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
@@ -163,7 +163,7 @@ def generate_local_reference(generated_script_files):
             refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
-            method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             emitter.data("method invocation map", method_invocation_map)
             values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
             function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
@@ -225,81 +225,6 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
                         arg_operation.append((definitions.INSERT, i, converter.get_node_value(parameter_list_c[i])))
                 function_map[method_name_a] = arg_operation
     return function_map
-
-
-def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
-    method_invocation_map = dict()
-    emitter.normal("\tderiving method invocation map")
-    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-
-    for ast_node_txt_a in ast_node_map:
-        ast_node_txt_c = ast_node_map[ast_node_txt_a]
-        ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
-        ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
-        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
-        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-
-        if ast_node_a and ast_node_c:
-            node_type_a = ast_node_a['type']
-            node_type_c = ast_node_c['type']
-            if node_type_a in ["CallExpr"] and node_type_c in ["CallExpr"]:
-                children_a = ast_node_a["children"]
-                children_c = ast_node_c["children"]
-                if len(children_a) < 1 or len(children_c) < 1 or len(children_a) == len(children_c):
-                    continue
-                method_name = children_a[0]["value"]
-
-                arg_operation = []
-                for i in range(1, len(children_a)):
-                    node_txt_a = children_a[i]["type"] + "(" + str(children_a[i]["id"]) + ")"
-                    if node_txt_a in ast_node_map.keys():
-                        node_txt_c = ast_node_map[node_txt_a]
-                        node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
-                        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, node_id_c)
-                        if ast_node_c in children_c:
-                            arg_operation.append((definitions.MATCH, i, children_c.index(ast_node_c)))
-                        else:
-                            arg_operation.append((definitions.DELETE, i))
-                    else:
-                        arg_operation.append((definitions.DELETE, i))
-                for i in range(1, len(children_c)):
-                    node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
-                    if node_txt_c not in ast_node_map.values():
-                        arg_operation.append((definitions.INSERT, i, converter.get_node_value(children_c[i])))
-
-                method_invocation_map[method_name] = arg_operation
-    return method_invocation_map
-
-
-# adjust the mapping via anti-unification
-def extend_mapping(ast_node_map, map_file_name, source_a, source_c):
-    emitter.normal("\tupdating ast map using anti-unification")
-    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-
-    with open(map_file_name, 'r') as ast_map:
-        line = ast_map.readline().strip()
-        while line:
-            line = line.split(" ")
-            operation = line[0]
-            content = " ".join(line[1:])
-            if operation == definitions.MATCH:
-                try:
-                    node_a, node_c = clean_parse(content, definitions.TO)
-                    ast_node_id_a = int(str(node_a).split("(")[1].split(")")[0])
-                    ast_node_id_c = int(str(node_c).split("(")[1].split(")")[0])
-                    ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
-                    ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-
-                    au_pairs = anti_unification(ast_node_a, ast_node_c)
-                    for au_pair_key in au_pairs:
-                        au_pair_value = au_pairs[au_pair_key]
-                        ast_node_map[au_pair_key] = au_pair_value
-                except Exception as exception:
-                    error_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
-            line = ast_map.readline().strip()
-    return ast_node_map
 
 
 def anti_unification(ast_node_a, ast_node_c):

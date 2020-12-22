@@ -1,6 +1,6 @@
 import multiprocessing as mp
 from common import definitions, values, utilities
-from tools import emitter, oracle, extractor, finder, mapper
+from tools import emitter, oracle, extractor, finder, mapper, converter
 from typing import List, Dict, Optional
 from pysmt.shortcuts import is_sat, Not, And, TRUE
 from multiprocessing import TimeoutError
@@ -196,3 +196,35 @@ def extend_mapping(ast_node_map, source_a, source_c):
                 ast_node_map[au_pair_key] = au_pair_value
 
     return ast_node_map
+
+
+def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
+    global pool, result_list, expected_count
+    result_list = []
+    method_invocation_map = dict()
+    emitter.normal("\tderiving method invocation map")
+    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+
+    emitter.normal("\t\tstarting parallel computing")
+    pool = mp.Pool(mp.cpu_count())
+
+    for ast_node_txt_a in ast_node_map:
+        ast_node_txt_c = ast_node_map[ast_node_txt_a]
+        ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
+        ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
+        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+
+        pool.apply_async(extractor.extract_method_invocations, args=(ast_node_a, ast_node_c, ast_node_map, ast_tree_c),
+                         callback=collect_result)
+
+    pool.close()
+    emitter.normal("\t\twaiting for thread completion")
+    pool.join()
+
+    for method_name, arg_operation in result_list:
+        if method_name is not None:
+            method_invocation_map[method_name] = arg_operation
+
+    return method_invocation_map
