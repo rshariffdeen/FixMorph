@@ -100,10 +100,14 @@ def generate_ast_map(generated_script_files):
         ast_map_info = ast_map_info_local
 
         # extend namespace mapping using global reference
-        Values.map_namespace = Values.map_namespace_local
-        for name_a in Values.map_namespace_global:
-            if name_a not in Values.map_namespace_local:
-                Values.map_namespace[name_a] = Values.map_namespace_global[name_a]
+        for vector_pair in Values.map_namespace_global:
+            map_global = Values.map_namespace_global[vector_pair]
+            map_local = Values.map_namespace_local[vector_pair]
+            map_merged = map_local
+            for name_a in map_global:
+                if name_a not in map_merged:
+                    map_merged[name_a] = map_global[name_a]
+            Values.map_namespace[vector_pair] = map_merged
 
         Writer.write_var_map(Values.map_namespace, Definitions.FILE_NAMESPACE_MAP)
 
@@ -132,18 +136,18 @@ def generate_global_reference(generated_script_files):
             Emitter.normal("\tupdating map using anti-unification")
             Emitter.data(ast_node_map)
             refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            Values.map_namespace_global = refined_var_map
+            Values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
             Writer.write_var_map(refined_var_map, Definitions.FILE_NAMESPACE_MAP_GLOBAL)
 
             Emitter.normal("\tderiving method invocation map")
             method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.data("method invocation map", method_invocation_map)
-            Values.Method_ARG_MAP_GLOBAL = method_invocation_map
+            Values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
 
             Emitter.normal("\tderiving function signature map")
             function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.data("function map", function_map)
-            Values.FUNCTION_MAP_GLOBAL = function_map
+            Values.FUNCTION_MAP_GLOBAL[(vector_source_a, vector_source_c)] = function_map
 
             variable_map_info[file_list] = ast_node_map
             # variable_map_info[file_list] = dict()
@@ -179,18 +183,18 @@ def generate_local_reference(generated_script_files):
             Emitter.normal("\tupdating map using anti-unification")
             Emitter.data(ast_node_map)
             refined_var_map = derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            Values.map_namespace_local = refined_var_map
+            Values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
             Writer.write_var_map(refined_var_map, Definitions.FILE_NAMESPACE_MAP_LOCAL)
 
             Emitter.normal("\tderiving method invocation map")
             method_invocation_map = extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.data("method invocation map", method_invocation_map)
-            Values.Method_ARG_MAP_LOCAL = method_invocation_map
+            Values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
 
             Emitter.normal("\tderiving function signature map")
             function_map = extend_function_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             Emitter.data("function map", function_map)
-            Values.FUNCTION_MAP_LOCAL = function_map
+            Values.FUNCTION_MAP_LOCAL[(vector_source_a, vector_source_c)] = function_map
 
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
