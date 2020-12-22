@@ -145,7 +145,7 @@ def get_mapping(map_file_name):
         operation = line[0]
         content = " ".join(line[1:])
         if operation == definitions.MATCH:
-            pool.apply_async(extractor.extract_mapping, args=(content, definitions.TO),
+            pool.apply_async(utilities.clean_parse, args=(content, definitions.TO),
                              callback=collect_result)
             # try:
             #     node_a, node_c = clean_parse(content, definitions.TO)
@@ -159,4 +159,5 @@ def get_mapping(map_file_name):
 
     for node_a, node_c in result_list:
         node_map[node_a] = node_c
+
     return node_map
