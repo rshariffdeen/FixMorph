@@ -14,7 +14,7 @@ def load_standard_list():
 
 
 def read_conf_file():
-    emitter.normal("\treading configuration file")
+    emitter.normal("reading configuration file")
     if not os.path.exists(values.FILE_CONFIGURATION):
         emitter.normal("[NOT FOUND] Configuration file " + values.FILE_CONFIGURATION)
         exit()
@@ -92,7 +92,7 @@ def read_conf_file():
 
 
 def read_conf(arg_list):
-    emitter.normal("\treading configuration values")
+    emitter.normal("reading configuration values")
     if len(arg_list) > 0:
         for arg in arg_list:
             if definitions.ARG_DEBUG in arg:
@@ -192,6 +192,9 @@ def update_configuration():
 
     if not os.path.isdir(definitions.DIRECTORY_LOG):
         os.makedirs(definitions.DIRECTORY_LOG)
+
+    if not os.path.isdir(definitions.DIRECTORY_TMP):
+        os.makedirs(definitions.DIRECTORY_TMP)
 
     patch_dir = values.CONF_PATH_C + "-patch"
     if os.path.isdir(patch_dir):
