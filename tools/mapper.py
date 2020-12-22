@@ -398,10 +398,11 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
             if node_type_a in ["FunctionDecl"] and node_type_c in ["FunctionDecl"]:
                 children_a = ast_node_a["children"]
                 children_c = ast_node_c["children"]
-                if len(children_a) < 1 or len(children_c) < 1 or len(children_a) == len(children_c):
+                if len(children_a) < 1 or len(children_c) < 1:
                     continue
-                method_name = children_a["identifier"]
-
+                method_signature_a = children_a[0]
+                method_signature_c = children_c[0]
+                method_name_a = method_signature_a["identifier"]
                 arg_operation = []
                 for i in range(1, len(children_a)):
                     node_txt_a = children_a[i]["type"] + "(" + str(children_a[i]["id"]) + ")"
@@ -419,8 +420,7 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
                     node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
                     if node_txt_c not in ast_node_map.values():
                         arg_operation.append((definitions.INSERT, i, converter.get_node_value(children_c[i])))
-
-                function_map[method_name] = arg_operation
+                function_map[method_name_a] = arg_operation
     return function_map
 
 
