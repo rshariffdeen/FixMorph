@@ -87,8 +87,10 @@ def convert_conditional_op_to_expr(ast_node, only_string=False):
 def get_node_value(ast_node):
     ast_value = ""
     ast_type = str(ast_node['type'])
-    if ast_type in ["DeclRefExpr", "IntegerLiteral", "StringLiteral"]:
+    if ast_type in ["DeclRefExpr", "IntegerLiteral", "StringLiteral", "VarDecl"]:
         ast_value = str(ast_node['value'])
+    elif ast_type in ["ParmVarDecl"]:
+        ast_value = ast_node['identifier']
     elif ast_type == "BinaryOperator":
         ast_value = convert_binary_node_to_expr(ast_node, True)
         # var_list = var_list + left_child_var_list
@@ -138,7 +140,7 @@ def convert_array_iterator(iterator_node, only_string=False):
     iterator_node_type = str(iterator_node['type'])
     var_list = list()
     if iterator_node_type in ["VarDecl", "ParmVarDecl"]:
-        iterator_name = str(iterator_node['value'])
+        iterator_name = str(iterator_node['identifier'])
         iterator_data_type = None
         if "data-type" in iterator_node:
             iterator_data_type = str(iterator_node['data_type'])
