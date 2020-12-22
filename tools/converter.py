@@ -99,6 +99,8 @@ def get_node_value(ast_node):
     elif ast_type == "ParenExpr":
         ast_value = convert_paren_node_to_expr(ast_node, True)
         # var_list = var_list + left_child_var_list
+    elif ast_type == "ArraySubscriptExpr":
+        ast_value = convert_array_subscript(ast_node, True)
     elif ast_type == "MemberExpr":
         ast_value = convert_member_expr(ast_node, True)
         # var_list = var_list + left_child_var_list
