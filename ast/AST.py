@@ -3,7 +3,7 @@
 import json
 import io
 import sys
-from tools import Logger
+from tools import logger
 
 ttype = [None]
 label = [None]
@@ -101,7 +101,7 @@ class AST:
         return s
 
     def get_code(self, file_path):
-        Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+        logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
         with open(file_path, 'r', encoding='utf8', errors="ignore") as source_file:
             source_code = "".join(source_file.readlines())
         return source_code[int(self.begin):int(self.end)]
@@ -155,7 +155,7 @@ class AST:
 
 
 def load_from_file(file_path):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global ast
     # with open(file_path, 'r') as ast_file:
     #     ast = ast_file.readline()
@@ -170,7 +170,7 @@ def load_from_file(file_path):
 
 
 def load_from_map(ast_map):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global ast
     AST(ast_map)
     ast = [i for i in AST.nodes]

@@ -2,13 +2,13 @@
 
 import os
 from common.utilities import error_exit, clean_files, execute_command
-from tools import Emitter
+from tools import emitter
 
 
 class Project:
     
     def __init__(self, path, name):
-        Emitter.information("creating project for " + path)
+        emitter.information("creating project for " + path)
         if not (os.path.isdir(path)):
             error_exit(name + " is not an appropriate directory path.", path)
         if path[-1] != "/":

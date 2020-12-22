@@ -3,56 +3,56 @@
 
 
 import time
-from tools import Emitter, Logger
-from phases import Initialization, Building, Differencing, Detection, Mapping, Extraction, Translation, \
-    Evolution, Weaving, Verify, Summarizing, Slicing, Comparison, Evaluation, Reversing
+from tools import emitter, logger
+from phases import initialization, building, differencing, detection, mapping, extraction, translation, \
+    evolution, weaving, verify, summarizing, slicing, comparison, evaluation, reversing
 from common import definitions
 from common.utilities import error_exit, create_base_directories
 
 
 def run():
     create_base_directories()
-    Emitter.start()
+    emitter.start()
     start_time = time.time()
     time_info = dict()
 
     time_check = time.time()
-    Initialization.initialize()
+    initialization.initialize()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_INITIALIZATION] = str(duration)
 
     time_check = time.time()
-    Building.build()
+    building.build()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_BUILD_ANALYSIS] = str(duration)
 
     time_check = time.time()
-    Differencing.diff()
+    differencing.diff()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_DIFF_ANALYSIS] = str(duration)
 
     time_check = time.time()
-    Detection.detect()
+    detection.detect()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_CLONE_ANALYSIS] = str(duration)
 
     time_check = time.time()
-    Slicing.slice()
+    slicing.slice()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_SLICE] = str(duration)
 
     time_check = time.time()
-    Extraction.extract()
+    extraction.extract()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_EXTRACTION] = str(duration)
 
     time_check = time.time()
-    Mapping.map()
+    mapping.map()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_MAP_GENERATION] = str(duration)
 
     time_check = time.time()
-    Translation.translate()
+    translation.translate()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_TRANSLATION] = str(duration)
 
@@ -62,17 +62,17 @@ def run():
     # time_info[Definitions.KEY_DURATION_REVERSE] = str(duration)
 
     time_check = time.time()
-    Evolution.evolve()
+    evolution.evolve()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_EVOLUTION] = str(duration)
 
     time_check = time.time()
-    Weaving.weave()
+    weaving.weave()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_TRANSPLANTATION] = str(duration)
 
     time_check = time.time()
-    Verify.verify()
+    verify.verify()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_VERIFICATION] = str(duration)
 
@@ -94,8 +94,8 @@ def run():
     # Final running time and exit message
     duration = format((time.time() - start_time) / 60, '.3f')
     time_info[definitions.KEY_DURATION_TOTAL] = str(duration)
-    Emitter.end(time_info)
-    Logger.end(time_info)
+    emitter.end(time_info)
+    logger.end(time_info)
     
     
 if __name__ == "__main__":

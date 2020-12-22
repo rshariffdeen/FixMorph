@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tools import Logger, Emitter
+from tools import logger, emitter
 import sys
 from common import definitions
 from common.utilities import execute_command, error_exit
@@ -35,7 +35,7 @@ class Vector:
         Vector.vid += 1
 
     def generate_deckard_vec(self):
-        Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+        logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
         error_log = definitions.DIRECTORY_TMP + "/deckard_error_log"
         if self.name is None:
             command = "echo " + self.vector_path + " >> " + error_log + "; " + \
@@ -44,7 +44,7 @@ class Vector:
         else:
             current = "\t\t" + self.name + " " + str(self.start_line) + "-" + \
                       str(self.end_line)
-            Emitter.information("generating vector for " + str(current))
+            emitter.information("generating vector for " + str(current))
             start_line = self.start_line
             end_line = self.end_line
             with codecs.open(self.file_path, 'r', encoding='utf-8', errors='ignore') as source_file:
@@ -52,7 +52,7 @@ class Vector:
                 max_line = len(ls)
                 if int(end_line) > max_line:
                     # TODO: This shouldn't happen!
-                    Emitter.error(current)
+                    emitter.error(current)
                     error_exit("Deckard failed. Requested line exceed file size. The following file not generated:", self.vector_path)
                     return None
             self.start_line = start_line
@@ -87,8 +87,8 @@ class Vector:
                 error_exit(e, "Error with Deckard vector generation. Exiting...")
 
         if not os.path.isfile(self.vector_path):
-            Emitter.warning("Deckard fail. The vector file was not generated:")
-            Emitter.warning(self.vector_path + "\n")
+            emitter.warning("Deckard fail. The vector file was not generated:")
+            emitter.warning(self.vector_path + "\n")
             with open('output/reproduce_errors', 'a') as file:
                 file.write(command + "\n" + c1 + "\n")
             return None

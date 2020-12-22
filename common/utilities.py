@@ -4,13 +4,13 @@ import os
 import sys
 import subprocess
 import pickle
-from tools import Logger, Emitter, Writer, Reader
+from tools import logger, emitter, writer, reader
 from common import definitions, values
 
 
 def execute_command(command, show_output=True):
     # Print executed command and execute it in console
-    Emitter.command(command)
+    emitter.command(command)
     command = "{ " + command + " ;} 2> " + definitions.FILE_ERROR_LOG
     if not show_output:
         command += " > /dev/null"
@@ -61,13 +61,13 @@ def create_base_directories():
 def error_exit(*args):
     print("\n")
     for i in args:
-        Logger.error(i)
-        Emitter.error(i)
+        logger.error(i)
+        emitter.error(i)
     raise Exception("Error. Exiting...")
 
 
 def find_files(src_path, extension, output, regex):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     # Save paths to all files in src_path with extension extension to output
     find_command = "find " + src_path + " -name '" + extension + "' "
     if regex is not None:
@@ -78,15 +78,15 @@ def find_files(src_path, extension, output, regex):
 
 def clean_files():
     # Remove other residual files stored in ./output/
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.information("Removing other residual files...")
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    emitter.information("Removing other residual files...")
     if os.path.isdir("output"):
         clean_command = "rm -rf " + definitions.DIRECTORY_OUTPUT
         execute_command(clean_command)
 
 
 def get_file_extension_list(src_path, output_file_name):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     extensions = set()
     find_command = "find " + src_path + " -type f -not -name '*\.c' -not -name '*\.h'" + \
         " > " + output_file_name
@@ -104,33 +104,33 @@ def get_file_extension_list(src_path, output_file_name):
 
 
 def backup_file(file_path, backup_name):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     backup_command = "cp " + file_path + " " + definitions.DIRECTORY_BACKUP + "/" + backup_name
     execute_command(backup_command)
 
 
 def restore_file(file_path, backup_name):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     restore_command = "cp " + definitions.DIRECTORY_BACKUP + "/" + backup_name + " " + file_path
     execute_command(restore_command)
 
 
 def reset_git(source_directory):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     reset_command = "cd " + source_directory + ";git reset --hard HEAD"
     execute_command(reset_command)
 
 
 def show_partial_diff(source_path_a, source_path_b):
-    Logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    Emitter.highlight("\tTransplanted Code")
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    emitter.highlight("\tTransplanted Code")
     output_file = definitions.FILE_PARTIAL_PATCH
     diff_command = "diff -ENZBbwr " + source_path_a + " " + source_path_b + " > " + output_file
     execute_command(diff_command)
     with open(output_file, 'r', encoding='utf8', errors="ignore") as diff_file:
         diff_line = diff_file.readline().strip()
         while diff_line:
-            Emitter.special("\t\t\t" + diff_line)
+            emitter.special("\t\t\t" + diff_line)
             diff_line = diff_file.readline().strip()
 
 
