@@ -6,8 +6,8 @@ import time
 import os
 import shutil
 from tools import emitter, logger, configuration
-from phases import initialization, building, differencing, detection, mapping, extraction, translation, \
-    evolution, weaving, verify, summarizing, slicing, comparison, evaluation, reversing
+from phases import building, differencing, detection, mapping, extraction, translation, \
+    evolution, weaving, verify, summarizing, slicing, comparison, reversing
 from common import definitions, values, utilities
 
 
@@ -89,72 +89,68 @@ def run(arg_list):
     time_info[definitions.KEY_DURATION_INITIALIZATION] = str(duration)
 
     time_check = time.time()
-    building.build()
+    building.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_BUILD_ANALYSIS] = str(duration)
 
     time_check = time.time()
-    differencing.diff()
+    differencing.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_DIFF_ANALYSIS] = str(duration)
 
     time_check = time.time()
-    detection.detect()
+    detection.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_CLONE_ANALYSIS] = str(duration)
 
     time_check = time.time()
-    slicing.slice()
+    slicing.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_SLICE] = str(duration)
 
     time_check = time.time()
-    extraction.extract()
+    extraction.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_EXTRACTION] = str(duration)
 
     time_check = time.time()
-    mapping.map()
+    mapping.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_MAP_GENERATION] = str(duration)
 
     time_check = time.time()
-    translation.translate()
+    translation.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_TRANSLATION] = str(duration)
 
     # time_check = time.time()
-    # Reversing.reverse()
+    # Reversing.start()
     # duration = format((time.time() - time_check) / 60, '.3f')
     # time_info[Definitions.KEY_DURATION_REVERSE] = str(duration)
 
     time_check = time.time()
-    evolution.evolve()
+    evolution.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_EVOLUTION] = str(duration)
 
     time_check = time.time()
-    weaving.weave()
+    weaving.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_TRANSPLANTATION] = str(duration)
 
     time_check = time.time()
-    verify.verify()
+    verify.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_VERIFICATION] = str(duration)
 
-    # time_check = time.time()
-    # Evaluation.evaluate()
-    # duration = format((time.time() - time_check) / 60, '.3f')
-    # time_info[Definitions.KEY_DURATION_EVALUATION] = str(duration)
     #
     # time_check = time.time()
-    # Comparison.compare()
+    # Comparison.start()
     # duration = format((time.time() - time_check) / 60, '.3f')
     # time_info[Definitions.KEY_DURATION_COMPARISON] = str(duration)
     #
     # time_check = time.time()
-    # Summarizing.summarize()
+    # Summarizing.start()
     # duration = format((time.time() - time_check) / 60, '.3f')
     # time_info[Definitions.KEY_DURATION_SUMMARIZATION] = str(duration)
 
