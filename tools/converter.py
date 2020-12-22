@@ -102,7 +102,7 @@ def convert_conditional_op_to_expr(ast_node, only_string=False):
 def get_node_value(ast_node):
     ast_value = ""
     ast_type = str(ast_node['type'])
-    if ast_type in ["DeclRefExpr", "IntegerLiteral"]:
+    if ast_type in ["DeclRefExpr", "IntegerLiteral", "StringLiteral"]:
         ast_value = str(ast_node['value'])
     elif ast_type == "BinaryOperator":
         ast_value = convert_binary_node_to_expr(ast_node, True)
