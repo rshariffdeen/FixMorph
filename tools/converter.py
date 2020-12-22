@@ -121,6 +121,8 @@ def get_node_value(ast_node):
         ast_value = convert_call_expr(ast_node, True)
     elif ast_type == "UnaryExprOrTypeTraitExpr":
         ast_value = ""
+    elif ast_type == "UnaryOperator":
+        ast_value = convert_unary_node_to_expr(ast_node, True)
     else:
         print(ast_node)
         error_exit("Unhandled child type in convert ast node")
