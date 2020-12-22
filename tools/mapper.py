@@ -463,7 +463,7 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
                 for i in range(1, len(children_c)):
                     node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
                     if node_txt_c not in ast_node_map.values():
-                        arg_operation.append((definitions.INSERT, i, children_c[i]["value"]))
+                        arg_operation.append((definitions.INSERT, i, converter.get_node_value(children_c[i])))
 
                 method_invocation_map[method_name] = arg_operation
     return method_invocation_map
