@@ -73,24 +73,6 @@ def clean_parse(content, separator):
     return [node1, node2]
 
 
-def get_mapping(map_file_name):
-    node_map = dict()
-    with open(map_file_name, 'r') as ast_map:
-        line = ast_map.readline().strip()
-        while line:
-            line = line.split(" ")
-            operation = line[0]
-            content = " ".join(line[1:])
-            if operation == definitions.MATCH:
-                try:
-                    node_a, node_c = clean_parse(content, definitions.TO)
-                    node_map[node_a] = node_c
-                except Exception as exception:
-                    error_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
-            line = ast_map.readline().strip()
-    return node_map
-
-
 def generate_ast_map(generated_script_files):
     ast_map_info = dict()
     if len(generated_script_files) == 0:
@@ -133,7 +115,7 @@ def generate_global_reference(generated_script_files):
             map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1].replace(".slice", "") + ".map"
             if not values.CONF_USE_CACHE:
                 generate_map(vector_source_a, vector_source_c, map_file_name)
-            ast_node_map = get_mapping(map_file_name)
+            ast_node_map = parallel.get_mapping(map_file_name)
             emitter.data(ast_node_map)
             ast_node_map = extend_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
             emitter.data(ast_node_map)
@@ -174,7 +156,7 @@ def generate_local_reference(generated_script_files):
             map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
             if not values.CONF_USE_CACHE:
                 generate_map(vector_source_a, vector_source_c, map_file_name)
-            ast_node_map = get_mapping(map_file_name)
+            ast_node_map = parallel.get_mapping(map_file_name)
             emitter.data(ast_node_map)
             ast_node_map = extend_mapping(ast_node_map, map_file_name, vector_source_a, vector_source_c)
             emitter.data(ast_node_map)

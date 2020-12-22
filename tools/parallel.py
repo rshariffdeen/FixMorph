@@ -127,3 +127,36 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         refined_var_map[value_a] = best_candidate
 
     return refined_var_map
+
+
+def get_mapping(map_file_name):
+    global pool, result_list, expected_count
+    result_list = []
+    node_map = dict()
+    emitter.normal("\t\tstarting parallel computing")
+    pool = mp.Pool(mp.cpu_count())
+
+    with open(map_file_name, 'r') as ast_map:
+        line_list = ast_map.readlines()
+
+    for line in line_list:
+        line = line.strip()
+        line = line.split(" ")
+        operation = line[0]
+        content = " ".join(line[1:])
+        if operation == definitions.MATCH:
+            pool.apply_async(extractor.extract_mapping, args=(content, definitions.TO),
+                             callback=collect_result)
+            # try:
+            #     node_a, node_c = clean_parse(content, definitions.TO)
+            #     node_map[node_a] = node_c
+            # except Exception as exception:
+            #     error_exit(exception, "Something went wrong in MATCH (AC)", line, operation, content)
+
+    pool.close()
+    emitter.normal("\t\twaiting for thread completion")
+    pool.join()
+
+    for node_a, node_c in result_list:
+        node_map[node_a] = node_c
+    return node_map
