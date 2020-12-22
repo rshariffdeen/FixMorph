@@ -198,7 +198,7 @@ def extend_mapping(ast_node_map, source_a, source_c):
     return ast_node_map
 
 
-def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a):
+def extend_method_invocation_map(ast_node_map, source_a, source_c):
     global pool, result_list, expected_count
     result_list = []
     method_invocation_map = dict()
@@ -216,7 +216,7 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
 
-        pool.apply_async(extractor.extract_method_invocations, args=(ast_node_a, ast_node_c, ast_node_map, ast_tree_c),
+        pool.apply_async(extractor.extract_method_invocations, args=(ast_node_a, ast_node_c, ast_node_map),
                          callback=collect_result)
 
     pool.close()
@@ -230,7 +230,7 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c, slice_file_a)
     return method_invocation_map
 
 
-def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
+def extend_function_map(ast_node_map, source_a, source_c):
     function_map = dict()
     emitter.normal("\tderiving function signature map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
@@ -244,7 +244,7 @@ def extend_function_map(ast_node_map, source_a, source_c, slice_file_a):
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-        pool.apply_async(extractor.extract_method_signatures, args=(ast_node_a, ast_node_c, ast_node_map, ast_tree_c),
+        pool.apply_async(extractor.extract_method_signatures, args=(ast_node_a, ast_node_c, ast_node_map),
                          callback=collect_result)
 
     pool.close()

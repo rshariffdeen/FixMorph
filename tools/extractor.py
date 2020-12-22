@@ -742,7 +742,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
     return identifier_a, identifier_c, value_score
 
 
-def extract_method_invocations(ast_node_a, ast_node_c, ast_node_map, ast_tree_c):
+def extract_method_invocations(ast_node_a, ast_node_c, ast_node_map):
     method_name = None
     arg_operation = []
     if ast_node_a and ast_node_c:
@@ -755,25 +755,25 @@ def extract_method_invocations(ast_node_a, ast_node_c, ast_node_map, ast_tree_c)
                 return None, []
             method_name = children_a[0]["value"]
             for i in range(1, len(children_a)):
-                node_txt_a = children_a[i]["type"] + "(" + str(children_a[i]["id"]) + ")"
-                if node_txt_a in ast_node_map.keys():
-                    node_txt_c = ast_node_map[node_txt_a]
-                    node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
-                    ast_node_c = finder.search_ast_node_by_id(ast_tree_c, node_id_c)
-                    if ast_node_c in children_c:
+                child_node_txt_a = children_a[i]["type"] + "(" + str(children_a[i]["id"]) + ")"
+                if child_node_txt_a in ast_node_map.keys():
+                    child_node_txt_c = ast_node_map[child_node_txt_a]
+                    child_node_id_c = int(str(child_node_txt_c).split("(")[1].split(")")[0])
+                    child_ast_node_c = finder.search_ast_node_by_id(ast_node_c, child_node_id_c)
+                    if child_ast_node_c in children_c:
                         arg_operation.append((definitions.MATCH, i, children_c.index(ast_node_c)))
                     else:
                         arg_operation.append((definitions.DELETE, i))
                 else:
                     arg_operation.append((definitions.DELETE, i))
             for i in range(1, len(children_c)):
-                node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
-                if node_txt_c not in ast_node_map.values():
+                child_node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
+                if child_node_txt_c not in ast_node_map.values():
                     arg_operation.append((definitions.INSERT, i, converter.get_node_value(children_c[i])))
     return method_name, arg_operation
 
 
-def extract_method_signatures(ast_node_a, ast_node_c, ast_node_map, ast_tree_c):
+def extract_method_signatures(ast_node_a, ast_node_c, ast_node_map):
     method_name_a = None
     arg_operation = []
     if ast_node_a and ast_node_c:
@@ -791,20 +791,20 @@ def extract_method_signatures(ast_node_a, ast_node_c, ast_node_map, ast_tree_c):
             parameter_list_a = method_signature_a['children']
             parameter_list_c = method_signature_c['children']
             for i in range(1, len(parameter_list_a)):
-                node_txt_a = parameter_list_a[i]["type"] + "(" + str(parameter_list_a[i]["id"]) + ")"
-                if node_txt_a in ast_node_map.keys():
-                    node_txt_c = ast_node_map[node_txt_a]
-                    node_id_c = int(str(node_txt_c).split("(")[1].split(")")[0])
-                    ast_node_c = finder.search_ast_node_by_id(ast_tree_c, node_id_c)
-                    if ast_node_c in parameter_list_c:
+                child_node_txt_a = parameter_list_a[i]["type"] + "(" + str(parameter_list_a[i]["id"]) + ")"
+                if child_node_txt_a in ast_node_map.keys():
+                    child_node_txt_c = ast_node_map[child_node_txt_a]
+                    child_node_id_c = int(str(child_node_txt_c).split("(")[1].split(")")[0])
+                    child_ast_node_c = finder.search_ast_node_by_id(ast_node_c, child_node_id_c)
+                    if child_ast_node_c in parameter_list_c:
                         arg_operation.append((definitions.MATCH, i, parameter_list_c.index(ast_node_c)))
                     else:
                         arg_operation.append((definitions.DELETE, i))
                 else:
                     arg_operation.append((definitions.DELETE, i))
             for i in range(1, len(parameter_list_c)):
-                node_txt_c = parameter_list_c[i]["type"] + "(" + str(parameter_list_c[i]["id"]) + ")"
-                if node_txt_c not in ast_node_map.values():
+                child_node_txt_c = parameter_list_c[i]["type"] + "(" + str(parameter_list_c[i]["id"]) + ")"
+                if child_node_txt_c not in ast_node_map.values():
                     arg_operation.append((definitions.INSERT, i, converter.get_node_value(parameter_list_c[i])))
 
     return method_name_a, arg_operation
