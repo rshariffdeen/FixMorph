@@ -24,7 +24,6 @@ def convert_cast_expr(ast_node, only_string=False):
     param_node_type = param_node['type']
 
     var_name = "(" + type_value + ") " + get_node_value(param_node)
-    return var_name
 
     if only_string:
         return var_name
