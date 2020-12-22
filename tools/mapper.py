@@ -106,6 +106,8 @@ def generate_ast_map(generated_script_files):
             map_local = values.map_namespace_local[vector_pair]
             map_merged = map_local
             for name_a in map_global:
+                if "(" not in name_a:
+                    continue
                 if name_a not in map_merged:
                     map_merged[name_a] = map_global[name_a]
             values.map_namespace[vector_pair] = map_merged
