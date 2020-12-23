@@ -107,7 +107,7 @@ def evolve_functions(missing_function_list):
                 best_score = 0
                 method_name_c = None
                 for candidate_name in candidate_list:
-                    match_score = candidate_list[candidate_name]
+                    match_score, transformation = candidate_list[candidate_name]
                     if match_score > best_score:
                         best_score = match_score
                         method_name_c = candidate_name
