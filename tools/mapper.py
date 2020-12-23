@@ -79,7 +79,7 @@ def generate_ast_map(generated_script_files):
         emitter.normal("\t -nothing-to-do")
     else:
         ast_map_info_local = generate_local_reference(generated_script_files)
-        generate_global_reference(generated_script_files)
+        # generate_global_reference(generated_script_files)
         ast_map_info = ast_map_info_local
 
         # extend namespace mapping using global reference
@@ -119,9 +119,9 @@ def generate_global_reference(generated_script_files):
             emitter.data(ast_node_map)
             ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
             emitter.data(ast_node_map)
-            refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
-            writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_GLOBAL)
+            # refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
+            # values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
+            # writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_GLOBAL)
             method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c)
             emitter.data("method invocation map", method_invocation_map)
             values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
@@ -163,12 +163,12 @@ def generate_local_reference(generated_script_files):
             refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
-            method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c)
-            emitter.data("method invocation map", method_invocation_map)
-            values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
-            function_map = parallel.extend_function_map(ast_node_map, vector_source_a, vector_source_c)
-            emitter.data("function map", function_map)
-            values.FUNCTION_MAP_LOCAL[(vector_source_a, vector_source_c)] = function_map
+            # method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c)
+            # emitter.data("method invocation map", method_invocation_map)
+            # values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
+            # function_map = parallel.extend_function_map(ast_node_map, vector_source_a, vector_source_c)
+            # emitter.data("function map", function_map)
+            # values.FUNCTION_MAP_LOCAL[(vector_source_a, vector_source_c)] = function_map
 
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
