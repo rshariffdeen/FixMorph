@@ -81,20 +81,23 @@ def generate_ast_map(generated_script_files):
         ast_map_info_local = generate_local_reference(generated_script_files)
         # generate_global_reference(generated_script_files)
         ast_map_info = ast_map_info_local
+        vector_pair = list(values.map_namespace_local.keys())[0]
+        values.map_namespace[vector_pair] = values.map_namespace_local[vector_pair]
+        writer.write_var_map(values.map_namespace_local[vector_pair], definitions.FILE_NAMESPACE_MAP)
 
         # extend namespace mapping using global reference
-        emitter.sub_sub_title("merging local and global references")
-        for vector_pair in values.map_namespace_global:
-            map_global = values.map_namespace_global[vector_pair]
-            map_local = values.map_namespace_local[vector_pair]
-            map_merged = map_local
-            for name_a in map_global:
-                if "(" not in name_a:
-                    continue
-                if name_a not in map_merged:
-                    map_merged[name_a] = map_global[name_a]
-            values.map_namespace[vector_pair] = map_merged
-            writer.write_var_map(map_merged, definitions.FILE_NAMESPACE_MAP)
+        # emitter.sub_sub_title("merging local and global references")
+        # for vector_pair in values.map_namespace_global:
+        #     map_global = values.map_namespace_global[vector_pair]
+        #     map_local = values.map_namespace_local[vector_pair]
+        #     map_merged = map_local
+        #     for name_a in map_global:
+        #         if "(" not in name_a:
+        #             continue
+        #         if name_a not in map_merged:
+        #             map_merged[name_a] = map_global[name_a]
+        #     values.map_namespace[vector_pair] = map_merged
+        #     writer.write_var_map(map_merged, definitions.FILE_NAMESPACE_MAP)
 
     return ast_map_info
 
