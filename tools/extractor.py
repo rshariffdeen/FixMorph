@@ -742,27 +742,28 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
     return identifier_a, identifier_c, value_score
 
 
-def extract_method_invocations(ast_node_map, ast_node_a, ast_node_c, method_name_a):
+def extract_method_invocations(ast_node_map, call_node_a, call_node_c, method_name_a):
     arg_operation = []
-    children_a = ast_node_a["children"]
-    children_c = ast_node_c["children"]
-    method_name_c = children_c[0]["value"]
-    for i in range(1, len(children_a)):
-        child_node_txt_a = children_a[i]["type"] + "(" + str(children_a[i]["id"]) + ")"
-        if child_node_txt_a in ast_node_map.keys():
-            child_node_txt_c = ast_node_map[child_node_txt_a]
-            child_node_id_c = int(str(child_node_txt_c).split("(")[1].split(")")[0])
-            child_ast_node_c = finder.search_ast_node_by_id(ast_node_c, child_node_id_c)
-            if child_ast_node_c in children_c:
-                arg_operation.append((definitions.MATCH, i, children_c.index(ast_node_c)))
+    method_name_c = call_node_c['children'][0]["value"]
+    parameter_list_a = call_node_a["children"][1:]
+    parameter_list_c = call_node_c["children"][1:]
+
+    for i in range(0, len(parameter_list_a)):
+        param_node_txt_a = parameter_list_a[i]["type"] + "(" + str(parameter_list_a[i]["id"]) + ")"
+        if param_node_txt_a in ast_node_map.keys():
+            param_node_txt_c = ast_node_map[param_node_txt_a]
+            param_node_id_c = int(str(param_node_txt_c).split("(")[1].split(")")[0])
+            param_ast_node_c = finder.search_ast_node_by_id(call_node_c, param_node_id_c)
+            if param_ast_node_c in parameter_list_c:
+                arg_operation.append((definitions.MATCH, i, parameter_list_c.index(param_ast_node_c)))
             else:
                 arg_operation.append((definitions.DELETE, i))
         else:
             arg_operation.append((definitions.DELETE, i))
-    for i in range(1, len(children_c)):
-        child_node_txt_c = children_c[i]["type"] + "(" + str(children_c[i]["id"]) + ")"
-        if child_node_txt_c not in ast_node_map.values():
-            arg_operation.append((definitions.INSERT, i, converter.get_node_value(children_c[i])))
+    for i in range(0, len(parameter_list_c)):
+        param_node_txt_c = parameter_list_c[i]["type"] + "(" + str(parameter_list_c[i]["id"]) + ")"
+        if param_node_txt_c not in ast_node_map.values():
+            arg_operation.append((definitions.INSERT, i, converter.get_node_value(parameter_list_c[i])))
     return method_name_a, method_name_c, arg_operation
 
 
