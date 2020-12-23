@@ -201,19 +201,23 @@ def extend_mapping(ast_node_map, source_a, source_c):
     return ast_node_map
 
 
-def generate_method_invocation_map(source_a, source_c, method_name, ast_map_key):
+def generate_method_invocation_map(source_a, source_c, method_name):
     global pool, result_list, expected_count
     result_list = []
     method_invocation_map = dict()
     emitter.normal("\tderiving method invocation map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-    ast_node_map = values.ast_map[ast_map_key]
+
+    map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
+    mapper.generate_map(source_a, source_c, map_file_name)
+    global_ast_node_map = get_mapping(map_file_name)
+
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
 
-    for ast_node_txt_a in ast_node_map:
-        ast_node_txt_c = ast_node_map[ast_node_txt_a]
+    for ast_node_txt_a in global_ast_node_map:
+        ast_node_txt_c = global_ast_node_map[ast_node_txt_a]
         ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
         node_type_a = str(ast_node_txt_c).split("(")[0].split(" ")[-1]
@@ -226,7 +230,7 @@ def generate_method_invocation_map(source_a, source_c, method_name, ast_map_key)
             if len(children_a) < 1 or len(children_c) < 1:
                 continue
             if method_name == children_a[0]["value"]:
-                result_list.append(extractor.extract_method_invocations(ast_map_key, ast_node_a, ast_node_c, method_name))
+                result_list.append(extractor.extract_method_invocations(global_ast_node_map, ast_node_a, ast_node_c, method_name))
                 # pool.apply_async(extractor.extract_method_invocations, args=(ast_node_a, ast_node_c, ast_node_map),
                 #                  callback=collect_result)
 

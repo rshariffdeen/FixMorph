@@ -742,9 +742,8 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
     return identifier_a, identifier_c, value_score
 
 
-def extract_method_invocations(ast_map_key, ast_node_a, ast_node_c, method_name_a):
+def extract_method_invocations(ast_node_map, ast_node_a, ast_node_c, method_name_a):
     arg_operation = []
-    ast_node_map = values.ast_map[ast_map_key]
     children_a = ast_node_a["children"]
     children_c = ast_node_c["children"]
     method_name_c = children_c[0]["value"]

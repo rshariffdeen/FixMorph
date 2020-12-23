@@ -87,16 +87,16 @@ def evolve_functions(missing_function_list):
         node_id = info['node_id']
         source_path_a = info['source_a']
         source_path_d = info['source_d']
-        ast_global_b = info['ast-b']
-        ast_global_c = info['ast-c']
+        ast_global_a = info['ast-b']
+        ast_global_d = info['ast-c']
         emitter.normal(function_name)
         ast_map_key = info['ast-key']
-        mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d, function_name, ast_map_key)
+        mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d, function_name)
 
         # ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
-        function_ref_node = finder.search_ast_node_by_id(ast_global_b, function_ref_node_id)
-        function_def_node = finder.search_ast_node_by_id(ast_global_b, int(node_id))
+        function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
+        function_def_node = finder.search_ast_node_by_id(ast_global_a, int(node_id))
         function_source_file = function_def_node['file']
         if function_source_file[-1] == "h":
             if "include" in function_source_file:
