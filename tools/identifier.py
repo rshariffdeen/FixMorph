@@ -42,7 +42,7 @@ def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, inse
     return missing_label_list
 
 
-def identify_missing_functions(ast_node, source_path_a, source_path_c, ast_tree_a, ast_tree_c, ast_map_key):
+def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_a, ast_tree_b, ast_tree_c, ast_map_key):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\tanalysing for missing function calls")
     missing_function_list = dict()
@@ -60,27 +60,28 @@ def identify_missing_functions(ast_node, source_path_a, source_path_c, ast_tree_
         line_number = function_ref_node['start line']
         # print(line_number)
 
-        function_node = finder.search_function_node_by_name(ast_tree_a, function_name)
+        function_node_a = finder.search_function_node_by_name(ast_tree_a, function_name)
+        function_node_b = finder.search_function_node_by_name(ast_tree_b, function_name)
         # print(function_node)
-        if function_node is not None:
+        if function_node_a is not None and function_node_b is not None:
             # print(function_node)
             if function_name not in missing_function_list.keys():
                 info = dict()
-                info['node_id'] = function_node['id']
+                info['node_id'] = function_node_b['id']
                 info['ref_node_id'] = function_ref_node['id']
-                info['source_a'] = source_path_a
-                info['source_c'] = source_path_c
-                info['ast-a'] = ast_tree_a
+                info['source_b'] = source_path_b
+                info['source_d'] = source_path_d
+                info['ast-b'] = ast_tree_b
                 info['ast-c'] = ast_tree_c
                 info['ast-key'] = ast_map_key
                 missing_function_list[function_name] = info
             else:
                 info = dict()
-                info['node_id'] = function_node['id']
+                info['node_id'] = function_node_b['id']
                 info['ref_node_id'] = function_ref_node['id']
-                info['source_a'] = source_path_a
-                info['source_c'] = source_path_c
-                info['ast-a'] = ast_tree_a
+                info['source_b'] = source_path_b
+                info['source_d'] = source_path_d
+                info['ast-b'] = ast_tree_b
                 info['ast-c'] = ast_tree_c
                 info['ast-key'] = ast_map_key
                 if info != missing_function_list[function_name]:

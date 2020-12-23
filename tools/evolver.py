@@ -85,33 +85,33 @@ def evolve_functions(missing_function_list):
     for function_name in missing_function_list:
         info = missing_function_list[function_name]
         node_id = info['node_id']
-        source_path_a = info['source_a']
-        source_path_c = info['source_c']
-        ast_global_a = info['ast-a']
+        source_path_b = info['source_b']
+        source_path_d = info['source_d']
+        ast_global_b = info['ast-b']
         ast_global_c = info['ast-c']
         emitter.normal(function_name)
         ast_map_key = info['ast-key']
-        mapping = parallel.generate_method_invocation_map(source_path_a, source_path_c, function_name, ast_map_key)
+        mapping = parallel.generate_method_invocation_map(source_path_b, source_path_d, function_name, ast_map_key)
 
         # ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
-        function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
-        function_def_node = finder.search_ast_node_by_id(ast_global_a, int(node_id))
+        function_ref_node = finder.search_ast_node_by_id(ast_global_b, function_ref_node_id)
+        function_def_node = finder.search_ast_node_by_id(ast_global_b, int(node_id))
         function_source_file = function_def_node['file']
         if function_source_file[-1] == "h":
             if "include" in function_source_file:
                 header_file = function_source_file.split("/include/")[-1]
             else:
                 header_file = function_source_file.split("/")[-1]
-            missing_header_list[header_file] = source_path_c
+            missing_header_list[header_file] = source_path_d
 
         else:
             function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
-                                                                                           source_path_a)
+                                                                                           source_path_b)
             missing_def_list = identifier.identify_missing_definitions(function_node, missing_function_list)
             missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
-                                                                            source_path_c)
-            missing_header_list = identifier.identify_missing_headers(function_node, source_path_c)
+                                                                            source_path_d)
+            missing_header_list = identifier.identify_missing_headers(function_node, source_path_d)
         emitter.success("\t\tfound definition in: " + function_source_file)
         # print(function_name)
     return missing_header_list, missing_macro_list, filtered_missing_function_list
@@ -170,9 +170,10 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
         if check_node:
 
             missing_function_list.update(identifier.identify_missing_functions(check_node,
-                                                                               file_a,
-                                                                               file_c,
+                                                                               file_b,
+                                                                               file_d,
                                                                                ast_tree_global_a,
+                                                                               ast_tree_global_b,
                                                                                ast_tree_global_c,
                                                                                ast_map_key))
 
