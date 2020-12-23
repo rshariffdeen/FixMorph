@@ -97,27 +97,45 @@ def evolve_functions(missing_function_list):
             mapping = parallel.generate_function_signature_map(source_path_a, source_path_d,
                                                                ast_global_a, ast_global_c, function_name)
 
-        # ast_map_b = ast_generator.get_ast_json(source_path_b)
-        function_ref_node_id = int(info['ref_node_id'])
-        function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
-        function_def_node = finder.search_ast_node_by_id(ast_global_a, int(node_id))
-        function_source_file = function_def_node['file']
-        if function_source_file[-1] == "h":
-            if "include" in function_source_file:
-                header_file = function_source_file.split("/include/")[-1]
-            else:
-                header_file = function_source_file.split("/")[-1]
-            missing_header_list[header_file] = source_path_d
 
+        # if no mapping found add function for transplantation list
+        if mapping:
+            vector_pair = list(values.map_namespace_local.keys())[0]
+            refined_var_map = values.map_namespace_local[vector_pair]
+            for method_name_a in mapping:
+                candidate_list = mapping[method_name_a]
+                best_score = 0
+                method_name_c = None
+                for candidate_name in candidate_list:
+                    match_score = candidate_list[candidate_name]
+                    if match_score > best_score:
+                        best_score = match_score
+                        method_name_c = candidate_name
+                refined_var_map[method_name_a + "("] = refined_var_map[method_name_c + "("]
+            writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
         else:
-            function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
-                                                                                           source_path_a)
-            missing_def_list = identifier.identify_missing_definitions(function_node, missing_function_list)
-            missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
-                                                                            source_path_d)
-            missing_header_list = identifier.identify_missing_headers(function_node, source_path_d)
-        emitter.success("\t\tfound definition in: " + function_source_file)
-        # print(function_name)
+            # ast_map_b = ast_generator.get_ast_json(source_path_b)
+            function_ref_node_id = int(info['ref_node_id'])
+            function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
+            function_def_node = finder.search_ast_node_by_id(ast_global_a, int(node_id))
+            function_source_file = function_def_node['file']
+            if function_source_file[-1] == "h":
+                if "include" in function_source_file:
+                    header_file = function_source_file.split("/include/")[-1]
+                else:
+                    header_file = function_source_file.split("/")[-1]
+                missing_header_list[header_file] = source_path_d
+
+            else:
+                function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
+                                                                                               source_path_a)
+                missing_def_list = identifier.identify_missing_definitions(function_node, missing_function_list)
+                missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
+                                                                                source_path_d)
+                missing_header_list = identifier.identify_missing_headers(function_node, source_path_d)
+            filtered_missing_function_list[function_name] = info
+            emitter.success("\t\tfound definition in: " + function_source_file)
+            # print(function_name)
     return missing_header_list, missing_macro_list, filtered_missing_function_list
 
 
