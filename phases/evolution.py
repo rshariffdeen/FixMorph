@@ -99,7 +99,8 @@ def evolve_code():
                                                     segment_code,
                                                     ast_tree_global_a,
                                                     ast_tree_global_b,
-                                                    ast_tree_global_c
+                                                    ast_tree_global_c,
+                                                    file_list
                                                     )
         file_index += 1
         if values.missing_function_list:

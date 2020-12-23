@@ -1,6 +1,6 @@
 from common import definitions, values
 from common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
-from tools import emitter, logger, finder, extractor, identifier, writer
+from tools import emitter, logger, finder, extractor, identifier, writer, parallel
 from ast import ast_generator
 
 import os
@@ -85,11 +85,14 @@ def evolve_functions(missing_function_list):
     for function_name in missing_function_list:
         info = missing_function_list[function_name]
         node_id = info['node_id']
-        source_path_b = info['source_b']
-        source_path_d = info['source_d']
+        source_path_a = info['source_a']
+        source_path_c = info['source_c']
         ast_global_a = info['ast-a']
         ast_global_c = info['ast-c']
         emitter.normal(function_name)
+        ast_map_key = info['ast-key']
+        mapping = parallel.generate_method_invocation_map(source_path_a, source_path_c, function_name, ast_map_key)
+
         # ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
         function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
@@ -100,22 +103,22 @@ def evolve_functions(missing_function_list):
                 header_file = function_source_file.split("/include/")[-1]
             else:
                 header_file = function_source_file.split("/")[-1]
-            missing_header_list[header_file] = source_path_d
+            missing_header_list[header_file] = source_path_c
 
         else:
             function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
-                                                                                           source_path_b)
+                                                                                           source_path_a)
             missing_def_list = identifier.identify_missing_definitions(function_node, missing_function_list)
             missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
-                                                                            source_path_d)
-            missing_header_list = identifier.identify_missing_headers(function_node, source_path_d)
+                                                                            source_path_c)
+            missing_header_list = identifier.identify_missing_headers(function_node, source_path_c)
         emitter.success("\t\tfound definition in: " + function_source_file)
         # print(function_name)
     return missing_header_list, missing_macro_list, filtered_missing_function_list
 
 
 def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, seg_code,
-                ast_tree_global_a, ast_tree_global_b, ast_tree_global_c):
+                ast_tree_global_a, ast_tree_global_b, ast_tree_global_c, ast_map_key):
 
     missing_function_list = dict()
     missing_var_list = dict()
@@ -166,11 +169,12 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
 
         if check_node:
 
-            missing_function_list.update(identifier.identify_missing_functions(ast_tree_global_a,
-                                                                               check_node,
-                                                                               file_b,
-                                                                               file_d,
-                                                                               ast_tree_global_c))
+            missing_function_list.update(identifier.identify_missing_functions(check_node,
+                                                                               file_a,
+                                                                               file_c,
+                                                                               ast_tree_global_a,
+                                                                               ast_tree_global_c,
+                                                                               ast_map_key))
 
             missing_macro_list.update(identifier.identify_missing_macros(check_node,
                                                                          file_b,

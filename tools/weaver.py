@@ -263,10 +263,10 @@ def weave_functions(missing_function_list, modified_source_list):
         source_path_b = info['source_b']
         source_path_d = info['source_d']
         emitter.normal(function_name)
-        ast_map_b = ast_generator.get_ast_json(source_path_b)
+        ast_tree_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
-        function_ref_node = finder.search_ast_node_by_id(ast_map_b, function_ref_node_id)
-        function_def_node = finder.search_ast_node_by_id(ast_map_b, int(node_id))
+        function_ref_node = finder.search_ast_node_by_id(ast_tree_b, function_ref_node_id)
+        function_def_node = finder.search_ast_node_by_id(ast_tree_b, int(node_id))
         function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
                                                                                        source_path_b)
         def_insert_point = finder.find_definition_insertion_point(source_path_d)

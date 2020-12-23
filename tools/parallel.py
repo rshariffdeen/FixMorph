@@ -201,7 +201,7 @@ def extend_mapping(ast_node_map, source_a, source_c):
     return ast_node_map
 
 
-def extend_method_invocation_map(ast_node_map, source_a, source_c):
+def generate_method_invocation_map(ast_node_map, source_a, source_c, method_name, ast_map_key):
     global pool, result_list, expected_count
     result_list = []
     method_invocation_map = dict()
@@ -218,22 +218,36 @@ def extend_method_invocation_map(ast_node_map, source_a, source_c):
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-
-        pool.apply_async(extractor.extract_method_invocations, args=(ast_node_a, ast_node_c, ast_node_map),
-                         callback=collect_result)
+        node_type_a = ast_node_a['type']
+        node_type_c = ast_node_c['type']
+        if node_type_a in ["CallExpr"] and node_type_c in ["CallExpr"]:
+            children_a = ast_node_a["children"]
+            children_c = ast_node_c["children"]
+            if len(children_a) < 1 or len(children_c) < 1:
+                continue
+            if method_name == children_a[0]["value"]:
+                result_list.append(extractor.extract_method_invocations(ast_map_key, ast_node_a, ast_node_c, ast_node_map, method_name))
+                # pool.apply_async(extractor.extract_method_invocations, args=(ast_node_a, ast_node_c, ast_node_map),
+                #                  callback=collect_result)
 
     pool.close()
     emitter.normal("\t\twaiting for thread completion")
     pool.join()
 
-    for method_name, arg_operation in result_list:
-        if method_name is not None:
-            method_invocation_map[method_name] = arg_operation
-
+    for method_name_a, method_name_c, arg_operation in result_list:
+        if method_name_a is not None:
+            if method_name_a not in method_invocation_map:
+                method_invocation_map[method_name_a] = dict()
+            mappings = method_invocation_map[method_name_a]
+            if method_name_c not in mappings:
+                mappings[method_name_c] = (1, arg_operation)
+            else:
+                mappings[method_name_c][0] = mappings[method_name_c][0]  + 1
+            method_invocation_map[method_name_a] = mappings
     return method_invocation_map
 
 
-def extend_function_map(ast_node_map, source_a, source_c):
+def generate_function_signature_map(ast_node_map, source_a, source_c):
     function_map = dict()
     emitter.normal("\tderiving function signature map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)

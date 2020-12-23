@@ -124,10 +124,10 @@ def generate_global_reference(generated_script_files):
             # refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
             # values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
             # writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_GLOBAL)
-            method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c)
+            method_invocation_map = parallel.generate_method_invocation_map(ast_node_map, vector_source_a, vector_source_c)
             emitter.data("method invocation map", method_invocation_map)
             values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
-            function_map = parallel.extend_function_map(ast_node_map, vector_source_a, vector_source_c)
+            function_map = parallel.generate_function_signature_map(ast_node_map, vector_source_a, vector_source_c)
             emitter.data("function map", function_map)
             values.FUNCTION_MAP_GLOBAL[(vector_source_a, vector_source_c)] = function_map
 
