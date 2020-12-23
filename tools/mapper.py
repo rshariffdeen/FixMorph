@@ -94,8 +94,7 @@ def generate_ast_map(generated_script_files):
                 if name_a not in map_merged:
                     map_merged[name_a] = map_global[name_a]
             values.map_namespace[vector_pair] = map_merged
-
-        writer.write_var_map(map_merged, definitions.FILE_NAMESPACE_MAP)
+            writer.write_var_map(map_merged, definitions.FILE_NAMESPACE_MAP)
 
     return ast_map_info
 
