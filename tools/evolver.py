@@ -85,13 +85,13 @@ def evolve_functions(missing_function_list):
     for function_name in missing_function_list:
         info = missing_function_list[function_name]
         node_id = info['node_id']
-        source_path_b = info['source_b']
+        source_path_a = info['source_a']
         source_path_d = info['source_d']
         ast_global_b = info['ast-b']
         ast_global_c = info['ast-c']
         emitter.normal(function_name)
         ast_map_key = info['ast-key']
-        mapping = parallel.generate_method_invocation_map(source_path_b, source_path_d, function_name, ast_map_key)
+        mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d, function_name, ast_map_key)
 
         # ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
@@ -107,7 +107,7 @@ def evolve_functions(missing_function_list):
 
         else:
             function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
-                                                                                           source_path_b)
+                                                                                           source_path_a)
             missing_def_list = identifier.identify_missing_definitions(function_node, missing_function_list)
             missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
                                                                             source_path_d)

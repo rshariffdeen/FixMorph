@@ -50,6 +50,7 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
     function_list = extractor.extract_function_node_list(ast_tree_c)
     # print(call_list)
     # print(skip_list)
+    source_path_a = source_path_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
     for call_expr in call_list:
         # print(call_expr)
         function_ref_node = call_expr['children'][0]
@@ -69,7 +70,7 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 info = dict()
                 info['node_id'] = function_node_b['id']
                 info['ref_node_id'] = function_ref_node['id']
-                info['source_b'] = source_path_b
+                info['source_a'] = source_path_a
                 info['source_d'] = source_path_d
                 info['ast-b'] = ast_tree_b
                 info['ast-c'] = ast_tree_c
@@ -79,7 +80,7 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 info = dict()
                 info['node_id'] = function_node_b['id']
                 info['ref_node_id'] = function_ref_node['id']
-                info['source_b'] = source_path_b
+                info['source_a'] = source_path_a
                 info['source_d'] = source_path_d
                 info['ast-b'] = ast_tree_b
                 info['ast-c'] = ast_tree_c

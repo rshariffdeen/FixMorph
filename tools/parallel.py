@@ -216,11 +216,11 @@ def generate_method_invocation_map(source_a, source_c, method_name, ast_map_key)
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
         ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
-        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
-        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-        node_type_a = ast_node_a['type']
-        node_type_c = ast_node_c['type']
+        node_type_a = str(ast_node_txt_c).split("(")[0].split(" ")[-1]
+        node_type_c = str(ast_node_txt_c).split("(")[0].split(" ")[-1]
         if node_type_a in ["CallExpr"] and node_type_c in ["CallExpr"]:
+            ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+            ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
             children_a = ast_node_a["children"]
             children_c = ast_node_c["children"]
             if len(children_a) < 1 or len(children_c) < 1:
