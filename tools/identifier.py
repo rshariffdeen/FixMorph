@@ -236,6 +236,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                             if enum_identifier == identifier:
                                 info['value'] = enum_value_int
                                 info['map-exist'] = identifier in var_map
+                                info['pre-exist'] = False
                                 missing_var_list[identifier] = info
 
     # print(missing_var_list)

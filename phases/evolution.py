@@ -3,6 +3,7 @@ import sys
 from common import values, definitions
 from common.utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import emitter, evolver, reader, logger, merger
+from ast import ast_generator
 
 file_index = 1
 backup_file_list = dict()
@@ -63,14 +64,18 @@ def evolve_code():
         vector_source_c = get_source_name_from_slice(slice_file_c)
         vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
 
-        # backup_file_orig(vector_source_a)
-        # backup_file_orig(vector_source_b)
-        # backup_file_orig(vector_source_c)
-        # backup_file_orig(vector_source_d)
-        # replace_file(slice_file_a, vector_source_a)
-        # replace_file(slice_file_b, vector_source_b)
-        # replace_file(slice_file_c, vector_source_c)
-        # replace_file(slice_file_d, vector_source_d)
+        ast_tree_global_a = ast_generator.get_ast_json(vector_source_a, values.DONOR_REQUIRE_MACRO, True)
+        ast_tree_global_b = ast_generator.get_ast_json(vector_source_b, values.DONOR_REQUIRE_MACRO, True)
+        ast_tree_global_c = ast_generator.get_ast_json(vector_source_c, values.DONOR_REQUIRE_MACRO, True)
+
+        backup_file_orig(vector_source_a)
+        backup_file_orig(vector_source_b)
+        backup_file_orig(vector_source_c)
+        backup_file_orig(vector_source_d)
+        replace_file(slice_file_a, vector_source_a)
+        replace_file(slice_file_b, vector_source_b)
+        replace_file(slice_file_c, vector_source_c)
+        replace_file(slice_file_d, vector_source_d)
 
         segment_code = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
         segment_identifier_a = slice_file_a.split("." + segment_code + ".")[-1].replace(".slice", "")
@@ -91,7 +96,10 @@ def evolve_code():
                                                     translated_script,
                                                     segment_identifier_a,
                                                     segment_identifier_c,
-                                                    segment_code
+                                                    segment_code,
+                                                    ast_tree_global_a,
+                                                    ast_tree_global_b,
+                                                    ast_tree_global_c
                                                     )
         file_index += 1
         if values.missing_function_list:
@@ -106,11 +114,11 @@ def evolve_code():
         else:
             values.missing_macro_list = identified_macro_list
 
-        # restore_file_orig(vector_source_a)
-        # restore_file_orig(vector_source_b)
-        # restore_file_orig(vector_source_c)
-        # replace_file(vector_source_d, slice_file_d)
-        # restore_file_orig(vector_source_d)
+        restore_file_orig(vector_source_a)
+        restore_file_orig(vector_source_b)
+        restore_file_orig(vector_source_c)
+        replace_file(vector_source_d, slice_file_d)
+        restore_file_orig(vector_source_d)
 
 
 def load_values():
