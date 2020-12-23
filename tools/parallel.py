@@ -282,9 +282,15 @@ def generate_function_signature_map(source_a, source_c, ast_tree_a, ast_tree_c, 
     emitter.normal("\t\twaiting for thread completion")
     pool.join()
 
-    for method_name, arg_operation in result_list:
-        if method_name is not None:
-            function_map[method_name] = arg_operation
-
+    for method_name_a, method_name_c, arg_operation in result_list:
+        if method_name_a is not None:
+            if method_name_a not in function_map:
+                function_map[method_name_a] = dict()
+            mappings = function_map[method_name_a]
+            if method_name_c not in mappings:
+                mappings[method_name_c] = (1, arg_operation)
+            else:
+                mappings[method_name_c][0] = mappings[method_name_c][0] + 1
+            function_map[method_name_a] = mappings
     return function_map
 
