@@ -87,11 +87,13 @@ def evolve_functions(missing_function_list):
         node_id = info['node_id']
         source_path_b = info['source_b']
         source_path_d = info['source_d']
+        ast_global_a = info['ast-a']
+        ast_global_c = info['ast-c']
         emitter.normal(function_name)
-        ast_map_b = ast_generator.get_ast_json(source_path_b)
+        # ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
-        function_ref_node = finder.search_ast_node_by_id(ast_map_b, function_ref_node_id)
-        function_def_node = finder.search_ast_node_by_id(ast_map_b, int(node_id))
+        function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
+        function_def_node = finder.search_ast_node_by_id(ast_global_a, int(node_id))
         function_source_file = function_def_node['file']
         if function_source_file[-1] == "h":
             if "include" in function_source_file:

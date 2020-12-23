@@ -70,6 +70,8 @@ def identify_missing_functions(ast_tree_a, ast_node, source_path_b, source_path_
                 info['ref_node_id'] = function_ref_node['id']
                 info['source_b'] = source_path_b
                 info['source_d'] = source_path_d
+                info['ast-a'] = ast_tree_a
+                info['ast-c'] = ast_tree_c
                 missing_function_list[function_name] = info
             else:
                 info = dict()
@@ -77,6 +79,8 @@ def identify_missing_functions(ast_tree_a, ast_node, source_path_b, source_path_
                 info['ref_node_id'] = function_ref_node['id']
                 info['source_b'] = source_path_b
                 info['source_d'] = source_path_d
+                info['ast-a'] = ast_tree_a
+                info['ast-c'] = ast_tree_c
                 if info != missing_function_list[function_name]:
                     print(missing_function_list[function_name])
                     error_exit("MULTIPLE FUNCTION REFERENCES ON DIFFERENT TARGETS FOUND!!!")
