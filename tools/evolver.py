@@ -87,11 +87,12 @@ def evolve_functions(missing_function_list):
         node_id = info['node_id']
         source_path_a = info['source_a']
         source_path_d = info['source_d']
-        ast_global_a = info['ast-b']
-        ast_global_d = info['ast-c']
         emitter.normal(function_name)
         ast_map_key = info['ast-key']
-        mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d, function_name)
+        ast_global_a = ast_generator.get_ast_json(source_path_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+        ast_global_c = ast_generator.get_ast_json(source_path_d, values.TARGET_REQUIRE_MACRO, regenerate=True)
+        mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d,
+                                                          ast_global_a, ast_global_c, function_name)
 
         # ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])

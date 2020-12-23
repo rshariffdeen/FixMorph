@@ -201,13 +201,12 @@ def extend_mapping(ast_node_map, source_a, source_c):
     return ast_node_map
 
 
-def generate_method_invocation_map(source_a, source_c, method_name):
+def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, method_name):
     global pool, result_list, expected_count
     result_list = []
     method_invocation_map = dict()
     emitter.normal("\tderiving method invocation map")
-    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+
 
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
     mapper.generate_map(source_a, source_c, map_file_name)

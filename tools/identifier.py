@@ -72,8 +72,8 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 info['ref_node_id'] = function_ref_node['id']
                 info['source_a'] = source_path_a
                 info['source_d'] = source_path_d
-                info['ast-a'] = ast_tree_a
-                info['ast-d'] = ast_tree_c
+                # info['ast-a'] = ast_tree_a
+                # info['ast-d'] = ast_tree_c
                 info['ast-key'] = ast_map_key
                 missing_function_list[function_name] = info
             else:
@@ -82,8 +82,8 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 info['ref_node_id'] = function_ref_node['id']
                 info['source_a'] = source_path_a
                 info['source_d'] = source_path_d
-                info['ast-a'] = ast_tree_a
-                info['ast-d'] = ast_tree_c
+                # info['ast-a'] = ast_tree_a
+                # info['ast-d'] = ast_tree_c
                 info['ast-key'] = ast_map_key
                 if info != missing_function_list[function_name]:
                     print(missing_function_list[function_name])
