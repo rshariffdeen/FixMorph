@@ -84,6 +84,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         if ast_node_a:
             if ast_node_id_a in range(neighbor_ast_range[0], neighbor_ast_range[1]):
                 value_score = 100
+        # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
         pool.apply_async(extractor.extract_mapping, args=(ast_node_a, ast_node_c, value_score),
                          callback=collect_result)
 
@@ -145,6 +146,7 @@ def get_mapping(map_file_name):
         operation = line[0]
         content = " ".join(line[1:])
         if operation == definitions.MATCH:
+            # result_list.append(utilities.clean_parse(content, definitions.TO))
             pool.apply_async(utilities.clean_parse, args=(content, definitions.TO),
                              callback=collect_result)
             # try:
@@ -181,7 +183,8 @@ def extend_mapping(ast_node_map, source_a, source_c):
         ast_node_id_c = int(str(node_c).split("(")[1].split(")")[0])
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-        # au_pairs = mapper.anti_unification(ast_node_a, ast_node_c)
+        # result_list.append(mapper.anti_unification(ast_node_a, ast_node_c))
+
         pool.apply_async(mapper.anti_unification, args=(ast_node_a, ast_node_c),
                          callback=collect_result)
 
