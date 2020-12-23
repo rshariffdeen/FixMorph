@@ -111,7 +111,7 @@ def evolve_functions(missing_function_list):
                     if match_score > best_score:
                         best_score = match_score
                         method_name_c = candidate_name
-                refined_var_map[method_name_a + "("] = refined_var_map[method_name_c + "("]
+                refined_var_map[method_name_a + "("] = method_name_c + "("
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
         else:
             # ast_map_b = ast_generator.get_ast_json(source_path_b)
