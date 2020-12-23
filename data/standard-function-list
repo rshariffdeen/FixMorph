@@ -2,3 +2,4 @@ vfprintf
 va_end
 va_start
 free
+printf
