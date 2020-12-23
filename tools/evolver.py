@@ -199,6 +199,8 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
     for var in missing_var_list:
         # print(var)
         var_info = missing_var_list[var]
+        if not var_info['pre-exist']:
+            continue
         if "ast-node" in var_info.keys():
             ast_node = var_info['ast-node']
             # not sure why the if is required
