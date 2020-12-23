@@ -122,21 +122,25 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
                                 info['is_global'] = False
+                                info['map-exist'] = identifier in var_map
 
                             elif identifier in dec_list_global_a.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = True
                                 info['ast-node'] = dec_list_global_b[identifier]
+                                info['map-exist'] = identifier in var_map
 
                             elif identifier in dec_list_local_b.keys():
                                 info['is_global'] = False
                                 info['pre-exist'] = False
                                 info['ast-node'] = dec_list_local_b[identifier]
+                                info['map-exist'] = identifier in var_map
 
                             elif identifier in dec_list_global_b.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = False
                                 info['ast-node'] = dec_list_global_b[identifier]
+                                info['map-exist'] = identifier in var_map
 
                             missing_var_list[identifier] = info
                         else:
@@ -231,6 +235,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                             enum_identifier = enum_const['identifier']
                             if enum_identifier == identifier:
                                 info['value'] = enum_value_int
+                                info['map-exist'] = identifier in var_map
                                 missing_var_list[identifier] = info
 
     # print(missing_var_list)
