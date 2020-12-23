@@ -207,7 +207,6 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
     method_invocation_map = dict()
     emitter.normal("\tderiving method invocation map")
 
-
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
     mapper.generate_map(source_a, source_c, map_file_name)
     global_ast_node_map = get_mapping(map_file_name)
@@ -251,22 +250,33 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
     return method_invocation_map
 
 
-def generate_function_signature_map(ast_node_map, source_a, source_c):
+def generate_function_signature_map(source_a, source_c, ast_tree_a, ast_tree_c, method_name):
     function_map = dict()
     emitter.normal("\tderiving function signature map")
-    ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+    map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
+    # mapper.generate_map(source_a, source_c, map_file_name)
+    global_ast_node_map = get_mapping(map_file_name)
 
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
-    for ast_node_txt_a in ast_node_map:
-        ast_node_txt_c = ast_node_map[ast_node_txt_a]
+    for ast_node_txt_a in global_ast_node_map:
+        ast_node_txt_c = global_ast_node_map[ast_node_txt_a]
         ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
-        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
-        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
-        pool.apply_async(extractor.extract_method_signatures, args=(ast_node_a, ast_node_c, ast_node_map),
-                         callback=collect_result)
+        node_type_a = str(ast_node_txt_c).split("(")[0].split(" ")[-1]
+        node_type_c = str(ast_node_txt_c).split("(")[0].split(" ")[-1]
+        if node_type_a in ["FunctionDecl"] and node_type_c in ["FunctionDecl"]:
+            ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
+            ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+            children_a = ast_node_a["children"]
+            children_c = ast_node_c["children"]
+            if len(children_a) < 1 or len(children_c) < 1:
+                return None, []
+
+        result_list.append(extractor.extract_method_signatures(global_ast_node_map,
+                                                               ast_node_a, ast_node_c, method_name))
+        # pool.apply_async(extractor.extract_method_signatures, args=(ast_node_a, ast_node_c, ast_node_map),
+        #                  callback=collect_result)
 
     pool.close()
     emitter.normal("\t\twaiting for thread completion")

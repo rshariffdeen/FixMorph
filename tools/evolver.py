@@ -93,6 +93,9 @@ def evolve_functions(missing_function_list):
         ast_global_c = ast_generator.get_ast_json(source_path_d, values.TARGET_REQUIRE_MACRO, regenerate=True)
         mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d,
                                                           ast_global_a, ast_global_c, function_name)
+        if not mapping:
+            mapping = parallel.generate_function_signature_map(source_path_a, source_path_d,
+                                                               ast_global_a, ast_global_c, function_name)
 
         # ast_map_b = ast_generator.get_ast_json(source_path_b)
         function_ref_node_id = int(info['ref_node_id'])
