@@ -201,14 +201,14 @@ def extend_mapping(ast_node_map, source_a, source_c):
     return ast_node_map
 
 
-def generate_method_invocation_map(ast_node_map, source_a, source_c, method_name, ast_map_key):
+def generate_method_invocation_map(source_a, source_c, method_name, ast_map_key):
     global pool, result_list, expected_count
     result_list = []
     method_invocation_map = dict()
     emitter.normal("\tderiving method invocation map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-
+    ast_node_map = values.ast_map[ast_map_key]
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
 
@@ -226,7 +226,7 @@ def generate_method_invocation_map(ast_node_map, source_a, source_c, method_name
             if len(children_a) < 1 or len(children_c) < 1:
                 continue
             if method_name == children_a[0]["value"]:
-                result_list.append(extractor.extract_method_invocations(ast_map_key, ast_node_a, ast_node_c, ast_node_map, method_name))
+                result_list.append(extractor.extract_method_invocations(ast_map_key, ast_node_a, ast_node_c, method_name))
                 # pool.apply_async(extractor.extract_method_invocations, args=(ast_node_a, ast_node_c, ast_node_map),
                 #                  callback=collect_result)
 
