@@ -162,21 +162,25 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
                             if identifier in dec_list_local_a.keys():
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
+                                info['map-exist'] = identifier in var_map
                                 info['is_global'] = False
 
                             elif identifier in dec_list_global_a.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = True
+                                info['map-exist'] = identifier in var_map
                                 info['ast-node'] = dec_list_global_b[identifier]
 
                             elif identifier in dec_list_local_b.keys():
                                 info['is_global'] = False
                                 info['pre-exist'] = False
+                                info['map-exist'] = identifier in var_map
                                 info['ast-node'] = dec_list_local_b[identifier]
 
                             elif identifier in dec_list_global_b.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = False
+                                info['map-exist'] = identifier in var_map
                                 info['ast-node'] = dec_list_global_b[identifier]
 
                             missing_var_list[identifier] = info
