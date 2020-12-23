@@ -273,8 +273,8 @@ def generate_function_signature_map(source_a, source_c, ast_tree_a, ast_tree_c, 
             if len(children_a) < 1 or len(children_c) < 1:
                 return None, []
 
-        result_list.append(extractor.extract_method_signatures(global_ast_node_map,
-                                                               ast_node_a, ast_node_c, method_name))
+            result_list.append(extractor.extract_method_signatures(global_ast_node_map,
+                                                                   ast_node_a, ast_node_c, method_name))
         # pool.apply_async(extractor.extract_method_signatures, args=(ast_node_a, ast_node_c, ast_node_map),
         #                  callback=collect_result)
 
