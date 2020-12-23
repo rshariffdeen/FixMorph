@@ -211,7 +211,7 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
     mapper.generate_map(source_a, source_c, map_file_name)
     global_ast_node_map = get_mapping(map_file_name)
-
+    result_list = []
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
 
@@ -229,7 +229,8 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
             if len(children_a) < 1 or len(children_c) < 1:
                 continue
             if method_name == children_a[0]["value"]:
-                result_list.append(extractor.extract_method_invocations(global_ast_node_map, ast_node_a, ast_node_c, method_name))
+                result_list.append(extractor.extract_method_invocations(global_ast_node_map,
+                                                                        ast_node_a, ast_node_c, method_name))
                 # pool.apply_async(extractor.extract_method_invocations, args=(ast_node_a, ast_node_c, ast_node_map),
                 #                  callback=collect_result)
 
