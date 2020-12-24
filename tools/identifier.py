@@ -45,60 +45,73 @@ def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, inse
 def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_a, ast_tree_b, ast_tree_c, ast_map_key):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\tanalysing for missing function calls")
-    missing_function_list = dict()
-    call_list = extractor.extract_call_node_list(ast_node)
-    function_list = extractor.extract_function_node_list(ast_tree_c)
+    missing_function_info = dict()
+    call_list_b = extractor.extract_call_node_list(ast_node)
+    function_list_c = extractor.extract_function_node_list(ast_tree_c)
     # print(call_list)
     # print(skip_list)
     source_path_a = source_path_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
-    for call_expr in call_list:
+    macro_list = extractor.extract_macro_node_list(ast_node)
+    missing_function_list = dict()
+    for macro_node in macro_list:
+        if "value" in macro_node:
+            macro_value = macro_node['value']
+            # print(macro_value)
+            if "(" in macro_value:
+                function_name = macro_value.split("(")[0]
+                missing_function_list[function_name] = macro_node
+
+    for call_expr in call_list_b:
         # print(call_expr)
         function_ref_node = call_expr['children'][0]
         function_name = function_ref_node['value']
         # print(function_name)
-        if function_name in function_list.keys():
-            continue
-        line_number = function_ref_node['start line']
-        # print(line_number)
+        missing_function_list[function_name] = function_ref_node
 
+    for function_name in missing_function_list:
+        if function_name in function_list_c.keys():
+            continue
+        # line_number = function_ref_node['start line']
+        # print(line_number)
+        ref_node = missing_function_list[function_name]
         function_node_a = finder.search_function_node_by_name(ast_tree_a, function_name)
         function_node_b = finder.search_function_node_by_name(ast_tree_b, function_name)
         # print(function_node)
         if function_node_a is not None and function_node_b is not None:
             # print(function_node)
-            if function_name not in missing_function_list.keys():
+            if function_name not in missing_function_info.keys():
                 info = dict()
                 info['node_id'] = function_node_a['id']
-                info['ref_node_id'] = function_ref_node['id']
+                info['ref_node_id'] = ref_node['id']
                 info['source_a'] = source_path_a
                 info['source_d'] = source_path_d
                 # info['ast-a'] = ast_tree_a
                 # info['ast-d'] = ast_tree_c
                 info['ast-key'] = ast_map_key
-                missing_function_list[function_name] = info
+                missing_function_info[function_name] = info
             else:
                 info = dict()
                 info['node_id'] = function_node_a['id']
-                info['ref_node_id'] = function_ref_node['id']
+                info['ref_node_id'] = ref_node['id']
                 info['source_a'] = source_path_a
                 info['source_d'] = source_path_d
                 # info['ast-a'] = ast_tree_a
                 # info['ast-d'] = ast_tree_c
                 info['ast-key'] = ast_map_key
-                if info != missing_function_list[function_name]:
-                    print(missing_function_list[function_name])
+                if info != missing_function_info[function_name]:
+                    print(missing_function_info[function_name])
                     error_exit("MULTIPLE FUNCTION REFERENCES ON DIFFERENT TARGETS FOUND!!!")
     # print(missing_function_list)
-    return missing_function_list
+    return missing_function_info
 
 
-def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, source_path_c, var_map):
+def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_node_b, source_path_b, source_path_c, var_map):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\tanalysing for missing variables")
     missing_var_list = dict()
     source_path_a = source_path_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
     # print(insert_node_b)
-    ref_list = extractor.extract_reference_node_list(insert_node_b)
+    ref_list = extractor.extract_reference_node_list(ast_node_b)
     # print(ref_list)
     dec_list_local_a = extractor.extract_decl_node_list(neighborhood_a)
     dec_list_local_b = extractor.extract_decl_node_list(neighborhood_b)
@@ -113,9 +126,9 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, insert_
     dec_list_global_b = extractor.extract_decl_node_list_global(ast_tree_b)
     dec_list_global_c = extractor.extract_decl_node_list_global(ast_tree_c)
     enum_list_b = extractor.extract_enum_node_list(ast_tree_b)
-    if insert_node_b['type'] == "Macro":
-        if "value" in insert_node_b:
-            macro_value = insert_node_b['value']
+    if ast_node_b['type'] == "Macro":
+        if "value" in ast_node_b:
+            macro_value = ast_node_b['value']
             # print(macro_value)
             if "(" in macro_value:
                 operand_list = macro_value.split("(")[1].split(")")[0].split(",")
