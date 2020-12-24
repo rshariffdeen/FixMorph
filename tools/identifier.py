@@ -139,7 +139,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                     if "\"" in identifier or "'" in identifier or str(identifier).isnumeric():
                         continue
                     if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
-                    var_list = var_list + extractor.extract_identifier_list(operand)
+                        var_list = var_list + extractor.extract_identifier_list(operand)
                 for operand in var_list:
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
