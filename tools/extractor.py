@@ -793,3 +793,15 @@ def extract_method_signatures(ast_node_map, func_node_a, func_node_c, method_nam
             arg_operation.append((definitions.INSERT, i, converter.get_node_value(parameter_list_c[i])))
 
     return method_name_a, method_name_c, arg_operation
+
+
+def extract_identifier_list(string_expression):
+    identifier_list = []
+    if not any(operator in string_expression for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
+        return [string_expression]
+    for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]:
+        if operator in string_expression:
+            token_list = string_expression.split(operator)
+            for token in token_list:
+                identifier_list = identifier_list + extract_identifier_list(token)
+    return identifier_list
