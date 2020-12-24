@@ -66,11 +66,11 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
         function_ref_node = call_expr['children'][0]
         function_name = function_ref_node['value']
         # print(function_name)
+        if function_name in function_list_c.keys():
+            continue
         missing_function_list[function_name] = function_ref_node
 
     for function_name in missing_function_list:
-        if function_name in function_list_c.keys():
-            continue
         # line_number = function_ref_node['start line']
         # print(line_number)
         ref_node = missing_function_list[function_name]
