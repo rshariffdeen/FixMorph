@@ -131,7 +131,8 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
             macro_value = ast_node_b['value']
             # print(macro_value)
             if "(" in macro_value:
-                operand_list = macro_value.split("(")[1].split(")")[0].split(",")
+                func_name = macro_value.split("(")[0]
+                operand_list = macro_value.replace(func_name, "")[:-1].split(",")
                 # print(operand_list)
                 var_list = list()
                 for operand in operand_list:
@@ -140,7 +141,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         continue
                     if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
                         var_list = var_list + extractor.extract_identifier_list(operand)
-                for operand in var_list:
+                for identifier in var_list:
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
                             info = dict()
@@ -171,8 +172,8 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
 
                             missing_var_list[identifier] = info
                         else:
-                            if neighborhood_b['value'] not in missing_var_list[identifier]['references']:
-                                missing_var_list[identifier]['references'].append(neighborhood_b['value'])
+                            if neighborhood_b['value'] not in missing_var_list[identifier]['ref_list']:
+                                missing_var_list[identifier]['ref_list'].append(neighborhood_b['value'])
                                 missing_var_list[identifier]['is_global'] = True
 
                 # print(missing_var_list)
@@ -216,8 +217,8 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
 
                             missing_var_list[identifier] = info
                         else:
-                            if neighborhood_b['value'] not in missing_var_list[identifier]['references']:
-                                missing_var_list[identifier]['references'].append(neighborhood_b['value'])
+                            if neighborhood_b['value'] not in missing_var_list[identifier]['ref_list']:
+                                missing_var_list[identifier]['ref_list'].append(neighborhood_b['value'])
                                 missing_var_list[identifier]['is_global'] = True
 
                     # elif identifier not in var_map.keys():
