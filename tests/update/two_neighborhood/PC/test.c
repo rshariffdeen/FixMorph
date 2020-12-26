@@ -3,7 +3,7 @@
 #include <ctype.h>  
 
 void printX(int a, char* str){
-    print("X: the values are  %d %s\n", a, str);
+    printf("X: the values are  %d %s\n", a, str);
 }
 
 void printY(int a){
