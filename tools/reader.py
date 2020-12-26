@@ -46,3 +46,11 @@ def read_namespace_map(file_path):
     return namespace_map
 
 
+def read_ast_map(file_path):
+    ast_map = dict()
+    map_list = read_json(file_path)
+    for (file_path_info, node_map) in map_list:
+        ast_map[(file_path_info[0], file_path_info[1])] = node_map
+    return ast_map
+
+
