@@ -100,8 +100,8 @@ def evolve_functions(missing_function_list):
 
         # if no mapping found add function for transplantation list
         if mapping:
-            vector_pair = list(values.map_namespace_local.keys())[0]
-            refined_var_map = values.map_namespace_local[vector_pair]
+            vector_pair = (ast_map_key[0], ast_map_key[2])
+            refined_var_map = values.map_namespace_global[vector_pair]
             for method_name_a in mapping:
                 candidate_list = mapping[method_name_a]
                 best_score = 0
@@ -148,8 +148,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     missing_label_list = dict()
     missing_header_list = dict()
     missing_data_type_list = dict()
-    slice_file_a, slice_file_b, slice_file_c, slice_file_d  = slice_file_list
-    source_file_a, source_file_b,source_file_c, source_file_d = source_file_list
+    slice_file_a, slice_file_b, slice_file_c, slice_file_d = slice_file_list
+    source_file_a, source_file_b, source_file_c, source_file_d = source_file_list
     ast_map_key = (slice_file_a, slice_file_b, slice_file_c)
 
     if values.DONOR_REQUIRE_MACRO:
