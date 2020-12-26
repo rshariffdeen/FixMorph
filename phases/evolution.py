@@ -59,10 +59,12 @@ def evolve_code():
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
         slice_file_d = slice_file_c.replace(values.CONF_PATH_C, values.Project_D.path)
+        slice_file_list = (slice_file_a, slice_file_b, slice_file_c, slice_file_d)
         vector_source_a = get_source_name_from_slice(slice_file_a)
         vector_source_b = get_source_name_from_slice(slice_file_b)
         vector_source_c = get_source_name_from_slice(slice_file_c)
         vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
+        source_file_list = (vector_source_a, vector_source_b, vector_source_c, vector_source_d)
 
         ast_tree_global_a = ast_generator.get_ast_json(vector_source_a, values.DONOR_REQUIRE_MACRO, True)
         ast_tree_global_b = ast_generator.get_ast_json(vector_source_b, values.DONOR_REQUIRE_MACRO, True)
@@ -90,17 +92,15 @@ def evolve_code():
         emitter.emit_ast_script(translated_script)
 
         identified_function_list, \
-        identified_macro_list = evolver.evolve_code(vector_source_a,
-                                                    vector_source_b,
-                                                    vector_source_c,
+        identified_macro_list = evolver.evolve_code(slice_file_list,
+                                                    source_file_list,
                                                     translated_script,
                                                     segment_identifier_a,
                                                     segment_identifier_c,
                                                     segment_code,
                                                     ast_tree_global_a,
                                                     ast_tree_global_b,
-                                                    ast_tree_global_c,
-                                                    file_list
+                                                    ast_tree_global_c
                                                     )
         file_index += 1
         if values.missing_function_list:

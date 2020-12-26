@@ -139,8 +139,8 @@ def evolve_functions(missing_function_list):
     return missing_header_list, missing_macro_list, filtered_missing_function_list
 
 
-def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, seg_code,
-                ast_tree_global_a, ast_tree_global_b, ast_tree_global_c, ast_map_key):
+def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, seg_id_c, seg_code,
+                ast_tree_global_a, ast_tree_global_b, ast_tree_global_c):
 
     missing_function_list = dict()
     missing_var_list = dict()
@@ -148,25 +148,27 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
     missing_label_list = dict()
     missing_header_list = dict()
     missing_data_type_list = dict()
+    slice_file_a, slice_file_b, slice_file_c, slice_file_d  = slice_file_list
+    source_file_a, source_file_b,source_file_c, source_file_d = source_file_list
+    ast_map_key = (slice_file_a, slice_file_b, slice_file_c)
 
     if values.DONOR_REQUIRE_MACRO:
         values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
     # ast_tree_local_a = ast_generator.get_ast_json(file_a, values.DONOR_REQUIRE_MACRO, True)
-    ast_tree_local_b = ast_generator.get_ast_json(file_b, values.DONOR_REQUIRE_MACRO, True)
+    ast_tree_local_b = ast_generator.get_ast_json(source_file_a, values.DONOR_REQUIRE_MACRO, True)
 
     if values.TARGET_REQUIRE_MACRO:
         values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
     # ast_tree_local_c = ast_generator.get_ast_json(file_c, values.TARGET_REQUIRE_MACRO, True)
 
-    file_d = str(file_c).replace(values.Project_C.path, values.Project_D.path)
 
     # Check for an edit script
     script_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_script"
     syntax_error_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_syntax_errors"
-    neighborhood_a = extractor.extract_neighborhood(file_a, seg_code, seg_id_a)
-    neighborhood_b = extractor.extract_neighborhood(file_b, seg_code, seg_id_a)
-    neighborhood_c = extractor.extract_neighborhood(file_c, seg_code, seg_id_c)
-    var_map = values.map_namespace_global[(file_a, file_c)]
+    neighborhood_a = extractor.extract_neighborhood(source_file_a, seg_code, seg_id_a)
+    neighborhood_b = extractor.extract_neighborhood(source_file_b, seg_code, seg_id_a)
+    neighborhood_c = extractor.extract_neighborhood(source_file_c, seg_code, seg_id_c)
+    var_map = values.map_namespace_global[(slice_file_a, slice_file_c)]
     script_lines = list()
 
     count = 0
@@ -192,24 +194,24 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
         if check_node:
 
             missing_function_list.update(identifier.identify_missing_functions(check_node,
-                                                                               file_b,
-                                                                               file_d,
+                                                                               source_file_b,
+                                                                               source_file_c,
                                                                                ast_tree_global_a,
                                                                                ast_tree_global_b,
                                                                                ast_tree_global_c,
                                                                                ast_map_key))
 
             missing_macro_list.update(identifier.identify_missing_macros(check_node,
-                                                                         file_b,
-                                                                         file_d
+                                                                         source_file_b,
+                                                                         source_file_d
                                                                          ))
 
             missing_var_list.update(identifier.identify_missing_var(neighborhood_a,
                                                                     neighborhood_b,
                                                                     neighborhood_c,
                                                                     check_node,
-                                                                    file_b,
-                                                                    file_c,
+                                                                    source_file_b,
+                                                                    source_file_c,
                                                                     var_map
                                                                     ))
 
@@ -217,7 +219,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
                                                                          neighborhood_b,
                                                                          neighborhood_c,
                                                                          check_node,
-                                                                         file_b,
+                                                                         source_file_b,
                                                                          var_map
                                                                          ))
 
@@ -245,7 +247,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
         elif "value" in var_info.keys():
             var_map[var] = str(var_info['value'])
 
-    values.map_namespace_global[(file_a, file_c)] = var_map
+    values.map_namespace_global[(source_file_a, source_file_c)] = var_map
     writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
     offset = len(target_ast['children']) - 1
     position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
