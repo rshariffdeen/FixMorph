@@ -1012,5 +1012,5 @@ def translate_script_list(file_list, generated_data):
     restore_file_orig(vector_source_a)
     restore_file_orig(vector_source_b)
     restore_file_orig(vector_source_c)
-    return original_script, translated_script
+    return  translated_script, original_script
 
