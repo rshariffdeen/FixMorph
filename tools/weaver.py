@@ -37,7 +37,8 @@ def execute_ast_transformation(script_path, source_file_info):
         backup_file_list[file_c] = backup_file
         backup_command += "cp " + file_c + " " + definitions.DIRECTORY_BACKUP + "/" + backup_file
     # print(backup_command)
-    execute_command(backup_command)
+    if backup_command:
+        execute_command(backup_command)
 
     parameters = " -s=" + definitions.PATCH_SIZE
 
