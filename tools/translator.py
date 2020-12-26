@@ -1002,7 +1002,7 @@ def translate_script_list(file_list, generated_data):
         emitter.warning("failed to translate AST transformation")
         emitter.warning("trying to use different if-def combination")
         values.TARGET_REQUIRE_MACRO = not values.TARGET_REQUIRE_MACRO
-        values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
+        # values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                      generated_data[2], map_ac)
         if not translated_script:
@@ -1012,5 +1012,5 @@ def translate_script_list(file_list, generated_data):
     restore_file_orig(vector_source_a)
     restore_file_orig(vector_source_b)
     restore_file_orig(vector_source_c)
-    return  translated_script, original_script
+    return translated_script, original_script
 

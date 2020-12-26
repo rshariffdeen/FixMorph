@@ -73,42 +73,31 @@ def clean_parse(content, separator):
     return [node1, node2]
 
 
-def generate_map(generated_script_files):
-    ast_map_global = dict()
-    namespace_map_global = dict()
+def generate_map(file_list):
+    slice_file_a = file_list[0]
+    slice_file_c = file_list[2]
+    vector_source_a = get_source_name_from_slice(slice_file_a)
+    vector_source_c = get_source_name_from_slice(slice_file_c)
 
-    if len(generated_script_files) == 0:
-        emitter.normal("\t -nothing-to-do")
-    else:
-        emitter.sub_sub_title("generating map using local reference")
-        for file_list, generated_data in generated_script_files.items():
-            slice_file_a = file_list[0]
-            slice_file_c = file_list[2]
-            vector_source_a = get_source_name_from_slice(slice_file_a)
-            vector_source_c = get_source_name_from_slice(slice_file_c)
+    backup_file_orig(vector_source_a)
+    backup_file_orig(vector_source_c)
+    replace_file(slice_file_a, vector_source_a)
+    replace_file(slice_file_c, vector_source_c)
 
-            backup_file_orig(vector_source_a)
-            backup_file_orig(vector_source_c)
-            replace_file(slice_file_a, vector_source_a)
-            replace_file(slice_file_c, vector_source_c)
+    map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
+    if not values.CONF_USE_CACHE:
+        generate_map_gumtree(vector_source_a, vector_source_c, map_file_name)
 
-            map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
-            if not values.CONF_USE_CACHE:
-                generate_map_gumtree(vector_source_a, vector_source_c, map_file_name)
+    ast_node_map = parallel.read_mapping(map_file_name)
+    emitter.data(ast_node_map)
+    ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
+    emitter.data(ast_node_map)
+    namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
+                                                  vector_source_c, slice_file_a)
+    restore_file_orig(vector_source_a)
+    restore_file_orig(vector_source_c)
 
-            ast_node_map = parallel.read_mapping(map_file_name)
-            emitter.data(ast_node_map)
-            ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
-            ast_map_global[(slice_file_a, slice_file_c)] = ast_node_map
-            emitter.data(ast_node_map)
-            namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
-                                                          vector_source_c, slice_file_a)
-
-            namespace_map_global[(slice_file_a, slice_file_c)] = namespace_map
-            restore_file_orig(vector_source_a)
-            restore_file_orig(vector_source_c)
-
-    return ast_map_global, namespace_map_global
+    return ast_node_map, namespace_map
 
 
 def anti_unification(ast_node_a, ast_node_c):

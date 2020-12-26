@@ -7,7 +7,21 @@ from tools import emitter, reader, writer, logger, mapper
 
 def generate_map():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
+    generated_script_files = values.generated_script_files
+    ast_map_global = dict()
+    namespace_map_global = dict()
+    if len(generated_script_files) == 0:
+        emitter.normal("\t -nothing-to-do")
+    else:
+        emitter.sub_sub_title("generating map using local reference")
+        for file_list, generated_data in generated_script_files.items():
+            slice_file_a = file_list[0]
+            slice_file_c = file_list[2]
+            ast_node_map, namespace_map = mapper.generate_map(file_list)
+            ast_map_global[(slice_file_a, slice_file_c)] = ast_node_map
+            namespace_map_global[(slice_file_a, slice_file_c)] = namespace_map
+    values.ast_map = ast_map_global
+    values.map_namespace_global = namespace_map_global
 
 
 def load_values():
@@ -27,7 +41,7 @@ def load_values():
 def safe_exec(function_def, title, *args):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     start_time = time.time()
-    emitter.sub_title("Starting " + title + "...")
+    emitter.normal("Starting " + title + "...")
     description = title[0].lower() + title[1:]
     try:
         logger.information("running " + str(function_def))
