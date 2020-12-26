@@ -960,57 +960,57 @@ def get_instruction(instruction_data):
     return instruction
 
 
-def translate_script_list(generated_script_list):
+def translate_script_list(file_list, generated_data):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     translated_script_list = dict()
-    for file_list, generated_data in generated_script_list.items():
-        slice_file_a = file_list[0]
-        slice_file_b = file_list[1]
-        slice_file_c = file_list[2]
-        vector_source_a = get_source_name_from_slice(slice_file_a)
-        vector_source_b = get_source_name_from_slice(slice_file_b)
-        vector_source_c = get_source_name_from_slice(slice_file_c)
 
-        backup_file_orig(vector_source_a)
-        backup_file_orig(vector_source_b)
-        backup_file_orig(vector_source_c)
-        replace_file(slice_file_a, vector_source_a)
-        replace_file(slice_file_b, vector_source_b)
-        replace_file(slice_file_c, vector_source_c)
+    slice_file_a = file_list[0]
+    slice_file_b = file_list[1]
+    slice_file_c = file_list[2]
+    vector_source_a = get_source_name_from_slice(slice_file_a)
+    vector_source_b = get_source_name_from_slice(slice_file_b)
+    vector_source_c = get_source_name_from_slice(slice_file_c)
 
-        emitter.sub_sub_title("Generating AST in JSON")
-        json_ast_dump = gen_temp_json(vector_source_a, vector_source_b, vector_source_c)
+    backup_file_orig(vector_source_a)
+    backup_file_orig(vector_source_b)
+    backup_file_orig(vector_source_c)
+    replace_file(slice_file_a, vector_source_a)
+    replace_file(slice_file_b, vector_source_b)
+    replace_file(slice_file_c, vector_source_c)
 
-        original_script = list()
-        for instruction in generated_data[0]:
-            instruction_line = ""
-            for token in instruction:
-                instruction_line += token + " "
-            original_script.append(instruction_line)
-        emitter.information(original_script)
-        modified_script = simplify_patch(generated_data[0], generated_data[2], json_ast_dump)
-        emitter.information(modified_script)
-        modified_script.sort(key=cmp_to_key(order_comp))
-        modified_script = rewrite_as_script(modified_script)
-        emitter.information(modified_script)
-        # We get the matching nodes from Pa to Pc into a dict
-        map_ac = values.ast_map[(slice_file_a, slice_file_c)]
+    emitter.sub_sub_title("Generating AST in JSON")
+    json_ast_dump = gen_temp_json(vector_source_a, vector_source_b, vector_source_c)
+
+    original_script = list()
+    for instruction in generated_data[0]:
+        instruction_line = ""
+        for token in instruction:
+            instruction_line += token + " "
+        original_script.append(instruction_line)
+    emitter.information(original_script)
+    modified_script = simplify_patch(generated_data[0], generated_data[2], json_ast_dump)
+    emitter.information(modified_script)
+    modified_script.sort(key=cmp_to_key(order_comp))
+    modified_script = rewrite_as_script(modified_script)
+    emitter.information(modified_script)
+    # We get the matching nodes from Pa to Pc into a dict
+    map_ac = values.ast_map[(slice_file_a, slice_file_c)]
+    translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
+                                                 generated_data[2], map_ac)
+    emitter.information(translated_script)
+    if not translated_script:
+        emitter.warning("failed to translate AST transformation")
+        emitter.warning("trying to use different if-def combination")
+        values.TARGET_REQUIRE_MACRO = not values.TARGET_REQUIRE_MACRO
+        values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                      generated_data[2], map_ac)
-        emitter.information(translated_script)
         if not translated_script:
-            emitter.warning("failed to translate AST transformation")
-            emitter.warning("trying to use different if-def combination")
-            values.TARGET_REQUIRE_MACRO = not values.TARGET_REQUIRE_MACRO
-            values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
-            translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
-                                                         generated_data[2], map_ac)
-            if not translated_script:
-                error_exit("Unable to translate the script")
+            error_exit("Unable to translate the script")
 
-        translated_script_list[file_list] = (translated_script, original_script)
-        restore_file_orig(vector_source_a)
-        restore_file_orig(vector_source_b)
-        restore_file_orig(vector_source_c)
-    return translated_script_list
+    translated_script_list[file_list] = (translated_script, original_script)
+    restore_file_orig(vector_source_a)
+    restore_file_orig(vector_source_b)
+    restore_file_orig(vector_source_c)
+    return original_script, translated_script
 

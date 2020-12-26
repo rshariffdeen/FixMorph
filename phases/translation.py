@@ -13,12 +13,18 @@ def translate_scripts():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     if not values.generated_script_files:
         error_exit("nothing to translate")
-    translated_script_list = translator.translate_script_list(values.generated_script_files)
+
+    generated_script_list = values.generated_script_files
+    translated_script_list = dict()
+    for file_list, generated_data in generated_script_list.items():
+        emitter.sub_title(file_list[0])
+        translated_script, original_script = translator.translate_script_list(file_list, generated_data)
+        translated_script_list[file_list] = (translated_script, original_script)
 
 
 def safe_exec(function_def, title, *args):
     start_time = time.time()
-    emitter.sub_title("Starting " + title + "...")
+    emitter.normal("\tStarting " + title + "...")
     description = title[0].lower() + title[1:]
     try:
         if not args:
