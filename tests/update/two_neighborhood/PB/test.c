@@ -15,6 +15,6 @@ void printB(int a){
 int main( ) {
     int i = 2;
     printA(i, "printA");
-    printB(i, "printB");
+    printB(i);
     return 0;
 }

@@ -13,6 +13,6 @@ void printY(int a){
 int main( ) {
     int k = 2;
     printX(k, "printX");
-    printY(k, "printY");
+    printY(k);
     return 0;
 }
