@@ -21,7 +21,7 @@ def map_ast_from_source(source_a, source_b, script_file_path):
     return mapping
 
 
-def generate_map(file_a, file_b, output_file):
+def generate_map_gumtree(file_a, file_b, output_file):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
     emitter.normal("\tsource: " + file_a)
@@ -73,73 +73,10 @@ def clean_parse(content, separator):
     return [node1, node2]
 
 
-def generate_ast_map(generated_script_files):
-    ast_map_info = dict()
-    if len(generated_script_files) == 0:
-        emitter.normal("\t -nothing-to-do")
-    else:
-        ast_map_info_local = generate_local_reference(generated_script_files)
-        # generate_global_reference(generated_script_files)
-        ast_map_info = ast_map_info_local
-        vector_pair = list(values.map_namespace_local.keys())[0]
-        values.map_namespace[vector_pair] = values.map_namespace_local[vector_pair]
-        writer.write_var_map(values.map_namespace_local[vector_pair], definitions.FILE_NAMESPACE_MAP)
+def generate_map(generated_script_files):
+    ast_node_map = dict()
+    namespace_map = dict()
 
-        # extend namespace mapping using global reference
-        # emitter.sub_sub_title("merging local and global references")
-        # for vector_pair in values.map_namespace_global:
-        #     map_global = values.map_namespace_global[vector_pair]
-        #     map_local = values.map_namespace_local[vector_pair]
-        #     map_merged = map_local
-        #     for name_a in map_global:
-        #         if "(" not in name_a:
-        #             continue
-        #         if name_a not in map_merged:
-        #             map_merged[name_a] = map_global[name_a]
-        #     values.map_namespace[vector_pair] = map_merged
-        #     writer.write_var_map(map_merged, definitions.FILE_NAMESPACE_MAP)
-
-    return ast_map_info
-
-
-def generate_global_reference(generated_script_files):
-    variable_map_info = dict()
-    if len(generated_script_files) == 0:
-        emitter.normal("\t -nothing-to-do")
-    else:
-        emitter.sub_sub_title("generating map using global reference")
-        for file_list, generated_data in generated_script_files.items():
-            slice_file_a = file_list[0]
-            slice_file_c = file_list[2]
-            vector_source_a = get_source_name_from_slice(slice_file_a)
-            vector_source_c = get_source_name_from_slice(slice_file_c)
-
-            map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1].replace(".slice", "") + ".map"
-            if not values.CONF_USE_CACHE:
-                generate_map(vector_source_a, vector_source_c, map_file_name)
-            ast_node_map = parallel.get_mapping(map_file_name)
-            emitter.data(ast_node_map)
-            ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
-            emitter.data(ast_node_map)
-            # refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            # values.map_namespace_global[(vector_source_a, vector_source_c)] = refined_var_map
-            # writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_GLOBAL)
-            method_invocation_map = parallel.generate_method_invocation_map(ast_node_map, vector_source_a, vector_source_c)
-            emitter.data("method invocation map", method_invocation_map)
-            values.Method_ARG_MAP_GLOBAL[(vector_source_a, vector_source_c)] = method_invocation_map
-            function_map = parallel.generate_function_signature_map(ast_node_map, vector_source_a, vector_source_c)
-            emitter.data("function map", function_map)
-            values.FUNCTION_MAP_GLOBAL[(vector_source_a, vector_source_c)] = function_map
-
-            variable_map_info[file_list] = ast_node_map
-            # variable_map_info[file_list] = dict()
-            # variable_map_info[file_list]['ast-map'] = ast_node_map
-            # variable_map_info[file_list]['var-map'] = var_map
-    return variable_map_info
-
-
-def generate_local_reference(generated_script_files):
-    variable_map_info = dict()
     if len(generated_script_files) == 0:
         emitter.normal("\t -nothing-to-do")
     else:
@@ -157,28 +94,20 @@ def generate_local_reference(generated_script_files):
 
             map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
             if not values.CONF_USE_CACHE:
-                generate_map(vector_source_a, vector_source_c, map_file_name)
-            ast_node_map = parallel.get_mapping(map_file_name)
+                generate_map_gumtree(vector_source_a, vector_source_c, map_file_name)
+
+            ast_node_map = parallel.read_mapping(map_file_name)
             emitter.data(ast_node_map)
             ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
             emitter.data(ast_node_map)
-            refined_var_map = parallel.derive_namespace_map(ast_node_map, vector_source_a, vector_source_c, slice_file_a)
-            values.map_namespace_local[(vector_source_a, vector_source_c)] = refined_var_map
-            writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
-            # method_invocation_map = parallel.extend_method_invocation_map(ast_node_map, vector_source_a, vector_source_c)
-            # emitter.data("method invocation map", method_invocation_map)
-            # values.Method_ARG_MAP_LOCAL[(vector_source_a, vector_source_c)] = method_invocation_map
-            # function_map = parallel.extend_function_map(ast_node_map, vector_source_a, vector_source_c)
-            # emitter.data("function map", function_map)
-            # values.FUNCTION_MAP_LOCAL[(vector_source_a, vector_source_c)] = function_map
+
+            namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
+                                                          vector_source_c, slice_file_a)
 
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
-            variable_map_info[file_list] = ast_node_map
-            # variable_map_info[file_list] = dict()
-            # variable_map_info[file_list]['ast-map'] = ast_node_map
-            # variable_map_info[file_list]['var-map'] = var_map
-    return variable_map_info
+
+    return ast_node_map, namespace_map
 
 
 def anti_unification(ast_node_a, ast_node_c):

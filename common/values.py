@@ -129,9 +129,9 @@ IS_MACRO = False
 IS_TYPEDEF = False
 IS_TYPEDEC = False
 VECTOR_MAP = dict()
-map_namespace = dict()
-map_namespace_local = dict()
 map_namespace_global = dict()
+map_namespace_local = dict()
+
 FUNCTION_MAP = dict()
 FUNCTION_MAP_LOCAL = dict()
 FUNCTION_MAP_GLOBAL = dict()

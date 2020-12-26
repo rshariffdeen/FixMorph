@@ -7,7 +7,7 @@ from tools import emitter, reader, writer, logger, mapper
 
 def generate_map():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    values.ast_map = mapper.generate_ast_map(values.generated_script_files)
+    values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
 
 
 def load_values():
@@ -18,8 +18,8 @@ def load_values():
             script_info[(vec_path_info[0], vec_path_info[1], vec_path_info[2])] = vec_info
         values.generated_script_files = script_info
 
-    definitions.FILE_MAP_INFO = definitions.DIRECTORY_OUTPUT + "/map-info"
-    definitions.FILE_NAMESPACE_MAP = definitions.DIRECTORY_OUTPUT + "/namespace-map"
+    definitions.FILE_AST_MAP_LOCAL = definitions.DIRECTORY_OUTPUT + "/map-info"
+    # definitions.FILE_NAMESPACE_MAP = definitions.DIRECTORY_OUTPUT + "/namespace-map"
     definitions.FILE_NAMESPACE_MAP_LOCAL = definitions.DIRECTORY_OUTPUT + "/namespace-map-local"
     definitions.FILE_NAMESPACE_MAP_GLOBAL = definitions.DIRECTORY_OUTPUT + "/namespace-map-global"
 
@@ -45,7 +45,8 @@ def safe_exec(function_def, title, *args):
 
 
 def save_values():
-    writer.write_map_info(values.ast_map, definitions.FILE_MAP_INFO)
+    writer.write_ast_map(values.ast_map, definitions.FILE_AST_MAP_LOCAL)
+    writer.write_namespace_map(values.map_namespace_global, definitions.FILE_NAMESPACE_MAP_GLOBAL)
     save_current_state()
 
 

@@ -38,10 +38,13 @@ def load_values():
     load_state()
     if not values.ast_map:
         map_info = dict()
-        map_list = reader.read_json(definitions.FILE_MAP_INFO)
+        map_list = reader.read_json(definitions.FILE_AST_MAP_LOCAL)
         for (file_path_info, node_map) in map_list:
             map_info[(file_path_info[0], file_path_info[1], file_path_info[2])] = node_map
         values.ast_map = map_info
+
+    if not values.map_namespace_global:
+        values.map_namespace_global = reader.read_namespace_map(definitions.FILE_NAMESPACE_MAP_GLOBAL)
 
     definitions.FILE_TRANSLATED_SCRIPT_INFO = definitions.DIRECTORY_OUTPUT + "/trans-script-info"
 

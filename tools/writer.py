@@ -23,6 +23,18 @@ def write_var_map(var_map, output_file_path):
         map_file.writelines(content)
 
 
+def write_namespace_map(namespace_map, output_file_path):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    content = ""
+    for vector_index in namespace_map:
+        var_map = namespace_map[vector_index]
+        content += vector_index[0] + "-" + vector_index[1] + "\n"
+        for var in var_map:
+            content += var + ":" + var_map[var] + "\n"
+    with open(output_file_path, 'w') as map_file:
+        map_file.writelines(content)
+
+
 def write_skip_list(skip_list, output_file_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     content = "0\n"
@@ -62,7 +74,7 @@ def write_script_info(script_info, output_file_path):
         out_file.writelines(content)
 
 
-def write_map_info(map_info, output_file_path):
+def write_ast_map(map_info, output_file_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     data_list = list()
     for file_path_info in map_info:

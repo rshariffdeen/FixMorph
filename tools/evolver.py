@@ -112,7 +112,7 @@ def evolve_functions(missing_function_list):
                         best_score = match_score
                         method_name_c = candidate_name
                 refined_var_map[method_name_a + "("] = method_name_c + "("
-            writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP)
+            writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
         else:
             # ast_map_b = ast_generator.get_ast_json(source_path_b)
             function_ref_node_id = int(info['ref_node_id'])
@@ -166,7 +166,7 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
     neighborhood_a = extractor.extract_neighborhood(file_a, seg_code, seg_id_a)
     neighborhood_b = extractor.extract_neighborhood(file_b, seg_code, seg_id_a)
     neighborhood_c = extractor.extract_neighborhood(file_c, seg_code, seg_id_c)
-    var_map = values.map_namespace[(file_a, file_c)]
+    var_map = values.map_namespace_global[(file_a, file_c)]
     script_lines = list()
 
     count = 0
@@ -245,8 +245,8 @@ def evolve_code(file_a, file_b, file_c, instruction_list, seg_id_a, seg_id_c, se
         elif "value" in var_info.keys():
             var_map[var] = str(var_info['value'])
 
-    values.map_namespace[(file_a, file_c)] = var_map
-    writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP)
+    values.map_namespace_global[(file_a, file_c)] = var_map
+    writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
     offset = len(target_ast['children']) - 1
     position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
     for label in missing_label_list:

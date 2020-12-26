@@ -130,7 +130,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     return refined_var_map
 
 
-def get_mapping(map_file_name):
+def read_mapping(map_file_name):
     global pool, result_list, expected_count
     result_list = []
     node_map = dict()
@@ -208,8 +208,8 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
     emitter.normal("\tderiving method invocation map")
 
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
-    mapper.generate_map(source_a, source_c, map_file_name)
-    global_ast_node_map = get_mapping(map_file_name)
+    mapper.generate_map_gumtree(source_a, source_c, map_file_name)
+    global_ast_node_map = read_mapping(map_file_name)
     result_list = []
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
@@ -257,7 +257,7 @@ def generate_function_signature_map(source_a, source_c, ast_tree_a, ast_tree_c, 
     emitter.normal("\tderiving function signature map")
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
     # mapper.generate_map(source_a, source_c, map_file_name)
-    global_ast_node_map = get_mapping(map_file_name)
+    global_ast_node_map = read_mapping(map_file_name)
     result_list = []
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
