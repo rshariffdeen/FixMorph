@@ -268,6 +268,6 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
         for transformation_rule in script_lines:
             script_file.write(transformation_rule)
 
-    emitter.success("\n\tSuccessful evolution")
+    emitter.success("\n\t\tSuccessful evolution")
     return missing_function_list, missing_macro_list
 
