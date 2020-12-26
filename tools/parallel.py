@@ -51,7 +51,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     result_list = []
 
     namespace_map = dict()
-    refined_var_map = dict()
+    refined_namespace_map = dict()
     emitter.normal("\tderiving namespace map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
@@ -124,10 +124,10 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
 
         # generate all possible member relations with each var mapping
         if "." in value_a and "." in best_candidate:
-            refined_var_map["." + value_a.split(".")[-1]] = "." + best_candidate.split(".")[-1]
-        refined_var_map[value_a] = best_candidate
+            refined_namespace_map["." + value_a.split(".")[-1]] = "." + best_candidate.split(".")[-1]
+        refined_namespace_map[value_a] = best_candidate
 
-    return refined_var_map
+    return refined_namespace_map
 
 
 def read_mapping(map_file_name):

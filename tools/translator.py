@@ -994,7 +994,7 @@ def translate_script_list(generated_script_list):
         modified_script = rewrite_as_script(modified_script)
         emitter.information(modified_script)
         # We get the matching nodes from Pa to Pc into a dict
-        map_ac = values.ast_map[file_list]
+        map_ac = values.ast_map[(slice_file_a, slice_file_c)]
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                      generated_data[2], map_ac)
         emitter.information(translated_script)
@@ -1002,7 +1002,7 @@ def translate_script_list(generated_script_list):
             emitter.warning("failed to translate AST transformation")
             emitter.warning("trying to use different if-def combination")
             values.TARGET_REQUIRE_MACRO = not values.TARGET_REQUIRE_MACRO
-            values.ast_map = mapper.generate_map(values.generated_script_files)
+            values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
             translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
                                                          generated_data[2], map_ac)
             if not translated_script:

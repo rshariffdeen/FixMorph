@@ -74,8 +74,8 @@ def clean_parse(content, separator):
 
 
 def generate_map(generated_script_files):
-    ast_node_map = dict()
-    namespace_map = dict()
+    ast_map_global = dict()
+    namespace_map_global = dict()
 
     if len(generated_script_files) == 0:
         emitter.normal("\t -nothing-to-do")
@@ -99,15 +99,16 @@ def generate_map(generated_script_files):
             ast_node_map = parallel.read_mapping(map_file_name)
             emitter.data(ast_node_map)
             ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
+            ast_map_global[(slice_file_a, slice_file_c)] = ast_node_map
             emitter.data(ast_node_map)
-
             namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
                                                           vector_source_c, slice_file_a)
 
+            namespace_map_global[(slice_file_a, slice_file_c)] = namespace_map
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_c)
 
-    return ast_node_map, namespace_map
+    return ast_map_global, namespace_map_global
 
 
 def anti_unification(ast_node_a, ast_node_c):
