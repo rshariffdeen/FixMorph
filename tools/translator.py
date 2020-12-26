@@ -212,7 +212,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
     update_list_d = list()
     deleted_node_list_d = dict()
     map_bd = dict()
-    emitter.sub_sub_title("Translating transformation script")
+    emitter.normal("\ttranslating transformation script")
     for instruction in modified_script:
         operation = instruction[0]
         # Update nodeA to nodeB (value) -> Update nodeC to nodeD (value)
@@ -634,7 +634,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
     replacing = []
     replaced = []
     insert_pos_list = dict()
-    emitter.sub_sub_title("Simplifying transformation script")
+    emitter.normal("\tsimplifying transformation script")
     # Emitter.white("Original script from Pa to Pb")
     for i in instruction_AB:
         inst = i[0]
@@ -978,7 +978,7 @@ def translate_script_list(file_list, generated_data):
     replace_file(slice_file_b, vector_source_b)
     replace_file(slice_file_c, vector_source_c)
 
-    emitter.sub_sub_title("Generating AST in JSON")
+    emitter.normal("\tgenerating AST in JSON")
     json_ast_dump = gen_temp_json(vector_source_a, vector_source_b, vector_source_c)
 
     original_script = list()

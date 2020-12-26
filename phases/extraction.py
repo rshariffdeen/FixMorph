@@ -35,6 +35,7 @@ def generate_script_for_files(file_list_to_patch):
     script_file_ab = definitions.DIRECTORY_TMP + "/diff_script_AB"
     for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
         segment_code = vec_path_a.split(".")[-2].split("_")[0]
+        emitter.sub_title(vec_path_a)
         try:
             split_regex = "." + segment_code + "_"
             vector_source_a, vector_name_a = vec_path_a.split(split_regex)
@@ -72,7 +73,7 @@ def generate_script_for_files(file_list_to_patch):
 
 def safe_exec(function_def, title, *args):
     start_time = time.time()
-    emitter.sub_title("Starting " + title + "...")
+    emitter.normal("Starting " + title + "...")
     description = title[0].lower() + title[1:]
     try:
         if not args:

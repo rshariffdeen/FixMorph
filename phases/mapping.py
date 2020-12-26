@@ -17,6 +17,7 @@ def generate_map():
         for file_list, generated_data in generated_script_files.items():
             slice_file_a = file_list[0]
             slice_file_c = file_list[2]
+            emitter.sub_title(slice_file_a)
             ast_node_map, namespace_map = mapper.generate_map(file_list)
             ast_map_global[(slice_file_a, slice_file_c)] = ast_node_map
             namespace_map_global[(slice_file_a, slice_file_c)] = namespace_map
