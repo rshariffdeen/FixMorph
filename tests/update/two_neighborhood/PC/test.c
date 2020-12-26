@@ -6,8 +6,8 @@ void printX(int a, char* str){
     print("X: the values are  %d %s\n", a, str);
 }
 
-void printY(int a, char* str){
-    printf("Y: the values are  %d %s\n", a, str);
+void printY(int a){
+    printf("Y: the values are  %d\n", a);
 }
 
 int main( ) {
