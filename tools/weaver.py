@@ -43,10 +43,10 @@ def execute_ast_transformation(script_path, source_file_info):
     parameters = " -s=" + definitions.PATCH_SIZE
 
     if values.DONOR_REQUIRE_MACRO:
-        parameters += " " + values.DONOR_PRE_PROCESS_MACRO + " "
+        parameters += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg", "--extra-arg-a") + " "
 
     if values.TARGET_REQUIRE_MACRO:
-        parameters += " " + values.TARGET_PRE_PROCESS_MACRO + " "
+        parameters += " " + values.TARGET_PRE_PROCESS_MACRO.replace("--extra-arg", "--extra-arg-c") + " "
 
     parameters += " -script=" + script_path + " -source=" + file_a
     parameters += " -destination=" + file_b + " -target=" + file_c
@@ -289,10 +289,10 @@ def weave_functions(missing_function_list, modified_source_list):
 
 
 def weave_code(file_a, file_b, file_c, script_file_name, modified_source_list):
-    if values.DONOR_REQUIRE_MACRO:
-        values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
-    if values.TARGET_REQUIRE_MACRO:
-        values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
+    # if values.DONOR_REQUIRE_MACRO:
+    #     values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
+    # if values.TARGET_REQUIRE_MACRO:
+    #     values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
 
     file_d = str(file_c).replace(values.Project_C.path, values.Project_D.path)
 
