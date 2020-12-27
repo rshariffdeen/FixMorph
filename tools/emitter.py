@@ -64,7 +64,7 @@ def command(message):
 
 def normal(message, jump_line=True):
     write(message, BLUE, jump_line)
-    logger.output(message)
+    logger.information(message)
 
 
 def highlight(message, jump_line=True):
@@ -93,7 +93,7 @@ def error(message):
 
 def success(message):
     write(message, GREEN)
-    logger.output(message)
+    logger.information(message)
 
 
 def special(message):

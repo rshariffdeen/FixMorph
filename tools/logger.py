@@ -6,6 +6,8 @@ import os
 from common import definitions, values
 from shutil import copyfile
 
+prev_trace_func = None
+
 
 def create():
     log_file_name = "log-" + str(time.time())
@@ -24,14 +26,13 @@ def create():
 
 
 def log(log_message):
+    log_message = "[" + str(time.asctime()) + "]" + log_message
+
     if "COMMAND" in log_message:
-        # if os.path.isfile(Definitions.FILE_COMMAND_LOG):
         with open(definitions.FILE_COMMAND_LOG, 'a') as log_file:
             log_file.write(log_message)
-    # if os.path.isfile(Definitions.FILE_MAIN_LOG):
     with open(definitions.FILE_MAIN_LOG, 'a') as log_file:
         log_file.write(log_message)
-    # if os.path.isfile(Definitions.FILE_LAST_LOG):
     with open(definitions.FILE_LAST_LOG, 'a') as log_file:
         log_file.write(log_message)
 
@@ -48,8 +49,11 @@ def information(message):
 
 
 def trace(function_name, arguments):
-    message = "[TRACE]: " + function_name + ": " + str(arguments.keys()) + "\n"
-    log(message)
+    global prev_trace_func
+    if function_name != prev_trace_func:
+        prev_trace_func = function_name
+        message = "[TRACE]: " + function_name + "\n"
+        log(message)
 
 
 def note(message):
@@ -69,6 +73,7 @@ def error(message):
 
 
 def output(message):
+    message = "[OUTPUT]: " + str(message) + "\n"
     log(message + "\n")
 
 
