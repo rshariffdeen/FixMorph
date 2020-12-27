@@ -711,17 +711,17 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
         elif node_type_a in ["MemberExpr", "ArraySubscriptExpr"]:
             node_type_a = ast_node_a['type']
             if node_type_a in ["MemberExpr"]:
-                identifier_a = converter.convert_member_expr(ast_node_a, True)
+                identifier_a = converter.convert_member_expr(ast_node_a, True).replace(":", "")
             elif node_type_a == "ArraySubscriptExpr":
-                identifier_a = converter.convert_array_subscript(ast_node_a, True)
+                identifier_a = converter.convert_array_subscript(ast_node_a, True).replace(":", "")
 
             if ast_node_c:
                 node_type_c = ast_node_c['type']
                 if node_type_c in ["MemberExpr", "ArraySubscriptExpr"]:
                     if node_type_c in ["MemberExpr"]:
-                        identifier_c = converter.convert_member_expr(ast_node_c, True)
+                        identifier_c = converter.convert_member_expr(ast_node_c, True).replace(":", "")
                     elif node_type_c == "ArraySubscriptExpr":
-                        identifier_c = converter.convert_array_subscript(ast_node_c, True)
+                        identifier_c = converter.convert_array_subscript(ast_node_c, True).replace(":", "")
 
         elif node_type_a in ["FunctionDecl"]:
             if "identifier" in ast_node_a and "identifier" in ast_node_c:
@@ -734,7 +734,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
             children_a = ast_node_a["children"]
             children_c = ast_node_c["children"]
             if len(children_a) > 1 and len(children_c) > 1:
-                if 'value' in children_a[0].keys() and "value"  in children_c[0].keys():
+                if 'value' in children_a[0].keys() and "value" in children_c[0].keys():
                     method_name_a = children_a[0]["value"]
                     method_name_c = children_c[0]["value"]
                     identifier_a = method_name_a + "("
