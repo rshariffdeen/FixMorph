@@ -79,7 +79,7 @@ def error(message):
 def output(message):
     message = str(message).strip().replace("\t", "").replace("\n", "")
     message = "[OUTPUT]: " + str(message) + "\n"
-    log(message + "\n")
+    log(message)
 
 
 def warning(message):
@@ -112,8 +112,7 @@ def store():
 
 
 def end(time_duration):
-    output("[END] Crochet ended at " + str(datetime.datetime.now()) + "\n\n")
-    output("\nTime duration\n----------------------\n\n")
+    output("[END] Crochet ended at " + str(datetime.datetime.now()))
     output("Initialization: " + time_duration[definitions.KEY_DURATION_INITIALIZATION] + " minutes")
     output("Build: " + time_duration[definitions.KEY_DURATION_BUILD_ANALYSIS] + " minutes")
     output("Diff Analysis: " + time_duration[definitions.KEY_DURATION_DIFF_ANALYSIS] + " minutes")
@@ -129,6 +128,6 @@ def end(time_duration):
     # output("Evaluation: " + time_duration[Definitions.KEY_DURATION_EVALUATION] + " minutes")
     # output("Comparison: " + time_duration[Definitions.KEY_DURATION_COMPARISON] + " minutes")
     # output("Summarizing: " + time_duration[Definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
-    output("\nCrochet finished successfully after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes\n")
+    output("Crochet finished successfully after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
     store()
 
