@@ -38,12 +38,14 @@ def log(log_message):
 
 
 def configuration(message):
+    message = str(message).strip().replace("\t", "").replace("\n", "")
     message = str(message).strip().lower().replace("[config]", "")
     message = "[CONFIGURATION]: " + str(message) + "\n"
     log(message)
 
 
 def information(message):
+    message = str(message).strip().replace("\t", "").replace("\n", "")
     message = "[INFO]: " + str(message) + "\n"
     log(message)
 
@@ -63,21 +65,25 @@ def note(message):
 
 
 def command(message):
+    message = str(message).strip().replace("\t", "").replace("\n", "")
     message = "[COMMAND]: " + str(message) + "\n"
     log(message)
 
 
 def error(message):
+    message = str(message).strip().replace("\t", "").replace("\n", "")
     message = "[ERROR]: " + str(message) + "\n"
     log(message)
 
 
 def output(message):
+    message = str(message).strip().replace("\t", "").replace("\n", "")
     message = "[OUTPUT]: " + str(message) + "\n"
     log(message + "\n")
 
 
 def warning(message):
+    message = str(message).strip().replace("\t", "").replace("\n", "")
     message = "[WARNING]: " + str(message) + "\n"
     log(message)
 
@@ -93,7 +99,7 @@ def data(message, data=None, is_patch=False):
 
 
 def debug(message):
-    message = str(message).strip()
+    message = str(message).strip().replace("\t", "").replace("\n", "")
     message = "[DEBUG]: " + str(message) + "\n"
     log(message)
 
