@@ -157,6 +157,29 @@ def read_conf(arg_list):
 
 
 def update_phase_configuration(arg_list):
+
+    if values.CONF_OPERATION_MODE == 0:
+        for phase_name in values.PHASE_SETTING:
+            values.PHASE_SETTING[phase_name] = 1
+
+    elif values.CONF_OPERATION_MODE in [1, 2]:
+        values.PHASE_SETTING = {
+            definitions.PHASE_BUILD: 1,
+            definitions.PHASE_DIFF: 1,
+            definitions.PHASE_DETECTION: 1,
+            definitions.PHASE_SLICING: 1,
+            definitions.PHASE_EXTRACTION: 1,
+            definitions.PHASE_MAPPING: 0,
+            definitions.PHASE_TRANSLATION: 0,
+            definitions.PHASE_EVOLUTION: 0,
+            definitions.PHASE_WEAVE: 1,
+            definitions.PHASE_VERIFY: 1,
+            definitions.PHASE_REVERSE: 0,
+            definitions.PHASE_EVALUATE: 0,
+            definitions.PHASE_COMPARE: 1,
+            definitions.PHASE_SUMMARIZE: 1,
+        }
+
     if len(arg_list) > 0:
         for arg in arg_list:
             if "--skip-" in arg:

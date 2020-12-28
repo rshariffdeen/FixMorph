@@ -29,6 +29,18 @@ def generate_edit_script(file_a, file_b, output_file):
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
 
 
+def generate_edit_diff(file_a, file_b, output_file):
+    name_a = file_a.split("/")[-1]
+    emitter.normal("\t\t\tgenerating edit diff")
+    try:
+        command = definitions.LINUX_DIFF_COMMAND
+        command += file_a + " " + file_b + " 2> output/errors_linux_diff "
+        command += " > " + output_file
+        execute_command(command, False)
+    except Exception as e:
+        error_exit(e, "Unexpected fail at generating edit script: " + output_file)
+
+
 def generate_script_for_files(file_list_to_patch):
     global generated_script_list
     generated_source_list = list()
@@ -65,6 +77,44 @@ def generate_script_for_files(file_list_to_patch):
                 error_exit("failed to extract AST transformation")
             generated_data = (original_script, inserted_node_list, map_ab)
             generated_script_list[(slice_file_a, slice_file_b, slice_file_c)] = generated_data
+            generated_source_list.append(vector_source_a)
+
+        except Exception as e:
+            error_exit("something went wrong with extraction phase")
+
+
+def generate_diff_for_files(file_list_to_patch):
+    global generated_script_list
+    generated_source_list = list()
+
+    for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
+        segment_code = vec_path_a.split(".")[-2].split("_")[0]
+        emitter.sub_sub_title(vec_path_a)
+        try:
+            split_regex = "." + segment_code + "_"
+            vector_source_a, vector_name_a = vec_path_a.split(split_regex)
+            vector_source_b = vector_source_a.replace(values.Project_A.path, values.Project_B.path)
+            vector_source_c, vector_name_c = vec_path_c.split(split_regex)
+            vector_name_b = vector_name_a.replace(values.CONF_PATH_A, values.CONF_PATH_B)
+            # if vector_source_a in generated_source_list:
+            #     continue
+
+            emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
+
+            slice_file_a = vector_source_a + "." + segment_code + "." + vector_name_a.replace(".vec", "") + ".slice"
+            slice_file_b = vector_source_b + "." + segment_code + "." + vector_name_b.replace(".vec", "") + ".slice"
+            slice_file_c = vector_source_c + "." + segment_code + "." + vector_name_c.replace(".vec", "") + ".slice"
+            diff_file_ab = slice_file_b + ".diff"
+
+            backup_file_orig(vector_source_a)
+            backup_file_orig(vector_source_b)
+            replace_file(slice_file_a, vector_source_a)
+            replace_file(slice_file_b, vector_source_b)
+            generate_edit_diff(vector_source_a, vector_source_b, diff_file_ab)
+            restore_file_orig(vector_source_a)
+            restore_file_orig(vector_source_b)
+
+            generated_script_list[(slice_file_a, slice_file_b, slice_file_c)] = diff_file_ab
             generated_source_list.append(vector_source_a)
 
         except Exception as e:
@@ -110,7 +160,10 @@ def start():
     if values.PHASE_SETTING[definitions.PHASE_EXTRACTION]:
         if not values.file_list_to_patch:
             error_exit("no clone file detected to generate AST")
-        safe_exec(generate_script_for_files, "extraction of AST transformation", values.file_list_to_patch)
+        if values.CONF_OPERATION_MODE == 0:
+            safe_exec(generate_script_for_files, "extraction of AST transformation", values.file_list_to_patch)
+        elif values.CONF_OPERATION_MODE in [1, 2]:
+            safe_exec(generate_diff_for_files, "extraction of diff transformation", values.file_list_to_patch)
         save_values()
     else:
         emitter.special("\n\t-skipping this phase-")
