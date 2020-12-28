@@ -47,8 +47,6 @@ def load_state():
     values.missing_header_list = pickle.load(open(definitions.FILE_MISSING_HEADERS, 'rb'))
 
 
-
-
 def error_exit(*args):
     print("\n")
     for i in args:
@@ -72,7 +70,10 @@ def clean_files():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.information("Removing other residual files...")
     if os.path.isdir("output"):
-        clean_command = "rm -rf " + definitions.DIRECTORY_OUTPUT
+        clean_command = "rm -f " + definitions.FILE_COMPARISON_RESULT + ";"
+        clean_command += "rm -f " + definitions.FILE_ORIG_N + ";"
+        clean_command += "rm -f " + definitions.FILE_PORT_N + ";"
+        clean_command += "rm -f " + definitions.FILE_TRANS_N + ";"
         execute_command(clean_command)
 
 

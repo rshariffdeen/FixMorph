@@ -63,6 +63,7 @@ def bootstrap(arg_list):
     configuration.update_phase_configuration(arg_list)
     configuration.print_configuration()
     set_env_value()
+    utilities.clean_files()
 
 
 def create_directories():
