@@ -218,7 +218,7 @@ def start():
                 safe_exec(transplant_missing_header, "transplanting header files")
             safe_exec(fixer.check, "correcting syntax errors", modified_source_list)
         elif values.CONF_OPERATION_MODE in [1,2]:
-            safe_exec(transplant_code, "transforming slices")
+            safe_exec(transform_code, "transforming slices")
             safe_exec(weave_slices, "weaving slices")
         save_values()
     else:
