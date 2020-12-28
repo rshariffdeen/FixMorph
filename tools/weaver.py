@@ -90,7 +90,10 @@ def execute_diff_transformation(diff_file, source_file_info):
     if backup_command:
         execute_command(backup_command)
 
-    patch_command = definitions.LINUX_PATCH_COMMAND + " " + file_c + " " + diff_file + " -o " + definitions.FILE_TEMP_FIX
+    patch_command = definitions.LINUX_PATCH_COMMAND + " "
+    if values.DEFAULT_OPERATION_MODE == 2:
+        patch_command += " --context "
+    patch_command += file_c + " " + diff_file + " -o " + definitions.FILE_TEMP_FIX
     ret_code = int(execute_command(patch_command))
 
     if ret_code == 0:
