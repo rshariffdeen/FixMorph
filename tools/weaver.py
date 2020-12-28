@@ -73,6 +73,44 @@ def execute_ast_transformation(script_path, source_file_info):
     return ret_code
 
 
+def execute_diff_transformation(script_path, source_file_info):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    file_a, file_b, file_c, file_d = source_file_info
+    emitter.normal("\t[action] executing diff transformation")
+    diff_file = file_b + ".diff"
+    output_file = definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
+    backup_command = ""
+    # We add file_c into our dict (changes) to be able to backup and copy it
+
+    if file_c not in backup_file_list.keys():
+        filename = file_c.split("/")[-1]
+        backup_file = str(file_index) + "_" + filename
+        backup_file_list[file_c] = backup_file
+        backup_command += "cp " + file_c + " " + definitions.DIRECTORY_BACKUP + "/" + backup_file
+    # print(backup_command)
+    if backup_command:
+        execute_command(backup_command)
+
+    patch_command = definitions.LINUX_PATCH_COMMAND + " " + file_c + " " + diff_file + " -o " + definitions.FILE_TEMP_FIX
+    ret_code = int(execute_command(patch_command))
+
+    if ret_code == 0:
+        move_command = "cp " + definitions.FILE_TEMP_FIX + " " + file_d
+        execute_command(move_command)
+        show_partial_diff(file_c, file_d)
+
+    else:
+        error_exit("\t diff transformation FAILED")
+
+    if os.stat(file_d).st_size == 0:
+        error_exit("\t diff transformation FAILED")
+
+    if values.BREAK_WEAVE:
+        exit()
+
+    return ret_code
+
+
 def show_patch(file_a, file_b, file_c, file_d, index):
     emitter.highlight("\tOriginal Patch")
     original_patch_file_name = definitions.DIRECTORY_OUTPUT + "/" + index + "-original-patch"
@@ -301,7 +339,12 @@ def weave_code(file_a, file_b, file_c, script_file_name, modified_source_list):
     syntax_error_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(file_index) + "_syntax_errors"
 
     file_info = file_a, file_b, file_c, file_d
-    execute_ast_transformation(script_file_name, file_info)
+
+    if values.CONF_OPERATION_MODE == 0:
+        execute_ast_transformation(script_file_name, file_info)
+    elif values.CONF_OPERATION_MODE in [1, 2]:
+        execute_diff_transformation(script_file_name, file_info)
+
     # We fix basic syntax errors that could have been introduced by the patch
     fix_command = definitions.SYNTAX_CHECK_COMMAND + "-fixit " + file_d
 
