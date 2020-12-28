@@ -126,8 +126,8 @@ def end(time_duration):
     output("Verification: " + time_duration[definitions.KEY_DURATION_VERIFICATION] + " minutes")
     # output("Reverse Transplantation: " + time_duration[Definitions.KEY_DURATION_REVERSE] + " minutes")
     # output("Evaluation: " + time_duration[Definitions.KEY_DURATION_EVALUATION] + " minutes")
-    # output("Comparison: " + time_duration[Definitions.KEY_DURATION_COMPARISON] + " minutes")
-    # output("Summarizing: " + time_duration[Definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
+    output("Comparison: " + time_duration[definitions.KEY_DURATION_COMPARISON] + " minutes")
+    output("Summarizing: " + time_duration[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
     output("Crochet finished successfully after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
     store()
 
