@@ -70,6 +70,12 @@ def clean_files():
     # Remove other residual files stored in ./output/
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.information("Removing other residual files...")
+    definitions.FILE_COMPARISON_RESULT = definitions.DIRECTORY_OUTPUT + "/comparison-result"
+    definitions.FILE_TRANSPLANT_DIFF = definitions.DIRECTORY_OUTPUT + "/transplant-diff"
+    definitions.FILE_PORT_N = definitions.DIRECTORY_OUTPUT + "/n-port"
+    definitions.FILE_TRANS_N = definitions.DIRECTORY_OUTPUT + "/n-trans"
+    definitions.FILE_ORIG_N = definitions.DIRECTORY_OUTPUT + "/n-orig"
+
     if os.path.isfile(definitions.FILE_COMPARISON_RESULT):
         os.remove(definitions.FILE_COMPARISON_RESULT)
     if os.path.isfile(definitions.FILE_ORIG_N):
@@ -78,6 +84,8 @@ def clean_files():
         os.remove(definitions.FILE_PORT_N)
     if os.path.isfile(definitions.FILE_TRANS_N):
         os.remove(definitions.FILE_TRANS_N)
+    if os.path.isfile(definitions.FILE_TRANSPLANT_DIFF):
+        os.remove(definitions.FILE_TRANSPLANT_DIFF)
 
 
 def get_file_extension_list(src_path, output_file_name):
