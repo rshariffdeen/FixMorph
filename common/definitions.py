@@ -157,6 +157,7 @@ ARG_FORK = "--fork"
 ARG_LINUX_KERNEL = "--linux-kernel"
 ARG_BREAK_WEAVE = "--break-weave"
 ARG_USE_CACHE = "--use-cache"
+ARG_OPERATION_MODE = "--mode="
 
 ARG_ONLY_BUILD = "--only-" + PHASE_BUILD
 ARG_ONLY_DIFF = "--only-" + PHASE_DIFF
@@ -208,6 +209,9 @@ STYLE_FORMAT_COMMAND = "clang-format -style=LLVM "
 
 crash_word_list = ["abort", "core dumped", "crashed", "exception", "dumped core"]
 error_word_list = ["runtime error", "buffer-overflow", "unsigned integer overflow"]
+
+operation_mode = {0: "crochet", 1: "patch", 2: "patch-context", 3: "sydit"}
+
 
 UPDATEMOVE = "UpdateMove"
 UPDATE = "Update"

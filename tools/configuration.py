@@ -123,6 +123,13 @@ def read_conf(arg_list):
                         values.PHASE_SETTING[phase] = 1
                     else:
                         values.PHASE_SETTING[phase] = 0
+            elif definitions.ARG_OPERATION_MODE in arg:
+                mode = int(arg.replace(definitions.ARG_OPERATION_MODE, ''))
+                if mode not in definitions.operation_mode:
+                    emitter.normal("Invalid argument: " + arg)
+                    emitter.help()
+                else:
+                    values.CONF_OPERATION_MODE = mode
             elif definitions.ARG_BUILD_AND_ANALYSE in arg:
                 values.ANALYSE_N = True
                 for phase in values.PHASE_SETTING:
@@ -195,6 +202,9 @@ def update_configuration():
 
     if not os.path.isdir(definitions.DIRECTORY_TMP):
         os.makedirs(definitions.DIRECTORY_TMP)
+
+    if values.CONF_OPERATION_MODE > -1:
+        values.DEFAULT_OPERATION_MODE = values.CONF_OPERATION_MODE
 
     patch_dir = values.CONF_PATH_C + "-patch"
     if os.path.isdir(patch_dir):
