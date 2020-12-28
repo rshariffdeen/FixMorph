@@ -73,11 +73,10 @@ def execute_ast_transformation(script_path, source_file_info):
     return ret_code
 
 
-def execute_diff_transformation(script_path, source_file_info):
+def execute_diff_transformation(diff_file, source_file_info):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     file_a, file_b, file_c, file_d = source_file_info
     emitter.normal("\t[action] executing diff transformation")
-    diff_file = file_b + ".diff"
     output_file = definitions.DIRECTORY_OUTPUT + str(file_index) + "_temp." + file_c[-1]
     backup_command = ""
     # We add file_c into our dict (changes) to be able to backup and copy it
