@@ -202,6 +202,7 @@ def update_phase_configuration(arg_list):
 
 
 def print_configuration():
+    emitter.configuration("operation mode", definitions.operation_mode[values.DEFAULT_OPERATION_MODE])
     emitter.configuration("output dir", definitions.DIRECTORY_OUTPUT)
 
 
