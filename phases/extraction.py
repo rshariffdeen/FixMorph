@@ -160,9 +160,9 @@ def start():
     if values.PHASE_SETTING[definitions.PHASE_EXTRACTION]:
         if not values.file_list_to_patch:
             error_exit("no clone file detected to generate AST")
-        if values.CONF_OPERATION_MODE == 0:
+        if values.DEFAULT_OPERATION_MODE == 0:
             safe_exec(generate_script_for_files, "extraction of AST transformation", values.file_list_to_patch)
-        elif values.CONF_OPERATION_MODE in [1, 2]:
+        elif values.DEFAULT_OPERATION_MODE in [1, 2]:
             safe_exec(generate_diff_for_files, "extraction of diff transformation", values.file_list_to_patch)
         save_values()
     else:
