@@ -113,6 +113,49 @@ def transplant_code():
         restore_file_orig(vector_source_d)
 
 
+def transform_code():
+    global file_index, modified_source_list
+    if not values.generated_script_files:
+        error_exit("nothing to transplant")
+    for file_list, diff_file in values.generated_script_files.items():
+        slice_file_a = file_list[0]
+        slice_file_b = file_list[1]
+        slice_file_c = file_list[2]
+        slice_file_d = slice_file_c.replace(values.CONF_PATH_C, values.Project_D.path)
+        vector_source_a = get_source_name_from_slice(slice_file_a)
+        vector_source_b = get_source_name_from_slice(slice_file_b)
+        vector_source_c = get_source_name_from_slice(slice_file_c)
+        vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
+
+        backup_file_orig(vector_source_a)
+        backup_file_orig(vector_source_b)
+        backup_file_orig(vector_source_c)
+        backup_file_orig(vector_source_d)
+        replace_file(slice_file_a, vector_source_a)
+        replace_file(slice_file_b, vector_source_b)
+        replace_file(slice_file_c, vector_source_c)
+        replace_file(slice_file_d, vector_source_d)
+
+        segment_code = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
+        segment_identifier_a = slice_file_a.split("." + segment_code + ".")[-1].replace(".slice", "")
+        segment_identifier_c = slice_file_c.split("." + segment_code + ".")[-1].replace(".slice", "")
+
+        emitter.sub_sub_title("transforming " + segment_identifier_c + " in " + vector_source_c)
+
+        weaver.weave_code(vector_source_a,
+                          vector_source_b,
+                          vector_source_c,
+                          diff_file,
+                          modified_source_list
+                          )
+
+        restore_file_orig(vector_source_a)
+        restore_file_orig(vector_source_b)
+        restore_file_orig(vector_source_c)
+        replace_file(vector_source_d, slice_file_d)
+        restore_file_orig(vector_source_d)
+
+
 def load_values():
     load_state()
     if not values.translated_script_for_files:
@@ -162,17 +205,21 @@ def start():
     emitter.title("Applying transformation")
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_WEAVE]:
-        safe_exec(transplant_code, "transforming slices")
-        safe_exec(weave_slices, "weaving slices")
-        if values.missing_function_list:
-            safe_exec(transplant_missing_functions, "transplanting functions")
-        if values.missing_data_type_list:
-            safe_exec(transplant_missing_data_types, "transplanting data structures")
-        if values.missing_macro_list:
-            safe_exec(transplant_missing_macros, "transplanting macros")
-        if values.missing_header_list:
-            safe_exec(transplant_missing_header, "transplanting header files")
-        safe_exec(fixer.check, "correcting syntax errors", modified_source_list)
+        if values.CONF_OPERATION_MODE == 0:
+            safe_exec(transplant_code, "transforming slices")
+            safe_exec(weave_slices, "weaving slices")
+            if values.missing_function_list:
+                safe_exec(transplant_missing_functions, "transplanting functions")
+            if values.missing_data_type_list:
+                safe_exec(transplant_missing_data_types, "transplanting data structures")
+            if values.missing_macro_list:
+                safe_exec(transplant_missing_macros, "transplanting macros")
+            if values.missing_header_list:
+                safe_exec(transplant_missing_header, "transplanting header files")
+            safe_exec(fixer.check, "correcting syntax errors", modified_source_list)
+        elif values.CONF_OPERATION_MODE in [1,2]:
+            safe_exec(transplant_code, "transforming slices")
+            safe_exec(weave_slices, "weaving slices")
         save_values()
     else:
         emitter.special("\n\t-skipping this phase-")
