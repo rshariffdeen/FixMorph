@@ -4,6 +4,7 @@ import os
 import sys
 import subprocess
 import pickle
+import shutil
 from tools import logger, emitter, writer, reader
 from common import definitions, values
 
@@ -69,12 +70,14 @@ def clean_files():
     # Remove other residual files stored in ./output/
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.information("Removing other residual files...")
-    if os.path.isdir("output"):
-        clean_command = "rm -f " + definitions.FILE_COMPARISON_RESULT + ";"
-        clean_command += "rm -f " + definitions.FILE_ORIG_N + ";"
-        clean_command += "rm -f " + definitions.FILE_PORT_N + ";"
-        clean_command += "rm -f " + definitions.FILE_TRANS_N + ";"
-        execute_command(clean_command)
+    if os.path.isfile(definitions.FILE_COMPARISON_RESULT):
+        os.remove(definitions.FILE_COMPARISON_RESULT)
+    if os.path.isfile(definitions.FILE_ORIG_N):
+        os.remove(definitions.FILE_ORIG_N)
+    if os.path.isfile(definitions.FILE_PORT_N):
+        os.remove(definitions.FILE_PORT_N)
+    if os.path.isfile(definitions.FILE_TRANS_N):
+        os.remove(definitions.FILE_TRANS_N)
 
 
 def get_file_extension_list(src_path, output_file_name):
