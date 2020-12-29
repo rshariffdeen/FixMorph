@@ -218,8 +218,8 @@ def update_configuration():
     project_name = values.FILE_CONFIGURATION.split("/")[-3]
     dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
 
-    if "/crochet/tests" in values.FILE_CONFIGURATION:
-        values.CONF_VC = "git"
+    # if definitions.DIRECTORY_MAIN + "/tests" in os.path.abspath(values.FILE_CONFIGURATION):
+    #     values.CONF_VC = "git"
 
     definitions.DIRECTORY_OUTPUT = definitions.DIRECTORY_OUTPUT_BASE + "/" + dir_name
     definitions.DIRECTORY_TMP = definitions.DIRECTORY_OUTPUT + "/tmp"
