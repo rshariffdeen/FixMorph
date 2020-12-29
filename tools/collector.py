@@ -77,14 +77,14 @@ def collect_instruction_list(script_file_path):
             elif instruction == definitions.INSERT:
                 try:
                     node_a, node_b = clean_parse(content, definitions.INTO)
+                    node_b_at = node_b.split(definitions.AT)
+                    node_b = definitions.AT.join(node_b_at[:-1])
                     if "TranslationUnitDecl" in node_b:
                         skip_list.append(node_a)
                         continue
                     if node_b in skip_list:
                         skip_list.append(node_a)
                         continue
-                    node_b_at = node_b.split(definitions.AT)
-                    node_b = definitions.AT.join(node_b_at[:-1])
                     pos = node_b_at[-1]
                     instruction_list.append((instruction, node_a, node_b, pos))
                     inserted_node_list.append(node_a)
