@@ -10,14 +10,21 @@ from phases import building, differencing, detection, mapping, extraction, trans
     evolution, weaving, verify, summarizing, slicing, comparison, reversing
 from common import definitions, values, utilities
 
-time_info = dict()
+time_info = {
+    definitions.KEY_DURATION_INITIALIZATION: 0, definitions.KEY_DURATION_BUILD_ANALYSIS: 0,
+    definitions.KEY_DURATION_DIFF_ANALYSIS: 0, definitions.KEY_DURATION_CLONE_ANALYSIS: 0,
+    definitions.KEY_DURATION_SLICE: 0, definitions.KEY_DURATION_EXTRACTION: 0,
+    definitions.KEY_DURATION_MAP_GENERATION: 0, definitions.KEY_DURATION_TRANSLATION: 0,
+    definitions.KEY_DURATION_EVOLUTION: 0, definitions.KEY_DURATION_TRANSPLANTATION: 0,
+    definitions.KEY_DURATION_VERIFICATION: 0, definitions.KEY_DURATION_COMPARISON: 0,
+    definitions.KEY_DURATION_SUMMARIZATION: 0, definitions.KEY_DURATION_TOTAL: 0
+             }
 
 
 def set_env_value():
     emitter.normal("setting environment values")
     os.environ["PYTHONPATH"] = "/home/rshariffdeen/workspace/z3/build/python"
     utilities.execute_command("export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python")
-
 
 
 def clean_data():
