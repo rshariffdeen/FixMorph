@@ -71,7 +71,7 @@ def command(message):
 
 
 def error(message):
-    with open(definitions.FILE_ERROR_LOG, 'w+') as last_log:
+    with open(definitions.FILE_ERROR_LOG, 'a') as last_log:
         last_log.write(message)
     message = str(message).strip().replace("\t", "").replace("\n", "")
     message = "[ERROR]: " + str(message) + "\n"
