@@ -8,11 +8,12 @@ int fib(int n)
 {
     int k = 0;
     k = k + 1;
+    printf("value of k is %d\n", k);
 	if (n == 0 || n == 1)
 	{
 		return n;
 	}
-	printf("value of k is %d\n", k);
+
 	return fib(n - 1) + fib(n - 2);
 }
 
