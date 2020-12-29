@@ -4,11 +4,13 @@
 
 import time
 import os
-import shutil
+import traceback
 from tools import emitter, logger, configuration
 from phases import building, differencing, detection, mapping, extraction, translation, \
     evolution, weaving, verify, summarizing, slicing, comparison, reversing
 from common import definitions, values, utilities
+
+time_info = dict()
 
 
 def set_env_value():
@@ -78,11 +80,11 @@ def create_directories():
 
 
 def run(arg_list):
+    global time_info
     create_directories()
     create_files()
     logger.create()
     start_time = time.time()
-    time_info = dict()
 
     time_check = time.time()
     bootstrap(arg_list)
@@ -168,8 +170,11 @@ if __name__ == "__main__":
     try:
         run(sys.argv[1:])
     except KeyboardInterrupt as e:
-        logger.store()
         utilities.error_exit("Program Interrupted by User")
     except Exception as e:
-        logger.error(e.message)
+        logger.error(str(e))
+        logger.error(traceback.format_exc())
+    finally:
+        emitter.end(time_info)
+        logger.end(time_info)
         logger.store()
