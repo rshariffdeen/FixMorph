@@ -6,41 +6,10 @@ import os
 import time
 from common import definitions, values
 from common.utilities import execute_command, error_exit, save_current_state, backup_file_orig, restore_file_orig, replace_file
-from tools import emitter, collector, reader, writer, slicer
+from tools import emitter, collector, reader, writer, generator
 from ast import ast_vector
 
 generated_script_list = dict()
-
-
-def generate_edit_script(file_a, file_b, output_file):
-    name_a = file_a.split("/")[-1]
-    emitter.normal("\t\t\tgenerating transformation script")
-    try:
-        extra_arg = ""
-        if file_a[-1] == 'h':
-            extra_arg = " --"
-        command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
-        if values.DONOR_REQUIRE_MACRO:
-            command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
-        command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
-        command += " > " + output_file
-        execute_command(command, False)
-    except Exception as e:
-        error_exit(e, "Unexpected fail at generating edit script: " + output_file)
-
-
-def generate_edit_diff(file_a, file_b, output_file):
-    name_a = file_a.split("/")[-1]
-    emitter.normal("\t\t\tgenerating edit diff")
-    try:
-        command = definitions.LINUX_DIFF_COMMAND
-        if values.DEFAULT_OPERATION_MODE == 2:
-            command += " --context " + str(values.DEFAULT_CONTEXT_LEVEL) + " "
-        command += file_a + " " + file_b + " 2> output/errors_linux_diff "
-        command += " > " + output_file
-        execute_command(command, False)
-    except Exception as e:
-        error_exit(e, "Unexpected fail at generating edit script: " + output_file)
 
 
 def generate_script_for_files(file_list_to_patch):
@@ -69,7 +38,7 @@ def generate_script_for_files(file_list_to_patch):
             backup_file_orig(vector_source_b)
             replace_file(slice_file_a, vector_source_a)
             replace_file(slice_file_b, vector_source_b)
-            generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
+            generator.generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_b)
 
@@ -112,7 +81,7 @@ def generate_diff_for_files(file_list_to_patch):
             backup_file_orig(vector_source_b)
             replace_file(slice_file_a, vector_source_a)
             replace_file(slice_file_b, vector_source_b)
-            generate_edit_diff(vector_source_a, vector_source_b, diff_file_ab)
+            generator.generate_edit_diff(vector_source_a, vector_source_b, diff_file_ab)
             restore_file_orig(vector_source_a)
             restore_file_orig(vector_source_b)
 
