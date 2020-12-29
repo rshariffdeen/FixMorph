@@ -168,7 +168,8 @@ def run(arg_list):
     # Final running time and exit message
     duration = format((time.time() - start_time) / 60, '.3f')
     time_info[definitions.KEY_DURATION_TOTAL] = str(duration)
-    
+
+
 if __name__ == "__main__":
     import sys
     is_error = False

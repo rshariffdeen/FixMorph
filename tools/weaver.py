@@ -43,10 +43,10 @@ def execute_ast_transformation(script_path, source_file_info):
     parameters = " -s=" + definitions.PATCH_SIZE
 
     if values.DONOR_REQUIRE_MACRO:
-        parameters += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg", "--extra-arg-a") + " "
+        parameters += " " + values.DONOR_PRE_PROCESS_MACRO + " "
 
     if values.TARGET_REQUIRE_MACRO:
-        parameters += " " + values.TARGET_PRE_PROCESS_MACRO.replace("--extra-arg", "--extra-arg-c") + " "
+        parameters += " " + values.TARGET_PRE_PROCESS_MACRO + " "
 
     parameters += " -script=" + script_path + " -source=" + file_a
     parameters += " -destination=" + file_b + " -target=" + file_c

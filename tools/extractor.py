@@ -636,11 +636,11 @@ def extract_pre_macro_list(source_file):
                 for token in token_list[1:]:
                     macro = token.split(" ")[0]
                     pre_macro_list.add(macro.replace(")", "").replace("(", ""))
-    # if values.CONF_PATH_A in source_file or values.CONF_PATH_B in source_file:
-    #     pre_process_arg = " --extra-arg-a=\"-D {}=1 \" "
-    # else:
-    #     pre_process_arg = " --extra-arg-c=\"-D {}=1 \" "
-    pre_process_arg = " --extra-arg=\"-D {}=1 \" "
+    if values.CONF_PATH_A in source_file or values.CONF_PATH_B in source_file:
+        pre_process_arg = " --extra-arg-a=\"-D {}=1 \" "
+    else:
+        pre_process_arg = " --extra-arg-c=\"-D {}=1 \" "
+    # pre_process_arg = " --extra-arg=\"-D {}=1 \" "
     for macro in pre_macro_list:
         macro_command = macro_command + pre_process_arg.format(macro)
     return macro_command
