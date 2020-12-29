@@ -20,6 +20,8 @@ time_info = {
     definitions.KEY_DURATION_SUMMARIZATION: '0', definitions.KEY_DURATION_TOTAL: '0'
              }
 
+start_time = 0
+
 
 def set_env_value():
     emitter.normal("setting environment values")
@@ -87,7 +89,7 @@ def create_directories():
 
 
 def run(arg_list):
-    global time_info
+    global time_info, start_time
     create_directories()
     create_files()
     logger.create()
@@ -165,10 +167,6 @@ def run(arg_list):
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_SUMMARIZATION] = str(duration)
 
-    # Final running time and exit message
-    duration = format((time.time() - start_time) / 60, '.3f')
-    time_info[definitions.KEY_DURATION_TOTAL] = str(duration)
-
 
 if __name__ == "__main__":
     import sys
@@ -183,6 +181,9 @@ if __name__ == "__main__":
         logger.error(traceback.format_exc())
         is_error = True
     finally:
+        # Final running time and exit message
+        duration = format((time.time() - start_time) / 60, '.3f')
+        time_info[definitions.KEY_DURATION_TOTAL] = str(duration)
         emitter.end(time_info, is_error)
         logger.end(time_info, is_error)
         logger.store()
