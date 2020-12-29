@@ -169,3 +169,6 @@ if __name__ == "__main__":
         run(sys.argv[1:])
     except KeyboardInterrupt as e:
         utilities.error_exit("Program Interrupted by User")
+        logger.store()
+    except Exception as e:
+        logger.store()
