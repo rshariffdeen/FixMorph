@@ -171,4 +171,5 @@ if __name__ == "__main__":
         logger.store()
         utilities.error_exit("Program Interrupted by User")
     except Exception as e:
+        logger.error(e.message)
         logger.store()
