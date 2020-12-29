@@ -174,14 +174,17 @@ def run(arg_list):
     
 if __name__ == "__main__":
     import sys
+    is_error = False
     try:
         run(sys.argv[1:])
     except KeyboardInterrupt as e:
         utilities.error_exit("Program Interrupted by User")
+        is_error = True
     except Exception as e:
         logger.error(str(e))
         logger.error(traceback.format_exc())
+        is_error = True
     finally:
-        emitter.end(time_info)
-        logger.end(time_info)
+        emitter.end(time_info, is_error)
+        logger.end(time_info, is_error)
         logger.store()

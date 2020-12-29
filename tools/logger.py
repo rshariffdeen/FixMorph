@@ -113,7 +113,7 @@ def store():
     copyfile(definitions.FILE_MAKE_LOG, definitions.DIRECTORY_LOG + "/log-make")
 
 
-def end(time_duration):
+def end(time_duration, is_error=False):
     output("[END] Crochet ended at " + str(datetime.datetime.now()))
     output("Initialization: " + time_duration[definitions.KEY_DURATION_INITIALIZATION] + " minutes")
     output("Build: " + time_duration[definitions.KEY_DURATION_BUILD_ANALYSIS] + " minutes")
@@ -130,6 +130,8 @@ def end(time_duration):
     # output("Evaluation: " + time_duration[Definitions.KEY_DURATION_EVALUATION] + " minutes")
     output("Comparison: " + time_duration[definitions.KEY_DURATION_COMPARISON] + " minutes")
     output("Summarizing: " + time_duration[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
-    output("Crochet finished successfully after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
-    store()
+    if is_error:
+        output("Crochet exited with an error after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
+    else:
+        output("Crochet finished successfully after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
 

@@ -148,7 +148,7 @@ def configuration(setting, value):
     logger.configuration(setting + ":" + str(value))
 
 
-def end(time_info):
+def end(time_info, is_error=False):
     statistics("\nRun time statistics:\n-----------------------\n")
     statistics("Initialization: " + time_info[definitions.KEY_DURATION_INITIALIZATION] + " minutes")
     statistics("Build Analysis: " + time_info[definitions.KEY_DURATION_BUILD_ANALYSIS] + " minutes")
@@ -165,7 +165,10 @@ def end(time_info):
     # statistics("Evaluation: " + time_info[Definitions.KEY_DURATION_EVALUATION] + " minutes")
     statistics("Comparison: " + time_info[definitions.KEY_DURATION_COMPARISON] + " minutes")
     statistics("Summarizing: " + time_info[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
-    success("\nCrochet finished successfully after " + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
+    if is_error:
+        error("\nCrochet exited with an error " + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
+    else:
+        success("\nCrochet finished successfully after " + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
 
 
 def help():
