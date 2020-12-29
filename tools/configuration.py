@@ -77,6 +77,8 @@ def read_conf_file():
             values.CONF_EXPLOIT_C = configuration.replace(definitions.CONF_EXPLOIT_C, '')
         elif definitions.CONF_VC in configuration:
             values.CONF_VC = configuration.replace(definitions.CONF_VC, '')
+        elif definitions.CONF_CONTEXT_LEVEL in configuration:
+            values.CONF_CONTEXT_LEVEL = int(configuration.replace(definitions.CONF_CONTEXT_LEVEL, ""))
         elif definitions.CONF_LINUX_KERNEL in configuration:
             value = configuration.replace(definitions.CONF_LINUX_KERNEL, '')
             if "true" in value:
@@ -137,6 +139,8 @@ def read_conf(arg_list):
                         values.PHASE_SETTING[phase] = 1
                     else:
                         values.PHASE_SETTING[phase] = 0
+            elif definitions.ARG_CONTEXT_LEVEL in arg:
+                values.CONF_CONTEXT_LEVEL = int(arg.replace(definitions.ARG_CONTEXT_LEVEL, ""))
             elif "--skip" in arg:
                 arg_phase = arg.replace("--skip-", "")
                 values.PHASE_SETTING[arg_phase] = 0
@@ -204,6 +208,7 @@ def update_phase_configuration(arg_list):
 def print_configuration():
     emitter.configuration("operation mode", definitions.operation_mode[values.DEFAULT_OPERATION_MODE])
     emitter.configuration("output dir", definitions.DIRECTORY_OUTPUT)
+    emitter.configuration("context level", values.DEFAULT_CONTEXT_LEVEL)
 
 
 def update_configuration():
@@ -229,6 +234,9 @@ def update_configuration():
 
     if values.CONF_OPERATION_MODE > -1:
         values.DEFAULT_OPERATION_MODE = values.CONF_OPERATION_MODE
+
+    if values.CONF_CONTEXT_LEVEL > -1:
+        values.DEFAULT_CONTEXT_LEVEL = values.CONF_CONTEXT_LEVEL
 
     patch_dir = values.CONF_PATH_C + "-patch"
     if os.path.isdir(patch_dir):

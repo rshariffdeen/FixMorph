@@ -109,6 +109,7 @@ CONF_DIFF_SIZE = "diff_size:"
 CONF_VC = "version-control:"
 CONF_LINUX_KERNEL = "linux-kernel:"
 CONF_BACKPORT = "backport:"
+CONF_CONTEXT_LEVEL = "context_level"
 
 
 # ----------------- KEY DEFINITIONS -------------------
@@ -158,6 +159,7 @@ ARG_LINUX_KERNEL = "--linux-kernel"
 ARG_BREAK_WEAVE = "--break-weave"
 ARG_USE_CACHE = "--use-cache"
 ARG_OPERATION_MODE = "--mode="
+ARG_CONTEXT_LEVEL = "--context="
 
 ARG_ONLY_BUILD = "--only-" + PHASE_BUILD
 ARG_ONLY_DIFF = "--only-" + PHASE_DIFF

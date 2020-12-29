@@ -35,7 +35,7 @@ def generate_edit_diff(file_a, file_b, output_file):
     try:
         command = definitions.LINUX_DIFF_COMMAND
         if values.DEFAULT_OPERATION_MODE == 2:
-            command += " --context "
+            command += " --context " + str(values.DEFAULT_CONTEXT_LEVEL) + " "
         command += file_a + " " + file_b + " 2> output/errors_linux_diff "
         command += " > " + output_file
         execute_command(command, False)

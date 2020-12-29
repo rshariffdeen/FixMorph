@@ -92,7 +92,7 @@ def execute_diff_transformation(diff_file, source_file_info):
 
     patch_command = definitions.LINUX_PATCH_COMMAND + " "
     if values.DEFAULT_OPERATION_MODE == 2:
-        patch_command += " --context "
+        patch_command += " --context " + str(values.DEFAULT_CONTEXT_LEVEL) + " "
     patch_command += file_c + " " + diff_file + " -o " + definitions.FILE_TEMP_FIX
     ret_code = int(execute_command(patch_command))
 
