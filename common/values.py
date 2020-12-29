@@ -38,7 +38,7 @@ PHASE_SETTING = {
     definitions.PHASE_REVERSE: 1,
     definitions.PHASE_EVALUATE: 1,
     definitions.PHASE_COMPARE: 1,
-    definitions.PHASE_SUMMARIZE: 1,
+    definitions.PHASE_SUMMARIZE: 1
 }
 
 STANDARD_FUNCTION_LIST = list()
