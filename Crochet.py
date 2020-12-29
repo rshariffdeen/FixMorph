@@ -11,7 +11,7 @@ from phases import building, differencing, detection, mapping, extraction, trans
 from common import definitions, values, utilities
 
 time_info = {
-    definitions.KEY_DURATION_INITIALIZATION: '0', definitions.KEY_DURATION_BUILD_ANALYSIS: '0'
+    definitions.KEY_DURATION_INITIALIZATION: '0', definitions.KEY_DURATION_BUILD_ANALYSIS: '0',
     definitions.KEY_DURATION_DIFF_ANALYSIS: '0', definitions.KEY_DURATION_CLONE_ANALYSIS: '0',
     definitions.KEY_DURATION_SLICE: '0', definitions.KEY_DURATION_EXTRACTION: '0',
     definitions.KEY_DURATION_MAP_GENERATION: '0', definitions.KEY_DURATION_TRANSLATION: '0',
