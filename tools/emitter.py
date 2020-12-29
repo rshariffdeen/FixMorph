@@ -166,7 +166,7 @@ def end(time_info, is_error=False):
     statistics("Comparison: " + time_info[definitions.KEY_DURATION_COMPARISON] + " minutes")
     statistics("Summarizing: " + time_info[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
     if is_error:
-        error("\nCrochet exited with an error " + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
+        error("\nCrochet exited with an error after" + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
     else:
         success("\nCrochet finished successfully after " + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
 
