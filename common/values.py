@@ -10,10 +10,10 @@ Project_E = None
 
 DEBUG = False
 DEBUG_DATA = False
-BACKPORT = False
+BACKPORT = True
 BREAK_WEAVE = False
 FORK = False
-IS_LINUX_KERNEL = False
+IS_LINUX_KERNEL = True
 SKIP_VEC_GEN = False
 ANALYSE_N = False
 ONLY_RESET = False
