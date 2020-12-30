@@ -20,7 +20,7 @@ int main(void)
 	scanf("%d", &a);
 	int fib_number = fib(a);
 	printf("fib number is %d", fib_number);
-	TRACE_LOG("%s", "testing trace")
+	TRACE_LOG("%s", "testing trace");
 	return 0;
 }
 
