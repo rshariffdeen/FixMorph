@@ -181,7 +181,15 @@ def weave_slices():
     if not values.translated_script_for_files:
         error_exit("no slice to weave")
     slice_info = dict()
-    for file_list, generated_data in values.translated_script_for_files.items():
+    transformed_list = list()
+    if values.DEFAULT_OPERATION_MODE == 0:
+        for file_list, generated_data in values.translated_script_for_files.items():
+            transformed_list.append(file_list)
+    elif values.DEFAULT_OPERATION_MODE in [1, 2]:
+        for file_list, generated_data in values.generated_script_files.items():
+            transformed_list.append(file_list)
+
+    for file_list in transformed_list:
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
