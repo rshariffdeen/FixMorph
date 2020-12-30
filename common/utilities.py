@@ -51,7 +51,6 @@ def load_state():
 def error_exit(*args):
     print("\n")
     for i in args:
-        logger.error(i)
         emitter.error(i)
     raise Exception("Error. Exiting...")
 
