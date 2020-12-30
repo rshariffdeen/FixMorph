@@ -8,6 +8,7 @@
 #define SQUARE(x) (x*x)
 #define TRACE_LOG(fmt, args...) fprintf(stdout, fmt, ##args);
 
+TRACE_LOG("%s", "testing trace");
 
 int fib(int n)
 {

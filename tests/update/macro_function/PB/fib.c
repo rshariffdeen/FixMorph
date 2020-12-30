@@ -4,6 +4,8 @@
 #define SQUARE(x) (x*x)
 #define TRACE_LOG(fmt, args...) fprintf(stdout, fmt, ##args);
 
+TRACE_LOG("%s", "testing trace with new");
+
 int fib(int n)
 {
 	if (n == 0 || n == 1)
