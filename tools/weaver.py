@@ -129,6 +129,8 @@ def show_patch(file_a, file_b, file_c, file_d, index):
     diff_command = "diff -ENZBbwr " + file_c + " " + file_d + " > " + generated_patch_file_name
     # print(diff_command)
     execute_command(diff_command)
+    if os.path.getsize(generated_patch_file_name) == 0:
+        error_exit("diff transformation FAILED\n failed to generate a backporting")
     with open(generated_patch_file_name, 'r', encoding='utf8', errors="ignore") as diff:
         diff_line = diff.readline().strip()
         while diff_line:
