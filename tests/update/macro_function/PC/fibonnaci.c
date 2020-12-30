@@ -25,5 +25,6 @@ int main(void)
 	scanf("%d", &b);
 	int fib_number = fib(b);
 	printf("fib number is %d", fib_number);
+	TRACE_LOG("%s", "testing trace")
 	return 0;
 }
