@@ -19,8 +19,8 @@ int main(void)
 	int a = SQUARE(3);
 	scanf("%d", &a);
 	int fib_number = fib(a);
+	printf("square number is %d", SQUARE(3));
 	printf("fib number is %d", fib_number);
-	TRACE_LOG("%s", "testing trace with new");
 	return 0;
 }
 
