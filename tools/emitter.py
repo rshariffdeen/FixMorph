@@ -87,6 +87,7 @@ def statistics(message):
 
 
 def error(message):
+    message = "\t\t[ERROR] " + message
     write(message, RED)
     logger.error(message)
 

@@ -50,7 +50,7 @@ def load_state():
 
 def error_exit(*args):
     print("\n")
-    emitter.error("\nBACKPORTING FAILED\n")
+    emitter.error("\nTransformation Failed\n")
     for i in args:
         emitter.error(i)
     raise Exception("Error. Exiting...")
