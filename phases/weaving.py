@@ -178,8 +178,7 @@ def save_values():
 
 def weave_slices():
     global file_index, missing_function_list, missing_macro_list, modified_source_list
-    if not values.translated_script_for_files:
-        error_exit("no slice to weave")
+
     slice_info = dict()
     transformed_list = list()
     if values.DEFAULT_OPERATION_MODE == 0:
@@ -188,7 +187,8 @@ def weave_slices():
     elif values.DEFAULT_OPERATION_MODE in [1, 2]:
         for file_list, generated_data in values.generated_script_files.items():
             transformed_list.append(file_list)
-
+    if not transformed_list:
+        error_exit("no slice to weave")
     for file_list in transformed_list:
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
