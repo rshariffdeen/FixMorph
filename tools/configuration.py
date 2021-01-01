@@ -1,5 +1,5 @@
 import os
-import sys
+import signal
 import shutil
 from common import definitions, values, utilities
 from tools import emitter
@@ -209,6 +209,7 @@ def print_configuration():
     emitter.configuration("operation mode", definitions.operation_mode[values.DEFAULT_OPERATION_MODE])
     emitter.configuration("output dir", definitions.DIRECTORY_OUTPUT)
     emitter.configuration("context level", values.DEFAULT_CONTEXT_LEVEL)
+    emitter.configuration("timeout limit", values.DEFAULT_OVERALL_TIMEOUT)
 
 
 def update_configuration():
@@ -241,6 +242,10 @@ def update_configuration():
     if values.CONF_CONTEXT_LEVEL > -1:
         values.DEFAULT_CONTEXT_LEVEL = values.CONF_CONTEXT_LEVEL
 
+    if values.DEFAULT_OPERATION_MODE in [1, 2]:
+        values.DEFAULT_OVERALL_TIMEOUT = 1200
+
+    signal.alarm(values.DEFAULT_OVERALL_TIMEOUT)
     patch_dir = values.CONF_PATH_C + "-patch"
     if os.path.isdir(patch_dir):
         if definitions.DIRECTORY_TESTS in patch_dir:
@@ -278,5 +283,6 @@ def update_configuration():
     definitions.FILE_DIFF_ALL = definitions.DIRECTORY_TMP + "/diff_all"
     definitions.FILE_FIND_RESULT = definitions.DIRECTORY_TMP + "/find_tmp"
     definitions.FILE_TEMP_TRANSFORM = definitions.DIRECTORY_TMP + "/temp-transform"
+
 
 

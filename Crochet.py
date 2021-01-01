@@ -5,6 +5,7 @@
 import time
 import os
 import traceback
+import signal
 from tools import emitter, logger, configuration
 from phases import building, differencing, detection, mapping, extraction, translation, \
     evolution, weaving, verify, summarizing, slicing, comparison, reversing
@@ -27,6 +28,11 @@ def set_env_value():
     emitter.normal("setting environment values")
     os.environ["PYTHONPATH"] = "/home/rshariffdeen/workspace/z3/build/python"
     utilities.execute_command("export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python")
+
+
+def timeout_handler(signum, frame):
+    emitter.error("TIMEOUT Exception")
+    raise Exception("end of time")
 
 
 def clean_data():
@@ -171,6 +177,7 @@ def run(arg_list):
 if __name__ == "__main__":
     import sys
     is_error = False
+    signal.signal(signal.SIGALRM, timeout_handler)
     try:
         run(sys.argv[1:])
     except KeyboardInterrupt as e:
