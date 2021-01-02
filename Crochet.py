@@ -186,7 +186,7 @@ if __name__ == "__main__":
         is_error = True
     except Exception as e:
         emitter.error("Runtime Error")
-        # emitter.error(str(e))
+        emitter.error(str(e))
         logger.error(traceback.format_exc())
         is_error = True
     finally:

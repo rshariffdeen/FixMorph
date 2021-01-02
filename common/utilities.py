@@ -50,8 +50,8 @@ def load_state():
 
 def error_exit(*args):
     emitter.error("Transformation Failed")
-    for i in args:
-        emitter.error(i)
+    for arg in args:
+        emitter.error(str(arg))
     raise Exception("Error. Exiting...")
 
 
