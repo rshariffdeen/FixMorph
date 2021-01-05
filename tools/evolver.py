@@ -92,7 +92,7 @@ def evolve_functions(missing_function_list):
         ast_global_a = ast_generator.get_ast_json(source_path_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
         ast_global_c = ast_generator.get_ast_json(source_path_d, values.TARGET_REQUIRE_MACRO, regenerate=True)
         mapping = None
-        if values.CONF_OPERATION_MODE == 0:
+        if values.DEFAULT_OPERATION_MODE == 0:
             mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d,
                                                               ast_global_a, ast_global_c, function_name)
             if not mapping:
