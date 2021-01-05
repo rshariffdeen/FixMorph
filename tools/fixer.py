@@ -202,6 +202,8 @@ def fix_syntax_errors(source_file):
                 fix_comma_error(source_file, source_location)
             elif "error: expected expression" in read_line:
                 fix_initialization_error(source_file, source_location)
+            elif "error: member reference" in read_line:
+                fix_pointer_error(source_file, source_location, False)
 
 
 def fix_initialization_error(source_file, source_location):
@@ -293,6 +295,21 @@ def fix_paranthese_error(source_file, source_location, remove=False):
         new_statement = original_statement.replace(");", ";")
     else:
         new_statement = original_statement.replace(";", ");")
+    emitter.information("replaced statement: " + new_statement)
+    backup_file(source_file, FILENAME_BACKUP)
+    replace_code(new_statement, source_file, line_number)
+    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+    show_partial_diff(backup_file_path, source_file)
+
+
+def fix_pointer_error(source_file, source_location, remove=False):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    emitter.normal("\t\tfixing pointer errors")
+    line_number = int(source_location.split(":")[1])
+    emitter.information("fetching line number: " + str(line_number))
+    original_statement = get_code(source_file, line_number)
+    emitter.information("replacing statement: " + original_statement)
+    new_statement = original_statement.replace("->", ".", 1)
     emitter.information("replaced statement: " + new_statement)
     backup_file(source_file, FILENAME_BACKUP)
     replace_code(new_statement, source_file, line_number)
