@@ -162,11 +162,11 @@ def read_conf(arg_list):
 
 def update_phase_configuration(arg_list):
 
-    if values.CONF_OPERATION_MODE == 0:
+    if values.DEFAULT_OPERATION_MODE in [0, 3]:
         for phase_name in values.PHASE_SETTING:
             values.PHASE_SETTING[phase_name] = 1
 
-    elif values.CONF_OPERATION_MODE in [1, 2]:
+    elif values.DEFAULT_OPERATION_MODE in [1, 2]:
         values.PHASE_SETTING = {
             definitions.PHASE_BUILD: 1,
             definitions.PHASE_DIFF: 1,
@@ -183,6 +183,9 @@ def update_phase_configuration(arg_list):
             definitions.PHASE_COMPARE: 1,
             definitions.PHASE_SUMMARIZE: 1,
         }
+
+    if values.DEFAULT_OPERATION_MODE == 3:
+        values.PHASE_SETTING[definitions.PHASE_EVOLUTION] = 0
 
     if len(arg_list) > 0:
         for arg in arg_list:
