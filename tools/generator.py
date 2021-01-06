@@ -311,6 +311,7 @@ def generate_edit_script(file_a, file_b, output_file):
         command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
         if values.DONOR_REQUIRE_MACRO:
             command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
+            command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg-c") + " "
         command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
         command += " > " + output_file
         execute_command(command, False)

@@ -161,6 +161,13 @@ def generate_ast_script(source_a, source_b, outfile_path, dump_matches=False):
     if dump_matches:
         extra_args = " -dump-matches "
     generate_command = APP_AST_DIFF + " -s=" + values.CONF_AST_DIFF_SIZE + extra_args
+    if values.DONOR_REQUIRE_MACRO:
+        generate_command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
+        if values.CONF_PATH_B in source_b:
+            generate_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg-c") + " "
+    if values.TARGET_REQUIRE_MACRO:
+        if values.CONF_PATH_C in source_b:
+            generate_command += " " + values.TARGET_PRE_PROCESS_MACRO + " "
     generate_command += source_a + " " + source_b
     if source_a[-1] == 'h':
         generate_command += " --"
