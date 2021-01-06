@@ -37,7 +37,11 @@ def ast_dump(file_path, output_path, is_header=True, use_macro=False, use_local=
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dump_command = APP_AST_DIFF + " -ast-dump-json "
     if use_macro:
-        dump_command += " " + values.PRE_PROCESS_MACRO + "  "
+        if values.CONF_PATH_A in file_path or values.CONF_PATH_B in file_path:
+            dump_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg") + "  "
+        else:
+            dump_command += " " + values.TARGET_PRE_PROCESS_MACRO.replace("--extra-arg-c", "--extra-arg") + "  "
+
     dump_command += file_path
     if file_path[-1] == 'h' or use_local:
         dump_command += " --"

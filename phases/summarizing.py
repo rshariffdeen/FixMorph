@@ -158,6 +158,11 @@ def get_ast_line_numbers(file_path):
 def get_ast_json(file_path):
     json_file = file_path + ".AST"
     dump_command = "crochet-diff -ast-dump-json " + file_path
+    if values.CONF_PATH_A in file_path or values.CONF_PATH_B in file_path:
+        dump_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg") + "  "
+    else:
+        dump_command += " " + values.TARGET_PRE_PROCESS_MACRO.replace("--extra-arg-c", "--extra-arg") + "  "
+
     if file_path[-1] == 'h':
         dump_command += " --"
     error_file = definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"

@@ -98,16 +98,20 @@ def gen_temp_json(file_a, file_b, file_c):
     return ASTlists
 
 
-def ASTdump(file, output, use_macro=False):
+def ASTdump(file_path, output, use_macro=False):
     extra_arg = ""
-    if file[-1] == 'h':
+    if file_path[-1] == 'h':
         extra_arg = " --"
-    c = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -ast-dump-json "
+    dump_command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -ast-dump-json "
     if use_macro:
-        c += " " + values.PRE_PROCESS_MACRO + " "
+        if values.CONF_PATH_A in file_path or values.CONF_PATH_B in file_path:
+            dump_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg") + "  "
+        else:
+            dump_command += " " + values.TARGET_PRE_PROCESS_MACRO.replace("--extra-arg-c", "--extra-arg") + "  "
+
     error_file = definitions.DIRECTORY_OUTPUT + "/errors_AST_dump"
-    c += file + extra_arg + " 2> " + error_file + " > " + output
-    execute_command(c)
+    dump_command += file_path + extra_arg + " 2> " + error_file + " > " + output
+    execute_command(dump_command)
 
 
 def gen_json(file, name, ASTlists, use_macro=False):

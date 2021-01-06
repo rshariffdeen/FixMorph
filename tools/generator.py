@@ -262,7 +262,10 @@ def generate_ast_json(file_path, use_macro=False):
         macro_list = values.DONOR_PRE_PROCESS_MACRO
     dump_command = definitions.APP_AST_DIFF + " -ast-dump-json "
     if use_macro:
-        dump_command += " " + macro_list + "  "
+        if values.CONF_PATH_A in file_path or values.CONF_PATH_B in file_path:
+            dump_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg") + "  "
+        else:
+            dump_command += " " + values.TARGET_PRE_PROCESS_MACRO.replace("--extra-arg-c", "--extra-arg") + "  "
     dump_command += file_path
     if file_path[-1] == 'h':
         dump_command += " --"
