@@ -433,14 +433,14 @@ def extract_var_ref_list(ast_node, start_line, end_line, only_in_range):
             var_type = "macro"
         var_list.append((var_name, line_number, var_type))
     if node_type == "ArraySubscriptExpr":
-        var_name, var_type, auxilary_list = Converter.convert_array_subscript(ast_node)
+        var_name, var_type, auxilary_list = converter.convert_array_subscript(ast_node)
         line_number = int(ast_node['start line'])
         var_list.append((str(var_name), line_number, var_type))
         for aux_var_name, aux_var_type in auxilary_list:
             var_list.append((str(aux_var_name), line_number, aux_var_type))
         return var_list
     if node_type in ["MemberExpr"]:
-        var_name, var_type, auxilary_list = Converter.convert_member_expr(ast_node)
+        var_name, var_type, auxilary_list = converter.convert_member_expr(ast_node)
         line_number = int(ast_node['start line'])
         var_list.append((str(var_name), line_number, var_type))
         for aux_var_name, aux_var_type in auxilary_list:
@@ -490,7 +490,7 @@ def extract_var_ref_list(ast_node, start_line, end_line, only_in_range):
                             var_type = str(child_node['data_type'])
                             var_list.append((var_name, line_number, var_type))
                 elif child_node_type == "MemberExpr":
-                    var_name, var_type, auxilary_list = Converter.convert_member_expr(child_node)
+                    var_name, var_type, auxilary_list = converter.convert_member_expr(child_node)
                     var_list.append((str(var_name), line_number, var_type))
                     for aux_var_name, aux_var_type in auxilary_list:
                         var_list.append((str(aux_var_name), line_number, aux_var_type))
@@ -636,11 +636,11 @@ def extract_pre_macro_list(source_file):
                 for token in token_list[1:]:
                     macro = token.split(" ")[0]
                     pre_macro_list.add(macro.replace(")", "").replace("(", ""))
-    # if values.CONF_PATH_A in source_file or values.CONF_PATH_B in source_file:
-    #     pre_process_arg = " --extra-arg-a=\"-D {}=1 \" "
-    # else:
-    #     pre_process_arg = " --extra-arg-c=\"-D {}=1 \" "
-    pre_process_arg = " --extra-arg=\"-D {}=1 \" "
+    if values.CONF_PATH_A in source_file or values.CONF_PATH_B in source_file:
+        pre_process_arg = " --extra-arg-a=\"-D {}=1 \" "
+    else:
+        pre_process_arg = " --extra-arg-c=\"-D {}=1 \" "
+    # pre_process_arg = " --extra-arg=\"-D {}=1 \" "
     for macro in pre_macro_list:
         macro_command = macro_command + pre_process_arg.format(macro)
     return macro_command

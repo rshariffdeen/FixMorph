@@ -91,12 +91,13 @@ def evolve_functions(missing_function_list):
         ast_map_key = info['ast-key']
         ast_global_a = ast_generator.get_ast_json(source_path_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
         ast_global_c = ast_generator.get_ast_json(source_path_d, values.TARGET_REQUIRE_MACRO, regenerate=True)
-        mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d,
-                                                          ast_global_a, ast_global_c, function_name)
-        if not mapping:
-            mapping = parallel.generate_function_signature_map(source_path_a, source_path_d,
-                                                               ast_global_a, ast_global_c, function_name)
-
+        mapping = None
+        if values.DEFAULT_OPERATION_MODE == 0:
+            mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d,
+                                                              ast_global_a, ast_global_c, function_name)
+            if not mapping:
+                mapping = parallel.generate_function_signature_map(source_path_a, source_path_d,
+                                                                   ast_global_a, ast_global_c, function_name)
 
         # if no mapping found add function for transplantation list
         if mapping:

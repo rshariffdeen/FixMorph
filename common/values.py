@@ -38,7 +38,7 @@ PHASE_SETTING = {
     definitions.PHASE_REVERSE: 1,
     definitions.PHASE_EVALUATE: 1,
     definitions.PHASE_COMPARE: 1,
-    definitions.PHASE_SUMMARIZE: 1,
+    definitions.PHASE_SUMMARIZE: 1
 }
 
 STANDARD_FUNCTION_LIST = list()
@@ -63,6 +63,8 @@ DEFAULT_REPAIR_ITERATION_COUNT = 10
 DEFAULT_DIFF_FUZZ_ITERATION_COUNT = 5
 DEFAULT_AST_DIFF_SIZE = 1000
 DEFAULT_OPERATION_MODE = 0
+DEFAULT_CONTEXT_LEVEL = 3
+DEFAULT_OVERALL_TIMEOUT = 3600
 
 
 # ------------------ Configuration Values ---------------
@@ -94,6 +96,7 @@ CONF_VC = ""
 CONF_USE_CACHE = False
 CONF_TAG_ID = ""
 CONF_OPERATION_MODE = -1
+CONF_CONTEXT_LEVEL = -1
 
 silence_emitter = False
 file_list_to_patch = []

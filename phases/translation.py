@@ -42,10 +42,11 @@ def safe_exec(function_def, title, *args):
 
 def load_values():
     load_state()
-    if not values.ast_map:
-        values.ast_map = reader.read_ast_map(definitions.FILE_AST_MAP_LOCAL)
-    if not values.map_namespace_global:
-        values.map_namespace_global = reader.read_namespace_map(definitions.FILE_NAMESPACE_MAP_GLOBAL)
+    if values.DEFAULT_OPERATION_MODE not in [1, 2]:
+        if not values.ast_map:
+            values.ast_map = reader.read_ast_map(definitions.FILE_AST_MAP_LOCAL)
+        if not values.map_namespace_global:
+            values.map_namespace_global = reader.read_namespace_map(definitions.FILE_NAMESPACE_MAP_GLOBAL)
 
     definitions.FILE_TRANSLATED_SCRIPT_INFO = definitions.DIRECTORY_OUTPUT + "/trans-script-info"
 

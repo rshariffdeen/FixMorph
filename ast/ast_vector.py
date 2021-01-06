@@ -44,7 +44,7 @@ class Vector:
         else:
             current = "\t\t" + self.name + " " + str(self.start_line) + "-" + \
                       str(self.end_line)
-            emitter.information("generating vector for " + str(current))
+            emitter.information("\t\t[debug] generating vector for " + str(current))
             start_line = self.start_line
             end_line = self.end_line
             with codecs.open(self.file_path, 'r', encoding='utf-8', errors='ignore') as source_file:

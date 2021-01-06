@@ -4,11 +4,24 @@
 
 import time
 import os
-import shutil
+import traceback
+import signal
 from tools import emitter, logger, configuration
 from phases import building, differencing, detection, mapping, extraction, translation, \
     evolution, weaving, verify, summarizing, slicing, comparison, reversing
 from common import definitions, values, utilities
+
+time_info = {
+    definitions.KEY_DURATION_INITIALIZATION: '0', definitions.KEY_DURATION_BUILD_ANALYSIS: '0',
+    definitions.KEY_DURATION_DIFF_ANALYSIS: '0', definitions.KEY_DURATION_CLONE_ANALYSIS: '0',
+    definitions.KEY_DURATION_SLICE: '0', definitions.KEY_DURATION_EXTRACTION: '0',
+    definitions.KEY_DURATION_MAP_GENERATION: '0', definitions.KEY_DURATION_TRANSLATION: '0',
+    definitions.KEY_DURATION_EVOLUTION: '0', definitions.KEY_DURATION_TRANSPLANTATION: '0',
+    definitions.KEY_DURATION_VERIFICATION: '0', definitions.KEY_DURATION_COMPARISON: '0',
+    definitions.KEY_DURATION_SUMMARIZATION: '0', definitions.KEY_DURATION_TOTAL: '0'
+             }
+
+start_time = 0
 
 
 def set_env_value():
@@ -16,6 +29,10 @@ def set_env_value():
     os.environ["PYTHONPATH"] = "/home/rshariffdeen/workspace/z3/build/python"
     utilities.execute_command("export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python")
 
+
+def timeout_handler(signum, frame):
+    emitter.error("TIMEOUT Exception")
+    raise Exception("end of time")
 
 
 def clean_data():
@@ -78,11 +95,11 @@ def create_directories():
 
 
 def run(arg_list):
+    global time_info, start_time
     create_directories()
     create_files()
     logger.create()
     start_time = time.time()
-    time_info = dict()
 
     time_check = time.time()
     bootstrap(arg_list)
@@ -156,16 +173,26 @@ def run(arg_list):
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_SUMMARIZATION] = str(duration)
 
-    # Final running time and exit message
-    duration = format((time.time() - start_time) / 60, '.3f')
-    time_info[definitions.KEY_DURATION_TOTAL] = str(duration)
-    emitter.end(time_info)
-    logger.end(time_info)
-    
-    
+
 if __name__ == "__main__":
     import sys
+    is_error = False
+    signal.signal(signal.SIGALRM, timeout_handler)
     try:
         run(sys.argv[1:])
     except KeyboardInterrupt as e:
-        utilities.error_exit("Program Interrupted by User")
+        emitter.error("Program Interrupted by User")
+        logger.error(traceback.format_exc())
+        is_error = True
+    except Exception as e:
+        emitter.error("Runtime Error")
+        emitter.error(str(e))
+        logger.error(traceback.format_exc())
+        is_error = True
+    finally:
+        # Final running time and exit message
+        duration = format((time.time() - start_time) / 60, '.3f')
+        time_info[definitions.KEY_DURATION_TOTAL] = str(duration)
+        emitter.end(time_info, is_error)
+        logger.end(time_info, is_error)
+        logger.store()

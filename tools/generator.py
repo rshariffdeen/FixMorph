@@ -262,7 +262,10 @@ def generate_ast_json(file_path, use_macro=False):
         macro_list = values.DONOR_PRE_PROCESS_MACRO
     dump_command = definitions.APP_AST_DIFF + " -ast-dump-json "
     if use_macro:
-        dump_command += " " + macro_list + "  "
+        if values.CONF_PATH_A in file_path or values.CONF_PATH_B in file_path:
+            dump_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg") + "  "
+        else:
+            dump_command += " " + values.TARGET_PRE_PROCESS_MACRO.replace("--extra-arg-c", "--extra-arg") + "  "
     dump_command += file_path
     if file_path[-1] == 'h':
         dump_command += " --"
@@ -296,3 +299,34 @@ def generate_untracked_file_list(output_file_path, project_path):
     if not file_list:
         emitter.normal("\t\t\t-none-")
     return file_list
+
+
+def generate_edit_script(file_a, file_b, output_file):
+    name_a = file_a.split("/")[-1]
+    emitter.normal("\t\t\tgenerating transformation script")
+    try:
+        extra_arg = ""
+        if file_a[-1] == 'h':
+            extra_arg = " --"
+        command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
+        if values.DONOR_REQUIRE_MACRO:
+            command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
+        command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
+        command += " > " + output_file
+        execute_command(command, False)
+    except Exception as e:
+        error_exit(e, "Unexpected fail at generating edit script: " + output_file)
+
+
+def generate_edit_diff(file_a, file_b, output_file):
+    name_a = file_a.split("/")[-1]
+    emitter.normal("\t\t\tgenerating edit diff")
+    try:
+        command = definitions.LINUX_DIFF_COMMAND
+        if values.DEFAULT_OPERATION_MODE == 2:
+            command += " --context=" + str(values.DEFAULT_CONTEXT_LEVEL) + " "
+        command += file_a + " " + file_b + " 2> output/errors_linux_diff "
+        command += " > " + output_file
+        execute_command(command, False)
+    except Exception as e:
+        error_exit(e, "Unexpected fail at generating edit script: " + output_file)

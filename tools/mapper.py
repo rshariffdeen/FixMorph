@@ -90,8 +90,9 @@ def generate_map(file_list):
 
     ast_node_map = parallel.read_mapping(map_file_name)
     emitter.data(ast_node_map)
-    ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
-    emitter.data(ast_node_map)
+    if values.DEFAULT_OPERATION_MODE == 0:
+        ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
+        emitter.data(ast_node_map)
     namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
                                                   vector_source_c, slice_file_a)
     restore_file_orig(vector_source_a)
