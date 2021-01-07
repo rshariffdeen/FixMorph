@@ -261,6 +261,8 @@ def detect_decl_clones():
     clone_list = []
     factor = 2
     UNKNOWN = "#UNKNOWN#"
+    if not vector_list_c:
+        return []
     candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
