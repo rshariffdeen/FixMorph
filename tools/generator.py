@@ -189,14 +189,12 @@ def create_vectors(project, source_file, segmentation_list):
 
     if values.IS_TYPEDEC:
         # Emitter.normal("\t\t\tgenerating struct vectors")
-        # for var_name, begin_line, finish_line in decl_list:
-        # var_name = "var_" + var_name.split(";")[0]
-        # var_type = (var_name.split("(")[1]).split(")")[0]
-        # var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
-        var_name = "var_global"
-        def_insert_line = finder.find_definition_insertion_point(source_file)
-        project.decl_list[source_file][var_name] = ast_vector.Vector(source_file, var_name, 0,
-                                                                     def_insert_line, True)
+        for var_name, begin_line, finish_line in decl_list:
+            var_name = "var_" + var_name.split(";")[0]
+            var_type = (var_name.split("(")[1]).split(")")[0]
+            var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
+            project.decl_list[source_file][var_name] = ast_vector.Vector(source_file, var_name, begin_line, finish_line,
+                                                                         True)
 
     if values.IS_MACRO:
         # Emitter.normal("\t\t\tgenerating macro vectors")
