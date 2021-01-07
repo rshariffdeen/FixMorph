@@ -135,7 +135,7 @@ def run():
                 if int(status_code) != 0:
                     print("[ERROR] Something went wrong!!")
                     exit()
-                print("{:>4s} {:<8s} {:>12s} {:<8s} {:<8s}".format(operation_mode, test_action, scenario,
+                print("{:>4s} {:<8s} {:>12s} {:<8s} {:<8s}".format(str(operation_mode), test_action, scenario,
                                                                    str(status_code), str(result)))
 
 
