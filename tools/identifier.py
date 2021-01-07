@@ -132,7 +132,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
             # print(macro_value)
             if "(" in macro_value:
                 func_name = macro_value.split("(")[0]
-                operand_list = macro_value.replace(func_name, "")[:-1].split(",")
+                operand_list = macro_value.replace(func_name + "(", "")[:-1].split(",")
                 # print(operand_list)
                 var_list = list()
                 for operand in operand_list:
@@ -141,6 +141,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         continue
                     if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
                         var_list = var_list + extractor.extract_identifier_list(operand)
+                    var_list.append(operand)
                 for identifier in var_list:
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
