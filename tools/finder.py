@@ -177,7 +177,7 @@ def search_node_by_loc(ast_node, line_number):
 def find_definition_insertion_point(source_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     file_name = source_path.split("/")[-1]
-    ast_node = ast_generator.get_ast_json(source_path)
+    ast_node = ast_generator.get_ast_json(source_path, regenerate=True)
     for child_node in ast_node['children']:
         child_node_type = child_node['type']
         if child_node_type == "FunctionDecl":
