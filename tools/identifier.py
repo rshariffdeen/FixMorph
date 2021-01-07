@@ -18,7 +18,7 @@ STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint
 
 def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, var_map):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    emitter.normal("\t\tanalysing for missing labels")
+    emitter.normal("\t\t\tanalysing for missing labels")
     missing_label_list = dict()
     label_list_a = extractor.extract_label_node_list(neighborhood_a)
     label_list_b = extractor.extract_label_node_list(neighborhood_b)
