@@ -48,7 +48,13 @@ def generate_script_for_files(file_list_to_patch):
                 error_exit("failed to extract AST transformation")
             generated_data = (original_script, inserted_node_list, map_ab)
             emitter.highlight("\tOriginal AST script")
-            emitter.emit_ast_script(original_script)
+            original_script_str = list()
+            for instruction in original_script:
+                instruction_line = ""
+                for token in instruction:
+                    instruction_line += token + " "
+                original_script_str.append(instruction_line)
+            emitter.emit_ast_script(original_script_str)
             generated_script_list[(slice_file_a, slice_file_b, slice_file_c)] = generated_data
             generated_source_list.append(vector_source_a)
 
