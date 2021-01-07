@@ -111,7 +111,6 @@ def analyse_result(bug_id, log_file_path):
 
 def evaluate(conf_path, tool_params):
     global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME, DIR_LOGS, COUNT_SUCCESS
-    print("\t[INFO] running evaluation")
     tool_command = "{ cd " + CONF_TOOL_PATH + ";" + CONF_TOOL_NAME + " --conf=" + conf_path + " " + tool_params + ";} "
     ret_code = execute_command(tool_command)
     return ret_code
@@ -134,7 +133,7 @@ def run():
                 if int(status_code) != 0:
                     print("[ERROR] Something went wrong!!")
                     exit()
-                print("\t" + test_action + ": " + scenario + "\t\t" + "PASS")
+                print("\t" + test_action + ": " + scenario + "\t\t\t" + "PASS")
 
 
 if __name__ == "__main__":
