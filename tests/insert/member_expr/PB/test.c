@@ -20,7 +20,7 @@ struct sta32x_priv {
 };
 
 
-int test(struct snd_soc_component *component) {
+int test(struct snd_soc_component *component0) {
     struct sta32x_priv *sta32x;
     sta32x->component = component;
     return 0;

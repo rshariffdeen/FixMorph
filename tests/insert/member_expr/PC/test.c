@@ -20,7 +20,7 @@ struct sta32x_priv {
 };
 
 
-int test(struct snd_soc_codec *codec) {
+int test(struct snd_soc_codec *codec0) {
     struct sta32x_priv *sta32x;
     return 0;
 }
