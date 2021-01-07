@@ -963,7 +963,7 @@ def get_instruction(instruction_data):
         pos = str(instruction_data[3])
         instruction = definitions.UPDATEMOVE + " " + nodeD1 + definitions.INTO + nodeD2 + definitions.AT + pos
 
-    return instruction
+    return instruction + "\n"
 
 
 def translate_script_list(file_list, generated_data):

@@ -226,7 +226,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                                                                          var_map
                                                                          ))
 
-        script_lines.append(instruction + "\n")
+        script_lines.append(instruction)
     # print(missing_var_list)
     target_ast = None
     if neighborhood_c['type'] in ["FunctionDecl", "RecordDecl"]:
