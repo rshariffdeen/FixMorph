@@ -60,7 +60,7 @@ def safe_exec(function_def, title, *args):
 
 def save_values():
     writer.write_ast_map(values.ast_map, definitions.FILE_AST_MAP_LOCAL)
-    writer.write_namespace_map(values.map_namespace_global, definitions.FILE_NAMESPACE_MAP_GLOBAL)
+    writer.write_as_json(values.map_namespace_global, definitions.FILE_NAMESPACE_MAP_GLOBAL)
     save_current_state()
 
 
