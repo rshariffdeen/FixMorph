@@ -118,22 +118,28 @@ def evaluate(conf_path, tool_params):
 
 def run():
     global test_case_list, operation_mode_list
-    print("[DRIVER] Running test driver")
     repo = git.Repo(DIR_TEST + "/..")
+    dash = "-" * 50
+    print(dash)
+    print("{:>4s}{:<8s}{:>12s}{:<8s}{:<8s}".format("MODE", "ACTION", "SCENARIO", "STATUS", "RESULT"))
+    print(dash)
     for operation_mode in operation_mode_list:
         repo.git.reset("--hard")
         print("Operation Mode: " + str(operation_mode))
-        print("---------------------------------------")
+
         for test_action in test_case_list:
             scenario_list = test_case_list[test_action]
             for scenario in scenario_list:
                 conf_path = DIR_TEST + "/" + test_action + "/" + scenario + "/repair.conf"
                 tool_param = "--mode=" + str(operation_mode)
                 status_code = evaluate(conf_path, tool_param)
+                result = False
                 if int(status_code) != 0:
                     print("[ERROR] Something went wrong!!")
                     exit()
-                print("\t" + test_action + ": " + scenario + "\t\t\t" + "PASS")
+                print("{:>4s}{:<8s}{:>12s}{:<8s}{:<8s}".format(operation_mode, test_action, scenario,
+                                                               status_code, str(result)))
+
 
 
 if __name__ == "__main__":
