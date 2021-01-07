@@ -184,7 +184,7 @@ def find_definition_insertion_point(source_path):
             if 'file' in child_node:
                 child_node_file_name = child_node['file'].split("/")[-1]
                 if child_node_file_name == file_name:
-                    return int(child_node['start line'])
+                    return int(child_node['start line']) - 1
     return 0
 
 
