@@ -124,7 +124,9 @@ def emit_ast_script(ast_script):
 
 
 def warning(message):
-    append_message = "\t[warning] " + message
+    append_message = message
+    if "[warning]" not in message:
+        append_message = "\t[warning] " + message
     write(append_message, YELLOW)
     logger.warning(message)
 
