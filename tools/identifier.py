@@ -800,6 +800,8 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
         var_name = "var_" + var_name.split(";")[0]
         var_type = (var_name.split("(")[1]).split(")")[0]
         var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
+        var_name = "var_global"
+        def_insert_line = finder.find_definition_insertion_point(source_file)
         for start_line, end_line in pertinent_lines:
             if is_intersect(begin_line, finish_line, start_line, end_line):
                 values.IS_TYPEDEC = True
@@ -809,7 +811,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
                     emitter.success("\t\t\tVariable: " + var_name.replace("var_", ""))
                     neighbor_list.append(var_name)
                     project.decl_list[source_file][var_name] = ast_vector.Vector(source_file, var_name,
-                                                                                 begin_line, finish_line, True)
+                                                                                 begin_line, def_insert_line, True)
 
     for macro_name, begin_line, finish_line in macro_list:
         macro_name = "macro_" + macro_name
