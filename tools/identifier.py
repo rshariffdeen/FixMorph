@@ -141,7 +141,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         continue
                     if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
                         var_list = var_list + extractor.extract_identifier_list(operand)
-                    var_list.append(operand)
+                    var_list.append(identifier)
                 for identifier in var_list:
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
@@ -170,6 +170,11 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = False
                                 info['ast-node'] = dec_list_global_b[identifier]
                                 info['map-exist'] = identifier in var_map
+                            else:
+                                print(identifier)
+                                print(dec_list_global_b)
+                                print(dec_list_local_b)
+                                emitter.error("Unhandled missing variable")
 
                             missing_var_list[identifier] = info
                         else:
