@@ -115,7 +115,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
     # print(ref_list)
     dec_list_local_a = extractor.extract_decl_node_list(neighborhood_a)
     dec_list_local_b = extractor.extract_decl_node_list(neighborhood_b)
-
+    target_file = source_path_c.replace(values.CONF_PATH_C, values.Project_D.path)
     # print(dec_list_a.keys())
     dec_list_local_c = extractor.extract_decl_node_list(neighborhood_c)
     # print(dec_list_c.keys())
@@ -151,23 +151,27 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
                                 info['is_global'] = False
+                                info['target-file'] = target_file
                                 info['map-exist'] = identifier in var_map
 
                             elif identifier in dec_list_global_a.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = True
+                                info['target-file'] = target_file
                                 info['ast-node'] = dec_list_global_b[identifier]
                                 info['map-exist'] = identifier in var_map
 
                             elif identifier in dec_list_local_b.keys():
                                 info['is_global'] = False
                                 info['pre-exist'] = False
+                                info['target-file'] = target_file
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['map-exist'] = identifier in var_map
 
                             elif identifier in dec_list_global_b.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = False
+                                info['target-file'] = target_file
                                 info['ast-node'] = dec_list_global_b[identifier]
                                 info['map-exist'] = identifier in var_map
                             else:

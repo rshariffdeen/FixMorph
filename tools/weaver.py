@@ -229,30 +229,11 @@ def weave_global_declarations(missing_var_list, modified_source_list):
         emitter.normal("\t-none-")
     for var_name in missing_var_list:
         emitter.normal(var_name)
-        macro_info = missing_var_list[var_name]
-        source_file = macro_info['source']
-        target_file = macro_info['target']
-        macro_def_list = extractor.extract_macro_definitions(source_file)
-        ast_tree_b = ast_generator.get_ast_json(source_file)
-        global_decl_list = extractor.extract_decl_node_list_global(ast_tree_b)
+        var_info = missing_var_list[var_name]
+        ast_node = var_info['ast-node']
+        transplant_code = " " + ast_node['value'] + " ;\n"
+        target_file = var_info['target-file']
         def_insert_line = finder.find_definition_insertion_point(target_file)
-        transplant_code = ""
-
-        if var_name in global_decl_list:
-            ast_node = global_decl_list[var_name]
-            transplant_code += " " + ast_node['value'] + " ;\n"
-
-        if transplant_code == "" and not values.BACKPORT:
-            header_file = finder.find_header_file(var_name, source_file)
-            # print(header_file)
-            if header_file is not None:
-                ast_tree_b = ast_generator.get_ast_json(header_file)
-                global_decl_list = extractor.extract_decl_node_list_global(ast_tree_b)
-                transplant_code = ""
-                if var_name in global_decl_list:
-                    ast_node = global_decl_list[var_name]
-                    transplant_code += " " + ast_node['value'] + " ;\n"
-
         backup_file(target_file, FILENAME_BACKUP)
         insert_code(transplant_code, target_file, def_insert_line)
         if target_file not in modified_source_list:
