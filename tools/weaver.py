@@ -37,8 +37,6 @@ def execute_ast_transformation(script_path, source_file_info):
         backup_file_list[file_c] = backup_file
         backup_command += "cp " + file_c + " " + definitions.DIRECTORY_BACKUP + "/" + backup_file
     # print(backup_command)
-    var_map = values.map_namespace_global[(file_a, file_c)]
-    writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
 
     if backup_command:
         execute_command(backup_command)

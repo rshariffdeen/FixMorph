@@ -2,7 +2,7 @@ import time
 import sys
 from common import values, definitions
 from common.utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
-from tools import emitter, weaver, reader, logger, fixer, merger
+from tools import emitter, weaver, reader, logger, fixer, merger, writer
 
 file_index = 1
 backup_file_list = dict()
@@ -96,6 +96,9 @@ def reverse_transplant_code():
             translated_script = script_file.readlines()
         emitter.highlight("\tGenerated AST script")
         emitter.emit_ast_script(translated_script)
+
+        var_map = values.map_namespace_global[(slice_file_a, slice_file_c)]
+        writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
 
         weaver.weave_code(vector_source_a,
                           vector_source_b,
