@@ -119,7 +119,7 @@ def evaluate(conf_path, tool_params):
 def run():
     global test_case_list, operation_mode_list
     repo = git.Repo(DIR_TEST + "/..")
-    dash = "-" * 50
+    dash = "-" * 80
     print(dash)
     print("{:>4s} {:<10s} {:>30s} {:<8s} {:<8s}".format("MODE", "ACTION", "SCENARIO", "STATUS", "RESULT"))
     print(dash)
@@ -135,8 +135,8 @@ def run():
                 if int(status_code) != 0:
                     print("[ERROR] Something went wrong!!")
                     exit()
-                print("{:>4s} {:<8s} {:>12s} {:<8s} {:<8s}".format(str(operation_mode), test_action, scenario,
-                                                                   str(status_code), str(result)))
+                print("{:>4s} {:<10s} {:>30s} {:<8s} {:<8s}".format(str(operation_mode), test_action, scenario,
+                                                                    str(status_code), str(result)))
 
 
 if __name__ == "__main__":
