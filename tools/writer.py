@@ -28,7 +28,7 @@ def write_namespace_map(namespace_map, output_file_path):
     content = ""
     for vector_index in namespace_map:
         var_map = namespace_map[vector_index]
-        content += vector_index[0] + "->" + vector_index[1] + "\n"
+        content += vector_index[0] + "==>" + vector_index[1] + "\n"
         for var in var_map:
             content += var + ":" + var_map[var] + "\n"
     with open(output_file_path, 'w') as map_file:

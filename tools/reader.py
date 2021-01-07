@@ -36,8 +36,8 @@ def read_namespace_map(file_path):
         content = map_file.readlines()
         vector_index = ""
         for line in content:
-            if "-" in line:
-                vector_index = (line.split("-")[0], line.split("->")[1].strip().replace("\n", ""))
+            if "==>" in line:
+                vector_index = (line.split("==>")[0], line.split("==>")[1].strip().replace("\n", ""))
                 namespace_map[vector_index] = dict()
             if ":" in line:
                 id_a, id_c = line.strip().replace("\n", "").split(":")
