@@ -94,7 +94,7 @@ def evolve_code():
         # emitter.emit_ast_script(translated_script)
 
         identified_function_list, \
-        identified_macro_list, evolved_script = evolver.evolve_code(slice_file_list,
+        identified_macro_list, evolved_script, identified_var_list = evolver.evolve_code(slice_file_list,
                                                                     source_file_list,
                                                                     translated_script,
                                                                     segment_identifier_a,
@@ -114,6 +114,12 @@ def evolve_code():
                 values.missing_function_list = values.missing_function_list.update(identified_function_list)
         else:
             values.missing_function_list = identified_function_list
+
+        if values.missing_var_list:
+            if identified_var_list:
+                values.missing_var_list = values.missing_var_list.update(identified_var_list)
+        else:
+            values.missing_var_list = identified_var_list
 
         if values.missing_macro_list:
             if identified_macro_list:

@@ -145,6 +145,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
 
     missing_function_list = dict()
     missing_var_list = dict()
+    missing_global_var_list = dict()
     missing_macro_list = dict()
     missing_label_list = dict()
     missing_header_list = dict()
@@ -237,6 +238,9 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
         var_info = missing_var_list[var]
         if not var_info['pre-exist'] or var_info['map-exist']:
             continue
+        if var_info['is_global']:
+            missing_global_var_list[var] = var_info
+            continue
         if "ast-node" in var_info.keys():
             ast_node = var_info['ast-node']
             # not sure why the if is required
@@ -272,5 +276,5 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     #         script_file.write(transformation_rule)
 
     emitter.success("\n\t\tSuccessful evolution")
-    return missing_function_list, missing_macro_list, script_lines
+    return missing_function_list, missing_macro_list, script_lines, missing_global_var_list
 

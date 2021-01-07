@@ -12,6 +12,7 @@ missing_macro_list = dict()
 missing_header_list = dict()
 missing_data_type_list = dict()
 modified_source_list = list()
+missing_var_list = dict()
 
 
 def safe_exec(function_def, title, *args):
@@ -59,6 +60,13 @@ def transplant_missing_functions():
 
     modified_source_list = weaver.weave_functions(missing_function_list,
                                                   modified_source_list)
+
+
+def transplant_missing_global_decl():
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    global modified_source_list
+    modified_source_list = weaver.weave_global_declarations(missing_var_list,
+                                                            modified_source_list)
 
 
 def transplant_code():
@@ -181,7 +189,8 @@ def save_values():
 
 
 def weave_slices():
-    global file_index, missing_function_list, missing_macro_list, modified_source_list
+    global file_index, missing_function_list, missing_macro_list, \
+        modified_source_list, missing_var_list
 
     slice_info = dict()
     transformed_list = list()
@@ -220,6 +229,8 @@ def start():
         if values.DEFAULT_OPERATION_MODE in [0, 3]:
             safe_exec(transplant_code, "transforming slices")
             safe_exec(weave_slices, "weaving slices")
+            if values.missing_var_list:
+                safe_exec(transplant_missing_global_decl, "transplanting global declarations")
             if values.missing_function_list:
                 safe_exec(transplant_missing_functions, "transplanting functions")
             if values.missing_data_type_list:
