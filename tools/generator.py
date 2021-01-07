@@ -193,7 +193,7 @@ def create_vectors(project, source_file, segmentation_list):
             var_name = "var_" + var_name.split(";")[0]
             var_type = (var_name.split("(")[1]).split(")")[0]
             var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
-            var_name = "global"
+            var_name = "var_global"
             def_insert_line = finder.find_definition_insertion_point(source_file)
             project.decl_list[source_file][var_name] = ast_vector.Vector(source_file, var_name, begin_line,
                                                                          def_insert_line, True)
