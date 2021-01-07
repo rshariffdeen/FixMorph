@@ -180,7 +180,7 @@ def build_project(project_path, build_command=None, verify=False):
     # print(build_command)
     ret_code = execute_command(build_command)
     if int(ret_code) != 0:
-        emitter.command(build_command)
+        # emitter.command(build_command)
         error_exit("BUILD FAILED!!\nExit Code: " + str(ret_code))
     store_compile_database(project_path)
 
