@@ -230,7 +230,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     target_ast = None
     if neighborhood_c['type'] in ["FunctionDecl", "RecordDecl"]:
         target_ast = neighborhood_c['children'][1]
-    position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(1)
+    local_position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(0)
+
     for var in missing_var_list:
         # print(var)
         var_info = missing_var_list[var]
@@ -243,7 +244,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
             node_id_a = ast_node['id']
             node_id_b = node_id_a
             instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
-            instruction += " into " + position_c
+            instruction += " into " + local_position_c
             script_lines.insert(0, instruction + "\n")
             emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
         elif "value" in var_info.keys():
