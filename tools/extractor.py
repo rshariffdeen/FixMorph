@@ -673,22 +673,26 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
 
     if ast_node_a:
         node_type_a = ast_node_a['type']
-        if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl", "FieldDecl", "RecordDecl"]:
+        if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl", "RecordDecl", "FieldDecl"]:
             identifier_a = ast_node_a["value"]
             if "identifier" in ast_node_a.keys():
                 identifier_a = ast_node_a['identifier']
             if node_type_a == "DeclRefExpr":
                 if "ref_type" in ast_node_a and ast_node_a["ref_type"] == "FunctionDecl":
                     identifier_a = identifier_a + "("
+            elif node_type_a == "FieldDecl":
+                identifier_a = "." + identifier_a
             if ast_node_c:
                 node_type_c = ast_node_c['type']
-                if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl", "FieldDecl", "RecordDecl"]:
+                if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl", "RecordDecl", "FieldDecl"]:
                     identifier_c = ast_node_c['value']
                     if "identifier" in ast_node_c.keys():
                         identifier_c = ast_node_c['identifier']
                     if node_type_c == "DeclRefExpr":
                         if "ref_type" in ast_node_c and ast_node_c["ref_type"] == "FunctionDecl":
                             identifier_c = identifier_c + "("
+                    elif node_type_a == "FieldDecl":
+                        identifier_c = "." + identifier_c
 
         elif node_type_a == "Macro":
             if 'value' in ast_node_a.keys():
@@ -711,7 +715,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
         elif node_type_a in ["MemberExpr", "ArraySubscriptExpr"]:
             node_type_a = ast_node_a['type']
             if node_type_a in ["MemberExpr"]:
-                identifier_a = converter.convert_member_expr(ast_node_a, True).replace(":", "")
+                identifier_a = "." + converter.convert_member_expr(ast_node_a, True).replace(":", "")
             elif node_type_a == "ArraySubscriptExpr":
                 identifier_a = converter.convert_array_subscript(ast_node_a, True).replace(":", "")
 
@@ -719,7 +723,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
                 node_type_c = ast_node_c['type']
                 if node_type_c in ["MemberExpr", "ArraySubscriptExpr"]:
                     if node_type_c in ["MemberExpr"]:
-                        identifier_c = converter.convert_member_expr(ast_node_c, True).replace(":", "")
+                        identifier_c = "." + converter.convert_member_expr(ast_node_c, True).replace(":", "")
                     elif node_type_c == "ArraySubscriptExpr":
                         identifier_c = converter.convert_array_subscript(ast_node_c, True).replace(":", "")
 
