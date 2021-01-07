@@ -119,7 +119,7 @@ def evaluate(conf_path, tool_params):
 def run():
     global test_case_list, operation_mode_list
     print("[DRIVER] Running test driver")
-    repo = git.Repo(DIR_TEST)
+    repo = git.Repo(DIR_TEST + "/..")
     for operation_mode in operation_mode_list:
         repo.git.reset("--hard")
         print("Operation Mode: " + str(operation_mode))
