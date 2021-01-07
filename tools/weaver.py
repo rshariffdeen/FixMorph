@@ -1,6 +1,6 @@
 from common import definitions, values
 from common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
-from tools import emitter, logger, finder, extractor, identifier
+from tools import emitter, logger, finder, extractor, identifier, converter
 from ast import ast_generator
 
 import os
@@ -231,7 +231,12 @@ def weave_global_declarations(missing_var_list, modified_source_list):
         emitter.normal(var_name)
         var_info = missing_var_list[var_name]
         ast_node = var_info['ast-node']
-        transplant_code = " " + ast_node['value'] + " ;\n"
+
+        var_type = ast_node['children'][0]['value']
+        var_name = ast_node['identifier']
+        var_value = converter.get_node_value(ast_node['children'][1])
+
+        transplant_code = var_type + " " + var_name + " = " + var_value + " ;\n"
         target_file = var_info['target-file']
         def_insert_line = finder.find_definition_insertion_point(target_file)
         backup_file(target_file, FILENAME_BACKUP)
