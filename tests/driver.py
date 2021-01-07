@@ -121,7 +121,7 @@ def run():
     repo = git.Repo(DIR_TEST + "/..")
     dash = "-" * 50
     print(dash)
-    print("{:>4s}{:<8s}{:>12s}{:<8s}{:<8s}".format("MODE", "ACTION", "SCENARIO", "STATUS", "RESULT"))
+    print("{:>4s} {:<8s} {:>12s} {:<8s} {:<8s}".format("MODE", "ACTION", "SCENARIO", "STATUS", "RESULT"))
     print(dash)
     for operation_mode in operation_mode_list:
         repo.git.reset("--hard")
@@ -135,8 +135,8 @@ def run():
                 if int(status_code) != 0:
                     print("[ERROR] Something went wrong!!")
                     exit()
-                print("{:>4s}{:<8s}{:>12s}{:<8s}{:<8s}".format(operation_mode, test_action, scenario,
-                                                               str(status_code), str(result)))
+                print("{:>4s} {:<8s} {:>12s} {:<8s} {:<8s}".format(operation_mode, test_action, scenario,
+                                                                   str(status_code), str(result)))
 
 
 
