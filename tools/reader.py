@@ -39,7 +39,7 @@ def read_namespace_map(file_path):
             if "==>" in line:
                 vector_index = (line.split("==>")[0], line.split("==>")[1].strip().replace("\n", ""))
                 namespace_map[vector_index] = dict()
-            if ":" in line:
+            if "===" in line:
                 id_a, id_c = line.strip().replace("\n", "").split(":")
                 namespace_map[vector_index][id_a] = id_c
 

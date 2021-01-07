@@ -46,7 +46,7 @@ def load_values():
         if not values.ast_map:
             values.ast_map = reader.read_ast_map(definitions.FILE_AST_MAP_LOCAL)
         if not values.map_namespace_global:
-            values.map_namespace_global = reader.read_json(definitions.FILE_NAMESPACE_MAP_GLOBAL)
+            values.map_namespace_global = reader.read_namespace_map(definitions.FILE_NAMESPACE_MAP_GLOBAL)
 
     definitions.FILE_TRANSLATED_SCRIPT_INFO = definitions.DIRECTORY_OUTPUT + "/trans-script-info"
 
