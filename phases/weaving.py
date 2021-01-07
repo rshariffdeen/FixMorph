@@ -213,7 +213,7 @@ def start():
     emitter.title("Applying transformation")
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_WEAVE]:
-        if values.DEFAULT_OPERATION_MODE == 0:
+        if values.DEFAULT_OPERATION_MODE in [0, 3]:
             safe_exec(transplant_code, "transforming slices")
             safe_exec(weave_slices, "weaving slices")
             if values.missing_function_list:
