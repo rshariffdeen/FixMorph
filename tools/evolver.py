@@ -156,7 +156,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     if values.DONOR_REQUIRE_MACRO:
         values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
     # ast_tree_local_a = ast_generator.get_ast_json(file_a, values.DONOR_REQUIRE_MACRO, True)
-    ast_tree_local_b = ast_generator.get_ast_json(source_file_a, values.DONOR_REQUIRE_MACRO, True)
+    ast_tree_local_b = ast_generator.get_ast_json(source_file_b, values.DONOR_REQUIRE_MACRO, True)
 
     if values.TARGET_REQUIRE_MACRO:
         values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
