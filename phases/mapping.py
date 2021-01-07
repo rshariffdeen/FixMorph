@@ -7,7 +7,7 @@ from tools import emitter, reader, writer, logger, mapper
 
 def generate_map():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    generated_script_files = values.generated_script_files
+    generated_script_files = values.diff_transformation_info
     ast_map_global = dict()
     namespace_map_global = dict()
     if len(generated_script_files) == 0:
@@ -25,12 +25,12 @@ def generate_map():
 
 
 def load_values():
-    if not values.generated_script_files:
+    if not values.diff_transformation_info:
         script_info = dict()
         script_list = reader.read_json(definitions.FILE_SCRIPT_INFO)
         for (vec_path_info, vec_info) in script_list:
             script_info[(vec_path_info[0], vec_path_info[1], vec_path_info[2])] = vec_info
-        values.generated_script_files = script_info
+        values.diff_transformation_info = script_info
 
     definitions.FILE_AST_MAP_LOCAL = definitions.DIRECTORY_OUTPUT + "/map-info"
     # definitions.FILE_NAMESPACE_MAP = definitions.DIRECTORY_OUTPUT + "/namespace-map"
@@ -68,7 +68,7 @@ def start():
     emitter.title("Variable Mapping")
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_MAPPING]:
-        if not values.generated_script_files:
+        if not values.diff_transformation_info:
             error_exit("no ast to map")
         safe_exec(generate_map, 'derivation of variable/data-structure map')
         save_values()

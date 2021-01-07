@@ -63,9 +63,9 @@ def transplant_missing_functions():
 
 def transplant_code():
     global file_index, modified_source_list
-    if not values.translated_script_for_files:
+    if not values.ast_transformation_info:
         error_exit("nothing to transplant")
-    for file_list, generated_data in values.translated_script_for_files.items():
+    for file_list, generated_data in values.ast_transformation_info.items():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
@@ -92,12 +92,16 @@ def transplant_code():
         emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
         emitter.emit_ast_script(original_script)
-        script_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(segment_identifier_c) + "_script"
-        translated_script = list()
-        with open(script_file_name, "r") as script_file:
-            translated_script = script_file.readlines()
+
         emitter.highlight("\tGenerated AST script")
+        translated_script = generated_data[0]
         emitter.emit_ast_script(translated_script)
+
+        script_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(segment_identifier_c) + "_script"
+
+        with open(script_file_name, 'w') as script_file:
+            for transformation_rule in translated_script:
+                script_file.write(transformation_rule)
 
         weaver.weave_code(vector_source_a,
                           vector_source_b,
@@ -115,9 +119,9 @@ def transplant_code():
 
 def transform_code():
     global file_index, modified_source_list
-    if not values.generated_script_files:
+    if not values.diff_transformation_info:
         error_exit("nothing to transplant")
-    for file_list, diff_file in values.generated_script_files.items():
+    for file_list, diff_file in values.diff_transformation_info.items():
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
@@ -158,12 +162,12 @@ def transform_code():
 
 def load_values():
     load_state()
-    if not values.translated_script_for_files:
+    if not values.ast_transformation_info:
         script_info = dict()
         script_list = reader.read_json(definitions.FILE_TRANSLATED_SCRIPT_INFO)
         for (path_info, trans_script_info) in script_list:
             script_info[(path_info[0], path_info[1], path_info[2])] = trans_script_info
-        values.translated_script_for_files = script_info
+        values.ast_transformation_info = script_info
 
     definitions.FILE_SCRIPT_INFO = definitions.DIRECTORY_OUTPUT + "/script-info"
     definitions.FILE_TEMP_FIX = definitions.DIRECTORY_TMP + "/temp-fix"
@@ -182,10 +186,10 @@ def weave_slices():
     slice_info = dict()
     transformed_list = list()
     if values.DEFAULT_OPERATION_MODE in [0, 3]:
-        for file_list, generated_data in values.translated_script_for_files.items():
+        for file_list, generated_data in values.ast_transformation_info.items():
             transformed_list.append(file_list)
     elif values.DEFAULT_OPERATION_MODE in [1, 2]:
-        for file_list, generated_data in values.generated_script_files.items():
+        for file_list, generated_data in values.diff_transformation_info.items():
             transformed_list.append(file_list)
     if not transformed_list:
         error_exit("no slice to weave")

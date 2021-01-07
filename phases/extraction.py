@@ -120,7 +120,7 @@ def load_values():
 
 def save_values():
     writer.write_script_info(generated_script_list, definitions.FILE_SCRIPT_INFO)
-    values.generated_script_files = generated_script_list
+    values.diff_transformation_info = generated_script_list
     save_current_state()
 
 

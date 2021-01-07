@@ -52,9 +52,11 @@ def evolve_functions():
 
 def evolve_code():
     global file_index
-    if not values.translated_script_for_files:
+    if not values.ast_transformation_info:
         error_exit("nothing to evolve")
-    for file_list, generated_data in values.translated_script_for_files.items():
+    updated_info = dict()
+    for list_tuple in values.ast_transformation_info.items():
+        file_list, generated_data = list_tuple
         slice_file_a = file_list[0]
         slice_file_b = file_list[1]
         slice_file_c = file_list[2]
@@ -92,16 +94,18 @@ def evolve_code():
         emitter.emit_ast_script(translated_script)
 
         identified_function_list, \
-        identified_macro_list = evolver.evolve_code(slice_file_list,
-                                                    source_file_list,
-                                                    translated_script,
-                                                    segment_identifier_a,
-                                                    segment_identifier_c,
-                                                    segment_code,
-                                                    ast_tree_global_a,
-                                                    ast_tree_global_b,
-                                                    ast_tree_global_c
-                                                    )
+        identified_macro_list, evolved_script = evolver.evolve_code(slice_file_list,
+                                                                    source_file_list,
+                                                                    translated_script,
+                                                                    segment_identifier_a,
+                                                                    segment_identifier_c,
+                                                                    segment_code,
+                                                                    ast_tree_global_a,
+                                                                    ast_tree_global_b,
+                                                                    ast_tree_global_c
+                                                                    )
+        updated_data = (evolved_script, original_script)
+        updated_info[file_list] = updated_data
         file_index += 1
         if values.missing_function_list:
             if identified_function_list:
@@ -120,16 +124,17 @@ def evolve_code():
         restore_file_orig(vector_source_c)
         replace_file(vector_source_d, slice_file_d)
         restore_file_orig(vector_source_d)
+    values.ast_transformation_info = updated_info
 
 
 def load_values():
     load_state()
-    if not values.translated_script_for_files:
+    if not values.ast_transformation_info:
         script_info = dict()
         script_list = reader.read_json(definitions.FILE_TRANSLATED_SCRIPT_INFO)
         for (path_info, trans_script_info) in script_list:
             script_info[(path_info[0], path_info[1], path_info[2])] = trans_script_info
-        values.translated_script_for_files = script_info
+        values.ast_transformation_info = script_info
 
     definitions.FILE_SCRIPT_INFO = definitions.DIRECTORY_OUTPUT + "/script-info"
     definitions.FILE_TEMP_FIX = definitions.DIRECTORY_TMP + "/temp-fix"

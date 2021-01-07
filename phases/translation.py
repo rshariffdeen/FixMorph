@@ -11,10 +11,10 @@ translated_script_list = dict()
 def translate_scripts():
     global translated_script_list
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if not values.generated_script_files:
+    if not values.diff_transformation_info:
         error_exit("nothing to translate")
 
-    generated_script_list = values.generated_script_files
+    generated_script_list = values.diff_transformation_info
     translated_script_list = dict()
     for file_list, generated_data in generated_script_list.items():
         emitter.sub_sub_title(file_list[0])
@@ -53,7 +53,7 @@ def load_values():
 
 def save_values():
     writer.write_script_info(translated_script_list, definitions.FILE_TRANSLATED_SCRIPT_INFO)
-    values.translated_script_for_files = translated_script_list
+    values.ast_transformation_info = translated_script_list
     save_current_state()
 
 

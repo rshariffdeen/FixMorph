@@ -100,8 +100,8 @@ CONF_CONTEXT_LEVEL = -1
 
 silence_emitter = False
 file_list_to_patch = []
-generated_script_files = dict()
-translated_script_for_files = dict()
+diff_transformation_info = dict()
+ast_transformation_info = dict()
 ast_map = dict()
 
 original_diff_info = dict()
