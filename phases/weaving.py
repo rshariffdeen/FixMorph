@@ -6,12 +6,12 @@ from tools import emitter, weaver, reader, logger, fixer, merger
 
 file_index = 1
 backup_file_list = dict()
+modified_source_list = list()
 
 # missing_function_list = dict()
 # missing_macro_list = dict()
 # missing_header_list = dict()
 # missing_data_type_list = dict()
-# modified_source_list = list()
 # missing_var_list = dict()
 
 
