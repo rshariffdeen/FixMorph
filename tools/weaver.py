@@ -344,7 +344,7 @@ def weave_code(file_a, file_b, file_c, script_file_name, modified_source_list):
 
     file_info = file_a, file_b, file_c, file_d
 
-    if values.DEFAULT_OPERATION_MODE == 0:
+    if values.DEFAULT_OPERATION_MODE in [0, 1]:
         execute_ast_transformation(script_file_name, file_info)
     elif values.DEFAULT_OPERATION_MODE in [1, 2]:
         execute_diff_transformation(script_file_name, file_info)

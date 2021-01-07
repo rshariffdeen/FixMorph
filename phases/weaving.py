@@ -181,7 +181,7 @@ def weave_slices():
 
     slice_info = dict()
     transformed_list = list()
-    if values.DEFAULT_OPERATION_MODE == 0:
+    if values.DEFAULT_OPERATION_MODE in [0, 3]:
         for file_list, generated_data in values.translated_script_for_files.items():
             transformed_list.append(file_list)
     elif values.DEFAULT_OPERATION_MODE in [1, 2]:
