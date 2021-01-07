@@ -206,24 +206,28 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = True
                                 info['map-exist'] = identifier in var_map
                                 info['is_global'] = False
+                                info['target-file'] = target_file
 
                             elif identifier in dec_list_global_a.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = True
                                 info['map-exist'] = identifier in var_map
                                 info['ast-node'] = dec_list_global_b[identifier]
+                                info['target-file'] = target_file
 
                             elif identifier in dec_list_local_b.keys():
                                 info['is_global'] = False
                                 info['pre-exist'] = False
                                 info['map-exist'] = identifier in var_map
                                 info['ast-node'] = dec_list_local_b[identifier]
+                                info['target-file'] = target_file
 
                             elif identifier in dec_list_global_b.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = False
                                 info['map-exist'] = identifier in var_map
                                 info['ast-node'] = dec_list_global_b[identifier]
+                                info['target-file'] = target_file
 
                             missing_var_list[identifier] = info
                         else:
@@ -276,6 +280,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['map-exist'] = identifier in var_map
                                 info['pre-exist'] = False
                                 missing_var_list[identifier] = info
+                                info['target-file'] = target_file
 
     # print(missing_var_list)
     return missing_var_list
