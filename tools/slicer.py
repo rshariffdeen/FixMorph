@@ -28,6 +28,10 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
                         ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
             else:
                 segment_found = True
+        elif node_type == "FunctionDecl":
+            if 'file' in ast_node.keys():
+                if ast_node['file'] == source_path.replace(project_path, "")[1:]:
+                    ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
 
     if not segment_found:
         emitter.information("Slice not created")
