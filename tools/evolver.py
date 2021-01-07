@@ -176,6 +176,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     for instruction in instruction_list:
         count = count + 1
         # Emitter.normal("\t[action]transplanting code segment " + str(count))
+        emitter.special("\t" + str(instruction))
         check_node = None
         if "Insert" in instruction:
             check_node_id = instruction.split("(")[1].split(")")[0]

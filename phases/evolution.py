@@ -86,12 +86,12 @@ def evolve_code():
         segment_identifier_c = slice_file_c.split("." + segment_code + ".")[-1].replace(".slice", "")
 
         emitter.sub_sub_title("evolving " + segment_identifier_c + " in " + vector_source_c)
-        emitter.highlight("\tOriginal AST script")
+        # emitter.highlight("\tOriginal AST script")
         original_script = generated_data[1]
-        emitter.emit_ast_script(original_script)
-        emitter.highlight("\tGenerated AST script")
+        # emitter.emit_ast_script(original_script)
+        # emitter.highlight("\tGenerated AST script")
         translated_script = generated_data[0]
-        emitter.emit_ast_script(translated_script)
+        # emitter.emit_ast_script(translated_script)
 
         identified_function_list, \
         identified_macro_list, evolved_script = evolver.evolve_code(slice_file_list,
@@ -106,6 +106,8 @@ def evolve_code():
                                                                     )
         updated_data = (evolved_script, original_script)
         updated_info[file_list] = updated_data
+        emitter.highlight("\tEvolved AST script")
+        emitter.emit_ast_script(evolved_script)
         file_index += 1
         if values.missing_function_list:
             if identified_function_list:

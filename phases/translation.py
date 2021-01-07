@@ -20,6 +20,8 @@ def translate_scripts():
         emitter.sub_sub_title(file_list[0])
         translated_script, original_script = translator.translate_script_list(file_list, generated_data)
         translated_script_list[file_list] = (translated_script, original_script)
+        emitter.highlight("\tTranslated AST script")
+        emitter.emit_ast_script(translated_script)
 
 
 def safe_exec(function_def, title, *args):
