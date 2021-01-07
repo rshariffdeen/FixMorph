@@ -673,7 +673,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
 
     if ast_node_a:
         node_type_a = ast_node_a['type']
-        if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
+        if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl", "FieldDecl", "RecordDecl"]:
             identifier_a = ast_node_a["value"]
             if "identifier" in ast_node_a.keys():
                 identifier_a = ast_node_a['identifier']
@@ -682,7 +682,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
                     identifier_a = identifier_a + "("
             if ast_node_c:
                 node_type_c = ast_node_c['type']
-                if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl"]:
+                if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl", "FieldDecl", "RecordDecl"]:
                     identifier_c = ast_node_c['value']
                     if "identifier" in ast_node_c.keys():
                         identifier_c = ast_node_c['identifier']
