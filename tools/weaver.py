@@ -1,6 +1,6 @@
 from common import definitions, values
 from common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
-from tools import emitter, logger, finder, extractor, identifier, converter
+from tools import emitter, logger, finder, extractor, identifier, converter, writer
 from ast import ast_generator
 
 import os
@@ -37,6 +37,9 @@ def execute_ast_transformation(script_path, source_file_info):
         backup_file_list[file_c] = backup_file
         backup_command += "cp " + file_c + " " + definitions.DIRECTORY_BACKUP + "/" + backup_file
     # print(backup_command)
+    var_map = values.map_namespace_global[(file_a, file_c)]
+    writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
+
     if backup_command:
         execute_command(backup_command)
 
