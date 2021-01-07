@@ -125,8 +125,6 @@ def run():
     print(dash)
     for operation_mode in operation_mode_list:
         repo.git.reset("--hard")
-        print("Operation Mode: " + str(operation_mode))
-
         for test_action in test_case_list:
             scenario_list = test_case_list[test_action]
             for scenario in scenario_list:
@@ -138,7 +136,7 @@ def run():
                     print("[ERROR] Something went wrong!!")
                     exit()
                 print("{:>4s}{:<8s}{:>12s}{:<8s}{:<8s}".format(operation_mode, test_action, scenario,
-                                                               status_code, str(result)))
+                                                               str(status_code), str(result)))
 
 
 
