@@ -7,12 +7,12 @@ from tools import emitter, weaver, reader, logger, fixer, merger
 file_index = 1
 backup_file_list = dict()
 
-missing_function_list = dict()
-missing_macro_list = dict()
-missing_header_list = dict()
-missing_data_type_list = dict()
-modified_source_list = list()
-missing_var_list = dict()
+# missing_function_list = dict()
+# missing_macro_list = dict()
+# missing_header_list = dict()
+# missing_data_type_list = dict()
+# modified_source_list = list()
+# missing_var_list = dict()
 
 
 def safe_exec(function_def, title, *args):
@@ -58,14 +58,14 @@ def transplant_missing_functions():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list
 
-    modified_source_list = weaver.weave_functions(missing_function_list,
+    modified_source_list = weaver.weave_functions(values.missing_function_list,
                                                   modified_source_list)
 
 
 def transplant_missing_global_decl():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list
-    modified_source_list = weaver.weave_global_declarations(missing_var_list,
+    modified_source_list = weaver.weave_global_declarations(values.missing_var_list,
                                                             modified_source_list)
 
 
