@@ -648,7 +648,7 @@ def extract_pre_macro_list(source_file):
 
 def extract_neighborhood(source_path, segment_code, segment_identifier, use_macro=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    ast_tree = ast_generator.get_ast_json(source_path, use_macro)
+    ast_tree = ast_generator.get_ast_json(source_path, use_macro, True)
     segment_type = values.segment_map[segment_code]
     ast_script = list()
     segment_found = False
