@@ -123,8 +123,8 @@ def emit_ast_script(ast_script):
 
 
 def warning(message):
-    message = "\t[warning] " + message
-    write(message, YELLOW)
+    append_message = "\t[warning] " + message
+    write(append_message, YELLOW)
     logger.warning(message)
 
 
