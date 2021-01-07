@@ -8,5 +8,6 @@ void testLocalRefC(int a, char* str){
 
 
 int main( ) {
+    printf("TEST C");
     return 0;
 }
