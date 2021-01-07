@@ -2,6 +2,8 @@
 #include <string.h>
 #include <ctype.h>  
 
+int k = 2;
+
 void testLocalRefA(int a, char* str){
     printf("the values are  %d %s\n", a, str);
 }
