@@ -55,3 +55,24 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
     emitter.normal("\t\t\tcreated " + output_file_path)
     return segment_found
 
+
+def slice_ast_tree(ast_tree, segment_code, segment_identifier):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    segment_type = values.segment_map[segment_code]
+    sliced_ast_tree = ast_tree
+    del sliced_ast_tree['children']
+    sliced_ast_tree['children'] = list()
+    for ast_node in ast_tree['children']:
+        node_id = ast_node['id']
+        node_type = ast_node['type']
+        if node_type == segment_type:
+            node_identifier = ast_node['identifier']
+            if node_identifier == segment_identifier:
+                sliced_ast_tree['children'].append(ast_node)
+        elif node_type == "FunctionDecl":
+            continue
+        else:
+            sliced_ast_tree['children'].append(ast_node)
+
+    emitter.normal("\t\t\tcreated AST Slice for " + segment_identifier)
+    return sliced_ast_tree
