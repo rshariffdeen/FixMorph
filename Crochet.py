@@ -55,7 +55,8 @@ def create_files():
     open(definitions.FILE_VAR_MAP_STORE, 'a').close()
     definitions.FILE_VEC_MAP_STORE = definitions.DIRECTORY_OUTPUT + "/vec-map-store"
     open(definitions.FILE_VEC_MAP_STORE, 'a').close()
-
+    definitions.FILE_SOURCE_MAP_STORE = definitions.DIRECTORY_OUTPUT + "/source-map-store"
+    open(definitions.FILE_SOURCE_MAP_STORE, 'a').close()
     definitions.FILE_MISSING_FUNCTIONS = definitions.DIRECTORY_OUTPUT + "/missing-functions"
     open(definitions.FILE_MISSING_FUNCTIONS, 'a').close()
     definitions.FILE_MISSING_HEADERS = definitions.DIRECTORY_OUTPUT + "/missing-headers"
