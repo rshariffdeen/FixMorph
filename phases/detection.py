@@ -51,7 +51,7 @@ def load_values():
     definitions.FILE_CLONE_INFO = definitions.DIRECTORY_OUTPUT + "/clone-info"
     definitions.FILE_VECTOR_MAP = definitions.DIRECTORY_OUTPUT + "/vector-map"
     definitions.FILE_AST_MAP = definitions.DIRECTORY_OUTPUT + "/ast-map"
-    definitions.FILE_VECTOR_MAP = definitions.DIRECTORY_OUTPUT + "/source-map"
+    definitions.FILE_SOURCE_MAP = definitions.DIRECTORY_OUTPUT + "/source-map"
 
 
 def save_values():
