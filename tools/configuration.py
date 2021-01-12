@@ -171,7 +171,7 @@ def update_phase_configuration(arg_list):
             definitions.PHASE_BUILD: 1,
             definitions.PHASE_DIFF: 1,
             definitions.PHASE_DETECTION: 1,
-            definitions.PHASE_SLICING: 1,
+            definitions.PHASE_SLICING: 0,
             definitions.PHASE_EXTRACTION: 1,
             definitions.PHASE_MAPPING: 0,
             definitions.PHASE_TRANSLATION: 0,

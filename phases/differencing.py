@@ -113,7 +113,8 @@ def start():
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_DIFF]:
         safe_exec(analyse_source_diff, "analysing source diff")
-        safe_exec(segment_code, "segmentation of code")
+        if values.DEFAULT_OPERATION_MODE == 0:
+            safe_exec(segment_code, "segmentation of code")
         save_values()
     else:
         emitter.special("\n\t-skipping this phase-")

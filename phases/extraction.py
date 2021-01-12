@@ -66,36 +66,16 @@ def generate_diff_for_files(file_list_to_patch):
     global generated_script_list
     generated_source_list = list()
 
-    for (vec_path_a, vec_path_c, var_map) in file_list_to_patch:
-        segment_code = vec_path_a.split(".")[-2].split("_")[0]
-        emitter.sub_sub_title(vec_path_a)
+    for source_file_a in file_list_to_patch:
+        source_file_c = file_list_to_patch[source_file_a]
+        emitter.sub_sub_title(source_file_a)
         try:
-            split_regex = "." + segment_code + "_"
-            vector_source_a, vector_name_a = vec_path_a.split(split_regex)
-            vector_source_b = vector_source_a.replace(values.Project_A.path, values.Project_B.path)
-            vector_source_c, vector_name_c = vec_path_c.split(split_regex)
-            vector_name_b = vector_name_a.replace(values.CONF_PATH_A, values.CONF_PATH_B)
-            # if vector_source_a in generated_source_list:
-            #     continue
-
-            emitter.normal("\t\t" + segment_code + ": " + vector_name_a.replace(".vec", ""))
-
-            slice_file_a = vector_source_a + "." + segment_code + "." + vector_name_a.replace(".vec", "") + ".slice"
-            slice_file_b = vector_source_b + "." + segment_code + "." + vector_name_b.replace(".vec", "") + ".slice"
-            slice_file_c = vector_source_c + "." + segment_code + "." + vector_name_c.replace(".vec", "") + ".slice"
-            diff_file_ab = slice_file_b + ".diff"
-
-            backup_file_orig(vector_source_a)
-            backup_file_orig(vector_source_b)
-            replace_file(slice_file_a, vector_source_a)
-            replace_file(slice_file_b, vector_source_b)
-            generator.generate_edit_diff(vector_source_a, vector_source_b, diff_file_ab)
-            restore_file_orig(vector_source_a)
-            restore_file_orig(vector_source_b)
-
-            generated_script_list[(slice_file_a, slice_file_b, slice_file_c)] = diff_file_ab
-            generated_source_list.append(vector_source_a)
-
+            source_file_b = source_file_a.replace(values.Project_A.path, values.Project_B.path)
+            diff_file_ab = source_file_b + ".diff"
+            emitter.normal("\t\tcreating diff file:" + diff_file_ab)
+            generator.generate_edit_diff(source_file_a, source_file_b, diff_file_ab)
+            generated_script_list[(source_file_a, source_file_b, source_file_c)] = diff_file_ab
+            generated_source_list.append(source_file_a)
         except Exception as e:
             error_exit("something went wrong with extraction phase")
 

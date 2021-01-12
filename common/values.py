@@ -102,6 +102,8 @@ silence_emitter = False
 file_list_to_patch = []
 diff_transformation_info = dict()
 ast_transformation_info = dict()
+file_transformation_info = dict()
+
 ast_map = dict()
 
 original_diff_info = dict()
@@ -131,6 +133,7 @@ IS_MACRO = False
 IS_TYPEDEF = False
 IS_TYPEDEC = False
 VECTOR_MAP = dict()
+SOURCE_MAP = dict()
 map_namespace_global = dict()
 map_namespace_local = dict()
 

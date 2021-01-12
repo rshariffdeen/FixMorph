@@ -3,6 +3,7 @@
 
 
 import sys
+import os
 from common.utilities import execute_command, error_exit, find_files, get_file_extension_list
 from tools import emitter, finder, logger
 from common import definitions, values
@@ -93,10 +94,76 @@ def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
     return variable_mapping
 
 
-def detect_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
+def detect_segment_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     candidate_list_all = dict()
     for vector_a in vector_list_a:
+        # Assume vector already created
+        file_path_a = vector_a[0]
+        matrix_a = vector_a[1]
+
+        possible_candidate_path = file_path_a.replace(values.Project_A.path, values.Project_C.path)
+        possible_candidate = None
+        possible_candidate_distance = 0.0
+
+        vector_c = vector_list_c[0]
+        matrix_c = vector_c[1]
+        best_vector = vector_c
+        if not matrix_c:
+            for vector_c in vector_list_c:
+                matrix_c = vector_c[1]
+                if matrix_c:
+                    best_vector = vector_c
+                    break
+        best_distance = ast_vector.Vector.dist(matrix_a, matrix_c)
+        distance_matrix = dict()
+
+        # Get best match candidate
+        for vector_c in vector_list_c:
+            matrix_c = vector_c[1]
+            file_path_c = vector_c[0]
+            if file_path_c == possible_candidate_path:
+                distance = ast_vector.Vector.dist(matrix_a, matrix_c)
+                distance_matrix[file_path_c] = distance
+                possible_candidate = vector_c
+                possible_candidate_distance = distance
+            if matrix_c is not None:
+                distance = ast_vector.Vector.dist(matrix_a, matrix_c)
+                distance_matrix[file_path_c] = distance
+                if distance < best_distance:
+                    best_vector = vector_c
+                    best_distance = distance
+
+        # Get all pertinent matches (at d < factor*best_d) (with factor=2?)
+        # best_vector = (best_vector[0], best_vector[1], best_distance)
+        if possible_candidate is not None:
+            candidate_list = [(possible_candidate_path, possible_candidate_distance)]
+        else:
+            candidate_list = [(best_vector[0], best_distance)]
+        candidate_distance = dict()
+        candidate_location = dict()
+
+        # Collect all vectors within range best_distance - 2 x best_distance
+        for vector_c in vector_list_c:
+            matrix_c = vector_c[1]
+            file_path_c = vector_c[0]
+            if vector_c is not None:
+                if vector_c[0] != best_vector[0]:
+                    if matrix_c is not None:
+                        distance = distance_matrix[file_path_c]
+                        if distance <= dist_factor * best_distance:
+                            # vector_c = (vector_c[0], vector_c[1], distance)
+                            candidate_list.append((vector_c[0], distance))
+
+        candidate_list_all[file_path_a] = candidate_list
+
+    return candidate_list_all
+
+
+def detect_file_clone_by_distance(file_list_a, vector_list_c, dist_factor):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    candidate_list_all = dict()
+    for vector_a in file_list_a:
         # Assume vector already created
         file_path_a = vector_a[0]
         matrix_a = vector_a[1]
@@ -168,7 +235,7 @@ def detect_struct_clones():
     UNKNOWN = "#UNKNOWN#"
     if not vector_list_c:
         return []
-    candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
+    candidate_list_all = detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".struct_")
@@ -197,7 +264,7 @@ def detect_enum_clones():
     UNKNOWN = "#UNKNOWN#"
     if not vector_list_c:
         return []
-    candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
+    candidate_list_all = detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".enum_")
@@ -224,7 +291,7 @@ def detect_function_clones():
     clone_list = []
     factor = 2
     UNKNOWN = "#UNKNOWN#"
-    candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
+    candidate_list_all = detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".func_")
@@ -263,7 +330,7 @@ def detect_decl_clones():
     UNKNOWN = "#UNKNOWN#"
     if not vector_list_c:
         return []
-    candidate_list_all = detect_clone_by_distance(vector_list_a, vector_list_c, factor)
+    candidate_list_all = detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".var_")
@@ -283,7 +350,7 @@ def detect_decl_clones():
     return clone_list
 
 
-def detect_clones():
+def detect_segment_clones():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     struct_clones = list()
     enum_clones = list()
@@ -307,6 +374,33 @@ def detect_clones():
         # print(function_clones)
     clone_list = struct_clones + enum_clones + function_clones + decl_clones
     return clone_list
+
+
+def detect_file_clones(diff_info):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    candidate_list = dict()
+    for source_loc in diff_info:
+        source_file, start_line = source_loc.split(":")
+        if source_file not in candidate_list:
+            file_path_list = set()
+            source_path = source_file.replace(values.CONF_PATH_A, "")
+            source_path = source_path[1:]
+            git_query = "cd " + values.CONF_PATH_A + ";"
+            result_file = definitions.DIRECTORY_TMP + "/list"
+            git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
+            execute_command(git_query)
+            with open(result_file, 'r') as tmp_file:
+                list_lines = tmp_file.readlines()
+                for path in list_lines:
+                    file_path_list.add(path.strip().replace("\n", ""))
+            for file_path in file_path_list:
+                new_path = values.Project_C.path + "/" + file_path
+                if os.path.isfile(new_path):
+                    candidate_list[source_file] = new_path
+                    break
+    if not candidate_list:
+        error_exit("CLONE FILE NOT FOUND")
+    return candidate_list
 
 
 # def find_clone_old():

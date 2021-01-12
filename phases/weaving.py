@@ -133,42 +133,19 @@ def transform_code():
     if not values.diff_transformation_info:
         error_exit("nothing to transplant")
     for file_list, diff_file in values.diff_transformation_info.items():
-        slice_file_a = file_list[0]
-        slice_file_b = file_list[1]
-        slice_file_c = file_list[2]
-        slice_file_d = slice_file_c.replace(values.CONF_PATH_C, values.Project_D.path)
-        vector_source_a = get_source_name_from_slice(slice_file_a)
-        vector_source_b = get_source_name_from_slice(slice_file_b)
-        vector_source_c = get_source_name_from_slice(slice_file_c)
-        vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
+        source_file_a = file_list[0]
+        source_file_b = file_list[1]
+        source_file_c = file_list[2]
+        source_file_d = source_file_c.replace(values.CONF_PATH_C, values.Project_D.path)
 
-        backup_file_orig(vector_source_a)
-        backup_file_orig(vector_source_b)
-        backup_file_orig(vector_source_c)
-        backup_file_orig(vector_source_d)
-        replace_file(slice_file_a, vector_source_a)
-        replace_file(slice_file_b, vector_source_b)
-        replace_file(slice_file_c, vector_source_c)
-        replace_file(slice_file_d, vector_source_d)
+        emitter.sub_sub_title("transforming " + source_file_c)
 
-        segment_code = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
-        segment_identifier_a = slice_file_a.split("." + segment_code + ".")[-1].replace(".slice", "")
-        segment_identifier_c = slice_file_c.split("." + segment_code + ".")[-1].replace(".slice", "")
-
-        emitter.sub_sub_title("transforming " + segment_identifier_c + " in " + vector_source_c)
-
-        weaver.weave_code(vector_source_a,
-                          vector_source_b,
-                          vector_source_c,
+        weaver.weave_code(source_file_a,
+                          source_file_b,
+                          source_file_c,
                           diff_file,
                           modified_source_list
                           )
-
-        restore_file_orig(vector_source_a)
-        restore_file_orig(vector_source_b)
-        restore_file_orig(vector_source_c)
-        replace_file(vector_source_d, slice_file_d)
-        restore_file_orig(vector_source_d)
 
 
 def load_values():
@@ -245,7 +222,6 @@ def start():
             safe_exec(fixer.check, "correcting syntax errors", modified_source_list)
         elif values.DEFAULT_OPERATION_MODE in [1, 2]:
             safe_exec(transform_code, "transforming slices")
-            safe_exec(weave_slices, "weaving slices")
         save_values()
     else:
         emitter.special("\n\t-skipping this phase-")

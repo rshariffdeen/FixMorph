@@ -8,7 +8,8 @@ from common import definitions, values
 from ast import ast_vector, ast_parser
 from tools import logger, emitter, detector, writer, generator, reader
 
-clone_list = dict()
+segment_clone_list = dict()
+file_clone_list = dict()
 
 
 def generate_target_vectors():
@@ -28,10 +29,18 @@ def generate_target_vectors():
         generator.generate_vectors("*\.c", definitions.FILE_FIND_RESULT, values.Project_C, diff_file_list)
 
 
-def find_clones():
-    global clone_list
+def find_segment_clones():
+    global segment_clone_list
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    clone_list = detector.detect_clones()
+    segment_clone_list = detector.detect_segment_clones()
+    # Values.c_file_list_to_patch = Detector.find_clone()
+
+
+def find_file_clones():
+    global file_clone_list
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    file_clone_list = detector.detect_file_clones(values.original_diff_info)
+    values.VECTOR_MAP = file_clone_list
     # Values.c_file_list_to_patch = Detector.find_clone()
 
 
@@ -42,12 +51,17 @@ def load_values():
     definitions.FILE_CLONE_INFO = definitions.DIRECTORY_OUTPUT + "/clone-info"
     definitions.FILE_VECTOR_MAP = definitions.DIRECTORY_OUTPUT + "/vector-map"
     definitions.FILE_AST_MAP = definitions.DIRECTORY_OUTPUT + "/ast-map"
+    definitions.FILE_VECTOR_MAP = definitions.DIRECTORY_OUTPUT + "/source-map"
 
 
 def save_values():
-    writer.write_clone_list(clone_list, definitions.FILE_CLONE_INFO)
+    writer.write_clone_list(segment_clone_list, definitions.FILE_CLONE_INFO)
     writer.write_as_json(values.VECTOR_MAP, definitions.FILE_VECTOR_MAP)
-    values.file_list_to_patch = clone_list
+    writer.write_as_json(values.SOURCE_MAP, definitions.FILE_SOURCE_MAP)
+    if values.DEFAULT_OPERATION_MODE in [0, 3]:
+        values.file_list_to_patch = segment_clone_list
+    else:
+        values.file_list_to_patch = file_clone_list
     save_current_state()
 
 
@@ -76,9 +90,12 @@ def start():
     emitter.title("Clone Detection")
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_DETECTION]:
-        if not values.SKIP_VEC_GEN:
-            safe_exec(generate_target_vectors, "generating vectors for target")
-        safe_exec(find_clones, "finding clones in target")
+        if values.DEFAULT_OPERATION_MODE == 0:
+            if not values.SKIP_VEC_GEN:
+                safe_exec(generate_target_vectors, "generating vectors for target")
+            safe_exec(find_segment_clones, "finding segment clones in target")
+        else:
+            safe_exec(find_file_clones, "finding file clones in target")
         save_values()
     else:
         emitter.special("\n\t-skipping this phase-")
