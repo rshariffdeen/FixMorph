@@ -111,7 +111,7 @@ def save_values():
         temp_diff_file = definitions.DIRECTORY_TMP + "/tmp-ast-diff"
         path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
         path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
-        diff_command = "diff " + path_d + " " + path_e + " > " + temp_diff_file
+        diff_command = "diff -bwZEB " + path_d + " " + path_e + " > " + temp_diff_file
         execute_command(diff_command)
         if os.stat(temp_diff_file).st_size != 0:
             ast_diff_command = "crochet-diff " + path_d + " " + path_e + " > " + temp_diff_file
