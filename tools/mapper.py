@@ -21,14 +21,13 @@ def map_ast_from_source(source_a, source_b, script_file_path):
     return mapping
 
 
-def generate_map_gumtree(file_a, file_b, output_file):
+def generate_map_gumtree(file_a, file_b, output_file, extra_arg=""):
     name_a = file_a.split("/")[-1]
     name_b = file_b.split("/")[-1]
     emitter.normal("\tsource: " + file_a)
     emitter.normal("\ttarget: " + file_b)
     emitter.normal("\tgenerating ast map")
     try:
-        extra_arg = ""
         if file_a[-1] == 'h':
             extra_arg = " --"
         generate_command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
@@ -90,18 +89,19 @@ def generate_map(file_list):
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
     if not values.CONF_USE_CACHE:
         generate_map_gumtree(vector_source_a, vector_source_c, map_file_name)
-
-    ast_node_map = parallel.read_mapping(map_file_name)
+    ast_node_map_global = parallel.read_mapping(map_file_name)
+    generate_map_gumtree(vector_source_a, vector_source_c, map_file_name, " --")
+    ast_node_map_local = parallel.read_mapping(map_file_name)
     # emitter.data(ast_node_map)
     if values.DEFAULT_OPERATION_MODE == 0:
-        ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)
+        ast_node_map = parallel.extend_mapping(ast_node_map_local, vector_source_a, vector_source_c)
         # emitter.data(ast_node_map)
-    namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
+    namespace_map = parallel.derive_namespace_map(ast_node_map_local, vector_source_a,
                                                   vector_source_c, slice_file_a)
     restore_file_orig(vector_source_a)
     restore_file_orig(vector_source_c)
 
-    return ast_node_map, namespace_map
+    return ast_node_map_global, namespace_map
 
 
 def anti_unification(ast_node_a, ast_node_c):
