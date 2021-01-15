@@ -131,8 +131,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
             continue
 
         # generate all possible member relations with each var mapping
-        if "." in value_a and "." in best_candidate:
-            refined_namespace_map["." + value_a.split(".")[-1]] = "." + best_candidate.split(".")[-1]
+        # if "." in value_a and "." in best_candidate:
+        #     refined_namespace_map["." + value_a.split(".")[-1]] = "." + best_candidate.split(".")[-1]
         refined_namespace_map[value_a] = best_candidate
 
     return refined_namespace_map
