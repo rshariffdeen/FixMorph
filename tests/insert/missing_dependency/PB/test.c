@@ -11,6 +11,7 @@ void testLocalRefA(int a, char* str){
 
 
 int main( ) {
+    printf("TEST A");
     int i = 2;
     int j = 4;
     int dev;
