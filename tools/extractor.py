@@ -143,18 +143,20 @@ def extract_reference_node_list(ast_node):
     return ref_node_list
 
 
-def extract_initialization_node_list(ast_node):
+def extract_initialization_node_list(ast_node, ref_node):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     init_node_list = list()
     node_type = str(ast_node["type"])
     if node_type == "BinaryOperator":
         node_value = str(ast_node['value'])
         if node_value == "=":
-            init_node_list.append(ast_node)
+            dec_ref_node = ast_node['children'][0]
+            if dec_ref_node['value'] == ref_node['value']:
+                init_node_list.append(ast_node)
     else:
         if len(ast_node['children']) > 0:
             for child_node in ast_node['children']:
-                child_init_list = extract_initialization_node_list(child_node)
+                child_init_list = extract_initialization_node_list(child_node, ref_node)
                 init_node_list = init_node_list + child_init_list
     return init_node_list
 

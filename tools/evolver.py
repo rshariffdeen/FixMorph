@@ -257,7 +257,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                 decl_node = finder.search_ast_node_by_id(ast_tree_local_b, int(decl_node_id))
                 scope_node_id = decl_node['parent_id']
                 scope_node = finder.search_ast_node_by_id(ast_tree_local_b, int(scope_node_id))
-                init_list = extractor.extract_initialization_node_list(scope_node)
+                init_list = extractor.extract_initialization_node_list(scope_node, ast_node)
                 latest_node = None
                 for node in init_list:
                     node_id = int(node['id'])
