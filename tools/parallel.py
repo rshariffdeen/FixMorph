@@ -80,9 +80,12 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+        parent_id_a = int(ast_node_a['parent_id'])
+        parent_id_c = int(ast_node_c['parent_id'])
         value_score = 1
         if ast_node_a:
-            if ast_node_id_a in range(neighbor_ast_range[0], neighbor_ast_range[1]):
+            if ast_node_id_a in range(neighbor_ast_range[0], neighbor_ast_range[1]) or \
+                 parent_id_a == 0 or parent_id_c == 0:
                 value_score = 100
         # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
         pool.apply_async(extractor.extract_mapping, args=(ast_node_a, ast_node_c, value_score),
