@@ -341,6 +341,9 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                         data_type = dec_ref_node['data_type']
                         if "struct" in data_type:
                             data_type = data_type.replace("struct ", "")
+                            full_qualify_name = "." + data_type + "." + member_name
+                            if full_qualify_name in var_map:
+                                continue
                             if data_type in type_def_node_list_c.keys():
                                 record_dec_node = type_def_node_list_c[data_type]
                                 is_missing = True
