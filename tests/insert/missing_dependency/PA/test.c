@@ -4,6 +4,13 @@
 
 int k = 2;
 
+struct Author {
+  char name[50];
+  int user_id;
+  int rank;
+} author;
+
+
 void testLocalRefA(int a, char* str){
     int dev = 9;
     printf("the values are  %d %s\n", a, str);
@@ -12,6 +19,7 @@ void testLocalRefA(int a, char* str){
 
 int main( ) {
     printf("TEST A");
+    struct Author author;
     int i = 2;
     int dev;
     dev = 4;
