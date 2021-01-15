@@ -133,7 +133,7 @@ def extract_reference_node_list(ast_node):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     ref_node_list = list()
     node_type = str(ast_node["type"])
-    if node_type in ["Macro", "DeclRefExpr"]:
+    if node_type in ["Macro", "DeclRefExpr", "MemberExpr"]:
         ref_node_list.append(ast_node)
     else:
         if len(ast_node['children']) > 0:
@@ -161,34 +161,44 @@ def extract_initialization_node_list(ast_node, ref_node):
     return init_node_list
 
 
-def extract_decl_list(ast_node):
+def extract_decl_list(ast_node, ref_type=None):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dec_list = list()
     node_type = str(ast_node["type"])
-    if node_type in ["FunctionDecl", "VarDecl", "ParmVarDecl"]:
-        identifier = str(ast_node['identifier'])
-        dec_list.append(identifier)
+    if ref_type:
+        if node_type == ref_type:
+            identifier = str(ast_node['identifier'])
+            dec_list.append(identifier)
+    else:
+        if node_type in ["FunctionDecl", "VarDecl", "ParmVarDecl", "RecordDecl"]:
+            identifier = str(ast_node['identifier'])
+            dec_list.append(identifier)
 
     if len(ast_node['children']) > 0:
         for child_node in ast_node['children']:
-            child_dec_list = extract_decl_list(child_node)
+            child_dec_list = extract_decl_list(child_node, ref_type)
             dec_list = dec_list + child_dec_list
     return list(set(dec_list))
 
 
-def extract_decl_node_list(ast_node):
+def extract_decl_node_list(ast_node, ref_type=None):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     dec_list = dict()
     if not ast_node:
         return dec_list
     node_type = str(ast_node["type"])
-    if node_type in ["FunctionDecl", "VarDecl", "ParmVarDecl"]:
-        identifier = str(ast_node['identifier'])
-        dec_list[identifier] = ast_node
+    if ref_type:
+        if node_type == ref_type:
+            identifier = str(ast_node['identifier'])
+            dec_list[identifier] = ast_node
+    else:
+        if node_type in ["FunctionDecl", "VarDecl", "ParmVarDecl", "RecordDecl"]:
+            identifier = str(ast_node['identifier'])
+            dec_list[identifier] = ast_node
 
     if len(ast_node['children']) > 0:
         for child_node in ast_node['children']:
-            child_dec_list = extract_decl_node_list(child_node)
+            child_dec_list = extract_decl_node_list(child_node, ref_type)
             dec_list.update(child_dec_list)
     return dec_list
 
@@ -246,13 +256,11 @@ def extract_data_type_list(ast_node):
     return list(set(data_type_list))
 
 
-
-
 def extract_typedef_node_list(ast_node):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     typedef_node_list = dict()
     node_type = str(ast_node["type"])
-    if node_type in ["TypedefDecl"]:
+    if node_type in ["TypedefDecl", "RecordDecl"]:
         identifier = str(ast_node['identifier'])
         typedef_node_list[identifier] = ast_node
 
