@@ -344,10 +344,13 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                             if data_type in type_def_node_list_c.keys():
                                 record_dec_node = type_def_node_list_c[data_type]
                                 is_missing = True
+                                insert_line = 0
                                 for field_dec_node in record_dec_node['children']:
+                                    insert_line = field_dec_node['start line']
                                     if field_dec_node['identifier'] == member_name:
                                         is_missing = False
                                         break
+
                                 if is_missing:
                                     record_dec_node_a = type_def_node_list_a[data_type]
                                     field_dec_node_a = None
@@ -368,6 +371,7 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                                                 error_exit("\t\tFile Not Found!")
                                         ast_node['file'] = source_file
                                         info['ast-node'] = ast_node
+                                        info['insert-line'] = insert_line
                                         missing_data_type_list[member_name] = info
 
 

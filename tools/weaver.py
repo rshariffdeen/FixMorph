@@ -301,12 +301,18 @@ def weave_data_type(missing_data_type_list, modified_source_list):
         emitter.normal(data_type)
         data_type_info = missing_data_type_list[data_type]
         ast_node = data_type_info['ast-node']
+        ast_node_type = ast_node['type']
+        source_file = ast_node['file']
+        if not os.path.isfile(source_file):
+            source_file = values.Project_A.path + "/" + source_file
         def_start_line = int(ast_node['start line'])
         def_end_line = int(ast_node['end line'])
-        source_file = ast_node['file']
         target_file = data_type_info['target']
-        def_insert_line = finder.find_definition_insertion_point(target_file)
         transplant_code = "\n"
+        if ast_node_type == "FieldDecl":
+            def_insert_line = data_type_info['insert-line']
+        else:
+            def_insert_line = finder.find_definition_insertion_point(target_file)
         for i in range(def_start_line, def_end_line + 1, 1):
             transplant_code += get_code(source_file, int(i))
         transplant_code += "\n"

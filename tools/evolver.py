@@ -69,8 +69,8 @@ def evolve_data_type(missing_data_type_list):
 
         # missing_macro_list = Identifier.identify_missing_macros_in_func(ast_node, function_source_file,
         #                                                             source_path_d)
-        # missing_header_list = Identifier.identify_missing_headers(ast_node, source_path_d)
-        #
+        missing_header_list = identifier.identify_missing_headers(ast_node, target_file)
+
     return missing_header_list, missing_macro_list
 
 
