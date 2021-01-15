@@ -4,8 +4,8 @@
 
 import os
 import time
-from common import definitions, values
-from common.utilities import execute_command, error_exit, save_current_state, backup_file_orig, restore_file_orig, replace_file
+from common import definitions, values, utilities
+from common.utilities import execute_command, error_exit, save_current_state
 from tools import emitter, collector, reader, writer, generator
 from ast import ast_vector
 
@@ -34,13 +34,9 @@ def generate_script_for_files(file_list_to_patch):
             slice_file_b = vector_source_b + "." + segment_code + "." + vector_name_b.replace(".vec", "") + ".slice"
             slice_file_c = vector_source_c + "." + segment_code + "." + vector_name_c.replace(".vec", "") + ".slice"
 
-            backup_file_orig(vector_source_a)
-            backup_file_orig(vector_source_b)
-            replace_file(slice_file_a, vector_source_a)
-            replace_file(slice_file_b, vector_source_b)
+            utilities.shift_slice_source(slice_file_a, slice_file_c)
             generator.generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
-            restore_file_orig(vector_source_a)
-            restore_file_orig(vector_source_b)
+            utilities.restore_slice_source()
 
             original_script, inserted_node_list, map_ab = collector.collect_instruction_list(script_file_ab)
             values.NODE_MAP[(slice_file_a, slice_file_b)] = map_ab

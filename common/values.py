@@ -109,6 +109,8 @@ ast_map = dict()
 original_diff_info = dict()
 ported_diff_info = dict()
 
+current_slice_tuple = None
+
 Pa = None
 Pb = None
 Pc = None

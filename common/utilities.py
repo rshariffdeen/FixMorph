@@ -236,3 +236,35 @@ def get_source_name_from_slice(slice_path):
         source_path = slice_path.split(".h.")[0] + ".h"
     return source_path
 
+
+def shift_slice_source(slice_file_a, slice_file_c):
+    values.current_slice_tuple = slice_file_a, slice_file_c
+    slice_file_b = slice_file_a.replace(values.CONF_PATH_A, values.Project_B.path)
+    slice_file_d = slice_file_c.replace(values.CONF_PATH_C, values.Project_D.path)
+    vector_source_a = get_source_name_from_slice(slice_file_a)
+    vector_source_b = vector_source_a.replace(values.CONF_PATH_A, values.Project_B.path)
+    vector_source_c = get_source_name_from_slice(slice_file_c)
+    vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
+
+    backup_file_orig(vector_source_a)
+    backup_file_orig(vector_source_b)
+    backup_file_orig(vector_source_c)
+    backup_file_orig(vector_source_d)
+    replace_file(slice_file_a, vector_source_a)
+    replace_file(slice_file_b, vector_source_b)
+    replace_file(slice_file_c, vector_source_c)
+    replace_file(slice_file_d, vector_source_d)
+
+
+def restore_slice_source():
+    if values.current_slice_tuple:
+        slice_file_a, slice_file_c = values.current_slice_tuple
+        vector_source_a = get_source_name_from_slice(slice_file_a)
+        vector_source_b = vector_source_a.replace(values.CONF_PATH_A, values.Project_B.path)
+        vector_source_c = get_source_name_from_slice(slice_file_c)
+        vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
+
+        restore_file_orig(vector_source_a)
+        restore_file_orig(vector_source_b)
+        restore_file_orig(vector_source_c)
+        restore_file_orig(vector_source_d)

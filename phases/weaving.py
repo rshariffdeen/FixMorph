@@ -1,6 +1,6 @@
 import time
 import sys
-from common import values, definitions
+from common import values, definitions, utilities
 from common.utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
 from tools import emitter, weaver, reader, logger, fixer, merger, writer
 
@@ -83,15 +83,7 @@ def transplant_code():
         vector_source_c = get_source_name_from_slice(slice_file_c)
         vector_source_d = vector_source_c.replace(values.CONF_PATH_C, values.Project_D.path)
 
-        backup_file_orig(vector_source_a)
-        backup_file_orig(vector_source_b)
-        backup_file_orig(vector_source_c)
-        backup_file_orig(vector_source_d)
-        replace_file(slice_file_a, vector_source_a)
-        replace_file(slice_file_b, vector_source_b)
-        replace_file(slice_file_c, vector_source_c)
-        replace_file(slice_file_d, vector_source_d)
-
+        utilities.shift_slice_source(slice_file_a, slice_file_c)
         segment_code = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
         segment_identifier_a = slice_file_a.split("." + segment_code + ".")[-1].replace(".slice", "")
         segment_identifier_c = slice_file_c.split("." + segment_code + ".")[-1].replace(".slice", "")
@@ -121,11 +113,8 @@ def transplant_code():
                           modified_source_list
                           )
 
-        restore_file_orig(vector_source_a)
-        restore_file_orig(vector_source_b)
-        restore_file_orig(vector_source_c)
         replace_file(vector_source_d, slice_file_d)
-        restore_file_orig(vector_source_d)
+        utilities.restore_slice_source()
 
 
 def transform_code():

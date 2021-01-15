@@ -1,5 +1,5 @@
-from common import definitions, values
-from common.utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
+from common import definitions, values, utilities
+from common.utilities import execute_command, error_exit, get_source_name_from_slice
 from tools import emitter, logger, finder, converter, writer, parallel
 from ast import ast_generator
 import sys
@@ -77,15 +77,12 @@ def clean_parse(content, separator):
 
 
 def generate_map(file_list):
+
     slice_file_a = file_list[0]
     slice_file_c = file_list[2]
     vector_source_a = get_source_name_from_slice(slice_file_a)
     vector_source_c = get_source_name_from_slice(slice_file_c)
-
-    backup_file_orig(vector_source_a)
-    backup_file_orig(vector_source_c)
-    replace_file(slice_file_a, vector_source_a)
-    replace_file(slice_file_c, vector_source_c)
+    utilities.shift_slice_source(slice_file_a, slice_file_c)
 
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
     if not values.CONF_USE_CACHE:
@@ -98,8 +95,7 @@ def generate_map(file_list):
         # emitter.data(ast_node_map)
     namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
                                                   vector_source_c, slice_file_a)
-    restore_file_orig(vector_source_a)
-    restore_file_orig(vector_source_c)
+    utilities.restore_slice_source()
 
     return ast_node_map, namespace_map
 

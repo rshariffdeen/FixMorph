@@ -1,7 +1,7 @@
 import time
 import sys
-from common import values, definitions
-from common.utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
+from common import values, definitions, utilities
+from common.utilities import error_exit, save_current_state, load_state, get_source_name_from_slice
 from tools import emitter, evolver, reader, logger, merger
 from ast import ast_generator
 
@@ -72,14 +72,7 @@ def evolve_code():
         ast_tree_global_b = ast_generator.get_ast_json(vector_source_b, values.DONOR_REQUIRE_MACRO, True)
         ast_tree_global_c = ast_generator.get_ast_json(vector_source_c, values.DONOR_REQUIRE_MACRO, True)
 
-        backup_file_orig(vector_source_a)
-        backup_file_orig(vector_source_b)
-        backup_file_orig(vector_source_c)
-        backup_file_orig(vector_source_d)
-        replace_file(slice_file_a, vector_source_a)
-        replace_file(slice_file_b, vector_source_b)
-        replace_file(slice_file_c, vector_source_c)
-        replace_file(slice_file_d, vector_source_d)
+        utilities.shift_slice_source(slice_file_a, slice_file_c)
 
         segment_code = slice_file_c.replace(vector_source_c + ".", "").split(".")[0]
         segment_identifier_a = slice_file_a.split("." + segment_code + ".")[-1].replace(".slice", "")
@@ -127,11 +120,9 @@ def evolve_code():
         else:
             values.missing_macro_list = identified_macro_list
 
-        restore_file_orig(vector_source_a)
-        restore_file_orig(vector_source_b)
-        restore_file_orig(vector_source_c)
-        replace_file(vector_source_d, slice_file_d)
-        restore_file_orig(vector_source_d)
+        utilities.replace_file(vector_source_d, slice_file_d)
+        utilities.restore_slice_source()
+
     values.ast_transformation_info = updated_info
 
 

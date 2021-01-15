@@ -1,6 +1,6 @@
 import sys
-from common import definitions, values
-from common.utilities import execute_command, error_exit, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
+from common import definitions, values, utilities
+from common.utilities import execute_command, error_exit, get_source_name_from_slice
 from tools import emitter, logger, mapper
 from ast import ast_parser
 
@@ -977,13 +977,7 @@ def translate_script_list(file_list, generated_data):
     vector_source_b = get_source_name_from_slice(slice_file_b)
     vector_source_c = get_source_name_from_slice(slice_file_c)
 
-    backup_file_orig(vector_source_a)
-    backup_file_orig(vector_source_b)
-    backup_file_orig(vector_source_c)
-    replace_file(slice_file_a, vector_source_a)
-    replace_file(slice_file_b, vector_source_b)
-    replace_file(slice_file_c, vector_source_c)
-
+    utilities.shift_slice_source(slice_file_a, slice_file_c)
     emitter.normal("\tgenerating AST in JSON")
     json_ast_dump = gen_temp_json(vector_source_a, vector_source_b, vector_source_c)
 
@@ -1015,8 +1009,6 @@ def translate_script_list(file_list, generated_data):
             error_exit("Unable to translate the script")
 
     translated_script_list[file_list] = (translated_script, original_script)
-    restore_file_orig(vector_source_a)
-    restore_file_orig(vector_source_b)
-    restore_file_orig(vector_source_c)
+    utilities.restore_slice_source()
     return translated_script, original_script
 
