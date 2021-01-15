@@ -80,6 +80,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+        if ast_node_id_a == 0 or ast_node_id_c == 0:
+            continue
         parent_id_a = int(ast_node_a['parent_id'])
         parent_id_c = int(ast_node_c['parent_id'])
         value_score = 1
