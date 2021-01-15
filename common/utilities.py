@@ -215,18 +215,24 @@ def is_intersect(start, end, start2, end2):
 
 
 def backup_file_orig(file_path):
-    backup_command = "cp " + file_path + " " + file_path + ".orig"
-    execute_command(backup_command)
+    # backup_command = "cp " + file_path + " " + file_path + ".orig"
+    shutil.copyfile(file_path, file_path + ".orig")
+    # os.system(backup_command)
+    # execute_command(backup_command)
 
 
 def replace_file(file_a, file_b):
-    replace_command = "cp " + file_a + " " + file_b
-    execute_command(replace_command)
+    # replace_command = "cp " + file_a + " " + file_b
+    # os.system(replace_command)
+    shutil.copyfile(file_a, file_b)
+    # execute_command(replace_command)
 
 
 def restore_file_orig(file_path):
-    restore_command = "cp " + file_path + ".orig " + file_path
-    execute_command(restore_command)
+    # restore_command = "cp " + file_path + ".orig " + file_path
+    # os.system(restore_command)
+    shutil.copyfile(file_path + ".orig ", file_path)
+    # execute_command(restore_command)
 
 
 def get_source_name_from_slice(slice_path):
