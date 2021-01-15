@@ -151,7 +151,7 @@ def extract_initialization_node_list(ast_node, ref_node):
         node_value = str(ast_node['value'])
         if node_value == "=":
             dec_ref_node = ast_node['children'][0]
-            if dec_ref_node['value'] == ref_node['value']:
+            if dec_ref_node['value'] == ref_node['identifier']:
                 init_node_list.append(ast_node)
     else:
         if len(ast_node['children']) > 0:
