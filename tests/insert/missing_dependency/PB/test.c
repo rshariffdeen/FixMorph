@@ -18,6 +18,8 @@ int main( ) {
     dev = 4;
     testLocalRefA(i, "test");
     testLocalRefA(j, "test");
+    dev = 124;
     testLocalRefA(k + dev, "test");
+    dev = 326346;
     return 0;
 }
