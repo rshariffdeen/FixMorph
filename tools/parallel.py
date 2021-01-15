@@ -100,7 +100,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     for id_a, id_c, score, type_a, type_c in result_list:
         if id_a is None or id_c is None:
             continue
-        if type_a in ["VarDecl", "ParmVarDecl", "RecordDecl", "FieldDecl"]:
+        if type_a in ["VarDecl", "ParmVarDecl"]:
             if score < 100:
                 continue
         if id_a not in namespace_map:
