@@ -326,7 +326,6 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
     filtered_namespace_map = dict()
     ast_tree_b = ast_generator.get_ast_json(source_b, values.DONOR_REQUIRE_MACRO, True)
     node_list = list()
-    var_list_b = set()
     for transformation_rule in edit_script:
         if "Insert" in transformation_rule:
             node_b_str = transformation_rule.split(" ")[1]
@@ -346,10 +345,15 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
         if node_type in ["MemberExpr", "FieldDecl"]:
             node_value = "." + node_value
         if node_value:
-            var_list_b.add(node_value)
-
-    for var_b in var_list_b:
-        if var_b in namespace_map:
-            filtered_namespace_map[var_b] = namespace_map[var_b]
+            if node_value in namespace_map:
+                filtered_namespace_map[node_value] = namespace_map[node_value]
+            else:
+                if node_type in ["MemberExpr", "FieldDecl"]:
+                    struct_node = node['children'][0]
+                    while struct_node['type'] != "DeclRefExpr":
+                        struct_node = node['children'][0]
+                    node_value = "." + struct_node['identifier'] + "." + node['identifier']
+                    if node_value in namespace_map:
+                        filtered_namespace_map[node_value] = namespace_map[node_value]
 
     return filtered_namespace_map
