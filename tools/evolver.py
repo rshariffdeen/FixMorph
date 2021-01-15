@@ -252,10 +252,12 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
             script_lines.insert(0, instruction + "\n")
             emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
             if len(ast_node['children']) == 1:
-                parent_node_id = int(ast_node['parent_id'])
+                decl_node_id = int(ast_node['parent_id'])
                 ref_node_id = int(var_info['ref-id'])
-                parent_node = finder.search_ast_node_by_id(ast_tree_local_b, int(parent_node_id))
-                init_list = extractor.extract_initialization_node_list(parent_node)
+                decl_node = finder.search_ast_node_by_id(ast_tree_local_b, int(decl_node_id))
+                scope_node_id = decl_node['parent_id']
+                scope_node = finder.search_ast_node_by_id(ast_tree_local_b, int(scope_node_id))
+                init_list = extractor.extract_initialization_node_list(scope_node)
                 latest_node = None
                 for node in init_list:
                     latest_node = node
