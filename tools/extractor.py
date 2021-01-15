@@ -686,6 +686,8 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     identifier_a = None
     identifier_c = None
+    node_type_a = None
+    node_type_c = None
 
     if ast_node_a:
         node_type_a = ast_node_a['type']
@@ -760,7 +762,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
                     identifier_a = method_name_a + "("
                     identifier_c = method_name_c + "("
 
-    return identifier_a, identifier_c, value_score
+    return identifier_a, identifier_c, value_score, node_type_a, node_type_c
 
 
 def extract_method_invocations(ast_node_map, call_node_a, call_node_c, method_name_a):
