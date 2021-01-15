@@ -330,19 +330,15 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
     for transformation_rule in edit_script:
         if "Insert" in transformation_rule:
             node_b_str = transformation_rule.split(" ")[1]
-            node_b_id = node_b_str.split("(")[-1].split(")")[0]
-            node_b = finder.search_ast_node_by_id(ast_tree_b, node_b_id)
-            node_list.append(node_b)
         elif "Update" in transformation_rule:
             node_b_str = transformation_rule.split(" ")[-1]
-            node_b_id = node_b_str.split("(")[-1].split(")")[0]
-            node_b = finder.search_ast_node_by_id(ast_tree_b, node_b_id)
-            node_list.append(node_b)
         elif "Replace" in transformation_rule:
             node_b_str = transformation_rule.split(" ")[-1]
-            node_b_id = node_b_str.split("(")[-1].split(")")[0]
-            node_b = finder.search_ast_node_by_id(ast_tree_b, node_b_id)
-            node_list.append(node_b)
+        else:
+            continue
+        node_b_id = int(node_b_str.split("(")[-1].split(")")[0])
+        node_b = finder.search_ast_node_by_id(ast_tree_b, node_b_id)
+        node_list.append(node_b)
 
     for node in node_list:
         node_type = node['type']
