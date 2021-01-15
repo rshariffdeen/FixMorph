@@ -192,9 +192,10 @@ if __name__ == "__main__":
         is_error = True
     finally:
         # Final running time and exit message
+        utilities.restore_slice_source()
         duration = format((time.time() - start_time) / 60, '.3f')
         time_info[definitions.KEY_DURATION_TOTAL] = str(duration)
         emitter.end(time_info, is_error)
         logger.end(time_info, is_error)
         logger.store()
-        utilities.restore_slice_source()
+
