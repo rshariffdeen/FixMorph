@@ -1,3 +1,3 @@
 CC=clang
-fib: fib.o
-	$(CC) -o fib.o fib.c
+test: test.o
+	$(CC) -o test.o test.c

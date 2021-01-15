@@ -1,3 +1,3 @@
 CC=clang
-fibonacci: fibonnaci.o
-	$(CC) -o fibonnaci.o fibonnaci.c
+test: test.o
+	$(CC) -o test.o test.c
