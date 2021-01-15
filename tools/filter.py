@@ -353,7 +353,7 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                     while struct_node['type'] != "DeclRefExpr":
                         struct_node = struct_node['children'][0]
                     struct_name = struct_node['data_type'].replace("struct ", "").split(" ")[0]
-                    node_value = "." + struct_name + "." + node['identifier']
+                    node_value = "." + struct_name + "." + node['value']
                     if node_value in namespace_map:
                         filtered_namespace_map[node_value] = namespace_map[node_value]
 
