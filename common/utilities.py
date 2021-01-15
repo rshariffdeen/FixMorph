@@ -234,7 +234,7 @@ def restore_file_orig(file_path):
     # restore_command = "cp " + file_path + ".orig " + file_path
     # os.system(restore_command)
     if os.path.isfile(file_path + ".orig"):
-        shutil.copyfile(file_path + ".orig ", file_path)
+        shutil.copyfile(file_path + ".orig", file_path)
     # execute_command(restore_command)
 
 
