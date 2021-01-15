@@ -699,11 +699,15 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
     identifier_c = None
     node_type_a = None
     node_type_c = None
-    skip_type_list = ["ReturnStmt", "CompoundStmt", "IntegerLiteral", "TypeLoc", "WhileStmt",
-                      "ForStmt", "DeclStmt", "IfStmt", "ForStmt"]
+    # skip_type_list = ["ReturnStmt", "CompoundStmt", "IntegerLiteral", "TypeLoc", "WhileStmt",
+                      # "ForStmt", "DeclStmt", "IfStmt", "ForStmt"]
+    allow_type_list = [
+        "DeclRefExpr", "StringLiteral", "VarDecl",
+        "ParmVarDecl", "RecordDecl", "FieldDecl", "FunctionDecl", "CallExpr"
+                       ]
     if ast_node_a:
         node_type_a = ast_node_a['type']
-        if node_type_a not in skip_type_list:
+        if node_type_a not in allow_type_list:
             identifier_a = converter.get_node_value(ast_node_a).replace(":", "")
             if node_type_a in ["MemberExpr", "FieldDecl"]:
                 identifier_a = "." + identifier_a
