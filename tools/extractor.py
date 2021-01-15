@@ -690,7 +690,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
     identifier_c = None
     node_type_a = None
     node_type_c = None
-    skip_type_list = ["ReturnStmt", "CompoundStmt"]
+    skip_type_list = ["ReturnStmt", "CompoundStmt", "IntegerLiteral"]
     if ast_node_a:
         node_type_a = ast_node_a['type']
         if node_type_a not in skip_type_list:
