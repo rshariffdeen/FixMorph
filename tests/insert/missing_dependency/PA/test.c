@@ -12,6 +12,7 @@ void testLocalRefA(int a, char* str){
 
 int main( ) {
     int i = 2;
-    int dev = 4;
+    int dev;
+    dev = 4;
     return 0;
 }

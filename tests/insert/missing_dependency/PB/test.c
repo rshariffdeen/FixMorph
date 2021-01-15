@@ -13,7 +13,8 @@ void testLocalRefA(int a, char* str){
 int main( ) {
     int i = 2;
     int j = 4;
-    int dev = 4;
+    int dev;
+    dev = 4;
     testLocalRefA(i, "test");
     testLocalRefA(j, "test");
     testLocalRefA(k + dev, "test");
