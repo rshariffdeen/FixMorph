@@ -147,7 +147,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         if identifier not in missing_var_list.keys():
                             info = dict()
                             info['ref_list'] = [neighborhood_b['value']]
-                            info['ref-id'] = int(ast_node_b['id'])
+                            info['ref-id'] = int(ast_node_b['parent_id'])
                             if identifier in dec_list_local_a.keys():
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
@@ -261,7 +261,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                 if identifier not in missing_var_list.keys() and identifier in enum_list_b.keys():
                     info = dict()
                     info['ref_list'] = list()
-                    info['ref-id'] = int(ast_node_b['id'])
+                    info['ref-id'] = int(ast_node_b['parent_id'])
                     enum_ref_node = enum_list_b[identifier]
                     # print(enum_ref_node)
                     enum_def_node = finder.search_ast_node_by_id(ast_tree_b, int(enum_ref_node['parent_id']))
