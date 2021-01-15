@@ -351,7 +351,7 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                 if node_type in ["MemberExpr", "FieldDecl"]:
                     struct_node = node['children'][0]
                     while struct_node['type'] != "DeclRefExpr":
-                        struct_node = node['children'][0]
+                        struct_node = struct_node['children'][0]
                     node_value = "." + struct_node['identifier'] + "." + node['identifier']
                     if node_value in namespace_map:
                         filtered_namespace_map[node_value] = namespace_map[node_value]
