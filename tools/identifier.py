@@ -334,8 +334,8 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                         info['ast-node'] = ast_node
                         missing_data_type_list[identifier] = info
         elif node_type == "MemberExpr":
-                member_name = ast_node['value'].replace(":", "")
-                dec_ref_node = ast_node['children'][0]
+                member_name = ref_node['value'].replace(":", "")
+                dec_ref_node = ref_node['children'][0]
                 if dec_ref_node['type'] == "DeclRefExpr":
                     if dec_ref_node['ref_type'] == "VarDecl":
                         data_type = dec_ref_node['data_type']
