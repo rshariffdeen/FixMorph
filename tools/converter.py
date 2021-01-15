@@ -123,7 +123,7 @@ def get_node_value(ast_node):
     else:
         print(ast_type)
         print(ast_node)
-        error_exit("Unhandled child type in convert ast node")
+        error_exit("Unhandled node type in convert ast node")
 
     return ast_value
 
