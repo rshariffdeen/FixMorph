@@ -202,7 +202,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         if identifier not in missing_var_list.keys():
                             info = dict()
                             info['ref_list'] = [neighborhood_b['value']]
-                            info['ref-id'] = int(ast_node_b['id'])
+                            info['ref-id'] = int(ast_node_b['parent_id'])
                             if identifier in dec_list_local_a.keys():
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
