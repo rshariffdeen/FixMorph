@@ -311,7 +311,8 @@ def identify_missing_data_types(neighborhood_a, neighborhood_b, neighborhood_c, 
                 # print(identifier)
                 var_name = str(ref_node['value'])
                 # print(var_name)
-                if identifier in STANDARD_DATA_TYPES:
+                identifier = identifier.replace("struct ", "")
+                if identifier in STANDARD_DATA_TYPES or identifier in var_map:
                     continue
                 # print("cont")
                 if identifier not in type_def_node_list_c:
