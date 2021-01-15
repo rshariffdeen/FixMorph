@@ -19,10 +19,12 @@ void testLocalRefA(int a, char* str){
 int main( ) {
     printf("TEST A");
     struct Author author;
+    float only_declaration;
     int i = 2;
     int j = 4;
     int dev;
     dev = 4;
+    only_declaration = 3.2;
     testLocalRefA(i, "test");
     testLocalRefA(j, "test");
     dev = 124;

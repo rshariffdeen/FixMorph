@@ -20,6 +20,7 @@ void testLocalRefA(int a, char* str){
 int main( ) {
     printf("TEST A");
     struct Author author;
+    float only_declaration;
     int i = 2;
     int dev;
     dev = 4;
