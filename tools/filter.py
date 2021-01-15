@@ -355,6 +355,8 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                     struct_name = struct_node['data_type'].replace("struct ", "").split(" ")[0]
                     node_value = "." + struct_name + node['value'].replace(":", ".")
                     if node_value in namespace_map:
-                        filtered_namespace_map[node_value] = "." + namespace_map[node_value].split(".")[-1]
+                        field_name_c = "." + namespace_map[node_value].split(".")[-1]
+                        field_name_b = "." + node_value.split(".")[-1]
+                        filtered_namespace_map[field_name_b] = field_name_c
 
     return filtered_namespace_map
