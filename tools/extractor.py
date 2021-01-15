@@ -693,76 +693,25 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
 
     if ast_node_a:
         node_type_a = ast_node_a['type']
-        if node_type_a in ["VarDecl", "DeclRefExpr", "ParmVarDecl", "RecordDecl", "FieldDecl"]:
-            identifier_a = ast_node_a["value"]
-            if "identifier" in ast_node_a.keys():
-                identifier_a = ast_node_a['identifier']
-            if node_type_a == "DeclRefExpr":
-                if "ref_type" in ast_node_a and ast_node_a["ref_type"] == "FunctionDecl":
-                    identifier_a = identifier_a + "("
-            elif node_type_a == "FieldDecl":
-                identifier_a = "." + identifier_a
-            if ast_node_c:
-                node_type_c = ast_node_c['type']
-                if node_type_c in ["VarDecl", "DeclRefExpr", "ParmVarDecl", "RecordDecl", "FieldDecl"]:
-                    identifier_c = ast_node_c['value']
-                    if "identifier" in ast_node_c.keys():
-                        identifier_c = ast_node_c['identifier']
-                    if node_type_c == "DeclRefExpr":
-                        if "ref_type" in ast_node_c and ast_node_c["ref_type"] == "FunctionDecl":
-                            identifier_c = identifier_c + "("
-                    elif node_type_a == "FieldDecl":
-                        identifier_c = "." + identifier_c
+        identifier_a = converter.get_node_value(ast_node_a).replace(":", "")
+        if node_type_a in ["MemberExpr", "FieldDecl"]:
+            identifier_a = "." + identifier_a
+        if ast_node_c:
+            node_type_c = ast_node_c['type']
+            identifier_c = converter.get_node_value(ast_node_c).replace(":", "")
+            if node_type_c in ["MemberExpr", "FieldDecl"]:
+                identifier_c = "." + identifier_c
 
-        elif node_type_a == "Macro":
-            if 'value' in ast_node_a.keys():
-                identifier_a = ast_node_a['value']
-                if ast_node_c:
-                    node_type_c = ast_node_c['type']
-                    if node_type_c == "Macro":
-                        if 'value' in ast_node_c.keys():
-                            identifier_c = ast_node_c['value']
-
-        elif node_type_a == "LabelStmt":
-            if 'value' in ast_node_a.keys():
-                identifier_a = ast_node_a['value']
-                if ast_node_c:
-                    node_type_c = ast_node_c['type']
-                    if node_type_c == "LabelStmt":
-                        if 'value' in ast_node_c.keys():
-                            identifier_c = ast_node_c['value']
-
-        elif node_type_a in ["MemberExpr", "ArraySubscriptExpr"]:
-            node_type_a = ast_node_a['type']
-            if node_type_a in ["MemberExpr"]:
-                identifier_a = "." + converter.convert_member_expr(ast_node_a, True).replace(":", "")
-            elif node_type_a == "ArraySubscriptExpr":
-                identifier_a = converter.convert_array_subscript(ast_node_a, True).replace(":", "")
-
-            if ast_node_c:
-                node_type_c = ast_node_c['type']
-                if node_type_c in ["MemberExpr", "ArraySubscriptExpr"]:
-                    if node_type_c in ["MemberExpr"]:
-                        identifier_c = "." + converter.convert_member_expr(ast_node_c, True).replace(":", "")
-                    elif node_type_c == "ArraySubscriptExpr":
-                        identifier_c = converter.convert_array_subscript(ast_node_c, True).replace(":", "")
-
-        elif node_type_a in ["FunctionDecl"]:
-            if "identifier" in ast_node_a and "identifier" in ast_node_c:
-                method_name_a = ast_node_a["identifier"]
-                method_name_c = ast_node_c["identifier"]
-                identifier_a = method_name_a + "("
-                identifier_c = method_name_c + "("
-
-        elif node_type_a in ["CallExpr"]:
-            children_a = ast_node_a["children"]
-            children_c = ast_node_c["children"]
-            if len(children_a) > 1 and len(children_c) > 1:
-                if 'value' in children_a[0].keys() and "value" in children_c[0].keys():
-                    method_name_a = children_a[0]["value"]
-                    method_name_c = children_c[0]["value"]
-                    identifier_a = method_name_a + "("
-                    identifier_c = method_name_c + "("
+        #
+        # elif node_type_a in ["CallExpr"]:
+        #     children_a = ast_node_a["children"]
+        #     children_c = ast_node_c["children"]
+        #     if len(children_a) > 1 and len(children_c) > 1:
+        #         if 'value' in children_a[0].keys() and "value" in children_c[0].keys():
+        #             method_name_a = children_a[0]["value"]
+        #             method_name_c = children_c[0]["value"]
+        #             identifier_a = method_name_a + "("
+        #             identifier_c = method_name_c + "("
 
     return identifier_a, identifier_c, value_score, node_type_a, node_type_c
 

@@ -93,6 +93,8 @@ def get_node_value(ast_node):
         ast_value = str(ast_node['value'])
     elif ast_type in ["ParmVarDecl"]:
         ast_value = ast_node['identifier']
+    elif ast_type == "FunctionDecl":
+        ast_value = ast_node['identifier'] + "("
     elif ast_type == "BinaryOperator":
         ast_value = convert_binary_node_to_expr(ast_node, True)
         # var_list = var_list + left_child_var_list
@@ -104,7 +106,7 @@ def get_node_value(ast_node):
     elif ast_type == "MemberExpr":
         ast_value = convert_member_expr(ast_node, True)
         # var_list = var_list + left_child_var_list
-    elif ast_type == "Macro":
+    elif ast_type in ["Macro", "LabelStmt"]:
         ast_value = ast_node['value']
     elif ast_type == "CStyleCastExpr":
         ast_value = convert_cast_expr(ast_node, True)
