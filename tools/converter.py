@@ -296,8 +296,8 @@ def convert_call_expr(ast_node, only_string=False):
             operand_var_name = str(operand_node['value'])
             operand_list.append(operand_var_name)
         else:
-            print(operand_node)
-            error_exit("unhandled operand for call expr convert")
+            operand_var_name = get_node_value(operand_node)
+            operand_list.append(operand_var_name)
 
     var_name = function_name + "("
     for operand in operand_list:
@@ -389,7 +389,8 @@ def convert_member_expr(ast_node, only_string=False):
             # var_list = var_list + child_aux_list
             var_name = child_var_name + var_name
             break
-
+        elif child_node_type == "TypeLoc":
+            break
         else:
             print(ast_node)
             error_exit("unhandled exception at membership expr -> str")
