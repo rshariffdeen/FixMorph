@@ -2,7 +2,7 @@
 
 int fib(int n)
 {
-    int l;
+    int l,x,y;
 	if (n == 0 || n == 1)
 	{
 		return n;
