@@ -216,7 +216,8 @@ def is_intersect(start, end, start2, end2):
 
 def backup_file_orig(file_path):
     # backup_command = "cp " + file_path + " " + file_path + ".orig"
-    shutil.copyfile(file_path, file_path + ".orig")
+    if os.path.isfile(file_path):
+        shutil.copyfile(file_path, file_path + ".orig")
     # os.system(backup_command)
     # execute_command(backup_command)
 
@@ -224,14 +225,16 @@ def backup_file_orig(file_path):
 def replace_file(file_a, file_b):
     # replace_command = "cp " + file_a + " " + file_b
     # os.system(replace_command)
-    shutil.copyfile(file_a, file_b)
+    if os.path.isfile(file_a):
+        shutil.copyfile(file_a, file_b)
     # execute_command(replace_command)
 
 
 def restore_file_orig(file_path):
     # restore_command = "cp " + file_path + ".orig " + file_path
     # os.system(restore_command)
-    shutil.copyfile(file_path + ".orig ", file_path)
+    if os.path.isfile(file_path + ".orig"):
+        shutil.copyfile(file_path + ".orig ", file_path)
     # execute_command(restore_command)
 
 
