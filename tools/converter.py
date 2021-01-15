@@ -121,6 +121,7 @@ def get_node_value(ast_node):
     elif ast_type == "PredefinedExpr":
         ast_value = get_node_value(ast_node['children'][0])
     else:
+        print(ast_type)
         print(ast_node)
         error_exit("Unhandled child type in convert ast node")
 
