@@ -91,7 +91,7 @@ def get_node_value(ast_node):
     ast_type = str(ast_node['type'])
     if ast_type in ["DeclRefExpr", "IntegerLiteral", "StringLiteral", "VarDecl"]:
         ast_value = str(ast_node['value'])
-    elif ast_type in ["ParmVarDecl"]:
+    elif ast_type in ["ParmVarDecl", "RecordDecl"]:
         ast_value = ast_node['identifier']
     elif ast_type == "FunctionDecl":
         ast_value = ast_node['identifier'] + "("
