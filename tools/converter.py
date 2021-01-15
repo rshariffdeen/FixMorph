@@ -94,7 +94,7 @@ def get_node_value(ast_node):
     elif ast_type in ["ParmVarDecl", "RecordDecl"]:
         ast_value = ast_node['identifier']
     elif ast_type in ["FieldDecl"]:
-        ast_value = ast_node['qualified_identifier'].split("::")[0] + "." + convert_member_expr(ast_node, True)
+        ast_value = ast_node['qualified_identifier'].split("::")[0] + "." + ast_node['value']
     elif ast_type == "FunctionDecl":
         ast_value = ast_node['identifier'] + "("
     elif ast_type == "BinaryOperator":
