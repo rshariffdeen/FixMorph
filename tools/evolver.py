@@ -218,6 +218,15 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                                                                     var_map
                                                                     ))
 
+            missing_data_type_list.update(identifier.identify_missing_data_types(neighborhood_a,
+                                                                                 neighborhood_b,
+                                                                                 neighborhood_c,
+                                                                                 check_node,
+                                                                                 source_file_b,
+                                                                                 source_file_c,
+                                                                                 var_map
+                                                                                 ))
+
             missing_label_list.update(identifier.identify_missing_labels(neighborhood_a,
                                                                          neighborhood_b,
                                                                          neighborhood_c,

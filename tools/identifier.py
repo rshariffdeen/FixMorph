@@ -289,15 +289,15 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
     return missing_var_list
 
 
-def identify_missing_data_types(insert_node_b, var_info, target_path, ast_node_b, ast_node_c, source_path_b):
+def identify_missing_data_types(neighborhood_a, neighborhood_b, neighborhood_c, ast_node_b, source_path_b, source_path_c, var_map):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\t\tanalysing for missing data-types")
     missing_data_type_list = dict()
-    type_loc_node_list = extractor.extract_typeloc_node_list(insert_node_b)
-    # print(type_loc_node_list)
-    ref_list = extractor.extract_reference_node_list(insert_node_b)
-    type_def_node_list_b = extractor.extract_typedef_node_list(ast_node_b)
-    type_def_node_list_c = extractor.extract_typedef_node_list(ast_node_c)
+    type_loc_node_list = extractor.extract_typeloc_node_list(ast_node_b)
+    ref_list = extractor.extract_reference_node_list(ast_node_b)
+    type_def_node_list_b = extractor.extract_typedef_node_list(neighborhood_b)
+    type_def_node_list_c = extractor.extract_typedef_node_list(neighborhood_c)
+    target_file = source_path_c.replace(values.CONF_PATH_C, values.Project_D.path)
     for ref_node in ref_list:
         # print(ref_node)
         node_type = str(ref_node['type'])
@@ -311,15 +311,13 @@ def identify_missing_data_types(insert_node_b, var_info, target_path, ast_node_b
                 # print(identifier)
                 var_name = str(ref_node['value'])
                 # print(var_name)
-                if var_name not in var_info.keys():
-                    continue
                 if identifier in STANDARD_DATA_TYPES:
                     continue
                 # print("cont")
                 if identifier not in type_def_node_list_c:
                     if identifier not in missing_data_type_list.keys():
                         info = dict()
-                        info['target'] = target_path
+                        info['target'] = target_file
                         ast_node = type_def_node_list_b[identifier]
                         source_file = str(ast_node['file'])
                         if ".." in source_file:
@@ -340,7 +338,7 @@ def identify_missing_data_types(insert_node_b, var_info, target_path, ast_node_b
                 continue
             if identifier not in missing_data_type_list.keys():
                 info = dict()
-                info['target'] = target_path
+                info['target'] = target_file
                 ast_node = type_def_node_list_b[identifier]
                 source_file = str(ast_node['file'])
                 if ".." in source_file:
