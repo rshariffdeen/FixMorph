@@ -264,11 +264,11 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                     if node_id >= ref_node_id:
                         break
                     latest_node = node
-
-                instruction = "Insert " + latest_node['type'] + "(" + str(latest_node['id']) + ")"
-                instruction += " into " + local_position_c
-                script_lines.insert(1, instruction + "\n")
-                emitter.highlight("\t\tadditional initialization added with instruction: " + instruction)
+                if latest_node:
+                    instruction = "Insert " + latest_node['type'] + "(" + str(latest_node['id']) + ")"
+                    instruction += " into " + local_position_c
+                    script_lines.insert(1, instruction + "\n")
+                    emitter.highlight("\t\tadditional initialization added with instruction: " + instruction)
 
         elif "value" in var_info.keys():
             var_map[var] = str(var_info['value'])
