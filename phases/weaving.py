@@ -105,7 +105,7 @@ def transplant_code():
 
         var_map = values.map_namespace_global[(slice_file_a, slice_file_c)]
         filtered_var_map = filter.filter_namespace_map(var_map, translated_script, vector_source_b)
-        writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
+        writer.write_var_map(filtered_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
 
         weaver.weave_code(vector_source_a,
                           vector_source_b,
