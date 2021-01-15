@@ -2,7 +2,7 @@ import time
 import sys
 from common import values, definitions, utilities
 from common.utilities import error_exit, save_current_state, load_state, backup_file_orig, restore_file_orig, replace_file, get_source_name_from_slice
-from tools import emitter, weaver, reader, logger, fixer, merger, writer
+from tools import emitter, weaver, reader, logger, fixer, filter, writer
 
 file_index = 1
 backup_file_list = dict()
@@ -104,6 +104,7 @@ def transplant_code():
                 script_file.write(transformation_rule)
 
         var_map = values.map_namespace_global[(slice_file_a, slice_file_c)]
+        filtered_var_map = filter.filter_namespace_map(var_map, translated_script, vector_source_b)
         writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
 
         weaver.weave_code(vector_source_a,

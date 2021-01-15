@@ -3,9 +3,10 @@
 
 
 import sys
-from tools import finder, emitter, extractor, merger, logger, oracle
+from tools import finder, emitter, extractor, merger, logger, oracle, converter
 from common import values
 from common.utilities import error_exit
+from ast import ast_generator
 import collections
 
 
@@ -319,3 +320,40 @@ def filter_new_variables(var_map, ast_node_a, ast_node_b):
             continue
         filtered_map[var_name] = var_map[var_name]
     return filtered_map
+
+
+def filter_namespace_map(namespace_map, edit_script, source_b):
+    filtered_namespace_map = dict()
+    ast_tree_b = ast_generator.get_ast_json(source_b, values.DONOR_REQUIRE_MACRO, True)
+    node_list = list()
+    var_list_b = set()
+    for transformation_rule in edit_script:
+        if "Insert" in transformation_rule:
+            node_b_str = transformation_rule.split(" ")[1]
+            node_b_id = node_b_str.split("(")[-1].split(")")[0]
+            node_b = finder.search_ast_node_by_id(ast_tree_b, node_b_id)
+            node_list.append(node_b)
+        elif "Update" in transformation_rule:
+            node_b_str = transformation_rule.split(" ")[-1]
+            node_b_id = node_b_str.split("(")[-1].split(")")[0]
+            node_b = finder.search_ast_node_by_id(ast_tree_b, node_b_id)
+            node_list.append(node_b)
+        elif "Replace" in transformation_rule:
+            node_b_str = transformation_rule.split(" ")[-1]
+            node_b_id = node_b_str.split("(")[-1].split(")")[0]
+            node_b = finder.search_ast_node_by_id(ast_tree_b, node_b_id)
+            node_list.append(node_b)
+
+    for node in node_list:
+        node_type = node['type']
+        node_value = converter.get_node_value(node)
+        if node_type in ["MemberExpr", "FieldDecl"]:
+            node_value = "." + node_value
+        if node_value:
+            var_list_b.add(node_value)
+
+    for var_b in var_list_b:
+        if var_b in namespace_map:
+            filtered_namespace_map[var_b] = namespace_map[var_b]
+
+    return filtered_namespace_map
