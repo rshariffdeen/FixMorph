@@ -15,5 +15,7 @@ int main( ) {
     int i = 2;
     int dev;
     dev = 4;
+    dev = 124;
+    dev = 326346;
     return 0;
 }
