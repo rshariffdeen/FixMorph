@@ -3,6 +3,7 @@
 #include <ctype.h>  
 
 void testLocalRefC(int a, char* str){
+     int dev = 9;
      printf("the values are  %d %s\n", a, str);
 }
 
