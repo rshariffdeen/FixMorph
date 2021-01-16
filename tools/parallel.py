@@ -278,6 +278,8 @@ def generate_function_signature_map(source_a, source_c, ast_tree_a, ast_tree_c, 
             children_c = ast_node_c["children"]
             if len(children_a) < 1 or len(children_c) < 1:
                 continue
+            if "identifier" not in ast_node_a.keys():
+                continue
             if method_name == ast_node_a["identifier"]:
                 result_list.append(extractor.extract_method_signatures(global_ast_node_map,
                                                                        ast_node_a, ast_node_c, method_name))
