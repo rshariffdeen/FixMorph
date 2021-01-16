@@ -90,8 +90,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
                  parent_id_a == 0 or parent_id_c == 0:
                 value_score = 100
         # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
-        pool.apply_async(extractor.extract_mapping, args=(ast_node_a, ast_node_c, value_score),
-                         callback=collect_result)
+                pool.apply_async(extractor.extract_mapping, args=(ast_node_a, ast_node_c, value_score),
+                                 callback=collect_result)
 
     pool.close()
     emitter.normal("\t\twaiting for thread completion")
