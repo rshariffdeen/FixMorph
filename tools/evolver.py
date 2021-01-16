@@ -179,11 +179,11 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
         # Emitter.normal("\t[action]transplanting code segment " + str(count))
         emitter.special("\t\t" + str(instruction))
         check_node = None
-        relative_pos = 1
+        relative_pos = None
         if "Insert" in instruction:
             check_node_id = instruction.split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
-            relative_pos = int(instruction.split(" ")[-1])
+            relative_pos = instruction.split(" into ")[-1]
         elif "Replace" in instruction:
             target_node_id = instruction.split(" with ")[0].split("(")[1].split(")")[0]
             target_node = finder.search_ast_node_by_id(ast_tree_local_c, int(target_node_id))
@@ -195,6 +195,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                     relative_pos = child_index
                     break
                 relative_pos = relative_pos + 1
+            relative_pos = target_parent_node['type'] + "(" + str(target_parent_node_id) + ") at " + relative_pos
             check_node_id = instruction.split(" with ")[1].split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
 
@@ -209,6 +210,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                     relative_pos = child_index
                     break
                 relative_pos = relative_pos + 1
+            relative_pos = target_parent_node['type'] + "(" + str(target_parent_node_id) + ") at " + relative_pos
             check_node_id = instruction.split(" to ")[1].split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
 
