@@ -161,7 +161,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
 
     if values.TARGET_REQUIRE_MACRO:
         values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
-    # ast_tree_local_c = ast_generator.get_ast_json(file_c, values.TARGET_REQUIRE_MACRO, True)
+    ast_tree_local_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, True)
 
 
     # Check for an edit script
@@ -179,15 +179,36 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
         # Emitter.normal("\t[action]transplanting code segment " + str(count))
         emitter.special("\t\t" + str(instruction))
         check_node = None
+        relative_pos = 1
         if "Insert" in instruction:
             check_node_id = instruction.split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
-
+            relative_pos = int(instruction.split(" ")[-1])
         elif "Replace" in instruction:
+            target_node_id = instruction.split(" with ")[0].split("(")[1].split(")")[0]
+            target_node = finder.search_ast_node_by_id(ast_tree_local_c, int(target_node_id))
+            target_parent_node_id = int(target_node['parent_id'])
+            target_parent_node = finder.search_ast_node_by_id(ast_tree_local_c, int(target_parent_node_id))
+            child_index = 0
+            for child_node in target_parent_node['children']:
+                if int(child_node['id']) == int(target_node_id):
+                    relative_pos = child_index
+                    break
+                relative_pos = relative_pos + 1
             check_node_id = instruction.split(" with ")[1].split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
 
         elif "Update" in instruction:
+            target_node_id = instruction.split(" with ")[0].split("(")[1].split(")")[0]
+            target_node = finder.search_ast_node_by_id(ast_tree_local_c, int(target_node_id))
+            target_parent_node_id = int(target_node['parent_id'])
+            target_parent_node = finder.search_ast_node_by_id(ast_tree_local_c, int(target_parent_node_id))
+            child_index = 0
+            for child_node in target_parent_node['children']:
+                if int(child_node['id']) == int(target_node_id):
+                    relative_pos = child_index
+                    break
+                relative_pos = relative_pos + 1
             check_node_id = instruction.split(" to ")[1].split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
 
@@ -215,7 +236,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                                                                     check_node,
                                                                     source_file_b,
                                                                     source_file_c,
-                                                                    var_map
+                                                                    var_map,
+                                                                    relative_pos
                                                                     ))
 
             missing_data_type_list.update(identifier.identify_missing_data_types(ast_tree_global_a,
@@ -241,8 +263,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     if neighborhood_c['type'] in ["FunctionDecl", "RecordDecl"]:
         target_ast = neighborhood_c['children'][1]
     local_position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(0)
-    map_ba = values.ast_map[(slice_file_b, slice_file_a)]
-    map_ac = values.ast_map[(slice_file_a, slice_file_c)]
+
     for var in missing_var_list:
         # print(var)
         var_info = missing_var_list[var]
@@ -275,8 +296,9 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                         break
                     latest_node = node
                 if latest_node:
+                    relative_pos = var_info['rel-pos']
                     instruction = "Insert " + latest_node['type'] + "(" + str(latest_node['id']) + ")"
-                    instruction += " into " + local_position_c
+                    instruction += " into " + relative_pos
                     script_lines.insert(1, instruction + "\n")
                     emitter.highlight("\t\tadditional initialization added with instruction: " + instruction)
 

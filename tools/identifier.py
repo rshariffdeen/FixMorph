@@ -105,7 +105,7 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
     return missing_function_info
 
 
-def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_node_b, source_path_b, source_path_c, var_map):
+def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_node_b, source_path_b, source_path_c, var_map, relative_pos):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\t\tanalysing for missing variables")
     missing_var_list = dict()
@@ -148,6 +148,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                             info = dict()
                             info['ref_list'] = [neighborhood_b['value']]
                             info['ref-id'] = int(ast_node_b['id'])
+                            info['rel-pos'] = int(relative_pos)
                             if identifier in dec_list_local_a.keys():
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
@@ -203,6 +204,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                             info = dict()
                             info['ref_list'] = [neighborhood_b['value']]
                             info['ref-id'] = int(ast_node_b['id'])
+                            info['rel-pos'] = int(relative_pos)
                             if identifier in dec_list_local_a.keys():
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
@@ -262,6 +264,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                     info = dict()
                     info['ref_list'] = list()
                     info['ref-id'] = int(ast_node_b['id'])
+                    info['rel-pos'] = int(relative_pos)
                     enum_ref_node = enum_list_b[identifier]
                     # print(enum_ref_node)
                     enum_def_node = finder.search_ast_node_by_id(ast_tree_b, int(enum_ref_node['parent_id']))
