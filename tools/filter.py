@@ -343,7 +343,8 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
             node_list.append(node_b)
         ref_node_list = extractor.extract_reference_node_list(node_b)
         for ref_node in ref_node_list:
-            if node_type in values.map_allow_type_list:
+            ref_node_type = ref_node['type']
+            if ref_node_type in values.map_allow_type_list:
                 node_list.append(ref_node)
 
     for node in node_list:
