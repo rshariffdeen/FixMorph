@@ -136,12 +136,12 @@ def read_mapping(map_file_name, neighbor_id_a):
         content = " ".join(line[1:])
         if operation == definitions.MATCH:
             node_pair = utilities.clean_parse(content, definitions.TO)
-            node_a, node_b = node_pair
-            node_id_a = str(node_a).split("(")[-1].split(")")[0]
-            if int(node_id_a) < int(neighbor_id_a):
-                continue
-            if "Macro" not in node_a or "Decl" not in node_a:
-                continue
+            # node_a, node_b = node_pair
+            # node_id_a = str(node_a).split("(")[-1].split(")")[0]
+            # if int(node_id_a) < int(neighbor_id_a):
+            #     continue
+            # if "Macro" not in node_a or "Decl" not in node_a:
+            #     continue
             result_list.append(node_pair)
             # pool.apply_async(utilities.clean_parse, args=(content, definitions.TO),
                              # callback=collect_result)
