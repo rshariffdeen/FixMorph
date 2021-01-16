@@ -383,7 +383,7 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
     for type_loc_name in type_loc_node_list:
         # print(type_loc_name)
         type_loc_node = type_loc_node_list[type_loc_name]
-        identifier = str(type_loc_node['value']).replace("struct ", "").replace("*", "")
+        identifier = str(type_loc_node['value']).replace("struct ", "").replace("*", "").strip().replace(" ", "")
         if identifier not in type_def_node_list_c:
             if identifier in STANDARD_DATA_TYPES:
                 continue
