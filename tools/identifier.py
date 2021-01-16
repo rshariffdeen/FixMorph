@@ -380,12 +380,10 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                                         info['insert-line'] = insert_line
                                         missing_data_type_list[member_name] = info
 
-
-
     for type_loc_name in type_loc_node_list:
         # print(type_loc_name)
         type_loc_node = type_loc_node_list[type_loc_name]
-        identifier = str(type_loc_node['value'])
+        identifier = str(type_loc_node['value']).replace("struct ", "").replace("*", "")
         if identifier not in type_def_node_list_c:
             if identifier in STANDARD_DATA_TYPES:
                 continue
