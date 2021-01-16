@@ -179,7 +179,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
         # Emitter.normal("\t[action]transplanting code segment " + str(count))
         emitter.special("\t\t" + str(instruction))
         check_node = None
-        relative_pos = None
+        relative_pos = 0
         if "Insert" in instruction:
             check_node_id = instruction.split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
