@@ -708,12 +708,18 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
             identifier_a = converter.get_node_value(ast_node_a).replace(":", "")
             if node_type_a in ["MemberExpr", "FieldDecl"]:
                 identifier_a = "." + identifier_a
+            elif node_type_a == "DeclRefExpr":
+                if ast_node_a['ref_type'] == "FunctionDecl":
+                    identifier_a = identifier_a + "("
             if ast_node_c:
                 node_type_c = ast_node_c['type']
                 if node_type_c in values.map_allow_type_list:
                     identifier_c = converter.get_node_value(ast_node_c).replace(":", "")
                     if node_type_c in ["MemberExpr", "FieldDecl"]:
                         identifier_c = "." + identifier_c
+                    elif node_type_c == "DeclRefExpr":
+                        if ast_node_c['ref_type'] == "FunctionDecl":
+                            identifier_c = identifier_c + "("
 
         #
         # elif node_type_a in ["CallExpr"]:
