@@ -84,11 +84,28 @@ def generate_map(file_list):
     vector_source_c = get_source_name_from_slice(slice_file_c)
     utilities.shift_slice_source(slice_file_a, slice_file_c)
 
+    ast_tree_a = ast_generator.get_ast_json(vector_source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    neighbor_ast = None
+    neighbor_ast_range = None
+    neighbor_type, neighbor_name, slice = str(slice_file_a).split("/")[-1].split(".c.")[-1].split(".")
+    if neighbor_type == "func":
+        neighbor_ast = finder.search_function_node_by_name(ast_tree_a, neighbor_name)
+    elif neighbor_type == "var":
+        neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
+        neighbor_ast = finder.search_node(ast_tree_a, "VarDecl", neighbor_name)
+    elif neighbor_type == "struct":
+        neighbor_ast = finder.search_node(ast_tree_a, "RecordDecl", neighbor_name)
+
+    if neighbor_ast:
+        neighbor_ast_range = (int(neighbor_ast['begin']), int(neighbor_ast['end']))
+    else:
+        utilities.error_exit("No neighbor AST Found")
+
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + slice_file_a.split("/")[-1] + ".map"
     if not values.CONF_USE_CACHE:
         generate_map_gumtree(vector_source_a, vector_source_c, map_file_name)
 
-    ast_node_map = parallel.read_mapping(map_file_name)
+    ast_node_map = parallel.read_mapping(map_file_name, int(neighbor_ast['id']))
     # emitter.data(ast_node_map)
     if values.DEFAULT_OPERATION_MODE == 0:
         ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c)

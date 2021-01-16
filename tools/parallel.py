@@ -56,22 +56,6 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
 
-    neighbor_ast = None
-    neighbor_ast_range = None
-    neighbor_type, neighbor_name, slice = str(slice_file_a).split("/")[-1].split(".c.")[-1].split(".")
-    if neighbor_type == "func":
-        neighbor_ast = finder.search_function_node_by_name(ast_tree_a, neighbor_name)
-    elif neighbor_type == "var":
-        neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
-        neighbor_ast = finder.search_node(ast_tree_a, "VarDecl", neighbor_name)
-    elif neighbor_type == "struct":
-        neighbor_ast = finder.search_node(ast_tree_a, "RecordDecl", neighbor_name)
-
-    if neighbor_ast:
-        neighbor_ast_range = (int(neighbor_ast['begin']), int(neighbor_ast['end']))
-    else:
-        utilities.error_exit("No neighbor AST Found")
-
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
     for ast_node_txt_a in ast_node_map:
@@ -86,14 +70,9 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         parent_id_c = int(ast_node_c['parent_id'])
         value_score = 1
         if ast_node_a:
-            if int(ast_node_a['begin']) in range(neighbor_ast_range[0], neighbor_ast_range[1]) or \
-                 parent_id_a == 0 or parent_id_c == 0:
-                if ast_node_a['type'] == "DeclRefExpr" and ast_node_a['value'] == "dev":
-                    continue
-                value_score = 100
-                # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
-                pool.apply_async(extractor.extract_mapping, args=(ast_node_a, ast_node_c, value_score),
-                                 callback=collect_result)
+            # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
+            pool.apply_async(extractor.extract_mapping, args=(ast_node_a, ast_node_c, value_score),
+                             callback=collect_result)
 
     pool.close()
     emitter.normal("\t\twaiting for thread completion")
@@ -140,7 +119,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     return refined_namespace_map
 
 
-def read_mapping(map_file_name):
+def read_mapping(map_file_name, neighbor_id_a):
     global pool, result_list, expected_count
     result_list = []
     node_map = dict()
@@ -156,9 +135,16 @@ def read_mapping(map_file_name):
         operation = line[0]
         content = " ".join(line[1:])
         if operation == definitions.MATCH:
-            # result_list.append(utilities.clean_parse(content, definitions.TO))
-            pool.apply_async(utilities.clean_parse, args=(content, definitions.TO),
-                             callback=collect_result)
+            node_pair = utilities.clean_parse(content, definitions.TO)
+            node_a, node_b = node_pair
+            node_id_a = str(node_a).split("(")[-1].split(")")[0]
+            if int(node_id_a) < int(neighbor_id_a):
+                continue
+            if "Macro" not in node_a or "Decl" not in node_a:
+                continue
+            result_list.append(node_pair)
+            # pool.apply_async(utilities.clean_parse, args=(content, definitions.TO),
+                             # callback=collect_result)
             # try:
             #     node_a, node_c = clean_parse(content, definitions.TO)
             #     node_map[node_a] = node_c
@@ -171,7 +157,6 @@ def read_mapping(map_file_name):
 
     for node_a, node_c in result_list:
         node_map[node_a] = node_c
-
     return node_map
 
 
