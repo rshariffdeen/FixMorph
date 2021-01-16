@@ -86,7 +86,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         parent_id_c = int(ast_node_c['parent_id'])
         value_score = 1
         if ast_node_a:
-            if ast_node_id_a in range(neighbor_ast_range[0], neighbor_ast_range[1]) or \
+            if int(ast_node_a['begin']) in range(neighbor_ast_range[0], neighbor_ast_range[1]) or \
                  parent_id_a == 0 or parent_id_c == 0:
                 value_score = 100
         # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
