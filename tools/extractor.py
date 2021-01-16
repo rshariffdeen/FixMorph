@@ -27,7 +27,17 @@ def extract_macro_definitions(source_path):
     extract_command = "clang -E -dD -dM " + source_path + " > " + definitions.FILE_MACRO_DEF
     execute_command(extract_command)
     with open(definitions.FILE_MACRO_DEF, "r") as macro_file:
-        macro_def_list = macro_file.readlines()
+        result_list = macro_file.readlines()
+        macro_def_list = []
+        macro_def = None
+        for line in result_list:
+            if "#define" in line:
+                if macro_def:
+                    macro_def_list.append(macro_def)
+                macro_def = line
+            else:
+                macro_def = macro_def + line
+
         return macro_def_list
 
 
