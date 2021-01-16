@@ -46,7 +46,7 @@ def abortable_worker(func, *args, **kwargs):
         return default_value, index
 
 
-def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
+def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
     global pool, result_list, expected_count
     result_list = []
 
@@ -66,8 +66,12 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
         if ast_node_id_a == 0 or ast_node_id_c == 0:
             continue
+
         parent_id_a = int(ast_node_a['parent_id'])
         parent_id_c = int(ast_node_c['parent_id'])
+        if (int(ast_node_id_a) < int(neighbor_id_a)) and (parent_id_a != 0 and parent_id_c != 0):
+            if ast_node_a['type'] == "DeclRefExpr" or ast_node_c['type'] == "DeclRefExpr":
+                continue
         value_score = 1
         if ast_node_a:
             # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
@@ -119,7 +123,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
     return refined_namespace_map
 
 
-def read_mapping(map_file_name, neighbor_id_a):
+def read_mapping(map_file_name):
     global pool, result_list, expected_count
     result_list = []
     node_map = dict()
@@ -161,7 +165,7 @@ def read_mapping(map_file_name, neighbor_id_a):
 
 
 # adjust the mapping via anti-unification
-def extend_mapping(ast_node_map, source_a, source_c):
+def extend_mapping(ast_node_map, source_a, source_c, neighbor_id_a):
     global pool, result_list, expected_count
     result_list = []
 
@@ -179,6 +183,8 @@ def extend_mapping(ast_node_map, source_a, source_c):
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
         # result_list.append(mapper.anti_unification(ast_node_a, ast_node_c))
+        if (int(ast_node_id_a) < int(neighbor_id_a)) and ("Macro" not in node_a and "Decl" not in node_a):
+            continue
 
         pool.apply_async(mapper.anti_unification, args=(ast_node_a, ast_node_c),
                          callback=collect_result)
