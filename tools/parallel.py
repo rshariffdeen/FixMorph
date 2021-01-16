@@ -85,9 +85,9 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
     for id_a, id_c, score, type_a, type_c in result_list:
         if id_a is None or id_c is None:
             continue
-        if type_a in ["VarDecl", "ParmVarDecl"]:
-            if score < 100:
-                continue
+        # if type_a in ["VarDecl", "ParmVarDecl"]:
+        #     if score < 100:
+        #         continue
         if id_a not in namespace_map:
             namespace_map[id_a] = dict()
         if id_c not in namespace_map[id_a]:
@@ -101,6 +101,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
         best_candidate = None
         for candidate in candidate_list:
             candidate_score = candidate_list[candidate]
+            if "(" in candidate and "(" not in value_a:
+                continue
             if max_score < candidate_score:
                 best_candidate = candidate
                 max_score = candidate_score
@@ -248,7 +250,7 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
             if method_name_c not in mappings:
                 mappings[method_name_c] = (1, arg_operation)
             else:
-                mappings[method_name_c][0] = mappings[method_name_c][0]  + 1
+                mappings[method_name_c][0] = mappings[method_name_c][0] + 1
             method_invocation_map[method_name_a] = mappings
     return method_invocation_map
 
