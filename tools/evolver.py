@@ -13,7 +13,7 @@ def evolve_definitions(missing_definition_list):
     missing_macro_list = dict()
     if not missing_definition_list:
         emitter.normal("\t-none-")
-    ast_b = None
+    ast_tree_b = None
     def_node_list = dict()
     for def_name in missing_definition_list:
         emitter.normal(def_name)
@@ -21,9 +21,9 @@ def evolve_definitions(missing_definition_list):
         source_file = macro_info['source']
         target_file = macro_info['target']
         def_node_list = extractor.extract_macro_definitions(source_file)
-        if not ast_b:
-            ast_b = ast_generator.get_ast_json(source_file, use_macro=values.DONOR_REQUIRE_MACRO)
-            def_node_list = extractor.extract_def_node_list(ast_b)
+        if not ast_tree_b:
+            ast_tree_b = ast_generator.get_ast_json(source_file, use_macro=values.DONOR_REQUIRE_MACRO)
+            def_node_list = extractor.extract_def_node_list(ast_tree_b)
         if def_name in def_node_list:
             def_node = def_node_list[def_name]
             if 'identifier' in def_node:
