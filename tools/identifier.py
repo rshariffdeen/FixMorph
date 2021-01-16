@@ -141,8 +141,8 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         continue
                     if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
                         if "->" in operand:
-                            if operand not in var_map:
-                                var_list.append(identifier)
+                            # if identifier not in var_map:
+                            #     var_list.append(identifier)
                             continue
                         var_list = var_list + extractor.extract_identifier_list(operand)
                     var_list.append(identifier)
