@@ -335,15 +335,15 @@ def weave_functions(missing_function_list, modified_source_list):
     for function_name in missing_function_list:
         info = missing_function_list[function_name]
         node_id = info['node_id']
-        source_path_b = info['source_b']
+        source_path_a = info['source_a']
         source_path_d = info['source_d']
         emitter.normal(function_name)
-        ast_tree_b = ast_generator.get_ast_json(source_path_b)
+        ast_tree_a = ast_generator.get_ast_json(source_path_a)
         function_ref_node_id = int(info['ref_node_id'])
-        function_ref_node = finder.search_ast_node_by_id(ast_tree_b, function_ref_node_id)
-        function_def_node = finder.search_ast_node_by_id(ast_tree_b, int(node_id))
+        function_ref_node = finder.search_ast_node_by_id(ast_tree_a, function_ref_node_id)
+        function_def_node = finder.search_ast_node_by_id(ast_tree_a, int(node_id))
         function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
-                                                                                       source_path_b)
+                                                                                       source_path_a)
         def_insert_point = finder.find_definition_insertion_point(source_path_d)
 
         start_line = function_node["start line"]
