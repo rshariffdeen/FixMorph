@@ -100,27 +100,28 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
         max_score = 0
         best_candidate = None
         for candidate in candidate_list:
-            candidate_score = candidate_list[candidate]
             if "(" in candidate and "(" not in value_a:
                 continue
+            candidate_score = candidate_list[candidate]
             if max_score < candidate_score:
                 best_candidate = candidate
                 max_score = candidate_score
-        if "(" in value_a:
-            value_a = value_a.split("(")[0] + "("
-        if "(" in best_candidate:
-            best_candidate = best_candidate.split("(")[0] + "("
-        if not value_a or not best_candidate:
-            continue
-        if any(token in str(value_a).lower() for token in BREAK_LIST):
-            continue
-        if any(token in str(best_candidate).lower() for token in BREAK_LIST):
-            continue
+        if best_candidate:
+            if "(" in value_a:
+                value_a = value_a.split("(")[0] + "("
+            if "(" in best_candidate:
+                best_candidate = best_candidate.split("(")[0] + "("
+            if not value_a or not best_candidate:
+                continue
+            if any(token in str(value_a).lower() for token in BREAK_LIST):
+                continue
+            if any(token in str(best_candidate).lower() for token in BREAK_LIST):
+                continue
 
         # generate all possible member relations with each var mapping
         # if "." in value_a and "." in best_candidate:
         #     refined_namespace_map["." + value_a.split(".")[-1]] = "." + best_candidate.split(".")[-1]
-        refined_namespace_map[value_a] = best_candidate
+            refined_namespace_map[value_a] = best_candidate
 
     return refined_namespace_map
 
