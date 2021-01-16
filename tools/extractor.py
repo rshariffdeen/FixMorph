@@ -702,7 +702,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
     # skip_type_list = ["ReturnStmt", "CompoundStmt", "IntegerLiteral", "TypeLoc", "WhileStmt",
                       # "ForStmt", "DeclStmt", "IfStmt", "ForStmt"]
     allow_type_list = [
-        "DeclRefExpr", "StringLiteral", "VarDecl",
+        "DeclRefExpr", "StringLiteral", "VarDecl", "MemberExpr",
         "ParmVarDecl", "RecordDecl", "FieldDecl", "FunctionDecl", "CallExpr"
                        ]
     if ast_node_a:
