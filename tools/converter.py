@@ -89,9 +89,9 @@ def convert_conditional_op_to_expr(ast_node, only_string=False):
 def get_node_value(ast_node):
     ast_value = ""
     ast_type = str(ast_node['type'])
-    if ast_type in ["DeclRefExpr", "IntegerLiteral", "StringLiteral", "VarDecl"]:
+    if ast_type in ["DeclRefExpr", "IntegerLiteral", "StringLiteral"]:
         ast_value = str(ast_node['value'])
-    elif ast_type in ["ParmVarDecl", "RecordDecl"]:
+    elif ast_type in ["ParmVarDecl", "RecordDecl", "VarDecl"]:
         ast_value = ast_node['identifier']
     elif ast_type in ["FieldDecl"]:
         ast_value = ast_node['qualified_identifier'].split("::")[0] + "." + ast_node['identifier']

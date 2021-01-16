@@ -95,6 +95,7 @@ def generate_map(file_list):
         # emitter.data(ast_node_map)
     namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
                                                   vector_source_c, slice_file_a)
+    # writer.write_var_map(namespace_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
     utilities.restore_slice_source()
 
     return ast_node_map, namespace_map
