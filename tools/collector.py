@@ -13,7 +13,7 @@ from common.utilities import error_exit, clean_parse
 def collect_instruction_list(script_file_path):
     instruction_list = list()
     inserted_node_list = list()
-    map_ab = dict()
+    map_ba = dict()
     skip_list = list()
 
     with open(script_file_path, 'r') as script_file:
@@ -34,7 +34,7 @@ def collect_instruction_list(script_file_path):
             if instruction == definitions.MATCH:
                 try:
                     node_a, node_b = clean_parse(content, definitions.TO)
-                    map_ab[node_b] = str(node_a).strip()
+                    map_ba[node_b] = str(node_a).strip()
                 except Exception as e:
                     error_exit(e, "Something went wrong in MATCH (AB).", line, instruction, content)
 
@@ -91,7 +91,7 @@ def collect_instruction_list(script_file_path):
                 except Exception as e:
                     error_exit(e, "Something went wrong in INSERT.")
 
-    return instruction_list, inserted_node_list, map_ab
+    return instruction_list, inserted_node_list, map_ba
 
 
 def collect_symbolic_expressions(trace_file_path):

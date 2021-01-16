@@ -38,11 +38,12 @@ def generate_script_for_files(file_list_to_patch):
             generator.generate_edit_script(vector_source_a, vector_source_b, script_file_ab)
             utilities.restore_slice_source()
 
-            original_script, inserted_node_list, map_ab = collector.collect_instruction_list(script_file_ab)
-            values.NODE_MAP[(slice_file_a, slice_file_b)] = map_ab
+            original_script, inserted_node_list, map_ba = collector.collect_instruction_list(script_file_ab)
+            values.NODE_MAP[(slice_file_a, slice_file_b)] = map_ba
+            values.ast_map[(slice_file_b, slice_file_a)] = map_ba
             if not original_script:
                 error_exit("failed to extract AST transformation")
-            generated_data = (original_script, inserted_node_list, map_ab)
+            generated_data = (original_script, inserted_node_list, map_ba)
             emitter.highlight("\tOriginal AST script")
             original_script_str = list()
             for instruction in original_script:

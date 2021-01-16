@@ -210,7 +210,7 @@ def extract_child_id_list(ast_object):
     return id_list
 
 
-def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump, map_ab, map_ac):
+def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump, map_ba, map_ac):
     translated_instruction_list = list()
     inserted_node_list_d = list()
     update_list_d = list()
@@ -310,8 +310,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 offset = int(instruction[3])
                 move_node = "?"
                 target_node = "?"
-                if txt_move_node_b in map_ab.keys():
-                    txt_move_node_a = map_ab[txt_move_node_b]
+                if txt_move_node_b in map_ba.keys():
+                    txt_move_node_a = map_ba[txt_move_node_b]
                     if txt_move_node_a in map_ac.keys():
                         txt_move_node = map_ac[txt_move_node_a]
                         mode_node_id = id_from_string(txt_move_node)
@@ -327,8 +327,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         # TODO: Manage case for node not found
                         emitter.warning("Node to be moved was not found. (2)")
                         emitter.warning(txt_move_node_b)
-                if txt_target_node_b in map_ab.keys():
-                    txt_target_node_a = map_ab[txt_target_node_b]
+                if txt_target_node_b in map_ba.keys():
+                    txt_target_node_a = map_ba[txt_target_node_b]
                     if txt_target_node_a in map_ac.keys():
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
@@ -350,8 +350,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if offset != 0:
                         previous_child_node_b = target_node_b.children[offset - 1]
                         previous_child_node_b = previous_child_node_b.simple_print()
-                        if previous_child_node_b in map_ab.keys():
-                            previous_child_node_a = map_ab[previous_child_node_b]
+                        if previous_child_node_b in map_ba.keys():
+                            previous_child_node_a = map_ba[previous_child_node_b]
                             if previous_child_node_a in map_ac.keys():
                                 previous_child_c = map_ac[previous_child_node_a]
                                 previous_child_c = id_from_string(previous_child_c)
@@ -412,8 +412,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 offset = int(instruction[3])
                 move_node = "?"
                 target_node = "?"
-                if txt_move_node_b in map_ab.keys():
-                    txt_move_node_a = map_ab[txt_move_node_b]
+                if txt_move_node_b in map_ba.keys():
+                    txt_move_node_a = map_ba[txt_move_node_b]
                     if txt_move_node_a in map_ac.keys():
                         txt_move_node = map_ac[txt_move_node_a]
                         move_node_id = id_from_string(txt_move_node)
@@ -429,8 +429,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         # TODO: Manage case for node not found
                         emitter.warning("Node to be moved was not found. (2)")
                         emitter.warning(txt_move_node_b)
-                if txt_target_node_b in map_ab.keys():
-                    txt_target_node_a = map_ab[txt_target_node_b]
+                if txt_target_node_b in map_ba.keys():
+                    txt_target_node_a = map_ba[txt_target_node_b]
                     if txt_target_node_a in map_ac.keys():
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
@@ -452,8 +452,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if offset != 0:
                         previous_child_node_b = target_node_b.children[offset - 1]
                         previous_child_node_b = previous_child_node_b.simple_print()
-                        if previous_child_node_b in map_ab.keys():
-                            previous_child_node_a = map_ab[previous_child_node_b]
+                        if previous_child_node_b in map_ba.keys():
+                            previous_child_node_a = map_ba[previous_child_node_b]
                             if previous_child_node_a in map_ac.keys():
                                 previous_child_c = map_ac[previous_child_node_a]
                                 previous_child_c = id_from_string(previous_child_c)
@@ -525,8 +525,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 else:
                     insert_node.line = target_node_b.parent.line
 
-                if txt_target_node_b in map_ab.keys():
-                    txt_target_node_a = map_ab[txt_target_node_b]
+                if txt_target_node_b in map_ba.keys():
+                    txt_target_node_a = map_ba[txt_target_node_b]
                     if txt_target_node_a in map_ac.keys():
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
@@ -543,8 +543,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if offset != 0:
                         previous_child_node_b = target_node_b.children[offset - 1]
                         previous_child_node_b = previous_child_node_b.simple_print()
-                        if previous_child_node_b in map_ab.keys():
-                            previous_child_node_a = map_ab[previous_child_node_b]
+                        if previous_child_node_b in map_ba.keys():
+                            previous_child_node_a = map_ba[previous_child_node_b]
                             if previous_child_node_a in map_ac.keys():
                                 previous_child_node_c = map_ac[previous_child_node_a]
                                 previous_child_node_c = id_from_string(previous_child_node_c)
@@ -556,8 +556,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                     if offset + 1 < len(target_node_b.children):
                                         next_child_node_b = target_node_b.children[offset + 1]
                                         next_child_node_b = next_child_node_b.simple_print()
-                                        if next_child_node_b in map_ab.keys():
-                                            next_child_node_a = map_ab[next_child_node_b]
+                                        if next_child_node_b in map_ba.keys():
+                                            next_child_node_a = map_ba[next_child_node_b]
                                             if next_child_node_a in map_ac.keys():
                                                 next_child_node_c = map_ac[next_child_node_a]
                                                 next_child_node_c = id_from_string(next_child_node_c)
@@ -590,8 +590,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         elif offset + 1 < len(target_node_b.children):
                             next_child_node_b = target_node_b.children[offset + 1]
                             next_child_node_b = next_child_node_b.simple_print()
-                            if next_child_node_b in map_ab.keys():
-                                next_child_node_a = map_ab[next_child_node_b]
+                            if next_child_node_b in map_ba.keys():
+                                next_child_node_a = map_ba[next_child_node_b]
                                 if next_child_node_a in map_ac.keys():
                                     next_child_node_c = map_ac[next_child_node_a]
                                     next_child_node_c = id_from_string(next_child_node_c)

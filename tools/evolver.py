@@ -241,7 +241,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     if neighborhood_c['type'] in ["FunctionDecl", "RecordDecl"]:
         target_ast = neighborhood_c['children'][1]
     local_position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(0)
-
+    map_ba = values.ast_map[(slice_file_b, slice_file_a)]
+    map_ac = values.ast_map[(slice_file_a, slice_file_c)]
     for var in missing_var_list:
         # print(var)
         var_info = missing_var_list[var]
