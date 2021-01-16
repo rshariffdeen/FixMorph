@@ -707,7 +707,7 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
                        ]
     if ast_node_a:
         node_type_a = ast_node_a['type']
-        if node_type_a not in allow_type_list:
+        if node_type_a in allow_type_list:
             identifier_a = converter.get_node_value(ast_node_a).replace(":", "")
             if node_type_a in ["MemberExpr", "FieldDecl"]:
                 identifier_a = "." + identifier_a
