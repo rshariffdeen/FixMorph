@@ -326,10 +326,7 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
     filtered_namespace_map = dict()
     ast_tree_b = ast_generator.get_ast_json(source_b, values.DONOR_REQUIRE_MACRO, True)
     node_list = list()
-    allow_type_list = [
-        "DeclRefExpr", "StringLiteral", "VarDecl",
-        "ParmVarDecl", "RecordDecl", "FieldDecl", "FunctionDecl", "CallExpr"
-    ]
+
     for transformation_rule in edit_script:
         if "Insert" in transformation_rule:
             node_b_str = transformation_rule.split(" ")[1]
@@ -342,11 +339,11 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
         node_b_id = int(node_b_str.split("(")[-1].split(")")[0])
         node_b = finder.search_ast_node_by_id(ast_tree_b, node_b_id)
         node_type = node_b['type']
-        if node_type in allow_type_list:
+        if node_type in values.map_allow_type_list:
             node_list.append(node_b)
         ref_node_list = extractor.extract_reference_node_list(node_b)
         for ref_node in ref_node_list:
-            if node_type in allow_type_list:
+            if node_type in values.map_allow_type_list:
                 node_list.append(ref_node)
 
     for node in node_list:
