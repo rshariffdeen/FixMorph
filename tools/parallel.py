@@ -88,7 +88,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, slice_file_a):
         if ast_node_a:
             if int(ast_node_a['begin']) in range(neighbor_ast_range[0], neighbor_ast_range[1]) or \
                  parent_id_a == 0 or parent_id_c == 0:
-                if ast_node_a['type'] == "DeclRefExpr":
+                if ast_node_a['type'] == "DeclRefExpr" and ast_node_a['value'] == "dev":
                     continue
                 value_score = 100
                 # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
@@ -236,6 +236,8 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
             children_a = ast_node_a["children"]
             children_c = ast_node_c["children"]
             if len(children_a) < 1 or len(children_c) < 1:
+                continue
+            if "value" not in children_a[0]:
                 continue
             if method_name == children_a[0]["value"]:
                 result_list.append(extractor.extract_method_invocations(global_ast_node_map,
