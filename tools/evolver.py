@@ -298,7 +298,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                 if latest_node:
                     relative_pos = var_info['rel-pos']
                     instruction = "Insert " + latest_node['type'] + "(" + str(latest_node['id']) + ")"
-                    instruction += " into " + relative_pos
+                    instruction += " into " + str(relative_pos)
                     script_lines.insert(1, instruction + "\n")
                     emitter.highlight("\t\tadditional initialization added with instruction: " + instruction)
 
