@@ -136,7 +136,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                 # print(operand_list)
                 var_list = list()
                 for operand in operand_list:
-                    identifier = operand.strip().replace("\n", "")
+                    identifier = operand.strip().replace("\n", "").replace(" ", "")
                     if "\"" in identifier or "'" in identifier or str(identifier).isnumeric():
                         continue
                     if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
@@ -197,7 +197,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
         if node_type in ["DeclRefExpr"]:
             if "ref_type" in ref_node.keys():
                 ref_type = str(ref_node['ref_type'])
-                identifier = str(ref_node['value'])
+                identifier = str(ref_node['value']).strip().replace("\n", "").replace(" ", "")
                 if ref_type == "VarDecl":
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
@@ -258,7 +258,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                     # TODO: implement importing missing arguments
                     continue
             else:
-                identifier = str(ref_node['value'])
+                identifier = str(ref_node['value']).strip().replace("\n", "").replace(" ", "")
                 # print(identifier)
                 if identifier not in missing_var_list.keys() and identifier in enum_list_b.keys():
                     info = dict()
