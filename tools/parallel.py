@@ -251,7 +251,8 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
             if method_name_c not in mappings:
                 mappings[method_name_c] = (1, arg_operation)
             else:
-                mappings[method_name_c][0] = mappings[method_name_c][0] + 1
+                score, arg_operation = mappings[method_name_c]
+                mappings[method_name_c] = (score + 1, arg_operation)
             method_invocation_map[method_name_a] = mappings
     return method_invocation_map
 
@@ -301,7 +302,8 @@ def generate_function_signature_map(source_a, source_c, ast_tree_a, ast_tree_c, 
             if method_name_c not in mappings:
                 mappings[method_name_c] = (1, arg_operation)
             else:
-                mappings[method_name_c][0] = mappings[method_name_c][0] + 1
+                score, arg_operation = mappings[method_name_c]
+                mappings[method_name_c] = (score + 1, arg_operation)
             function_map[method_name_a] = mappings
     return function_map
 
