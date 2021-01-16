@@ -271,7 +271,7 @@ def convert_call_expr(ast_node, only_string=False):
         function_name = str(call_function_node['value'])
     else:
         print(ast_node)
-        error_exit("unknown decl tyep in convert_call_expr")
+        error_exit("unknown decl type in convert_call_expr")
 
     operand_count = len(ast_node['children'])
     for i in range(1, operand_count):
