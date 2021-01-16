@@ -221,7 +221,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
 
             missing_function_list.update(identifier.identify_missing_functions(check_node,
                                                                                source_file_b,
-                                                                               source_file_c,
+                                                                               source_file_d,
                                                                                ast_tree_global_a,
                                                                                ast_tree_global_b,
                                                                                ast_tree_global_c,
@@ -237,7 +237,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                                                                     neighborhood_c,
                                                                     check_node,
                                                                     source_file_b,
-                                                                    source_file_c,
+                                                                    source_file_d,
                                                                     var_map,
                                                                     relative_pos
                                                                     ))
@@ -247,7 +247,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                                                                                  ast_tree_global_c,
                                                                                  check_node,
                                                                                  source_file_b,
-                                                                                 source_file_c,
+                                                                                 source_file_d,
                                                                                  var_map
                                                                                  ))
 
