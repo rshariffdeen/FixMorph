@@ -198,6 +198,7 @@ def start():
     if values.PHASE_SETTING[definitions.PHASE_WEAVE]:
         if values.DEFAULT_OPERATION_MODE in [0, 3]:
             safe_exec(transplant_code, "transforming slices")
+            safe_exec(weave_slices, "weaving slices")
             if values.missing_var_list:
                 safe_exec(transplant_missing_global_decl, "transplanting global declarations")
             if values.missing_function_list:
@@ -208,7 +209,6 @@ def start():
                 safe_exec(transplant_missing_macros, "transplanting macros")
             if values.missing_header_list:
                 safe_exec(transplant_missing_header, "transplanting header files")
-            safe_exec(weave_slices, "weaving slices")
             safe_exec(fixer.check, "correcting syntax errors", modified_source_list)
         elif values.DEFAULT_OPERATION_MODE in [1, 2]:
             safe_exec(transform_code, "transforming slices")
