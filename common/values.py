@@ -106,7 +106,7 @@ file_transformation_info = dict()
 
 ast_map = dict()
 map_allow_type_list = [
-        "DeclRefExpr", "StringLiteral", "VarDecl", "MemberExpr", "Macro"
+        "DeclRefExpr", "StringLiteral", "VarDecl", "MemberExpr", "Macro", "LabelStmt",
         "ParmVarDecl", "RecordDecl", "FieldDecl", "FunctionDecl", "CallExpr"
     ]
 original_diff_info = dict()
