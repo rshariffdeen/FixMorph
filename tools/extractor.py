@@ -24,7 +24,11 @@ def extract_child_id_list(ast_node):
 def extract_macro_definitions(source_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.information("\t\t[info] extracting macro definitions from\n\t\t" + str(source_path))
-    extract_command = "clang -E -dD -dM " + source_path + " > " + definitions.FILE_MACRO_DEF
+    pre_macro_list = extract_pre_macro_list(source_path)
+    extract_command = "clang -E -dD -dM "
+    for pre_macro in pre_macro_list:
+        extract_command = " -D " + pre_macro + " "
+    extract_command += source_path + " > " + definitions.FILE_MACRO_DEF
     execute_command(extract_command)
     with open(definitions.FILE_MACRO_DEF, "r") as macro_file:
         result_list = macro_file.readlines()
@@ -666,7 +670,6 @@ def extract_header_list(source_path):
 
 
 def extract_pre_macro_list(source_file):
-    macro_command = ""
     result_file = definitions.DIRECTORY_TMP + "/result"
     cat_command = "cat " + source_file + " | grep '#if' > " + result_file
     execute_command(cat_command)
@@ -688,6 +691,12 @@ def extract_pre_macro_list(source_file):
                 for token in token_list[1:]:
                     macro = token.split(" ")[0]
                     pre_macro_list.add(macro.replace(")", "").replace("(", ""))
+    return pre_macro_list
+
+
+def extract_pre_macro_command(source_file):
+    macro_command = ""
+    pre_macro_list = extract_pre_macro_list(source_file)
     if values.CONF_PATH_A in source_file or values.CONF_PATH_B in source_file:
         pre_process_arg = " --extra-arg-a=\"-D {}=1 \" "
     else:

@@ -242,7 +242,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
             # if source_file != "/data/linux/3/v3_16/mm/hugetlb.c":
             #     source_file = file_list.readline().strip()
             #     continue
-            values.TARGET_PRE_PROCESS_MACRO = extractor.extract_pre_macro_list(source_file)
+            values.TARGET_PRE_PROCESS_MACRO = extractor.extract_pre_macro_command(source_file)
 
             try:
                 segmentation_list = generate_segmentation(source_file)
