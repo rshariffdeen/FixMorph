@@ -32,7 +32,7 @@ def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, inse
         identifier = goto_code.strip().replace("goto", "").replace(";", "").replace("\n", "").replace(" ", "")
         if identifier not in label_list_c and identifier in label_list_a:
             if identifier + "." in var_map:
-                alias = var_map[identifier][:-1]
+                alias = var_map[identifier + "."][:-1]
                 if alias in label_list_c:
                     continue
             info = dict()
