@@ -289,6 +289,7 @@ def weave_definitions(missing_definition_list, modified_source_list):
             modified_source_list.append(target_file)
         backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, target_file)
+        emitter.success("\tcode transplanted at " + target_file)
     return modified_source_list
 
 
@@ -322,6 +323,7 @@ def weave_data_type(missing_data_type_list, modified_source_list):
             modified_source_list.append(target_file)
         backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, target_file)
+        emitter.success("\tcode transplanted at " + target_file)
     return modified_source_list
 
 
@@ -359,6 +361,7 @@ def weave_functions(missing_function_list, modified_source_list):
             modified_source_list.append(source_path_d)
         backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, source_path_d)
+        emitter.success("\tcode transplanted at " + source_path_d)
     return modified_source_list
 
 
