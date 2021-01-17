@@ -16,7 +16,7 @@ int main(void)
 	int a;
 	scanf("%d", &a);
 	int fib_number = fib(a);
-	if fib_number > 0:
+	if (fib_number > 0)
 	    goto test;
 	test:
 	    printf("fib number is %d", fib_number);
