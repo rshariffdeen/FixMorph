@@ -24,7 +24,7 @@ def extract_child_id_list(ast_node):
 def extract_macro_definitions(source_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.information("\t\t[info] extracting macro definitions from\n\t\t" + str(source_path))
-    pre_macro_list = extract_pre_macro_list(source_path)
+    pre_macro_list = extract_pre_macro_list(source_path, True)
     extract_command = "clang -E -dD -dM "
     for pre_macro in pre_macro_list:
         extract_command += " -D " + pre_macro + " "
@@ -669,9 +669,11 @@ def extract_header_list(source_path):
     return header_list
 
 
-def extract_pre_macro_list(source_file):
+def extract_pre_macro_list(source_file, only_if=False):
     result_file = definitions.DIRECTORY_TMP + "/result"
     cat_command = "cat " + source_file + " | grep '#if' > " + result_file
+    if only_if:
+        cat_command = "cat " + source_file + " | grep '#ifdef' > " + result_file
     execute_command(cat_command)
     pre_macro_list = set()
     with open(result_file, 'r') as log_file:
