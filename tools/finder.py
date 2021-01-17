@@ -3,10 +3,13 @@
 
 
 import sys
+import os
+import glob
+from pathlib import Path
 from ast import ast_generator, ast_vector
 from tools import oracle, logger, extractor, emitter
 from common.utilities import execute_command, error_exit, find_files
-from common import definitions
+from common import definitions, values
 
 FILE_GREP_RESULT = ""
 
@@ -207,4 +210,41 @@ def find_header_file(query, source_path):
             error_exit("\t\tError: more than one result for GREP")
 
     return None
+
+
+def find_file_in_dir(query, search_dir):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    file_name = query.split("/")[-1]
+    file_list = Path(search_dir).rglob(file_name)
+    best_candidate = None
+    # TODO: can improve selection
+    for candidate in file_list:
+        if query in candidate:
+            best_candidate = candidate
+            return
+    return best_candidate
+
+
+def find_clone(file_name):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    file_path_list = set()
+    source_path = file_name.replace(values.CONF_PATH_A, "")
+    source_path = source_path[1:]
+    git_query = "cd " + values.CONF_PATH_A + ";"
+    result_file = definitions.DIRECTORY_TMP + "/list"
+    git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
+    execute_command(git_query)
+    clone_path = None
+    with open(result_file, 'r') as tmp_file:
+        list_lines = tmp_file.readlines()
+        for path in list_lines:
+            file_path_list.add(path.strip().replace("\n", ""))
+    for file_path in file_path_list:
+        new_path = values.Project_C.path + "/" + file_path
+        if os.path.isfile(new_path):
+            clone_path = new_path
+            break
+    # TODO: use semantic clone detection if NONE
+
+    return clone_path
 

@@ -382,22 +382,7 @@ def detect_file_clones(diff_info):
     for source_loc in diff_info:
         source_file, start_line = source_loc.split(":")
         if source_file not in candidate_list:
-            file_path_list = set()
-            source_path = source_file.replace(values.CONF_PATH_A, "")
-            source_path = source_path[1:]
-            git_query = "cd " + values.CONF_PATH_A + ";"
-            result_file = definitions.DIRECTORY_TMP + "/list"
-            git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
-            execute_command(git_query)
-            with open(result_file, 'r') as tmp_file:
-                list_lines = tmp_file.readlines()
-                for path in list_lines:
-                    file_path_list.add(path.strip().replace("\n", ""))
-            for file_path in file_path_list:
-                new_path = values.Project_C.path + "/" + file_path
-                if os.path.isfile(new_path):
-                    candidate_list[source_file] = new_path
-                    break
+            candidate_list[source_file] = finder.find_clone(source_file)
     if not candidate_list:
         error_exit("CLONE FILE NOT FOUND")
     return candidate_list

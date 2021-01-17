@@ -5,6 +5,7 @@ from ast import ast_generator
 
 import os
 import sys
+import glob
 
 file_index = 1
 backup_file_list = dict()
@@ -186,10 +187,20 @@ def weave_headers(missing_header_list, modified_source_list):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     if not missing_header_list:
         emitter.normal("\t-none-")
-    target_file = ""
-    for header_name in missing_header_list:
-        emitter.normal(header_name)
-        target_file = missing_header_list[header_name]
+    source_file = ""
+    for header_file_a in missing_header_list:
+        emitter.normal(header_file_a)
+        target_file = missing_header_list[header_file_a]
+        header_file_c = finder.find_clone(header_file_a)
+        if header_file_c:
+            emitter.success("\t\tfound clone header file: " + header_file_c)
+            header_name = header_file_c.replace(values.Project_C.path)
+        else:
+            header_name = header_file_a.replace(values.Project_A.path)
+
+        if header_name[0] == "/":
+            header_name = header_name[1:]
+
         if "/" in header_name:
             transplant_code = "\n#include<" + header_name + ">\n"
         else:
