@@ -227,6 +227,10 @@ def find_file_in_dir(query, search_dir):
 
 def find_clone(file_name):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    # check if obvious exist
+    candidate_path = file_name.replace(values.CONF_PATH_A, values.CONF_PATH_C)
+    if os.path.isfile(candidate_path):
+        return candidate_path
     file_path_list = set()
     source_path = file_name.replace(values.CONF_PATH_A, "")
     source_path = source_path[1:]
@@ -239,6 +243,8 @@ def find_clone(file_name):
         list_lines = tmp_file.readlines()
         for path in list_lines:
             file_path_list.add(path.strip().replace("\n", ""))
+    # remove duplicates
+    file_path_list = list(set(file_path_list))
     for file_path in file_path_list:
         new_path = values.Project_C.path + "/" + file_path
         if os.path.isfile(new_path):
