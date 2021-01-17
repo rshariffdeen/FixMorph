@@ -491,14 +491,17 @@ def identify_missing_macros(ast_node, source_file, target_file):
     emitter.normal("\t\t\tanalysing for missing macros")
     # print(ast_node)
     missing_macro_list = dict()
+    target_ast_tree = Gen.generate_ast_json(source_file, values.TARGET_REQUIRE_MACRO)
     node_type = str(ast_node['type'])
-    target_macro_list = converter.convert_macro_list_to_dict(extractor.extract_macro_definitions(target_file))
+    target_macro_def_list = converter.convert_macro_list_to_dict(extractor.extract_macro_definitions(target_file))
+    target_macro_ref_list = extractor.extract_macro_ref_list(target_ast_tree)
     if node_type == "Macro":
         node_macro_list = extractor.extract_macro_definition(ast_node, source_file, target_file)
         # print(node_macro_list)
+
         for macro_name in node_macro_list:
             macro_name = macro_name.split("(")[0]
-            if macro_name not in target_macro_list:
+            if macro_name not in (target_macro_def_list + target_macro_ref_list):
                 if macro_name not in values.map_namespace_global:
                     missing_macro_list[macro_name] = node_macro_list[macro_name]
     else:
@@ -511,7 +514,7 @@ def identify_missing_macros(ast_node, source_file, target_file):
             macro_def_list = merger.merge_macro_info(macro_def_list, macro_def_list_temp)
         # print(macro_def_list)
         for macro_name in macro_def_list:
-            if macro_name not in target_macro_list:
+            if macro_name not in (target_macro_def_list + target_macro_ref_list):
                 if macro_name not in values.map_namespace_global:
                     missing_macro_list[macro_name] = macro_def_list[macro_name]
 

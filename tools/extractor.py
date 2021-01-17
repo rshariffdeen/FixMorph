@@ -368,6 +368,17 @@ def extract_macro_node_list(ast_node):
     return macro_node_list
 
 
+def extract_macro_ref_list(ast_node):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    macro_node_list = extract_macro_node_list(ast_node)
+    macro_ref_list = set()
+    for macro_node in macro_node_list:
+        if "value" in macro_node:
+            macro_value = macro_node['value']
+            macro_ref_list.add(macro_value)
+    return list(macro_ref_list)
+
+
 def extract_def_node_list(ast_tree):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     macro_node_list = dict()
