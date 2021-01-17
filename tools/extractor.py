@@ -27,12 +27,12 @@ def extract_macro_definitions(source_path):
     pre_macro_list = extract_pre_macro_list(source_path, True)
     extract_command = "clang -E -dD -dM "
     for pre_macro in pre_macro_list:
-        extract_command += " -D " + pre_macro + " "
+        extract_command += " -D " + pre_macro.strip().replace("\n", "") + " "
     extract_command += source_path + " > " + definitions.FILE_MACRO_DEF
     execute_command(extract_command)
+    macro_def_list = []
     with open(definitions.FILE_MACRO_DEF, "r") as macro_file:
         result_list = macro_file.readlines()
-        macro_def_list = []
         macro_def = None
         for line in result_list:
             if "#define" in line:
@@ -41,8 +41,7 @@ def extract_macro_definitions(source_path):
                 macro_def = line
             else:
                 macro_def = macro_def + line
-
-        return macro_def_list
+    return macro_def_list
 
 
 def extract_complete_function_node(function_def_node, source_path):
