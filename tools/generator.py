@@ -26,20 +26,23 @@ def find_source_file(diff_file_list, project, log_file, file_extension):
         if source_path in source_file_list:
             continue
         source_file_list.append(source_path)
-        git_query = "cd " + values.CONF_PATH_A + ";"
-        result_file = definitions.DIRECTORY_TMP + "/list"
-        git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
-        execute_command(git_query)
-        with open(result_file, 'r') as tmp_file:
-            list_lines = tmp_file.readlines()
-            for path in list_lines:
-                file_path_list.add(path.strip().replace("\n", ""))
-
-        for file_path in file_path_list:
-            new_path = project.path + "/" + file_path
-            if os.path.isfile(new_path):
-                list_files.add(new_path)
-                break
+        clone_file = finder.find_clone(source_path)
+        if clone_file:
+            list_files.add(clone_file)
+        # git_query = "cd " + values.CONF_PATH_A + ";"
+        # result_file = definitions.DIRECTORY_TMP + "/list"
+        # git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file
+        # execute_command(git_query)
+        # with open(result_file, 'r') as tmp_file:
+        #     list_lines = tmp_file.readlines()
+        #     for path in list_lines:
+        #         file_path_list.add(path.strip().replace("\n", ""))
+        #
+        # for file_path in file_path_list:
+        #     new_path = project.path + "/" + file_path
+        #     if os.path.isfile(new_path):
+        #         list_files.add(new_path)
+        #         break
 
         if not list_files:
             iterate_path(source_path, project, file_extension, log_file)
