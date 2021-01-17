@@ -374,7 +374,7 @@ def extract_macro_ref_list(ast_node):
     macro_ref_list = set()
     for macro_node in macro_node_list:
         if "value" in macro_node:
-            macro_value = macro_node['value']
+            macro_value = macro_node['value'].strip().replace("\n", "")
             macro_ref_list.add(macro_value)
     return list(macro_ref_list)
 

@@ -493,7 +493,8 @@ def identify_missing_macros(ast_node, source_file, target_file):
     missing_macro_list = dict()
     target_ast_tree = Gen.generate_ast_json(source_file, values.TARGET_REQUIRE_MACRO)
     node_type = str(ast_node['type'])
-    target_macro_def_list = converter.convert_macro_list_to_dict(extractor.extract_macro_definitions(target_file))
+    target_macro_def_list = list(converter.convert_macro_list_to_dict(
+        extractor.extract_macro_definitions(target_file)).keys())
     target_macro_ref_list = extractor.extract_macro_ref_list(target_ast_tree)
     if node_type == "Macro":
         node_macro_list = extractor.extract_macro_definition(ast_node, source_file, target_file)
