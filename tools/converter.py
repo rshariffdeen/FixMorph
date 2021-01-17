@@ -122,6 +122,8 @@ def get_node_value(ast_node):
         ast_value = convert_conditional_op_to_expr(ast_node, True)
     elif ast_type == "PredefinedExpr":
         ast_value = get_node_value(ast_node['children'][0])
+    elif ast_type in ["CharacterLiteral", "CompoundLiteralExpr"]:
+        return None
     else:
         print(ast_type)
         print(ast_node)
@@ -267,13 +269,18 @@ def convert_call_expr(ast_node, only_string=False):
     call_function_node = ast_node['children'][0]
     call_function_node_type = str(call_function_node['type'])
     call_function_node_ref_type = str(call_function_node['ref_type'])
+    operand_count = len(ast_node['children'])
     if call_function_node_type == "DeclRefExpr" and call_function_node_ref_type == "FunctionDecl":
         function_name = str(call_function_node['value'])
+    elif call_function_node_type == "DeclRefExpr" and call_function_node_ref_type == "VarDecl":
+        function_name = str(call_function_node['data_type'])
+        operand = str(call_function_node['value'])
+        operand_list.append(operand)
+        operand_count = 0
     else:
         print(ast_node)
         error_exit("unknown decl type in convert_call_expr")
 
-    operand_count = len(ast_node['children'])
     for i in range(1, operand_count):
         operand_node = ast_node['children'][i]
         operand_node_type = str(operand_node['type'])
