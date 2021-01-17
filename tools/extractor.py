@@ -309,7 +309,9 @@ def extract_macro_definition(ast_node, source_file, target_file):
         identifier = None
         if 'value' in ast_node:
             identifier = str(ast_node['value'])
-            identifier = identifier.split("(")[0]
+            if "(" in identifier:
+                identifier = identifier.split("(")[0] + "("
+            # identifier = identifier.split("(")[0]
             # print(identifier)
             if identifier in values.STANDARD_MACRO_LIST:
                 return macro_list
@@ -323,14 +325,16 @@ def extract_macro_definition(ast_node, source_file, target_file):
                         if 'value' not in child_node:
                             continue
                         identifier = str(child_node['value'])
-                        identifier = identifier.split("(")[0]
+                        # identifier = identifier.split("(")[0]
                         # print(identifier)
+                        if "(" in identifier:
+                            identifier = identifier.split("(")[0] + "("
+
                         if str(identifier).isdigit():
                             continue
                         if identifier in values.STANDARD_MACRO_LIST:
                             continue
-                        if "(" in identifier:
-                            identifier = identifier.split("(")[0] + "("
+
                         if identifier not in macro_list.keys():
                             info = dict()
                             info['source'] = source_file
