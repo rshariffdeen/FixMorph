@@ -330,7 +330,7 @@ def extract_macro_definition(ast_node, source_file, target_file):
                         if identifier in values.STANDARD_MACRO_LIST:
                             continue
                         if "(" in identifier:
-                            identifier = identifier.split("(")[0]
+                            identifier = identifier.split("(")[0] + "("
                         if identifier not in macro_list.keys():
                             info = dict()
                             info['source'] = source_file
