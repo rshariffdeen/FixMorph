@@ -732,6 +732,8 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
             elif node_type_a == "DeclRefExpr":
                 if ast_node_a['ref_type'] == "FunctionDecl":
                     identifier_a = identifier_a + "("
+            elif node_type_a == "LabelStmt":
+                identifier_a = identifier_a + "."
             if ast_node_c:
                 node_type_c = ast_node_c['type']
                 if node_type_c in values.map_allow_type_list:
@@ -741,6 +743,8 @@ def extract_mapping(ast_node_a, ast_node_c, value_score):
                     elif node_type_c == "DeclRefExpr":
                         if ast_node_c['ref_type'] == "FunctionDecl":
                             identifier_c = identifier_c + "("
+                    elif node_type_c == "LabelStmt":
+                        identifier_c = identifier_c + "."
 
         #
         # elif node_type_a in ["CallExpr"]:

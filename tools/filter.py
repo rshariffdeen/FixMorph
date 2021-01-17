@@ -352,6 +352,8 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
         node_value = converter.get_node_value(node)
         if node_type in ["MemberExpr", "FieldDecl"]:
             node_value = "." + node_value
+        elif node_type == "LabelStmt":
+            node_value = node_value + "."
         elif node_type == "DeclRefExpr":
             if node['ref_type'] == "FunctionDecl":
                 node_value = node_value + "("
