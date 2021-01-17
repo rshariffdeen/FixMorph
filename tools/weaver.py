@@ -246,6 +246,7 @@ def weave_global_declarations(missing_var_list, modified_source_list):
             modified_source_list.append(target_file)
         backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
         show_partial_diff(backup_file_path, target_file)
+        emitter.success("\tcode transplanted at " + target_file)
     return modified_source_list
 
 
