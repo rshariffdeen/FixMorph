@@ -21,8 +21,8 @@ def find_source_file(diff_file_list, project, log_file, file_extension):
     for source_loc in diff_file_list:
         file_path_list = set()
         source_path, line_number = source_loc.split(":")
-        source_path = source_path.replace(values.CONF_PATH_A, "")
-        source_path = source_path[1:]
+        # source_path = source_path.replace(values.CONF_PATH_A, "")
+        # source_path = source_path[1:]
         if source_path in source_file_list:
             continue
         source_file_list.append(source_path)
@@ -45,6 +45,8 @@ def find_source_file(diff_file_list, project, log_file, file_extension):
         #         break
 
         if not list_files:
+            source_path = source_path.replace(values.CONF_PATH_A, "")
+            source_path = source_path[1:]
             iterate_path(source_path, project, file_extension, log_file)
 
         # file_name = source_path.split("/")[-1][:-2]
