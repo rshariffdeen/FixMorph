@@ -194,9 +194,9 @@ def weave_headers(missing_header_list, modified_source_list):
         header_file_c = finder.find_clone(header_file_a)
         if header_file_c:
             emitter.success("\t\tfound clone header file: " + header_file_c)
-            header_name = header_file_c.replace(values.Project_C.path)
+            header_name = header_file_c.replace(values.Project_C.path, "")
         else:
-            header_name = header_file_a.replace(values.Project_A.path)
+            header_name = header_file_a.replace(values.Project_A.path, "")
 
         if header_name[0] == "/":
             header_name = header_name[1:]
