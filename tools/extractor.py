@@ -143,7 +143,7 @@ def extract_reference_node_list(ast_node):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     ref_node_list = list()
     node_type = str(ast_node["type"])
-    if node_type in ["Macro", "DeclRefExpr", "MemberExpr", "LabelStmt"]:
+    if node_type in ["Macro", "DeclRefExpr", "MemberExpr", "GotoStmt"]:
         ref_node_list.append(ast_node)
     else:
         if len(ast_node['children']) > 0:
