@@ -202,13 +202,13 @@ def find_header_file(query, source_path):
     execute_command(search_command)
     with open(FILE_GREP_RESULT, 'r') as result_file:
         lines = result_file.readlines()
-        if len(lines) == 1:
+        if len(lines) >= 1:
+            # TODO: can improve selection
+            if len(lines) > 1:
+                emitter.warning("\t\t[warning] more than one definition found")
             relative_path = str(lines[0]).split(":")[0]
             abs_path = project_dir + "/" + relative_path
             return abs_path
-        else:
-            error_exit("\t\tError: more than one result for GREP")
-
     return None
 
 

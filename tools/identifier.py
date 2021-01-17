@@ -500,7 +500,8 @@ def identify_missing_macros(ast_node, source_file, target_file):
         node_macro_list = extractor.extract_macro_definition(ast_node, source_file, target_file)
         # print(node_macro_list)
         for macro_name in node_macro_list:
-            macro_name = macro_name.split("(")[0]
+            if "(" in macro_name:
+                macro_name = macro_name.split("(")[0] + "("
             if macro_name not in (target_macro_def_list + target_macro_ref_list):
                 if macro_name not in values.map_namespace_global:
                     missing_macro_list[macro_name] = node_macro_list[macro_name]
@@ -514,7 +515,8 @@ def identify_missing_macros(ast_node, source_file, target_file):
             macro_def_list = merger.merge_macro_info(macro_def_list, macro_def_list_temp)
         # print(macro_def_list)
         for macro_name in macro_def_list:
-            macro_name = macro_name.split("(")[0]
+            if "(" in macro_name:
+                macro_name = macro_name.split("(")[0] + "("
             if macro_name not in (target_macro_def_list + target_macro_ref_list):
                 if macro_name not in values.map_namespace_global:
                     missing_macro_list[macro_name] = macro_def_list[macro_name]
