@@ -27,7 +27,7 @@ def extract_macro_definitions(source_path):
     pre_macro_list = extract_pre_macro_list(source_path)
     extract_command = "clang -E -dD -dM "
     for pre_macro in pre_macro_list:
-        extract_command = " -D " + pre_macro + " "
+        extract_command += " -D " + pre_macro + " "
     extract_command += source_path + " > " + definitions.FILE_MACRO_DEF
     execute_command(extract_command)
     with open(definitions.FILE_MACRO_DEF, "r") as macro_file:
