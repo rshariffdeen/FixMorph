@@ -120,12 +120,16 @@ def evolve_functions(missing_function_list):
             function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
             function_def_node = finder.search_ast_node_by_id(ast_global_a, int(node_id))
             function_source_file = function_def_node['file']
+            found_header_file = False
             if function_source_file[-1] == "h":
                 if "include" in function_source_file:
                     header_file = function_source_file.split("/include/")[-1]
                 else:
                     header_file = function_source_file.split("/")[-1]
-                missing_header_list[header_file] = source_path_d
+                clone_header_file = finder.find_clone(header_file)
+                if clone_header_file:
+                    found_header_file = True
+                    missing_header_list[clone_header_file] = source_path_d
 
             else:
                 function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
@@ -134,7 +138,8 @@ def evolve_functions(missing_function_list):
                 missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
                                                                                 source_path_d)
                 missing_header_list = identifier.identify_missing_headers(function_node, source_path_d)
-            filtered_missing_function_list[function_name] = info
+            if not found_header_file:
+                filtered_missing_function_list[function_name] = info
             emitter.success("\t\tfound definition in: " + function_source_file)
             # print(function_name)
     return missing_header_list, missing_macro_list, filtered_missing_function_list
