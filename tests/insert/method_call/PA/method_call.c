@@ -3,7 +3,7 @@
 #include <ctype.h>  
 
 int testSum(int a, int b, int c){
-   return a + bc;
+   return a + c;
 }
 
 void testLocalRefA(int a, char* str){
