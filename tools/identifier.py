@@ -110,7 +110,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
     emitter.normal("\t\t\tanalysing for missing variables")
     missing_var_list = dict()
     source_path_a = source_path_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
-    # print(insert_node_b)
+    # print(ast_node_b)
     ref_list = extractor.extract_reference_node_list(ast_node_b)
     # print(ref_list)
     dec_list_local_a = extractor.extract_decl_node_list(neighborhood_a)

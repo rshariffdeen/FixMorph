@@ -145,11 +145,11 @@ def extract_reference_node_list(ast_node):
     node_type = str(ast_node["type"])
     if node_type in ["Macro", "DeclRefExpr", "MemberExpr", "GotoStmt"]:
         ref_node_list.append(ast_node)
-    else:
-        if len(ast_node['children']) > 0:
-            for child_node in ast_node['children']:
-                child_ref_list = extract_reference_node_list(child_node)
-                ref_node_list = ref_node_list + child_ref_list
+
+    if len(ast_node['children']) > 0:
+        for child_node in ast_node['children']:
+            child_ref_list = extract_reference_node_list(child_node)
+            ref_node_list = ref_node_list + child_ref_list
     return ref_node_list
 
 
