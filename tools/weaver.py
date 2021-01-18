@@ -357,7 +357,7 @@ def weave_functions(missing_function_list, modified_source_list):
         source_path_a = info['source_a']
         source_path_d = info['source_d']
         emitter.normal(function_name)
-        ast_tree_a = ast_generator.get_ast_json(source_path_a)
+        ast_tree_a = ast_generator.get_ast_json(source_path_a, regenerate=True)
         function_ref_node_id = int(info['ref_node_id'])
         function_ref_node = finder.search_ast_node_by_id(ast_tree_a, function_ref_node_id)
         function_def_node = finder.search_ast_node_by_id(ast_tree_a, int(node_id))
