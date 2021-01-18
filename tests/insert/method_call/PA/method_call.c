@@ -2,6 +2,10 @@
 #include <string.h>
 #include <ctype.h>  
 
+int testSum(int a, int b, int just){
+   return a + b;
+}
+
 void testLocalRefA(int a, char* str){
     printf("the values are  %d %s\n", a, str);
 }
@@ -17,5 +21,6 @@ void testGlobalRefA(char* str){
 
 int main( ) {
     testLocalRefA(3, "test2");
+    int p = testSum(1, 2, 3);
     return 0;
 }
