@@ -71,6 +71,8 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
     for call_expr in call_list_b:
         # print(call_expr)
         function_ref_node = call_expr['children'][0]
+        if "value" not in function_ref_node:
+            continue
         function_name = function_ref_node['value']
         # print(function_name)
         if function_name in function_list_c.keys():
