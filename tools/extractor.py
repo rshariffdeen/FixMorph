@@ -833,7 +833,7 @@ def extract_identifier_list(string_expression):
         if "(" in string_expression or str(string_expression.strip()).isnumeric():
             return []
         else:
-            return [string_expression]
+            return [string_expression.strip()]
 
     for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]:
         if operator in string_expression:
