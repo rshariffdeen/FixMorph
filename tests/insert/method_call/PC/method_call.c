@@ -2,6 +2,12 @@
 #include <string.h>
 #include <ctype.h>  
 
+
+int testTotal(int a, int b){
+   return a + b;
+}
+
+
 void testLocalRefC(int a, char* str){
      printf("the values are  %d %s\n", a, str);
 }
@@ -16,6 +22,7 @@ void testGlobalRefC(char* str){
 }
 
 int main( ) {
+    int t = testTotal(1,2);
     testLocalRefC(0, "test");
     return 0;
 }
