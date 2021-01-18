@@ -3,8 +3,8 @@
 #include <ctype.h>  
 
 
-int testSum(int a, int b, int just){
-   return a + b;
+int testSum(int a, int b, int c){
+   return a + c;
 }
 
 

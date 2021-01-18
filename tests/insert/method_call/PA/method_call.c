@@ -2,8 +2,8 @@
 #include <string.h>
 #include <ctype.h>  
 
-int testSum(int a, int b, int just){
-   return a + b;
+int testSum(int a, int b, int c){
+   return a + bc;
 }
 
 void testLocalRefA(int a, char* str){
