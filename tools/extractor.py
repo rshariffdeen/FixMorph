@@ -24,11 +24,15 @@ def extract_child_id_list(ast_node):
 def extract_macro_definitions(source_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.information("\t\t[info] extracting macro definitions from\n\t\t" + str(source_path))
-    extract_command = "clang -E -dD -dM " + source_path + " > " + definitions.FILE_MACRO_DEF
+    pre_macro_list = extract_pre_macro_list(source_path, True)
+    extract_command = "clang -E -dD -dM "
+    for pre_macro in pre_macro_list:
+        extract_command += " -D " + pre_macro.strip().replace("\n", "") + " "
+    extract_command += source_path + " > " + definitions.FILE_MACRO_DEF
     execute_command(extract_command)
+    macro_def_list = []
     with open(definitions.FILE_MACRO_DEF, "r") as macro_file:
         result_list = macro_file.readlines()
-        macro_def_list = []
         macro_def = None
         for line in result_list:
             if "#define" in line:
@@ -37,8 +41,7 @@ def extract_macro_definitions(source_path):
                 macro_def = line
             else:
                 macro_def = macro_def + line
-
-        return macro_def_list
+    return macro_def_list
 
 
 def extract_complete_function_node(function_def_node, source_path):
@@ -309,7 +312,9 @@ def extract_macro_definition(ast_node, source_file, target_file):
         identifier = None
         if 'value' in ast_node:
             identifier = str(ast_node['value'])
-            identifier = identifier.split("(")[0]
+            if "(" in identifier:
+                identifier = identifier.split("(")[0] + "("
+            # identifier = identifier.split("(")[0]
             # print(identifier)
             if identifier in values.STANDARD_MACRO_LIST:
                 return macro_list
@@ -323,14 +328,16 @@ def extract_macro_definition(ast_node, source_file, target_file):
                         if 'value' not in child_node:
                             continue
                         identifier = str(child_node['value'])
-                        identifier = identifier.split("(")[0]
+                        # identifier = identifier.split("(")[0]
                         # print(identifier)
+                        if "(" in identifier:
+                            identifier = identifier.split("(")[0] + "("
+
                         if str(identifier).isdigit():
                             continue
                         if identifier in values.STANDARD_MACRO_LIST:
                             continue
-                        if "(" in identifier:
-                            identifier = identifier.split("(")[0] + "("
+
                         if identifier not in macro_list.keys():
                             info = dict()
                             info['source'] = source_file
@@ -661,10 +668,11 @@ def extract_header_list(source_path):
     return header_list
 
 
-def extract_pre_macro_list(source_file):
-    macro_command = ""
+def extract_pre_macro_list(source_file, only_if=False):
     result_file = definitions.DIRECTORY_TMP + "/result"
     cat_command = "cat " + source_file + " | grep '#if' > " + result_file
+    if only_if:
+        cat_command = "cat " + source_file + " | grep '#ifdef' > " + result_file
     execute_command(cat_command)
     pre_macro_list = set()
     with open(result_file, 'r') as log_file:
@@ -684,6 +692,12 @@ def extract_pre_macro_list(source_file):
                 for token in token_list[1:]:
                     macro = token.split(" ")[0]
                     pre_macro_list.add(macro.replace(")", "").replace("(", ""))
+    return pre_macro_list
+
+
+def extract_pre_macro_command(source_file):
+    macro_command = ""
+    pre_macro_list = extract_pre_macro_list(source_file)
     if values.CONF_PATH_A in source_file or values.CONF_PATH_B in source_file:
         pre_process_arg = " --extra-arg-a=\"-D {}=1 \" "
     else:

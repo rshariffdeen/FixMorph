@@ -201,13 +201,17 @@ def find_header_file(query, source_path):
     search_command += " > " + FILE_GREP_RESULT
     execute_command(search_command)
     with open(FILE_GREP_RESULT, 'r') as result_file:
-        lines = result_file.readlines()
-        if len(lines) >= 1:
+        candidate_list = result_file.readlines()
+        if len(candidate_list) >= 1:
             # TODO: can improve selection
-            if len(lines) > 1:
+            best_candidate = str(candidate_list[0]).split(":")[0]
+            if len(candidate_list) > 1:
+                for candidate in candidate_list:
+                    candidate_file = str(candidate).split(":")[0]
+                    if ".h" in candidate_file:
+                        best_candidate = candidate_file
                 emitter.warning("\t\t[warning] more than one definition found")
-            relative_path = str(lines[0]).split(":")[0]
-            abs_path = project_dir + "/" + relative_path
+            abs_path = project_dir + "/" + best_candidate
             return abs_path
     return None
 

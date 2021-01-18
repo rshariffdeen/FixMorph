@@ -294,7 +294,12 @@ def weave_definitions(missing_definition_list, modified_source_list):
                                 transplant_code += "\n" + macro_def + "\n"
                             elif str(macro_def).count(def_name) == 1:
                                 transplant_code += "\n" + macro_def + "\n"
+                # TODO: check if internal functions inside macro
+                if "})" in transplant_code:
+                    transplant_code = "#include<" + header_file.split("include/")[-1] + ">\n" + transplant_code
 
+                if "(" in def_name and transplant_code == "":
+                    transplant_code = "#define " + def_name + "...)\n"
         backup_file(target_file, FILENAME_BACKUP)
         insert_code(transplant_code, target_file, def_insert_line)
         if target_file not in modified_source_list:
