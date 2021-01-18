@@ -20,7 +20,7 @@ void testGlobalRefA(char* str){
 }
 
 int main( ) {
-    testLocalRefA(3, "test2");
     int p = testSum(1, 2, 3);
+    testLocalRefA(3, "test2");
     return 0;
 }

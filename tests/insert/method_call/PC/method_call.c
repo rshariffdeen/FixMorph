@@ -22,6 +22,7 @@ void testGlobalRefC(char* str){
 }
 
 int main( ) {
+    int t = testTotal(1,2);
     testLocalRefC(0, "test");
     return 0;
 }
