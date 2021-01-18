@@ -59,6 +59,13 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
             # print(macro_value)
             if "(" in macro_value:
                 function_name = macro_value.split("(")[0]
+                if function_name in function_list_c.keys():
+                    function_node = function_list_c[function_name]
+                    signature_node = function_node['children'][0]
+                    num_param = len(signature_node['children'])
+                    num_args = len(macro_value.replace(function_name, "").split(","))
+                    if num_args == num_param:
+                        continue
                 missing_function_list[function_name] = macro_node
 
     for call_expr in call_list_b:
@@ -67,7 +74,12 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
         function_name = function_ref_node['value']
         # print(function_name)
         if function_name in function_list_c.keys():
-            continue
+            function_node = function_list_c[function_name]
+            signature_node = function_node['children'][0]
+            num_param = len(signature_node['children'])
+            num_args = len(macro_value.replace(function_name, "").split(","))
+            if num_args == num_param:
+                continue
         missing_function_list[function_name] = function_ref_node
 
     for function_name in missing_function_list:
