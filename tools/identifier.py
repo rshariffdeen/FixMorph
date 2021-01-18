@@ -13,7 +13,7 @@ from ast import ast_generator, ast_vector
 from tools import generator as Gen
 
 
-STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *"]
+STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *", "unsigned long", "long"]
 
 
 def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, var_map):
@@ -346,7 +346,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['target-file'] = source_path_d
                                 missing_var_list[identifier] = info
 
-
     # print(missing_var_list)
     return missing_var_list
 
@@ -442,10 +441,11 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
     for type_loc_name in type_loc_node_list:
         # print(type_loc_name)
         type_loc_node = type_loc_node_list[type_loc_name]
-        identifier = str(type_loc_node['value']).replace("struct ", "").replace("*", "").strip().replace(" ", "")
+        identifier = str(type_loc_node['value']).replace("struct ", "").replace("*", "").strip()
         if identifier not in type_def_node_list_c:
             if identifier in STANDARD_DATA_TYPES:
                 continue
+
             if identifier not in missing_data_type_list.keys():
                 info = dict()
                 info['target'] = source_path_d
