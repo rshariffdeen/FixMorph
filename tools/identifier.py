@@ -13,7 +13,7 @@ from ast import ast_generator, ast_vector
 from tools import generator as Gen
 
 
-STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *"]
+STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *", "unsigned long", "long"]
 
 
 def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, var_map):
