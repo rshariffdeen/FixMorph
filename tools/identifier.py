@@ -203,7 +203,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                             elif identifier in dec_list_local_b.keys():
                                 info['is_global'] = False
                                 info['pre-exist'] = False
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 is_mapping = (identifier in var_map) and \
                                              (var_map[identifier] in set(
