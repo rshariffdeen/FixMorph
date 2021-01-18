@@ -319,7 +319,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['target-file'] = source_path_d
                                 missing_var_list[identifier] = info
 
-
     # print(missing_var_list)
     return missing_var_list
 

@@ -109,7 +109,8 @@ def get_node_value(ast_node):
         ast_value = convert_member_expr(ast_node, True)
         # var_list = var_list + left_child_var_list
     elif ast_type in ["Macro", "LabelStmt", "TypeLoc", "GotoStmt"]:
-        ast_value = ast_node['value']
+        if "value" in ast_node:
+            ast_value = ast_node['value']
     elif ast_type == "CStyleCastExpr":
         ast_value = convert_cast_expr(ast_node, True)
     elif ast_type == "CallExpr":
