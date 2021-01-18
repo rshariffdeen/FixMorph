@@ -105,7 +105,7 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
     return missing_function_info
 
 
-def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_node_b, source_path_b, source_path_c, var_map, relative_pos):
+def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_node_b, source_path_b, source_path_d, var_map, relative_pos):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\t\tanalysing for missing variables")
     missing_var_list = dict()
@@ -115,7 +115,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
     # print(ref_list)
     dec_list_local_a = extractor.extract_decl_node_list(neighborhood_a)
     dec_list_local_b = extractor.extract_decl_node_list(neighborhood_b)
-    target_file = source_path_c.replace(values.CONF_PATH_C, values.Project_D.path)
+    source_path_c = source_path_d.replace(values.Project_D.path, values.CONF_PATH_C)
     # print(dec_list_a.keys())
     dec_list_local_c = extractor.extract_decl_node_list(neighborhood_c)
     # print(dec_list_c.keys())
@@ -157,7 +157,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 info['pre-exist'] = True
                                 info['is_global'] = False
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
                                 is_mapping = (identifier in var_map) and \
                                              (var_map[identifier] in set(
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
@@ -166,7 +166,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                             elif identifier in dec_list_global_a.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = True
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_global_b[identifier]
                                 is_mapping = (identifier in var_map) and \
                                              (var_map[identifier] in set(
@@ -186,7 +186,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                             elif identifier in dec_list_global_b.keys():
                                 info['is_global'] = True
                                 info['pre-exist'] = False
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_global_b[identifier]
                                 is_mapping = (identifier in var_map) and \
                                              (var_map[identifier] in set(
@@ -229,7 +229,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
                                 info['is_global'] = False
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
 
                             elif identifier in dec_list_global_a.keys():
                                 info['is_global'] = True
@@ -239,7 +239,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
                                 info['ast-node'] = dec_list_global_b[identifier]
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
 
                             elif identifier in dec_list_local_b.keys():
                                 info['is_global'] = False
@@ -249,7 +249,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
                                 info['ast-node'] = dec_list_local_b[identifier]
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
 
                             elif identifier in dec_list_global_b.keys():
                                 info['is_global'] = True
@@ -259,7 +259,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
                                 info['ast-node'] = dec_list_global_b[identifier]
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
 
                             missing_var_list[identifier] = info
                         else:
@@ -316,7 +316,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
                                 info['pre-exist'] = False
-                                info['target-file'] = target_file
+                                info['target-file'] = source_path_d
                                 missing_var_list[identifier] = info
 
 
@@ -324,7 +324,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
     return missing_var_list
 
 
-def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, source_path_b, source_path_c, var_map):
+def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, source_path_b, source_path_d, var_map):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\t\tanalysing for missing data-types")
     missing_data_type_list = dict()
@@ -333,7 +333,7 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
     type_def_node_list_a = extractor.extract_typedef_node_list(ast_tree_a)
     type_def_node_list_b = extractor.extract_typedef_node_list(ast_tree_b)
     type_def_node_list_c = extractor.extract_typedef_node_list(ast_tree_c)
-    target_file = source_path_c.replace(values.CONF_PATH_C, values.Project_D.path)
+    source_path_c = source_path_d.replace(values.Project_D.path, values.CONF_PATH_C)
 
     for ref_node in ref_list:
         # print(ref_node)
@@ -356,7 +356,7 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                 if identifier not in type_def_node_list_c.keys():
                     if identifier not in missing_data_type_list.keys():
                         info = dict()
-                        info['target'] = target_file
+                        info['target'] = source_path_d
                         ast_node = type_def_node_list_b[identifier]
                         source_file = str(ast_node['file'])
                         if ".." in source_file:
@@ -398,7 +398,7 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                                             break
                                     if field_dec_node_a:
                                         info = dict()
-                                        info['target'] = target_file
+                                        info['target'] = source_path_d
                                         ast_node = field_dec_node_a
                                         source_file = str(ast_node['file'])
                                         if ".." in source_file:
@@ -421,7 +421,7 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                 continue
             if identifier not in missing_data_type_list.keys():
                 info = dict()
-                info['target'] = target_file
+                info['target'] = source_path_d
                 ast_node = type_def_node_list_b[identifier]
                 source_file = str(ast_node['file'])
                 if ".." in source_file:
