@@ -107,11 +107,14 @@ def evolve_functions(missing_function_list):
                 candidate_list = mapping[method_name_a]
                 best_score = 0
                 method_name_c = None
+                transformation_c = None
                 for candidate_name in candidate_list:
                     match_score, transformation = candidate_list[candidate_name]
                     if match_score > best_score:
                         best_score = match_score
                         method_name_c = candidate_name
+                        transformation_c = transformation
+                print(transformation_c)
                 refined_var_map[method_name_a + "("] = method_name_c + "("
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
         else:
