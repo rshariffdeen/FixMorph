@@ -105,19 +105,19 @@ def evolve_code():
         file_index += 1
         if values.missing_function_list:
             if identified_function_list:
-                values.missing_function_list = values.missing_function_list.update(identified_function_list)
+                values.missing_function_list.update(identified_function_list)
         else:
             values.missing_function_list = identified_function_list
 
         if values.missing_var_list:
             if identified_var_list:
-                values.missing_var_list = values.missing_var_list.update(identified_var_list)
+                values.missing_var_list.update(identified_var_list)
         else:
             values.missing_var_list = identified_var_list
 
         if values.missing_data_type_list:
             if identified_data_type_list:
-                values.missing_data_type_list = values.missing_data_type_list.update(identified_data_type_list)
+                values.missing_data_type_list.update(identified_data_type_list)
         else:
             values.missing_data_type_list = identified_data_type_list
 
