@@ -181,7 +181,7 @@ def fix_syntax_errors(source_file):
             if " error:" not in read_line:
                 continue
             source_location = read_line.split(": ")[0]
-            if source_file not in source_location:
+            if ".h" in source_location:
                 continue
             error_type = (read_line.split(" [")[-1]).replace("]", "")
             if "return-type" in error_type:
