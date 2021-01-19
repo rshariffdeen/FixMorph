@@ -277,6 +277,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     for var in missing_var_list:
         # print(var)
         var_info = missing_var_list[var]
+        if "pre-exist" not in var_info:
+            continue
         if not var_info['pre-exist'] or var_info['map-exist']:
             continue
         if var_info['is_global']:
