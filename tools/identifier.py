@@ -208,8 +208,8 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['map-exist'] = is_mapping
                             else:
                                 print(identifier)
-                                print(dec_list_global_b)
-                                print(dec_list_local_b)
+                                print(ast_node_b)
+                                # print(dec_list_local_b)
                                 emitter.error("Unhandled missing variable")
 
                             missing_var_list[identifier] = info
