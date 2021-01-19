@@ -361,9 +361,10 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                     offset += 1
                                 else:
                                     emitter.warning("Node not in children.")
-                                    emitter.warning(previous_child_c)
-                                    emitter.warning([instruction.simple_print() for instruction in
-                                                     target_node.children])
+                                    emitter.warning(str(instruction))
+                                    continue
+                                    # emitter.warning([instruction.simple_print() for instruction in
+                                    #                  target_node.children])
                             else:
                                 emitter.warning("Failed at locating match" + \
                                               " for " + previous_child_node_a)
@@ -463,9 +464,9 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                     offset += 1
                                 else:
                                     emitter.warning("Node not in children.")
-                                    emitter.warning(previous_child_c)
-                                    emitter.warning([instruction.simple_print() for instruction in
-                                                     target_node.children])
+                                    emitter.warning(str(instruction))
+                                    # emitter.warning([instruction.simple_print() for instruction in
+                                    #                  target_node.children])
                             else:
                                 emitter.warning("Failed at locating match for (update move) " + previous_child_node_a)
                                 emitter.warning("Trying to get pos anyway.")
@@ -566,9 +567,9 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                                     offset = target_node.children.index(next_child_node_c)
                                                 else:
                                                     emitter.warning("Node not in children.")
-                                                    emitter.warning(instruction)
-                                                    emitter.warning(next_child_node_c)
-                                                    emitter.warning([child.simple_print() for child in target_node.children])
+                                                    emitter.warning(str(instruction))
+                                                    # emitter.warning(next_child_node_c)
+                                                    # emitter.warning([child.simple_print() for child in target_node.children])
                                                     target_node = json_ast_dump[
                                                         values.Project_C.name][next_child_node_c.parent_id]
                                                     offset = target_node.children.index(next_child_node_c)
@@ -600,9 +601,9 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                         offset = target_node.children.index(next_child_node_c)
                                     else:
                                         emitter.warning("Node not in children.")
-                                        emitter.warning(instruction)
-                                        emitter.warning(next_child_node_c)
-                                        emitter.warning([child.simple_print() for child in target_node.children])
+                                        emitter.warning(str(instruction))
+                                        # emitter.warning(next_child_node_c)
+                                        # emitter.warning([child.simple_print() for child in target_node.children])
                                         target_node = json_ast_dump[values.Project_C.name][next_child_node_c.parent_id]
                                         offset = target_node.children.index(next_child_node_c)
 

@@ -85,19 +85,20 @@ def evolve_functions(missing_function_list):
     for function_name in missing_function_list:
         info = missing_function_list[function_name]
         node_id = info['node_id']
-        source_path_a = info['source_a']
-        source_path_d = info['source_d']
+        source_path = info['source_a']
+        target_path = info['source_d']
         emitter.normal(function_name)
         ast_map_key = info['ast-key']
-        ast_global_a = ast_generator.get_ast_json(source_path_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-        ast_global_c = ast_generator.get_ast_json(source_path_d, values.TARGET_REQUIRE_MACRO, regenerate=True)
+        ast_global_a = ast_generator.get_ast_json(source_path, values.DONOR_REQUIRE_MACRO, regenerate=True)
+        ast_global_c = ast_generator.get_ast_json(target_path, values.TARGET_REQUIRE_MACRO, regenerate=True)
         mapping = None
-        if values.DEFAULT_OPERATION_MODE == 0:
-            mapping = parallel.generate_method_invocation_map(source_path_a, source_path_d,
-                                                              ast_global_a, ast_global_c, function_name)
-            if not mapping:
-                mapping = parallel.generate_function_signature_map(source_path_a, source_path_d,
-                                                                   ast_global_a, ast_global_c, function_name)
+        if values.CONF_PATH_B not in source_path:
+            if values.DEFAULT_OPERATION_MODE == 0:
+                mapping = parallel.generate_method_invocation_map(source_path, target_path,
+                                                                  ast_global_a, ast_global_c, function_name)
+                if not mapping:
+                    mapping = parallel.generate_function_signature_map(source_path, target_path,
+                                                                       ast_global_a, ast_global_c, function_name)
 
         # if no mapping found add function for transplantation list
         if mapping:
@@ -132,15 +133,15 @@ def evolve_functions(missing_function_list):
                 clone_header_file = finder.find_clone(header_file)
                 if clone_header_file:
                     found_header_file = True
-                    missing_header_list[clone_header_file] = source_path_d
+                    missing_header_list[clone_header_file] = target_path
 
             else:
                 function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
-                                                                                               source_path_a)
+                                                                                               source_path)
                 missing_def_list = identifier.identify_missing_definitions(function_node, missing_function_list)
                 missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
-                                                                                source_path_d)
-                missing_header_list = identifier.identify_missing_headers(function_node, source_path_d)
+                                                                                target_path)
+                missing_header_list = identifier.identify_missing_headers(function_node, target_path)
             if not found_header_file:
                 filtered_missing_function_list[function_name] = info
             emitter.success("\t\tfound definition in: " + function_source_file)
@@ -180,7 +181,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     neighborhood_c = extractor.extract_neighborhood(source_file_c, seg_code, seg_id_c)
     var_map = values.map_namespace_global[(slice_file_a, slice_file_c)]
     script_lines = list()
-
+    segment_type = values.segment_map[seg_code]
     count = 0
     for instruction in instruction_list:
         count = count + 1
@@ -258,8 +259,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                                                                                  source_file_d,
                                                                                  var_map
                                                                                  ))
-
-            missing_label_list.update(identifier.identify_missing_labels(neighborhood_a,
+            if segment_type in ["FunctionDecl", "Macro"]:
+                missing_label_list.update(identifier.identify_missing_labels(neighborhood_a,
                                                                          neighborhood_b,
                                                                          neighborhood_c,
                                                                          check_node,

@@ -13,7 +13,8 @@ from ast import ast_generator, ast_vector
 from tools import generator as Gen
 
 
-STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *", "unsigned long", "long"]
+STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *",
+                       "unsigned long", "long", "void"]
 
 
 def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, var_map):
@@ -71,15 +72,13 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
     for call_expr in call_list_b:
         # print(call_expr)
         function_ref_node = call_expr['children'][0]
-        if "value" not in function_ref_node:
-            continue
         function_name = function_ref_node['value']
         # print(function_name)
         if function_name in function_list_c.keys():
             function_node = function_list_c[function_name]
             signature_node = function_node['children'][0]
-            num_param = len(signature_node['children'])
-            num_args = len(call_expr['children']) - 1
+            num_param = len(signature_node['children']) - 1
+            num_args = len(call_expr['children'][0]) - 1
             if num_args == num_param:
                 continue
         missing_function_list[function_name] = function_ref_node
@@ -102,7 +101,6 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 # info['ast-a'] = ast_tree_a
                 # info['ast-d'] = ast_tree_c
                 info['ast-key'] = ast_map_key
-                info['is-new'] = False
                 missing_function_info[function_name] = info
             else:
                 info = dict()
@@ -116,7 +114,6 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 if info != missing_function_info[function_name]:
                     print(missing_function_info[function_name])
                     error_exit("MULTIPLE FUNCTION REFERENCES ON DIFFERENT TARGETS FOUND!!!")
-
         elif function_node_a is None and function_node_b is not None:
             # print(function_node)
             if function_name not in missing_function_info.keys():
@@ -166,9 +163,12 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                 var_list = list()
                 for operand in operand_list:
                     identifier = operand.strip().replace("\n", "").replace(" ", "")
+                    if "(" in identifier:
+                        continue
                     if "\"" in identifier or "'" in identifier or str(identifier).isnumeric():
                         continue
-                    if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
+                    if any(operator in operand for operator in ["|", "&&", ">", ">=", "==", "-", "+",
+                                                                "<", "<=", "*", "/"]):
                         if "->" in operand:
                             # if identifier not in var_map:
                             #     var_list.append(identifier)
@@ -224,8 +224,8 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['map-exist'] = is_mapping
                             else:
                                 print(identifier)
-                                print(dec_list_global_b)
-                                print(dec_list_local_b)
+                                print(ast_node_b)
+                                # print(dec_list_local_b)
                                 emitter.error("Unhandled missing variable")
 
                             missing_var_list[identifier] = info
@@ -448,7 +448,8 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
         if identifier not in type_def_node_list_c:
             if identifier in STANDARD_DATA_TYPES:
                 continue
-
+            if "(" in identifier:
+                continue
             if identifier not in missing_data_type_list.keys():
                 info = dict()
                 info['target'] = source_path_d
