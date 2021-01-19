@@ -77,8 +77,8 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
         if function_name in function_list_c.keys():
             function_node = function_list_c[function_name]
             signature_node = function_node['children'][0]
-            num_param = len(signature_node['children'])
-            num_args = len(macro_value.replace(function_name, "").split(","))
+            num_param = len(signature_node['children']) - 1
+            num_args = len(call_expr['children'][0]) - 1
             if num_args == num_param:
                 continue
         missing_function_list[function_name] = function_ref_node
