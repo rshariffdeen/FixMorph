@@ -362,6 +362,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                                 else:
                                     emitter.warning("Node not in children.")
                                     emitter.warning(str(instruction))
+                                    continue
                                     # emitter.warning([instruction.simple_print() for instruction in
                                     #                  target_node.children])
                             else:
