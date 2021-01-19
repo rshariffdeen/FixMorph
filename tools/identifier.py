@@ -448,7 +448,8 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
         if identifier not in type_def_node_list_c:
             if identifier in STANDARD_DATA_TYPES:
                 continue
-
+            if "(" in identifier:
+                continue
             if identifier not in missing_data_type_list.keys():
                 info = dict()
                 info['target'] = source_path_d
