@@ -167,7 +167,8 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         continue
                     if "\"" in identifier or "'" in identifier or str(identifier).isnumeric():
                         continue
-                    if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
+                    if any(operator in operand for operator in ["|", "&&", ">", ">=", "==", "-", "+",
+                                                                "<", "<=", "*", "/"]):
                         if "->" in operand:
                             # if identifier not in var_map:
                             #     var_list.append(identifier)

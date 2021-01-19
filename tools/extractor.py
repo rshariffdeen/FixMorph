@@ -829,7 +829,7 @@ def extract_method_signatures(ast_node_map, func_node_a, func_node_c, method_nam
 
 def extract_identifier_list(string_expression):
     identifier_list = []
-    if not any(operator in string_expression for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
+    if not any(operator in string_expression for operator in ["|", "&&", ">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
         if "(" in string_expression or str(string_expression.strip()).isnumeric():
             return []
         else:
