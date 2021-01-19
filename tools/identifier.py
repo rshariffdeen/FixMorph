@@ -13,7 +13,8 @@ from ast import ast_generator, ast_vector
 from tools import generator as Gen
 
 
-STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *", "unsigned long", "long"]
+STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *",
+                       "unsigned long", "long", "void"]
 
 
 def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, var_map):
@@ -100,7 +101,6 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 # info['ast-a'] = ast_tree_a
                 # info['ast-d'] = ast_tree_c
                 info['ast-key'] = ast_map_key
-                info['is-new'] = False
                 missing_function_info[function_name] = info
             else:
                 info = dict()
@@ -114,20 +114,6 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 if info != missing_function_info[function_name]:
                     print(missing_function_info[function_name])
                     error_exit("MULTIPLE FUNCTION REFERENCES ON DIFFERENT TARGETS FOUND!!!")
-
-        elif function_node_a is None and function_node_b is not None:
-            # print(function_node)
-            if function_name not in missing_function_info.keys():
-                info = dict()
-                info['node_id'] = function_node_b['id']
-                info['ref_node_id'] = ref_node['id']
-                info['source_a'] = source_path_b
-                info['source_d'] = source_path_d
-                # info['ast-a'] = ast_tree_a
-                # info['ast-d'] = ast_tree_c
-                info['ast-key'] = ast_map_key
-                info['is-new'] = True
-                missing_function_info[function_name] = info
     # print(missing_function_list)
     return missing_function_info
 
