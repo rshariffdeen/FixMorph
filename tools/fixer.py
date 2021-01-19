@@ -178,7 +178,11 @@ def fix_syntax_errors(source_file):
         for read_line in read_line_list:
             if ": " not in read_line:
                 continue
+            if " error:" not in read_line:
+                continue
             source_location = read_line.split(": ")[0]
+            if source_file not in source_location:
+                continue
             error_type = (read_line.split(" [")[-1]).replace("]", "")
             if "return-type" in error_type:
                 fix_return_type(source_file, source_location)
