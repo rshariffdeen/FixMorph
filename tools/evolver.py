@@ -180,7 +180,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     neighborhood_c = extractor.extract_neighborhood(source_file_c, seg_code, seg_id_c)
     var_map = values.map_namespace_global[(slice_file_a, slice_file_c)]
     script_lines = list()
-
+    segment_type = values.segment_map[seg_code]
     count = 0
     for instruction in instruction_list:
         count = count + 1
@@ -258,8 +258,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                                                                                  source_file_d,
                                                                                  var_map
                                                                                  ))
-
-            missing_label_list.update(identifier.identify_missing_labels(neighborhood_a,
+            if segment_type in ["FunctionDecl", "Macro"]:
+                missing_label_list.update(identifier.identify_missing_labels(neighborhood_a,
                                                                          neighborhood_b,
                                                                          neighborhood_c,
                                                                          check_node,
