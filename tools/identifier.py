@@ -13,7 +13,8 @@ from ast import ast_generator, ast_vector
 from tools import generator as Gen
 
 
-STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *", "unsigned long", "long"]
+STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *",
+                       "unsigned long", "long", "void"]
 
 
 def identify_missing_labels(neighborhood_a, neighborhood_b, neighborhood_c, insert_node_b, source_path_b, var_map):
@@ -71,15 +72,13 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
     for call_expr in call_list_b:
         # print(call_expr)
         function_ref_node = call_expr['children'][0]
-        if "value" not in function_ref_node:
-            continue
         function_name = function_ref_node['value']
         # print(function_name)
         if function_name in function_list_c.keys():
             function_node = function_list_c[function_name]
             signature_node = function_node['children'][0]
             num_param = len(signature_node['children'])
-            num_args = len(call_expr['children']) - 1
+            num_args = len(macro_value.replace(function_name, "").split(","))
             if num_args == num_param:
                 continue
         missing_function_list[function_name] = function_ref_node
@@ -102,7 +101,6 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 # info['ast-a'] = ast_tree_a
                 # info['ast-d'] = ast_tree_c
                 info['ast-key'] = ast_map_key
-                info['is-new'] = False
                 missing_function_info[function_name] = info
             else:
                 info = dict()
@@ -116,20 +114,6 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 if info != missing_function_info[function_name]:
                     print(missing_function_info[function_name])
                     error_exit("MULTIPLE FUNCTION REFERENCES ON DIFFERENT TARGETS FOUND!!!")
-
-        elif function_node_a is None and function_node_b is not None:
-            # print(function_node)
-            if function_name not in missing_function_info.keys():
-                info = dict()
-                info['node_id'] = function_node_b['id']
-                info['ref_node_id'] = ref_node['id']
-                info['source_a'] = source_path_b
-                info['source_d'] = source_path_d
-                # info['ast-a'] = ast_tree_a
-                # info['ast-d'] = ast_tree_c
-                info['ast-key'] = ast_map_key
-                info['is-new'] = True
-                missing_function_info[function_name] = info
     # print(missing_function_list)
     return missing_function_info
 
@@ -174,8 +158,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                             #     var_list.append(identifier)
                             continue
                         var_list = var_list + extractor.extract_identifier_list(operand)
-                    else:
-                        var_list.append(identifier)
+                    var_list.append(identifier)
                 for identifier in var_list:
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
                         if identifier not in missing_var_list.keys():
@@ -206,7 +189,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                             elif identifier in dec_list_local_b.keys():
                                 info['is_global'] = False
                                 info['pre-exist'] = False
-                                info['target-file'] = source_path_d
+                                info['target-file'] = target_file
                                 info['ast-node'] = dec_list_local_b[identifier]
                                 is_mapping = (identifier in var_map) and \
                                              (var_map[identifier] in set(
