@@ -150,10 +150,12 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                 var_list = list()
                 for operand in operand_list:
                     identifier = operand.strip().replace("\n", "").replace(" ", "")
+                    if "(" in identifier:
+                        continue
                     if "\"" in identifier or "'" in identifier or str(identifier).isnumeric():
                         continue
                     if any(operator in operand for operator in [">", ">=", "==", "-", "+", "<", "<=", "*", "/"]):
-                        if "->" in operand or "(" in operand:
+                        if "->" in operand:
                             # if identifier not in var_map:
                             #     var_list.append(identifier)
                             continue
