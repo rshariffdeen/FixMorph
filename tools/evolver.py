@@ -179,6 +179,15 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     neighborhood_a = extractor.extract_neighborhood(source_file_a, seg_code, seg_id_a)
     neighborhood_b = extractor.extract_neighborhood(source_file_b, seg_code, seg_id_a)
     neighborhood_c = extractor.extract_neighborhood(source_file_c, seg_code, seg_id_c)
+
+    if not neighborhood_a or not neighborhood_b or not neighborhood_c:
+        emitter.error("[error] neighborhood not found")
+        emitter.error("Seg Code: " + str(seg_code))
+        emitter.error("PA: " + str(source_file_a) + "-" + str(seg_id_a))
+        emitter.error("PB: " + str(source_file_b) + "-" + str(seg_id_a))
+        emitter.error("PC: " + str(source_file_c) + "-" + str(seg_id_c))
+        error_exit("unable to evolve the code")
+
     var_map = values.map_namespace_global[(slice_file_a, slice_file_c)]
     script_lines = list()
     segment_type = values.segment_map[seg_code]
