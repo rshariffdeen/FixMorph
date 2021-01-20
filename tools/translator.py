@@ -243,6 +243,9 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if target_node.line is None:
                         target_node.line = target_node.parent.line
 
+                    if target_node.parent.type == "FunctionDecl":
+                        continue
+
                     instruction = get_instruction((definitions.UPDATE, target_node, update_node))
                     translated_instruction_list.append(instruction)
 
