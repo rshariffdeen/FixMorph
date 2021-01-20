@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 
 	if (fib_number > 10){
 	    a = 10;
-	      goto error:
+	      goto error;
 	}
 
 	error:

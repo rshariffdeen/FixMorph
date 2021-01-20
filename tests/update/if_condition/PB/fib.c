@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 	printf("fib number is %d", fib_number);
 
 	if (fib_number > 10)
-	     goto warning:
+	     goto warning;
 
 	error:
 	    printf("ERROR");
