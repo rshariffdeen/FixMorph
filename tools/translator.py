@@ -834,6 +834,14 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     if replace_node.parent_id not in replaced:
                         replaced.append(replace_node.id)
                         modified_AB.append((definitions.REPLACE, replace_node, nodeB1))
+            elif nodeB2.type in ["LabelStmt"]:
+                if nodeB2 not in inserted:
+                    modified_AB.append((definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
+                else:
+                    compound_node = nodeB2.parent
+                    insert_pos = compound_node.children.index(nodeB2)
+                    modified_AB.append((definitions.INSERT, nodeB1, compound_node, insert_pos))
+
             elif nodeB2 not in inserted:
                 modified_AB.append((definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
     return modified_AB
