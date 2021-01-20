@@ -14,9 +14,9 @@ int fibonacci(int number)
 int main(int argc, char **argv)
 {
 	int a;
-	int c = atoi(argv[0]);
 	scanf("%d", &a);
 	int fibonacci_number = fibonacci(a);
+	int c = atoi(argv[0]);
 	if (c == 0){
 	   printf("SOMETHING");
 	}

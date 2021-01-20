@@ -14,9 +14,9 @@ int fib(int n)
 int main(int argc, char **argv)
 {
 	int a;
-	int c = atoi(argv[0]);
 	scanf("%d", &a);
 	int fib_number = fib(a);
+	int c = atoi(argv[0]);
 	if (c == 0){
 	   printf("SOMETHING");
 	}
