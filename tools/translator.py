@@ -395,8 +395,11 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         if target_node.line is None:
                             target_node.line = target_node.parent.line
                         if target_node in inserted_node_list_d:
-                            instruction = get_instruction((definitions.REPLACE, move_node, target_node))
-                            translated_instruction_list.append(instruction)
+                            if target_node.type not in ["LabelStmt"]:
+                                instruction = get_instruction((definitions.REPLACE, move_node, target_node))
+                                translated_instruction_list.append(instruction)
+                            else:
+                                instruction = get_instruction((definitions.MOVE, move_node, target_node, offset))
                         else:
                             instruction = get_instruction((definitions.MOVE, move_node, target_node, offset))
                             translated_instruction_list.append(instruction)
