@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	error:
 	    printf("ERROR");
 	warning:
-	    printf("WARNING");
+	    printf("WARNING %d", fib_number);
 	return 0;
 }
 
