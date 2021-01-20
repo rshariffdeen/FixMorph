@@ -455,6 +455,8 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                 info = dict()
                 info['target'] = source_path_d
                 ast_node = type_def_node_list_b[identifier]
+                if "file" not in ast_node:
+                    continue
                 source_file = str(ast_node['file'])
                 if ".." in source_file:
                     source_file = source_path_b + "/../" + str(ast_node['file'])
