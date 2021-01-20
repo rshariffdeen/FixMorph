@@ -162,6 +162,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     slice_file_a, slice_file_b, slice_file_c, slice_file_d = slice_file_list
     source_file_a, source_file_b, source_file_c, source_file_d = source_file_list
     ast_map_key = (slice_file_a, slice_file_b, slice_file_c)
+    namespace_map_key = (slice_file_a, slice_file_c)
 
     if values.DONOR_REQUIRE_MACRO:
         values.PRE_PROCESS_MACRO = values.DONOR_PRE_PROCESS_MACRO
@@ -248,7 +249,7 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
             missing_macro_list.update(identifier.identify_missing_macros(check_node,
                                                                          source_file_b,
                                                                          source_file_d,
-                                                                         ast_map_key
+                                                                         namespace_map_key
                                                                          ))
 
             missing_var_list.update(identifier.identify_missing_var(neighborhood_a,
