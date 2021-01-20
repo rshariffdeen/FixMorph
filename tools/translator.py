@@ -758,6 +758,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     modified_AB.append((definitions.MOVE, nodeB1, nodeB2, pos))
             else:
                 if nodeB2.type == "IfStmt":
+                    modified_AB.append((definitions.DELETE, nodeA1))
                     continue
                 if i[1] in match_BA.keys():
                     nodeA = match_BA[i[1]]
