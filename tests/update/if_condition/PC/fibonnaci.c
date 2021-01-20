@@ -10,11 +10,25 @@ int fibonacci(int number)
 }
 
 
-int main(void)
+
+int main(int argc, char **argv)
 {
 	int a;
+	int c = atoi(argv[0]);
 	scanf("%d", &a);
 	int fibonacci_number = fibonacci(a);
+	if (c == 0){
+	   printf("SOMETHING");
+	}
+
 	printf("fib number is %d", fibonacci_number);
+
+	if (fibonacci_number > 10){
+	    a = 10;
+	      goto error:
+	}
+
+	error:
+	    printf("ERROR");
 	return 0;
 }
