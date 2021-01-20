@@ -1,4 +1,5 @@
 #include <stdio.h>
+#define NUM 10
 
 int fibonacci(int number)
 {
