@@ -513,12 +513,12 @@ def identify_missing_definitions(function_node, missing_function_list):
                     continue
                 if identifier not in missing_function_list:
                     print(identifier)
-                    print(values.STANDARD_FUNCTION_LIST)
+                    # print(values.STANDARD_FUNCTION_LIST)
                     error_exit("FOUND NEW DEPENDENT FUNCTION")
     return list(set(missing_definition_list))
 
 
-def identify_missing_macros(ast_node, source_file, target_file):
+def identify_missing_macros(ast_node, source_file, target_file, ast_map_key):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\t\tanalysing for missing macros")
     # print(ast_node)
@@ -535,7 +535,7 @@ def identify_missing_macros(ast_node, source_file, target_file):
             if "(" in macro_name:
                 macro_name = macro_name.split("(")[0] + "("
             if macro_name not in (target_macro_def_list + target_macro_ref_list):
-                if macro_name not in values.map_namespace_global:
+                if macro_name not in values.map_namespace_global[ast_map_key]:
                     missing_macro_list[macro_name] = node_macro_list[macro_name]
     else:
         macro_node_list = extractor.extract_macro_node_list(ast_node)
@@ -543,14 +543,14 @@ def identify_missing_macros(ast_node, source_file, target_file):
         # print(macro_node_list)
         for macro_node in macro_node_list:
             macro_def_list_temp = extractor.extract_macro_definition(macro_node, source_file, target_file)
-            print(macro_def_list_temp)
+            # print(macro_def_list_temp)
             macro_def_list = merger.merge_macro_info(macro_def_list, macro_def_list_temp)
         # print(macro_def_list)
         for macro_name in macro_def_list:
             if "(" in macro_name:
                 macro_name = macro_name.split("(")[0] + "("
             if macro_name not in (target_macro_def_list + target_macro_ref_list):
-                if macro_name not in values.map_namespace_global:
+                if macro_name not in values.map_namespace_global[ast_map_key]:
                     missing_macro_list[macro_name] = macro_def_list[macro_name]
 
     # print(missing_macro_list)
