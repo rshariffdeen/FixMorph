@@ -239,7 +239,7 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                         instruction = get_instruction((definitions.REPLACE, target_node, update_node))
                         translated_instruction_list.append(instruction)
                         continue
-                    elif deleted_node_list_d.get(target_node.parent.parent_id):
+                    elif deleted_node_list_d.get(target_node.parent_id):
                         instruction = get_instruction((definitions.REPLACE, target_node.parent, update_node))
                         translated_instruction_list.append(instruction)
                         continue
