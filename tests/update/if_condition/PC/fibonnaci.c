@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	   printf("SOMETHING");
 	}
 
-	printf("fib number is %d", fibonacci_number);
+	printf("fib number is %d", fibonacci_numberN);
 
 	if (fibonacci_number > 10){
 	    a = 10;
