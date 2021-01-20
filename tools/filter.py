@@ -326,7 +326,7 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
     filtered_namespace_map = dict()
     ast_tree_b = ast_generator.get_ast_json(source_b, values.DONOR_REQUIRE_MACRO, True)
     node_list = list()
-
+    # print(namespace_map)
     for transformation_rule in edit_script:
         if "Insert" in transformation_rule:
             node_b_str = transformation_rule.split(" ")[1]
@@ -368,7 +368,7 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                     struct_node = node['children'][0]
                     while struct_node['type'] != "DeclRefExpr":
                         struct_node = struct_node['children'][0]
-                    if "data-type" in struct_node:
+                    if "data_type" in struct_node:
                         struct_name = struct_node['data_type'].replace("struct ", "").split(" ")[0]
                         node_value = "." + struct_name + node['value'].replace(":", ".")
                         if node_value in namespace_map:
@@ -376,4 +376,5 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                             field_name_b = "." + node_value.split(".")[-1]
                             filtered_namespace_map[field_name_b] = field_name_c
 
+    # print(filtered_namespace_map)
     return filtered_namespace_map
