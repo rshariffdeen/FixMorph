@@ -247,6 +247,10 @@ def detect_struct_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
+        if float(candidate_distance) == 0.0:
+            values.IS_IDENTICAL = True
+        else:
+            values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
@@ -276,6 +280,10 @@ def detect_enum_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
+        if float(candidate_distance) == 0.0:
+            values.IS_IDENTICAL = True
+        else:
+            values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tEnum Definition: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
@@ -313,6 +321,10 @@ def detect_function_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
+        if float(candidate_distance) == 0.0:
+            values.IS_IDENTICAL = True
+        else:
+            values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tFunction: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
@@ -342,6 +354,10 @@ def detect_decl_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
+        if float(candidate_distance) == 0.0:
+            values.IS_IDENTICAL = True
+        else:
+            values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tDeclaration: " + candidate_name + " in $Pc/" + str(candidate_source_path))
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")

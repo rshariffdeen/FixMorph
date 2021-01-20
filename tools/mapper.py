@@ -107,11 +107,12 @@ def generate_map(file_list):
 
     ast_node_map = parallel.read_mapping(map_file_name)
     # emitter.data(ast_node_map)
-    if values.DEFAULT_OPERATION_MODE == 0:
+    namespace_map = {}
+    if values.DEFAULT_OPERATION_MODE == 0 and not values.IS_IDENTICAL:
         ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c, int(neighbor_ast['id']))
         # emitter.data(ast_node_map)
-    namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
-                                                  vector_source_c, int(neighbor_ast['id']))
+        namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
+                                                      vector_source_c, int(neighbor_ast['id']))
     # writer.write_var_map(namespace_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
     utilities.restore_slice_source()
 

@@ -53,7 +53,7 @@ DIFF_LINE_LIST = dict()
 DIVERGENT_POINT_LIST = list()
 FUNCTION_MAP = ""
 MODIFIED_SOURCE_LIST = list()
-
+IS_IDENTICAL = False
 
 # ------------------ Default Values ---------------
 DEFAULT_TAG_ID = "test"
