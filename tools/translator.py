@@ -200,6 +200,8 @@ def get_candidate_node_list(node_ref, json_ast_dump):
 def extract_child_id_list(ast_object):
     id_list = list()
     for child_node in ast_object.children:
+        if ast_object.type == "IfStmt" and child_node.type == "CompoundStmt":
+            continue
         child_id = int(child_node.id)
         id_list.append(child_id)
         grand_child_list = extract_child_id_list(child_node)
