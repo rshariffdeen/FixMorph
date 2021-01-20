@@ -814,11 +814,19 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             if int(pos) - 1 in inserted_pos_node_list.keys():
                 adjusted_pos = inserted_pos_node_list[int(pos) - 1]
             inserted_pos_node_list[int(pos)] = adjusted_pos
-            if nodeB2.type in ["UnaryOperator", "ConditionalOperator", "IfStmt"]:
+            if nodeB2.type in ["UnaryOperator", "ConditionalOperator"]:
                 replace_node = nodeB2.children[0]
                 if replace_node.parent_id not in replaced:
                     replaced.append(replace_node.id)
                     modified_AB.append((definitions.REPLACE, nodeB1, replace_node))
+            elif nodeB2.type in ["IfStmt"]:
+                if adjusted_pos == 0:
+                    replace_node = nodeB2.children[0]
+                    if replace_node.parent_id not in replaced:
+                        replaced.append(replace_node.id)
+                        modified_AB.append((definitions.REPLACE, nodeB1, replace_node))
+                else:
+                    modified_AB.append((definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
             elif nodeB2.type in ["BinaryOperator"]:
                 target_node_b = nodeB2
                 nodeA = match_BA[i[2]]
