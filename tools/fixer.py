@@ -221,11 +221,12 @@ def fix_initialization_error(source_file, source_location):
         new_statement = original_statement.replace(";=", "=")
     elif ", ," in original_statement:
         new_statement = original_statement.replace(", ,", ",")
-    emitter.information("replaced statement: " + new_statement)
-    backup_file(source_file, FILENAME_BACKUP)
-    replace_code(new_statement, source_file, line_number)
-    backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
-    show_partial_diff(backup_file_path, source_file)
+    if new_statement:
+        emitter.information("replaced statement: " + new_statement)
+        backup_file(source_file, FILENAME_BACKUP)
+        replace_code(new_statement, source_file, line_number)
+        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+        show_partial_diff(backup_file_path, source_file)
 
 
 def fix_unknown_function_calls(source_file, source_location):
