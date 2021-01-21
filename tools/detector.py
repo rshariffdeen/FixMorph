@@ -155,7 +155,7 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
             elif len(candidate_list) == 0:
                 utilities.error_exit("NO CANDIDATE FOUND")
             if len(candidate_list) == 1:
-                candidate_list_all[vector_path_a] = candidate_list[0]
+                candidate_list_all[vector_path_a] = candidate_list
         else:
             utilities.error_exit("DOES NOT SUPPORT OTHER SEGMENTS THAN FUNCTIONS")
 
