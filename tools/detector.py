@@ -101,7 +101,8 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
     for vector_a in vector_list_a:
         candidate_list = []
         vector_path_a, vector_matrix_a = vector_a
-        source_file_a, segment_a = vector_path_a.split(".c.")[0] + ".c"
+        source_file_a, segment_a = vector_path_a.split(".c.")
+        source_file_a = source_file_a + ".c"
         seg_type_a = segment_a.replace(".vec", "").split("_")[0]
         segment_identifier_a = "_".join(segment_a.replace(".vec", "").split("_")[1:])
         slice_file_a = source_file_a + "." + seg_type_a + "." + segment_identifier_a + ".slice"
@@ -120,7 +121,8 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
             node_size_a = len(id_list_a)
             for vector_c in vector_list_c:
                 vector_path_c, vector_matrix_c = vector_c
-                source_file_c, segment_c = vector_path_c.split(".c.")[0] + ".c"
+                source_file_c, segment_c = vector_path_c.split(".c.")
+                source_file_c = source_file_c + ".c"
                 seg_type_c = segment_c.replace(".vec", "").split("_")[0]
                 segment_identifier_c = "_".join(segment_c.replace(".vec", "").split("_")[1:])
                 slice_file_c = source_file_c + "." + seg_type_c + "." + segment_identifier_c + ".slice"
