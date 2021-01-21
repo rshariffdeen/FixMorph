@@ -113,7 +113,7 @@ def start():
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_DIFF]:
         safe_exec(analyse_source_diff, "analysing source diff")
-        if values.DEFAULT_OPERATION_MODE == 0:
+        if values.DEFAULT_OPERATION_MODE in [0, 3]:
             safe_exec(segment_code, "segmentation of code")
         save_values()
     else:
