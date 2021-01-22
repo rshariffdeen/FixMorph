@@ -114,7 +114,7 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
         if os.stat(slice_file_a).st_size == 0:
             error_exit("SLICE NOT CREATED")
         utilities.shift_per_slice(slice_file_a)
-        ast_tree_a = ast_generator.get_ast_json(source_file_a)
+        ast_tree_a = ast_generator.get_ast_json(source_file_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
         if seg_type_a == "func":
             ast_node_a = finder.search_function_node_by_name(ast_tree_a, segment_identifier_a)
             if not ast_node_a:
@@ -138,7 +138,7 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                 if os.stat(slice_file_c).st_size == 0:
                     continue
                 utilities.shift_per_slice(slice_file_c)
-                ast_tree_c = ast_generator.get_ast_json(source_file_c)
+                ast_tree_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
                 ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
                 id_list_c = extractor.extract_child_id_list(ast_node_c)
                 mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
