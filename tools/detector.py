@@ -158,14 +158,14 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                 if len(candidate_list) > 1:
                     emitter.error("Found more than one candidate")
                     for candidate in candidate_list:
-                        emitter.error(candidate)
+                        emitter.error(str(candidate))
                     utilities.error_exit("Too many candidates")
                 if similarity > values.DEFAULT_SIMILARITY_FACTOR:
                     candidate_list.append((vector_path_c, similarity))
             if len(candidate_list) > 1:
                 emitter.error("Found more than one candidate")
                 for candidate in candidate_list:
-                    emitter.error(candidate)
+                    emitter.error(str(candidate))
                 utilities.error_exit("Too many candidates")
             elif len(candidate_list) == 0:
                 utilities.error_exit("NO CANDIDATE FOUND")
