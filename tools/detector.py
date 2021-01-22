@@ -148,7 +148,7 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                     node_id_a = utilities.id_from_string(node_str_a)
                     if node_id_a in id_list_a:
                         match_count = match_count + 1
-                similarity = float(match_count / (node_size_c + node_size_a))
+                similarity = float(match_count / (node_size_a))
                 emitter.information("Match Count: " + str(match_count))
                 emitter.information("Size of A: " + str(node_size_a))
                 emitter.information("Size of C: " + str(node_size_c))
