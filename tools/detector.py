@@ -133,8 +133,10 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                 slicer.slice_source_file(source_file_c, seg_type_c, segment_identifier_c,
                                          values.CONF_PATH_C,
                                          values.TARGET_REQUIRE_MACRO)
+                if not os.path.isfile(slice_file_c):
+                    continue
                 if os.stat(slice_file_c).st_size == 0:
-                    error_exit("SLICE NOT CREATED")
+                    continue
                 utilities.shift_per_slice(slice_file_c)
                 ast_tree_c = ast_generator.get_ast_json(source_file_c)
                 ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
