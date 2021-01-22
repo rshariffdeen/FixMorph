@@ -78,7 +78,7 @@ def highlight(message, jump_line=True):
 def information(message, jump_line=True):
     if values.DEBUG_DATA:
         prefix = "\t\t[information] "
-        write(message, GREY, prefix=prefix, indent_level=2, jump_line=jump_line)
+        write(message, GREY, prefix=prefix, indent_level=2)
     logger.information(message)
 
 
