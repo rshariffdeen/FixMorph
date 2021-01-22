@@ -97,10 +97,10 @@ def read_conf(arg_list):
     emitter.normal("reading configuration values")
     if len(arg_list) > 0:
         for arg in arg_list:
-            if definitions.ARG_DEBUG in arg:
-                values.DEBUG = True
-            elif definitions.ARG_DEBUG_DATA in arg:
+            if definitions.ARG_DEBUG_DATA in arg:
                 values.DEBUG_DATA = True
+            elif definitions.ARG_DEBUG in arg:
+                values.DEBUG = True
             elif definitions.ARG_SKIP_VEC_GEN in arg:
                 values.SKIP_VEC_GEN = True
             elif definitions.ARG_SKIP_RESTORE in arg:
