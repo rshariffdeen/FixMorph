@@ -213,6 +213,8 @@ def print_configuration():
     emitter.configuration("output dir", definitions.DIRECTORY_OUTPUT)
     emitter.configuration("context level", values.DEFAULT_CONTEXT_LEVEL)
     emitter.configuration("timeout limit", values.DEFAULT_OVERALL_TIMEOUT)
+    emitter.configuration("debug mode", values.DEBUG)
+    emitter.configuration("debug data", values.DEBUG_DATA)
 
 
 def update_configuration():
