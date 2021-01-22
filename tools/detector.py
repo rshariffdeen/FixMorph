@@ -105,6 +105,8 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
         source_file_a = source_file_a + ".c"
         seg_type_a = segment_a.replace(".vec", "").split("_")[0]
         segment_identifier_a = "_".join(segment_a.replace(".vec", "").split("_")[1:])
+        emitter.information("Segment A Type: " + str(seg_type_a))
+        emitter.information("Segment A Name: " + str(segment_identifier_a))
         slice_file_a = source_file_a + "." + seg_type_a + "." + segment_identifier_a + ".slice"
         slicer.slice_source_file(source_file_a, seg_type_a, segment_identifier_a,
                                  values.CONF_PATH_A,
@@ -126,6 +128,8 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                 seg_type_c = segment_c.replace(".vec", "").split("_")[0]
                 segment_identifier_c = "_".join(segment_c.replace(".vec", "").split("_")[1:])
                 slice_file_c = source_file_c + "." + seg_type_c + "." + segment_identifier_c + ".slice"
+                emitter.information("Segment C Type: " + str(seg_type_c))
+                emitter.information("Segment C Name: " + str(segment_identifier_c))
                 slicer.slice_source_file(source_file_c, seg_type_c, segment_identifier_c,
                                          values.CONF_PATH_C,
                                          values.TARGET_REQUIRE_MACRO)
@@ -144,7 +148,12 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                     node_id_a = utilities.id_from_string(node_str_a)
                     if node_id_a in id_list_a:
                         match_count = match_count + 1
-                similarity = float(match_count/(node_size_c + node_size_a))
+                similarity = float(match_count / (node_size_c + node_size_a))
+                emitter.information("Match Count: " + str(match_count))
+                emitter.information("Size of A: " + str(node_size_a))
+                emitter.information("Size of C: " + str(node_size_c))
+                emitter.information("Similarity: " + str(similarity))
+
                 if similarity > values.DEFAULT_SIMILARITY_FACTOR:
                     candidate_list.append((vector_path_c, similarity))
             if len(candidate_list) > 1:
