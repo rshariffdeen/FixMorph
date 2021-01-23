@@ -200,6 +200,8 @@ def get_candidate_node_list(node_ref, json_ast_dump):
 def extract_child_id_list(ast_object):
     id_list = list()
     for child_node in ast_object.children:
+        if ast_object.type == "IfStmt" and child_node.type == "CompoundStmt":
+            continue
         child_id = int(child_node.id)
         id_list.append(child_id)
         grand_child_list = extract_child_id_list(child_node)
@@ -756,6 +758,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     modified_AB.append((definitions.MOVE, nodeB1, nodeB2, pos))
             else:
                 if nodeB2.type == "IfStmt":
+                    modified_AB.append((definitions.DELETE, nodeA1))
                     continue
                 if i[1] in match_BA.keys():
                     nodeA = match_BA[i[1]]
@@ -815,16 +818,23 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 adjusted_pos = inserted_pos_node_list[int(pos) - 1]
             inserted_pos_node_list[int(pos)] = adjusted_pos
             if nodeB2.type in ["UnaryOperator", "ConditionalOperator"]:
-                replace_node = nodeB2.children[0]
+                nodeA = match_BA[i[2]]
+                nodeA = id_from_string(nodeA)
+                nodeA = ASTlists[values.Project_A.name][nodeA]
+                replace_node = nodeA.children[0]
+                # replace_node = nodeB2.children[0]
                 if replace_node.parent_id not in replaced:
                     replaced.append(replace_node.id)
-                    modified_AB.append((definitions.REPLACE, nodeB1, replace_node))
+                    modified_AB.append((definitions.REPLACE, replace_node, nodeB1))
             elif nodeB2.type in ["IfStmt"]:
                 if adjusted_pos == 0:
-                    replace_node = nodeB2.children[0]
+                    nodeA = match_BA[i[2]]
+                    nodeA = id_from_string(nodeA)
+                    nodeA = ASTlists[values.Project_A.name][nodeA]
+                    replace_node = nodeA.children[0]
                     if replace_node.parent_id not in replaced:
                         replaced.append(replace_node.id)
-                        modified_AB.append((definitions.REPLACE, nodeB1, replace_node))
+                        modified_AB.append((definitions.REPLACE, replace_node, nodeB1))
                 else:
                     modified_AB.append((definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
             elif nodeB2.type in ["BinaryOperator"]:

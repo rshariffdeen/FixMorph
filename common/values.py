@@ -65,6 +65,7 @@ DEFAULT_AST_DIFF_SIZE = 1000
 DEFAULT_OPERATION_MODE = 0
 DEFAULT_CONTEXT_LEVEL = 3
 DEFAULT_OVERALL_TIMEOUT = 3600
+DEFAULT_SIMILARITY_FACTOR = 0.4
 
 
 # ------------------ Configuration Values ---------------
@@ -97,6 +98,7 @@ CONF_USE_CACHE = False
 CONF_TAG_ID = ""
 CONF_OPERATION_MODE = -1
 CONF_CONTEXT_LEVEL = -1
+
 
 silence_emitter = False
 file_list_to_patch = []

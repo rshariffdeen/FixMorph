@@ -162,7 +162,7 @@ def create_vectors(project, source_file, segmentation_list):
         vector_list_a = finder.search_vector_list(values.Project_A, "*.func_*\.vec", 'func')
         function_name_list_a = list()
         function_name_list_c = dict()
-        filtered_function_list = list()
+
         for vector_a in vector_list_a:
             # Assume vector already created
             file_path_a = vector_a[0]
@@ -171,16 +171,20 @@ def create_vectors(project, source_file, segmentation_list):
         for function_name, begin_line, finish_line in function_list:
             function_name_list_c[function_name] = (begin_line, finish_line)
 
-        for function_name in function_name_list_a:
-            if function_name in function_name_list_c.keys():
-                begin_line, finish_line = function_name_list_c[function_name]
-                filtered_function_list.append((function_name, begin_line, finish_line))
-        if len(function_name_list_a) != len(filtered_function_list):
-            filtered_function_list = function_list
+        filtered_function_list = function_list
+        if values.DEFAULT_OPERATION_MODE == 0:
+            filtered_function_list = list()
+            for function_name in function_name_list_a:
+                if function_name in function_name_list_c.keys():
+                    begin_line, finish_line = function_name_list_c[function_name]
+                    filtered_function_list.append((function_name, begin_line, finish_line))
+            if len(function_name_list_a) != len(filtered_function_list):
+                filtered_function_list = function_list
 
         for function_name, begin_line, finish_line in filtered_function_list:
             function_name = "func_" + function_name.split("(")[0]
-            project.function_list[source_file][function_name] = ast_vector.Vector(source_file, function_name, begin_line,
+            project.function_list[source_file][function_name] = ast_vector.Vector(source_file, function_name,
+                                                                                  begin_line,
                                                                                   finish_line, True)
 
         ASTGenerator.get_vars(project, source_file, definition_list)
@@ -216,7 +220,8 @@ def create_vectors(project, source_file, segmentation_list):
             if "anonymous" in enum_name:
                 count = count + 1
                 enum_name = "enum_" + str(count)
-            project.enum_list[source_file][enum_name] = ast_vector.Vector(source_file, enum_name, begin_line, finish_line,
+            project.enum_list[source_file][enum_name] = ast_vector.Vector(source_file, enum_name, begin_line,
+                                                                          finish_line,
                                                                           True)
 
 

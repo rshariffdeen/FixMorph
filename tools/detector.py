@@ -4,9 +4,9 @@
 
 import sys
 import os
-from common.utilities import execute_command, error_exit, find_files, get_file_extension_list
-from tools import emitter, finder, logger
-from common import definitions, values
+from common.utilities import error_exit
+from tools import emitter, finder, logger, parallel, mapper, extractor, slicer
+from common import definitions, values, utilities
 from ast import ast_vector, ast_parser, ast_generator
 
 
@@ -92,6 +92,90 @@ def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
             var_map_file.write(var_a + " -> " + variable_mapping[var_a] + "\n")
 
     return variable_mapping
+
+
+def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    candidate_list_all = dict()
+    map_file_name = definitions.DIRECTORY_TMP + "/sydit.map"
+    for vector_a in vector_list_a:
+        candidate_list = []
+        vector_path_a, vector_matrix_a = vector_a
+        source_file_a, segment_a = vector_path_a.split(".c.")
+        source_file_a = source_file_a + ".c"
+        seg_type_a = segment_a.replace(".vec", "").split("_")[0]
+        segment_identifier_a = "_".join(segment_a.replace(".vec", "").split("_")[1:])
+        emitter.information("Segment A Type: " + str(seg_type_a))
+        emitter.information("Segment A Name: " + str(segment_identifier_a))
+        slice_file_a = source_file_a + "." + seg_type_a + "." + segment_identifier_a + ".slice"
+        slicer.slice_source_file(source_file_a, seg_type_a, segment_identifier_a,
+                                 values.CONF_PATH_A,
+                                 values.DONOR_REQUIRE_MACRO)
+        if os.stat(slice_file_a).st_size == 0:
+            error_exit("SLICE NOT CREATED")
+        utilities.shift_per_slice(slice_file_a)
+        ast_tree_a = ast_generator.get_ast_json(source_file_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+        if seg_type_a == "func":
+            ast_node_a = finder.search_function_node_by_name(ast_tree_a, segment_identifier_a)
+            if not ast_node_a:
+                error_exit("FUNCTION NODE NOT FOUND")
+            id_list_a = extractor.extract_child_id_list(ast_node_a)
+            node_size_a = len(id_list_a)
+            for vector_c in vector_list_c:
+                vector_path_c, vector_matrix_c = vector_c
+                source_file_c, segment_c = vector_path_c.split(".c.")
+                source_file_c = source_file_c + ".c"
+                seg_type_c = segment_c.replace(".vec", "").split("_")[0]
+                segment_identifier_c = "_".join(segment_c.replace(".vec", "").split("_")[1:])
+                slice_file_c = source_file_c + "." + seg_type_c + "." + segment_identifier_c + ".slice"
+                emitter.information("Segment C Type: " + str(seg_type_c))
+                emitter.information("Segment C Name: " + str(segment_identifier_c))
+                slicer.slice_source_file(source_file_c, seg_type_c, segment_identifier_c,
+                                         values.CONF_PATH_C,
+                                         values.TARGET_REQUIRE_MACRO)
+                if not os.path.isfile(slice_file_c):
+                    continue
+                if os.stat(slice_file_c).st_size == 0:
+                    continue
+                utilities.shift_per_slice(slice_file_c)
+                ast_tree_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+                ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
+                id_list_c = extractor.extract_child_id_list(ast_node_c)
+                mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
+                ast_node_map = parallel.read_mapping(map_file_name)
+                utilities.restore_per_slice(slice_file_c)
+                node_size_c = len(id_list_c)
+                match_count = 0
+                for node_str_a in ast_node_map:
+                    node_id_a = utilities.id_from_string(node_str_a)
+                    if node_id_a in id_list_a:
+                        match_count = match_count + 1
+                similarity = float(match_count / (node_size_a))
+                emitter.information("Match Count: " + str(match_count))
+                emitter.information("Size of A: " + str(node_size_a))
+                emitter.information("Size of C: " + str(node_size_c))
+                emitter.information("Similarity: " + str(similarity))
+                if len(candidate_list) > 1:
+                    emitter.error("Found more than one candidate")
+                    for candidate in candidate_list:
+                        emitter.error(str(candidate))
+                    utilities.error_exit("Too many candidates")
+                if similarity > values.DEFAULT_SIMILARITY_FACTOR:
+                    candidate_list.append((vector_path_c, similarity))
+            if len(candidate_list) > 1:
+                emitter.error("Found more than one candidate")
+                for candidate in candidate_list:
+                    emitter.error(str(candidate))
+                utilities.error_exit("Too many candidates")
+            elif len(candidate_list) == 0:
+                utilities.error_exit("NO CANDIDATE FOUND")
+            if len(candidate_list) == 1:
+                candidate_list_all[vector_path_a] = candidate_list
+        else:
+            utilities.error_exit("DOES NOT SUPPORT OTHER SEGMENTS THAN FUNCTIONS")
+
+        utilities.restore_per_slice(slice_file_a)
+    return candidate_list_all
 
 
 def detect_segment_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
@@ -235,7 +319,7 @@ def detect_struct_clones():
     UNKNOWN = "#UNKNOWN#"
     if not vector_list_c:
         return []
-    candidate_list_all = detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
+    candidate_list_all = detect_candidate_list(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".struct_")
@@ -268,7 +352,7 @@ def detect_enum_clones():
     UNKNOWN = "#UNKNOWN#"
     if not vector_list_c:
         return []
-    candidate_list_all = detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
+    candidate_list_all = detect_candidate_list(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".enum_")
@@ -299,7 +383,7 @@ def detect_function_clones():
     clone_list = []
     factor = 2
     UNKNOWN = "#UNKNOWN#"
-    candidate_list_all = detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
+    candidate_list_all = detect_candidate_list(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".func_")
@@ -333,6 +417,13 @@ def detect_function_clones():
     return clone_list
 
 
+def detect_candidate_list(vector_list_a, vector_list_c, factor):
+    if values.DEFAULT_OPERATION_MODE == 0:
+        return detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
+    else:
+        return detect_segment_clone_by_similarity(vector_list_a, vector_list_c)
+
+
 def detect_decl_clones():
     extension = "*.var_*\.vec"
     vector_list_a = finder.search_vector_list(values.Project_A, extension, 'global variable')
@@ -342,7 +433,7 @@ def detect_decl_clones():
     UNKNOWN = "#UNKNOWN#"
     if not vector_list_c:
         return []
-    candidate_list_all = detect_segment_clone_by_distance(vector_list_a, vector_list_c, factor)
+    candidate_list_all = detect_candidate_list(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
         candidate_list = candidate_list_all[vector_path_a]
         vector_source_a, vector_name_a = vector_path_a.split(".var_")

@@ -90,7 +90,7 @@ def start():
     emitter.title("Clone Detection")
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_DETECTION]:
-        if values.DEFAULT_OPERATION_MODE == 0:
+        if values.DEFAULT_OPERATION_MODE in [0, 3]:
             if not values.SKIP_VEC_GEN:
                 safe_exec(generate_target_vectors, "generating vectors for target")
             safe_exec(find_segment_clones, "finding segment clones in target")
