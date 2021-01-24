@@ -55,15 +55,16 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
     emitter.normal("\tderiving namespace map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-
+    ast_array_a = converter.convert_dict_to_array(ast_tree_a)
+    ast_array_c = converter.convert_dict_to_array(ast_tree_c)
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
     for ast_node_txt_a in ast_node_map:
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
         ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
-        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
-        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
+        ast_node_a = ast_array_a[ast_node_id_a]
+        ast_node_c = ast_array_c[ast_node_id_c]
         if ast_node_id_a == 0 or ast_node_id_c == 0:
             continue
 

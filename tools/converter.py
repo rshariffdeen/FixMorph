@@ -457,3 +457,15 @@ def convert_macro_list_to_dict(string_list):
         macro_name = macro_name.split("(")[0]
         macro_list[macro_name] = macro_def
     return macro_list
+
+
+def convert_dict_to_array(ast_tree):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    node_array = dict()
+    for ast_node in ast_tree['children']:
+        child_id = int(ast_node['id'])
+        node_array[child_id] = ast_node
+        child_list = convert_dict_to_array(ast_node)
+        if child_list:
+            node_array.update(child_list)
+    return node_array
