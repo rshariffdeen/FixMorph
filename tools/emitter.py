@@ -25,7 +25,6 @@ rows, columns = os.popen('stty size', 'r').read().split()
 def write(print_message, print_color, new_line=True, prefix=None, indent_level=0):
     if not values.silence_emitter:
         message = "\033[K" + print_color + str(print_message) + '\x1b[0m'
-        message = message.decode('utf-8', 'ignore')
         if prefix:
             prefix = "\033[K" + print_color + str(prefix) + '\x1b[0m'
             len_prefix = ((indent_level+1) * 4) + len(prefix)
