@@ -63,11 +63,10 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
         ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
-        ast_node_a = ast_array_a[ast_node_id_a]
-        ast_node_c = ast_array_c[ast_node_id_c]
         if ast_node_id_a == 0 or ast_node_id_c == 0:
             continue
-
+        ast_node_a = ast_array_a[ast_node_id_a]
+        ast_node_c = ast_array_c[ast_node_id_c]
         parent_id_a = int(ast_node_a['parent_id'])
         parent_id_c = int(ast_node_c['parent_id'])
         if (int(ast_node_id_a) < int(neighbor_id_a)) and (parent_id_a != 0 and parent_id_c != 0):
