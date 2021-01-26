@@ -49,6 +49,7 @@ def load_values():
         values.original_diff_info = reader.read_json(definitions.FILE_DIFF_INFO)
         load_state()
     definitions.FILE_CLONE_INFO = definitions.DIRECTORY_OUTPUT + "/clone-info"
+    definitions.FILE_LIST_PATCH_FILES = definitions.DIRECTORY_OUTPUT + "/list-patch-files"
     definitions.FILE_VECTOR_MAP = definitions.DIRECTORY_OUTPUT + "/vector-map"
     definitions.FILE_AST_MAP = definitions.DIRECTORY_OUTPUT + "/ast-map"
     definitions.FILE_SOURCE_MAP = definitions.DIRECTORY_OUTPUT + "/source-map"
@@ -62,6 +63,7 @@ def save_values():
         values.file_list_to_patch = segment_clone_list
     else:
         values.file_list_to_patch = file_clone_list
+    writer.write_as_json(values.file_list_to_patch)
     save_current_state()
 
 
