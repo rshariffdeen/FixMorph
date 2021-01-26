@@ -160,10 +160,9 @@ def anti_unification(ast_node_a, ast_node_c):
             if child_a["type"] == child_c["type"]:
                 waiting_list_a.append(child_a)
                 waiting_list_c.append(child_c)
-            else:
-                key = child_a["type"] + "(" + str(child_a["id"]) + ")"
-                value = child_c["type"] + "(" + str(child_c["id"]) + ")"
-                au_pairs[key] = value
+            key = child_a["type"] + "(" + str(child_a["id"]) + ")"
+            value = child_c["type"] + "(" + str(child_c["id"]) + ")"
+            au_pairs[key] = value
 
     return au_pairs
 
