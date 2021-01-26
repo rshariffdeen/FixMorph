@@ -12,6 +12,10 @@ from tools import extractor, oracle, logger, filter, emitter, transformer
 
 def slice_source_file(source_path, segment_code, segment_identifier, project_path, use_macro=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    output_file_name = "." + segment_code + "." + segment_identifier + ".slice"
+    output_file_path = source_path + output_file_name
+    if os.path.isfile(output_file_path):
+        return True
     ast_tree = ASTGenerator.get_ast_json(source_path, use_macro, True)
     segment_type = values.segment_map[segment_code]
     ast_script = list()
@@ -41,8 +45,6 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
         return False
 
     # print(ast_script)
-    output_file_name = "." + segment_code + "." + segment_identifier + ".slice"
-    output_file_path = source_path + output_file_name
     ast_script_path = definitions.DIRECTORY_OUTPUT + "/" + output_file_path.split("/")[-1] + ".ast"
     if ast_script:
         transformer.transform_source_file(source_path, ast_script, output_file_path, ast_script_path)
