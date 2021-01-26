@@ -262,6 +262,17 @@ def get_source_name_from_slice(slice_path):
     return source_path
 
 
+def get_identifier_from_slice(slice_path):
+    if ".c." in slice_path:
+        source_path, segment = slice_path.split(".c.")
+    else:
+        source_path, segment = slice_path.split(".h.")
+
+    seg_type = segment.replace(".slice", "").split("_")[0]
+    segment_identifier = "_".join(segment.replace(".slice", "").split("_")[1:])
+    return segment_identifier
+
+
 def shift_per_slice(slice_file):
     vector_source = get_source_name_from_slice(slice_file)
     backup_file_orig(vector_source)

@@ -5,7 +5,7 @@
 import sys
 import os
 from common.utilities import error_exit
-from tools import emitter, finder, logger, parallel, mapper, extractor, slicer
+from tools import emitter, finder, logger, parallel, mapper, extractor, slicer, generator
 from common import definitions, values, utilities
 from ast import ast_vector, ast_parser, ast_generator
 
@@ -342,12 +342,14 @@ def detect_struct_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
-        if float(candidate_distance) == 0.0:
+        similarity_sore = generator.generate_similarity_score(vector_path_a, candidate_file_path)
+        if float(similarity_sore) > 0.4:
             values.IS_IDENTICAL = True
         else:
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path
@@ -375,12 +377,14 @@ def detect_enum_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
-        if float(candidate_distance) == 0.0:
+        similarity_sore = generator.generate_similarity_score(vector_path_a, candidate_file_path)
+        if float(similarity_sore) > 0.4:
             values.IS_IDENTICAL = True
         else:
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tEnum Definition: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path
@@ -416,12 +420,14 @@ def detect_function_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
-        if float(candidate_distance) == 0.0:
+        similarity_sore = generator.generate_similarity_score(vector_path_a, candidate_file_path)
+        if float(similarity_sore) > 0.4:
             values.IS_IDENTICAL = True
         else:
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tFunction: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path
@@ -456,12 +462,14 @@ def detect_decl_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
-        if float(candidate_distance) == 0.0:
+        similarity_sore = generator.generate_similarity_score(vector_path_a, candidate_file_path)
+        if float(similarity_sore) > 0.4:
             values.IS_IDENTICAL = True
         else:
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tDeclaration: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path
