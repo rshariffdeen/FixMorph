@@ -100,6 +100,7 @@ def load_values():
     definitions.FILE_TEMP_DIFF = definitions.DIRECTORY_OUTPUT + "/temp_diff"
     definitions.FILE_AST_DIFF_ERROR = definitions.DIRECTORY_OUTPUT + "/errors_ast_diff"
     definitions.FILE_ORIG_N = definitions.DIRECTORY_OUTPUT + "/n-orig"
+    definitions.FILE_SEGMENT_STATE = definitions.DIRECTORY_OUTPUT + "/seg-state"
 
 
 def save_values():

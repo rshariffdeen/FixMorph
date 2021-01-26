@@ -53,7 +53,6 @@ def load_values():
     definitions.FILE_VECTOR_MAP = definitions.DIRECTORY_OUTPUT + "/vector-map"
     definitions.FILE_AST_MAP = definitions.DIRECTORY_OUTPUT + "/ast-map"
     definitions.FILE_SOURCE_MAP = definitions.DIRECTORY_OUTPUT + "/source-map"
-    definitions.FILE_SEGMENT_STATE = definitions.DIRECTORY_OUTPUT + "/seg-state"
 
 
 def save_values():
