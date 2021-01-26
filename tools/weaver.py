@@ -439,15 +439,19 @@ def weave_slice(slice_info):
             segment_node_source = finder.search_node(ast_tree_source, segment_type, segment_identifier)
             start_line_source = int(segment_node_source['start line'])
             end_line_source = int(segment_node_source['end line'])
-            start_line_slice = int(segment_node_slice['start line'])
-            end_line_slice = int(segment_node_slice['end line'])
-            weave_list[start_line_source] = (slice_file, end_line_source, start_line_slice, end_line_slice)
+            if segment_node_slice:
+                start_line_slice = int(segment_node_slice['start line'])
+                end_line_slice = int(segment_node_slice['end line'])
+                weave_list[start_line_source] = (slice_file, end_line_source, start_line_slice, end_line_slice)
+            else:
+                weave_list[start_line_source] = (slice_file, end_line_source, None, None)
 
         for start_line_source in reversed(sorted(weave_list.keys())):
             slice_file, end_line_source, start_line_slice, end_line_slice = weave_list[start_line_source]
             slice_code = get_code_range(slice_file, start_line_slice, end_line_slice)
             delete_code(source_file_d, start_line_source, end_line_source)
-            insert_code_range(slice_code, source_file_d, start_line_source)
+            if start_line_slice:
+                insert_code_range(slice_code, source_file_d, start_line_source)
 
         source_file_a = source_file_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
         show_patch(source_file_a, source_file_b, source_file_c, source_file_d, segment_identifier)
