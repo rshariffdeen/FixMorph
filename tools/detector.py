@@ -96,10 +96,12 @@ def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
 
 def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    candidate_list_all = dict()
+    candidate_list_all_a = dict()
+    candidate_list_all_b = dict()
     map_file_name = definitions.DIRECTORY_TMP + "/sydit.map"
     for vector_a in vector_list_a:
-        candidate_list = []
+        candidate_list_a = []
+        candidate_list_b = []
         vector_path_a, vector_matrix_a = vector_a
         source_file_a, segment_a = vector_path_a.split(".c.")
         source_file_a = source_file_a + ".c"
@@ -146,7 +148,8 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                     node_id_a = utilities.id_from_string(node_str_a)
                     if node_id_a in id_list_a:
                         match_count = match_count + 1
-                similarity = float(match_count / (node_size_a))
+                similarity_a = float(match_count / (node_size_a))
+                similarity_b = float(match_count / (node_size_a + node_size_c))
                 emitter.information("Segment A Type: " + str(seg_type_a))
                 emitter.information("Segment A Name: " + str(segment_identifier_a))
                 emitter.information("Segment C Type: " + str(seg_type_c))
@@ -154,28 +157,36 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                 emitter.information("Match Count: " + str(match_count))
                 emitter.information("Size of A: " + str(node_size_a))
                 emitter.information("Size of C: " + str(node_size_c))
-                emitter.information("Similarity: " + str(similarity))
-                if len(candidate_list) > 1:
-                    emitter.error("Found more than one candidate")
-                    for candidate in candidate_list:
-                        emitter.error(str(candidate))
-                    utilities.error_exit("Too many candidates")
-                if similarity > values.DEFAULT_SIMILARITY_FACTOR:
-                    candidate_list.append((vector_path_c, similarity))
-            if len(candidate_list) > 1:
-                emitter.error("Found more than one candidate")
-                for candidate in candidate_list:
-                    emitter.error(str(candidate))
-                utilities.error_exit("Too many candidates")
-            elif len(candidate_list) == 0:
-                utilities.error_exit("NO CANDIDATE FOUND")
-            if len(candidate_list) == 1:
-                candidate_list_all[vector_path_a] = candidate_list
+                emitter.information("Similarity 1: " + str(similarity_a))
+                emitter.information("Similarity 2: " + str(similarity_b))
+                # if len(candidate_list) > 1:
+                #     emitter.error("Found more than one candidate")
+                #     for candidate in candidate_list:
+                #         emitter.error(str(candidate))
+                #     utilities.error_exit("Too many candidates")
+                if similarity_a > values.DEFAULT_SIMILARITY_FACTOR:
+                    candidate_list_a.append((vector_path_c, similarity_a))
+                if similarity_b > values.DEFAULT_SIMILARITY_FACTOR:
+                    candidate_list_b.append((vector_path_c, similarity_b))
+            # if len(candidate_list) > 1:
+            #     emitter.error("Found more than one candidate")
+            #     for candidate in candidate_list:
+            #         emitter.error(str(candidate))
+            #     utilities.error_exit("Too many candidates")
+            # elif len(candidate_list) == 0:
+            #     utilities.error_exit("NO CANDIDATE FOUND")
+            # if len(candidate_list) == 1:
+            #     candidate_list_all[vector_path_a] = candidate_list
+            candidate_list_all_a[vector_path_a] = (len(candidate_list_a), candidate_list_a)
+            candidate_list_all_b[vector_path_a] = (len(candidate_list_b), candidate_list_b)
         else:
             utilities.error_exit("DOES NOT SUPPORT OTHER SEGMENTS THAN FUNCTIONS")
 
         utilities.restore_per_slice(slice_file_a)
-    return candidate_list_all
+    print(candidate_list_all_a)
+    print(candidate_list_all_b)
+    exit()
+    return candidate_list_all_a
 
 
 def detect_segment_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
