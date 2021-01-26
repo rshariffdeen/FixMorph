@@ -15,6 +15,7 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
     ast_tree = ASTGenerator.get_ast_json(source_path, use_macro, True)
     segment_type = values.segment_map[segment_code]
     ast_script = list()
+    project_path = extractor.extract_project_path(source_path)
     source_relative_path = source_path.replace(project_path, ".")
     segment_found = False
     for ast_node in ast_tree['children']:

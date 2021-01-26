@@ -20,8 +20,9 @@ def generate_slice_for_vector(vector_path, use_macro=False):
     seg_type= segment.replace(".vec", "").split("_")[0]
     segment_identifier = "_".join(segment.replace(".vec", "").split("_")[1:])
     slice_file = source_file + "." + seg_type + "." + segment_identifier + ".slice"
+    project_path = extractor.extract_project_path(source_file)
     slicer.slice_source_file(source_file, seg_type, segment_identifier,
-                             values.CONF_PATH_C,
+                             project_path,
                              use_macro)
     if not os.path.isfile(slice_file) or os.stat(slice_file).st_size == 0:
         return None
