@@ -653,8 +653,12 @@ def extract_project_path(source_path):
         return values.CONF_PATH_A
     elif values.CONF_PATH_B in source_path:
         return values.CONF_PATH_B
+    elif values.Project_D.path in source_path:
+        return values.Project_D.path
     elif values.CONF_PATH_C in source_path:
         return values.CONF_PATH_C
+    elif values.CONF_PATH_E in source_path:
+        return values.CONF_PATH_E
 
 
 def extract_header_list(source_path):
