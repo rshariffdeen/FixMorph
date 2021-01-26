@@ -55,7 +55,7 @@ def execute_ast_transformation(script_path, source_file_info):
     parameters += " -map=" + definitions.FILE_NAMESPACE_MAP_LOCAL
 
     patch_command = definitions.PATCH_COMMAND + parameters + " > " + definitions.FILE_TEMP_FIX \
-                    + "2> " + definitions.FILE_ERROR_LOG
+                    + " 2> " + definitions.FILE_ERROR_LOG
 
     ret_code = int(execute_command(patch_command))
 
