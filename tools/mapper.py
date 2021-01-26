@@ -118,7 +118,7 @@ def generate_map(file_list):
 
     # emitter.data(ast_node_map)
 
-    if values.DEFAULT_OPERATION_MODE == 0 and not values.IS_IDENTICAL:
+    if values.DEFAULT_OPERATION_MODE == 0:
         time_check = time.time()
         ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c, int(neighbor_ast['id']))
         duration = format((time.time() - time_check) / 60, '.3f')
