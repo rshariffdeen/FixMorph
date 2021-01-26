@@ -187,8 +187,8 @@ def extend_mapping(ast_node_map, source_a, source_c, neighbor_id_a):
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
         # result_list.append(mapper.anti_unification(ast_node_a, ast_node_c))
-        if (int(ast_node_id_a) < int(neighbor_id_a)) and ("Macro" not in node_a and "Decl" not in node_a):
-            continue
+        # if (int(ast_node_id_a) < int(neighbor_id_a)) and ("Macro" not in node_a and "Decl" not in node_a):
+        #     continue
 
         pool.apply_async(mapper.anti_unification, args=(ast_node_a, ast_node_c),
                          callback=collect_result)
