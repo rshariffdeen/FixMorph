@@ -71,6 +71,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
         parent_id_c = int(ast_node_c['parent_id'])
         if (int(ast_node_id_a) < int(neighbor_id_a)) and (parent_id_a != 0 and parent_id_c != 0):
             if ast_node_a['type'] in ["DeclRefExpr", "ParmVarDecl", "VarDecl"]:
+            # if oracle.is_node_in_func(ast_node_a, ast_tree_a):
                 continue
         value_score = 1
         if ast_node_a:

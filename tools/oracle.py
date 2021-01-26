@@ -214,3 +214,14 @@ def is_loc_on_sanitizer(source_path, line_number, suspicious_lines):
     if source_loc in suspicious_lines.keys():
         return True
     return False
+
+
+def is_node_in_func(ast_node, ast_tree):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    parent_id = int(ast_node['parent_id'])
+    while parent_id != 0:
+        ast_node = finder.search_ast_node_by_id(ast_tree, parent_id)
+        if ast_node["type"] == "FunctionDecl":
+            return True
+        parent_id = int(ast_node['parent_id'])
+    return False
