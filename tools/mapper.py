@@ -94,7 +94,7 @@ def generate_map(file_list):
     if neighbor_type == "func":
         neighbor_ast = finder.search_function_node_by_name(ast_tree_a, neighbor_name)
     elif neighbor_type == "var":
-        neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
+        # neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
         neighbor_ast = finder.search_node(ast_tree_a, "VarDecl", neighbor_name)
     elif neighbor_type == "struct":
         neighbor_ast = finder.search_node(ast_tree_a, "RecordDecl", neighbor_name)
