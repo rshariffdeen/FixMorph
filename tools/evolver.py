@@ -284,67 +284,68 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     target_ast = None
     if neighborhood_c['type'] in ["FunctionDecl", "RecordDecl"]:
         target_ast = neighborhood_c['children'][1]
-    local_position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(0)
+        local_position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(0)
 
-    for var in missing_var_list:
-        # print(var)
-        var_info = missing_var_list[var]
-        if "pre-exist" not in var_info:
-            continue
-        if not var_info['pre-exist'] or var_info['map-exist']:
-            continue
-        if var_info['is_global']:
-            missing_global_var_list[var] = var_info
-            continue
-        if "ast-node" in var_info.keys():
-            ast_node = var_info['ast-node']
-            # not sure why the if is required
-            # if "ref_type" in ast_node.keys():
-            node_id_a = ast_node['id']
-            node_id_b = node_id_a
-            instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
-            instruction += " into " + local_position_c
-            script_lines.insert(0, instruction + "\n")
-            emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
-            if len(ast_node['children']) == 1:
-                decl_node_id = int(ast_node['parent_id'])
-                ref_node_id = int(var_info['ref-id'])
-                decl_node = finder.search_ast_node_by_id(ast_tree_local_b, int(decl_node_id))
-                scope_node_id = decl_node['parent_id']
-                scope_node = finder.search_ast_node_by_id(ast_tree_local_b, int(scope_node_id))
-                init_list = extractor.extract_initialization_node_list(scope_node, ast_node)
-                latest_node = None
-                for node in init_list:
-                    node_id = int(node['id'])
-                    if node_id >= ref_node_id:
-                        break
-                    latest_node = node
-                if latest_node:
-                    relative_pos = var_info['rel-pos']
-                    instruction = "Insert " + latest_node['type'] + "(" + str(latest_node['id']) + ")"
-                    instruction += " into " + str(relative_pos)
-                    script_lines.insert(1, instruction + "\n")
-                    emitter.highlight("\t\tadditional initialization added with instruction: " + instruction)
+        for var in missing_var_list:
+            # print(var)
+            var_info = missing_var_list[var]
+            if "pre-exist" not in var_info:
+                continue
+            if not var_info['pre-exist'] or var_info['map-exist']:
+                continue
+            if var_info['is_global']:
+                missing_global_var_list[var] = var_info
+                continue
+            if "ast-node" in var_info.keys():
+                ast_node = var_info['ast-node']
+                # not sure why the if is required
+                # if "ref_type" in ast_node.keys():
+                node_id_a = ast_node['id']
+                node_id_b = node_id_a
+                instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
+                instruction += " into " + local_position_c
+                script_lines.insert(0, instruction + "\n")
+                emitter.highlight("\t\tadditional variable added with instruction: " + instruction)
+                if len(ast_node['children']) == 1:
+                    decl_node_id = int(ast_node['parent_id'])
+                    ref_node_id = int(var_info['ref-id'])
+                    decl_node = finder.search_ast_node_by_id(ast_tree_local_b, int(decl_node_id))
+                    scope_node_id = decl_node['parent_id']
+                    scope_node = finder.search_ast_node_by_id(ast_tree_local_b, int(scope_node_id))
+                    init_list = extractor.extract_initialization_node_list(scope_node, ast_node)
+                    latest_node = None
+                    for node in init_list:
+                        node_id = int(node['id'])
+                        if node_id >= ref_node_id:
+                            break
+                        latest_node = node
+                    if latest_node:
+                        relative_pos = var_info['rel-pos']
+                        instruction = "Insert " + latest_node['type'] + "(" + str(latest_node['id']) + ")"
+                        instruction += " into " + str(relative_pos)
+                        script_lines.insert(1, instruction + "\n")
+                        emitter.highlight("\t\tadditional initialization added with instruction: " + instruction)
 
-        elif "value" in var_info.keys():
-            var_map[var] = str(var_info['value'])
+            elif "value" in var_info.keys():
+                var_map[var] = str(var_info['value'])
 
-    values.map_namespace_global[(source_file_a, source_file_c)] = var_map
-    writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
-    offset = len(target_ast['children']) - 1
-    position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
-    for label in missing_label_list:
-        # print(var)
-        label_info = missing_label_list[label]
-        ast_node = label_info['ast-node']
-        # not sure why the if is required
-        # if "ref_type" in ast_node.keys():
-        node_id_a = ast_node['id']
-        node_id_b = node_id_a
-        instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
-        instruction += " into " + position_c
-        script_lines.insert(0, instruction + "\n")
-        emitter.highlight("\t\tadditional label added with instruction: " + instruction)
+        values.map_namespace_global[(source_file_a, source_file_c)] = var_map
+        writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
+        if neighborhood_c['type'] in ["FunctionDecl"]:
+            offset = len(target_ast['children']) - 1
+            position_c = target_ast['type'] + "(" + str(target_ast['id']) + ") at " + str(offset)
+            for label in missing_label_list:
+                # print(var)
+                label_info = missing_label_list[label]
+                ast_node = label_info['ast-node']
+                # not sure why the if is required
+                # if "ref_type" in ast_node.keys():
+                node_id_a = ast_node['id']
+                node_id_b = node_id_a
+                instruction = "Insert " + ast_node['type'] + "(" + str(node_id_b) + ")"
+                instruction += " into " + position_c
+                script_lines.insert(0, instruction + "\n")
+                emitter.highlight("\t\tadditional label added with instruction: " + instruction)
 
     # with open(script_file_name, 'w') as script_file:
     #     for transformation_rule in script_lines:
