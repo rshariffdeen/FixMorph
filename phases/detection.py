@@ -63,7 +63,7 @@ def save_values():
         values.file_list_to_patch = segment_clone_list
     else:
         values.file_list_to_patch = file_clone_list
-    writer.write_as_json(values.file_list_to_patch)
+    writer.write_as_json(values.file_list_to_patch, definitions.FILE_LIST_PATCH_FILES)
     save_current_state()
 
 
