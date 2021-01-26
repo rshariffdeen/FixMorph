@@ -448,9 +448,9 @@ def weave_slice(slice_info):
 
         for start_line_source in reversed(sorted(weave_list.keys())):
             slice_file, end_line_source, start_line_slice, end_line_slice = weave_list[start_line_source]
-            slice_code = get_code_range(slice_file, start_line_slice, end_line_slice)
             delete_code(source_file_d, start_line_source, end_line_source)
             if start_line_slice:
+                slice_code = get_code_range(slice_file, start_line_slice, end_line_slice)
                 insert_code_range(slice_code, source_file_d, start_line_source)
 
         source_file_a = source_file_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
