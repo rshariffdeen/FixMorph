@@ -48,12 +48,15 @@ def generate_similarity_score(vector_path_c, vector_path_a):
     ast_tree_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
     ast_node_a = finder.search_function_node_by_name(ast_tree_a, segment_identifier_a)
     ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
+    mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
+    ast_node_map = parallel.read_mapping(map_file_name)
+    utilities.restore_per_slice(slice_file_a)
+    utilities.restore_per_slice(slice_file_c)
     if not ast_node_a or not ast_node_c:
         return 1.0
     id_list_a = extractor.extract_child_id_list(ast_node_a)
     id_list_c = extractor.extract_child_id_list(ast_node_c)
-    mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
-    ast_node_map = parallel.read_mapping(map_file_name)
+
     node_size_a = len(id_list_a)
     node_size_c = len(id_list_c)
     match_count = 0
@@ -68,6 +71,7 @@ def generate_similarity_score(vector_path_c, vector_path_a):
     emitter.information("Size of A: " + str(node_size_a))
     emitter.information("Size of C: " + str(node_size_c))
     emitter.information("Similarity: " + str(similarity))
+
     return similarity
 
 
