@@ -278,8 +278,7 @@ def get_identifier_from_slice(slice_path):
     else:
         source_path, segment = slice_path.split(".h.")
 
-    seg_type = segment.replace(".slice", "").split("_")[0]
-    segment_identifier = "_".join(segment.replace(".slice", "").split("_")[1:])
+    segment_identifier = segment.replace(".slice", "").split(".")[1]
     return segment_identifier
 
 

@@ -17,7 +17,7 @@ def generate_slice_for_vector(vector_path, use_macro=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     source_file, segment = vector_path.split(".c.")
     source_file = source_file + ".c"
-    seg_type= segment.replace(".vec", "").split("_")[0]
+    seg_type = segment.replace(".vec", "").split("_")[0]
     segment_identifier = "_".join(segment.replace(".vec", "").split("_")[1:])
     slice_file = source_file + "." + seg_type + "." + segment_identifier + ".slice"
     project_path = extractor.extract_project_path(source_file)
