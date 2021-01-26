@@ -70,8 +70,9 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
         parent_id_a = int(ast_node_a['parent_id'])
         parent_id_c = int(ast_node_c['parent_id'])
         if (int(ast_node_id_a) < int(neighbor_id_a)) and (parent_id_a != 0 and parent_id_c != 0):
-            if ast_node_a['type'] == "DeclRefExpr" or ast_node_c['type'] == "DeclRefExpr":
-                continue
+            continue
+            # if ast_node_a['type'] == "DeclRefExpr" or ast_node_c['type'] == "DeclRefExpr":
+            #     continue
         value_score = 1
         if ast_node_a:
             # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))

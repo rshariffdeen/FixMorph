@@ -20,7 +20,8 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
     segment_type = values.segment_map[segment_code]
     ast_script = list()
     project_path = extractor.extract_project_path(source_path)
-    source_relative_path = source_path.replace(project_path, ".")
+    source_relative_path = source_path.replace(project_path, "")[1:]
+
     segment_found = False
     for ast_node in ast_tree['children']:
         node_id = ast_node['id']
