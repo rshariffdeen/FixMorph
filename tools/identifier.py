@@ -347,7 +347,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
                                 info['pre-exist'] = True
-                                info['is-global'] = False
+                                info['is_global'] = False
                                 info['target-file'] = source_path_d
                                 missing_var_list[identifier] = info
 
