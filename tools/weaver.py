@@ -290,11 +290,12 @@ def weave_definitions(missing_definition_list, modified_source_list):
                 for macro_def in macro_def_list:
                     if def_name in macro_def:
                         # print(macro_def)
-                        if "#define" in macro_def:
+                        if "#define " + def_name in macro_def:
                             if def_name in macro_def.split(" "):
                                 transplant_code += "\n" + macro_def + "\n"
-                            elif str(macro_def).count(def_name) == 1:
-                                transplant_code += "\n" + macro_def + "\n"
+                            # TODO: not sure why we need this
+                            # elif str(macro_def).count(def_name) == 1:
+                            #     transplant_code += "\n" + macro_def + "\n"
                 # TODO: check if internal functions inside macro
                 if "})" in transplant_code:
                     transplant_code = "#include<" + header_file.split("include/")[-1] + ">\n" + transplant_code
