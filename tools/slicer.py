@@ -31,14 +31,24 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
             if node_identifier != segment_identifier:
                 # ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
                 if 'file' in ast_node.keys():
-                    if ast_node['file'] == source_path.replace(project_path, "")[1:]:
+                    file_path = ast_node['file']
+                    file_project_path = extractor.extract_project_path(file_path)
+                    file_relative_path = file_path
+                    if file_project_path:
+                        file_relative_path = file_path.replace(file_project_path, "")[1:]
+                    if file_relative_path == source_relative_path:
                         ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
             else:
                 segment_found = True
         elif node_type == "FunctionDecl":
             # ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
             if 'file' in ast_node.keys():
-                if ast_node['file'] == source_path.replace(project_path, "")[1:]:
+                file_path = ast_node['file']
+                file_project_path = extractor.extract_project_path(file_path)
+                file_relative_path = file_path
+                if file_project_path:
+                    file_relative_path = file_path.replace(file_project_path, "")[1:]
+                if file_relative_path == source_relative_path:
                     ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
 
     if not segment_found:

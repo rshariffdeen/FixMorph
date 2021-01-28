@@ -661,6 +661,8 @@ def extract_project_path(source_path):
         return values.CONF_PATH_C
     elif values.CONF_PATH_E in source_path:
         return values.CONF_PATH_E
+    else:
+        return None
 
 
 def extract_header_list(source_path):
