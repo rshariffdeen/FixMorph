@@ -35,8 +35,8 @@ def generate_semantic_distance():
 
 def generate_similarity_score(vector_path_a, vector_path_c):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    slice_file_a = generate_slice_for_vector(vector_path_a)
-    slice_file_c = generate_slice_for_vector(vector_path_c)
+    slice_file_a = generate_slice_for_vector(vector_path_a, values.DONOR_REQUIRE_MACRO)
+    slice_file_c = generate_slice_for_vector(vector_path_c, values.TARGET_REQUIRE_MACRO)
     source_file_a = utilities.get_source_name_from_slice(slice_file_a)
     source_file_c = utilities.get_source_name_from_slice(slice_file_c)
     utilities.shift_per_slice(slice_file_a)
