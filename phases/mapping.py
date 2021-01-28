@@ -18,6 +18,7 @@ def generate_map():
             slice_file_c = file_list[2]
             emitter.sub_sub_title(slice_file_a)
             ast_node_map, namespace_map = mapper.generate_map(file_list)
+            # writer.write_ast_map(ast_node_map, definitions.DIRECTORY_OUTPUT + "/ast-map-local")
             ast_map_global[(slice_file_a, slice_file_c)] = ast_node_map
             namespace_map_global[(slice_file_a, slice_file_c)] = namespace_map
     values.ast_map = ast_map_global
