@@ -55,9 +55,9 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
     emitter.normal("\tderiving namespace map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-    neighborhood_c = finder.search_ast_node_by_id(ast_tree_c, neighbor_id_c)
-    dec_list_local_c = extractor.extract_decl_node_list(neighborhood_c)
-    dec_list_global_c = extractor.extract_decl_node_list_global(ast_tree_c)
+    # neighborhood_c = finder.search_ast_node_by_id(ast_tree_c, neighbor_id_c)
+    # dec_list_local_c = extractor.extract_decl_node_list(neighborhood_c)
+    # dec_list_global_c = extractor.extract_decl_node_list_global(ast_tree_c)
     ast_array_a = converter.convert_dict_to_array(ast_tree_a)
     ast_array_c = converter.convert_dict_to_array(ast_tree_c)
     emitter.normal("\t\tstarting parallel computing")
@@ -89,9 +89,6 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
     for id_a, id_c, score, type_a, type_c in result_list:
         if id_a is None or id_c is None:
             continue
-        if type_a in ["DeclRefExpr"]:
-            if id_c not in (list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
-                continue
         if id_a not in namespace_map:
             namespace_map[id_a] = dict()
         if id_c not in namespace_map[id_a]:
