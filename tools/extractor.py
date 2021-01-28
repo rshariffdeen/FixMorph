@@ -64,7 +64,9 @@ def extract_complete_function_node(function_def_node, source_path):
         if str(header_file_loc).startswith("."):
             header_file_loc = source_dir + "/" + function_def_node['file']
         # print(header_file_loc)
-
+        project_path = extract_project_path(header_file_loc)
+        if not project_path:
+            header_file_loc = values.CONF_PATH_B + "/" + header_file_loc
         function_name = function_def_node['identifier']
         source_file_loc = header_file_loc.replace(".h", ".c")
         source_file_loc = os.path.abspath(source_file_loc)
