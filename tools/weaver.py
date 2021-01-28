@@ -291,8 +291,7 @@ def weave_definitions(missing_definition_list, modified_source_list):
                     if def_name in macro_def:
                         # print(macro_def)
                         if "#define " + def_name in macro_def:
-                            if def_name in macro_def.split(" "):
-                                transplant_code += "\n" + macro_def + "\n"
+                            transplant_code += "\n" + macro_def + "\n"
                             # TODO: not sure why we need this
                             # elif str(macro_def).count(def_name) == 1:
                             #     transplant_code += "\n" + macro_def + "\n"
