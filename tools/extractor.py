@@ -381,8 +381,10 @@ def extract_macro_ref_list(ast_node):
     macro_ref_list = set()
     for macro_node in macro_node_list:
         if "value" in macro_node:
-            macro_value = macro_node['value'].strip().replace("\n", "")
-            macro_ref_list.add(macro_value)
+            macro_name = macro_node['value'].strip().replace("\n", "")
+            if "(" in macro_name:
+                macro_name = macro_name.split("(")[0] + "("
+            macro_ref_list.add(macro_name)
     return list(macro_ref_list)
 
 
