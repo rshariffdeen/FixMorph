@@ -517,7 +517,7 @@ def identify_missing_macros(ast_node, source_file, target_file, namespace_map_ke
     emitter.normal("\t\t\tanalysing for missing macros")
     # print(ast_node)
     missing_macro_list = dict()
-    target_ast_tree = Gen.generate_ast_json(source_file, values.TARGET_REQUIRE_MACRO)
+    target_ast_tree = Gen.generate_ast_json(target_file, values.TARGET_REQUIRE_MACRO)
     node_type = str(ast_node['type'])
     target_macro_def_list = list(converter.convert_macro_list_to_dict(
         extractor.extract_macro_definitions(target_file)).keys())
