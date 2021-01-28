@@ -179,6 +179,9 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         var_list.append(identifier)
                 for identifier in var_list:
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
+                        is_mapping = (identifier in var_map) and \
+                                     (var_map[identifier] in set(
+                                         list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                         if identifier not in missing_var_list.keys():
                             info = dict()
                             info['ref_list'] = [neighborhood_b['value']]
@@ -189,9 +192,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = True
                                 info['is_global'] = False
                                 info['target-file'] = source_path_d
-                                is_mapping = (identifier in var_map) and \
-                                             (var_map[identifier] in set(
-                                                 list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
 
                             elif identifier in dec_list_global_a.keys():
@@ -199,9 +199,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = True
                                 info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_global_b[identifier]
-                                is_mapping = (identifier in var_map) and \
-                                             (var_map[identifier] in set(
-                                                 list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
 
                             elif identifier in dec_list_local_b.keys():
@@ -209,9 +206,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = False
                                 info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_local_b[identifier]
-                                is_mapping = (identifier in var_map) and \
-                                             (var_map[identifier] in set(
-                                                 list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
 
                             elif identifier in dec_list_global_b.keys():
@@ -219,9 +213,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = False
                                 info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_global_b[identifier]
-                                is_mapping = (identifier in var_map) and \
-                                             (var_map[identifier] in set(
-                                                 list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
                             else:
                                 print(identifier)
