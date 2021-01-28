@@ -540,6 +540,12 @@ def identify_missing_macros(ast_node, source_file, target_file, namespace_map_ke
             if macro_name not in (target_macro_def_list + target_macro_ref_list):
                 if macro_name not in values.map_namespace_global[namespace_map_key]:
                     missing_macro_list[macro_name] = node_macro_list[macro_name]
+                else:
+                    mapped_value = values.map_namespace_global[namespace_map_key][macro_name]
+                    # print(macro_name, mapped_value)
+                    if "(" in macro_name and "(" not in mapped_value:
+                        missing_macro_list[macro_name] = node_macro_list[macro_name]
+
     else:
         macro_node_list = extractor.extract_macro_node_list(ast_node)
         macro_def_list = dict()
@@ -555,6 +561,11 @@ def identify_missing_macros(ast_node, source_file, target_file, namespace_map_ke
             if macro_name not in (target_macro_def_list + target_macro_ref_list):
                 if macro_name not in values.map_namespace_global[namespace_map_key]:
                     missing_macro_list[macro_name] = macro_def_list[macro_name]
+                else:
+                    mapped_value = values.map_namespace_global[namespace_map_key][macro_name]
+                    # print(macro_name, mapped_value)
+                    if "(" in macro_name and "(" not in mapped_value:
+                        missing_macro_list[macro_name] = macro_def_list[macro_name]
 
     # print(missing_macro_list)
     return missing_macro_list
