@@ -697,9 +697,9 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if nodeA.parent_id in replaced:
                     replaced.append(nodeA.id)
                     continue
-
-            if nodeA.type in ["IfStmt"]:
-                continue
+            # remove for ID:
+            # if nodeA.type in ["IfStmt"]:
+            #     continue
             if nodeA.value == nodeB.value and nodeA.type not in ["CompoundStmt", "IfStmt", "GCCAsmStmt"]:
                 if nodeA.type == "IntegerLiteral":
                     if nodeA.col_end == nodeB.col_end:
