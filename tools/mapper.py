@@ -85,22 +85,27 @@ def generate_map(file_list):
     utilities.shift_slice_source(slice_file_a, slice_file_c)
     time_check = time.time()
     ast_tree_a = ast_generator.get_ast_json(vector_source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(vector_source_c, values.DONOR_REQUIRE_MACRO, regenerate=True)
     duration = format((time.time() - time_check) / 60, '.3f')
     emitter.information("AST Generation A: " + str(duration))
 
-    neighbor_ast = None
+    neighbor_ast_a = None
+    neighbor_ast_c = None
     neighbor_ast_range = None
-    neighbor_type, neighbor_name, slice = str(slice_file_a).split("/")[-1].split(".c.")[-1].split(".")
-    if neighbor_type == "func":
-        neighbor_ast = finder.search_function_node_by_name(ast_tree_a, neighbor_name)
-    elif neighbor_type == "var":
+    neighbor_type_a, neighbor_name_a, slice_a = str(slice_file_a).split("/")[-1].split(".c.")[-1].split(".")
+    neighbor_type_c, neighbor_name_c, slice_c = str(slice_file_c).split("/")[-1].split(".c.")[-1].split(".")
+    if neighbor_type_a == "func":
+        neighbor_ast_a = finder.search_function_node_by_name(ast_tree_a, neighbor_name_a)
+        neighbor_ast_c = finder.search_function_node_by_name(ast_tree_c, neighbor_name_c)
+    elif neighbor_type_a == "var":
         # neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
-        neighbor_ast = finder.search_node(ast_tree_a, "VarDecl", neighbor_name)
-    elif neighbor_type == "struct":
-        neighbor_ast = finder.search_node(ast_tree_a, "RecordDecl", neighbor_name)
-
-    if neighbor_ast:
-        neighbor_ast_range = (int(neighbor_ast['begin']), int(neighbor_ast['end']))
+        neighbor_ast_a = finder.search_node(ast_tree_a, "VarDecl", neighbor_name_a)
+        neighbor_ast_c = finder.search_node(ast_tree_c, "VarDecl", neighbor_name_c)
+    elif neighbor_type_a == "struct":
+        neighbor_ast_a = finder.search_node(ast_tree_a, "RecordDecl", neighbor_name_a)
+        neighbor_ast_c = finder.search_node(ast_tree_c, "RecordDecl", neighbor_name_c)
+    if neighbor_ast_a:
+        neighbor_ast_range = (int(neighbor_ast_a['begin']), int(neighbor_ast_a['end']))
     else:
         utilities.error_exit("No neighbor AST Found")
 
@@ -120,14 +125,16 @@ def generate_map(file_list):
 
     if values.DEFAULT_OPERATION_MODE == 0:
         time_check = time.time()
-        ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c, int(neighbor_ast['id']))
+        ast_node_map = parallel.extend_mapping(ast_node_map, vector_source_a, vector_source_c, int(neighbor_ast_a['id']))
         duration = format((time.time() - time_check) / 60, '.3f')
         emitter.information("Anti Unification: " + str(duration))
 
         # emitter.data(ast_node_map)
     time_check = time.time()
     namespace_map = parallel.derive_namespace_map(ast_node_map, vector_source_a,
-                                                      vector_source_c, int(neighbor_ast['id']))
+                                                  vector_source_c,
+                                                  int(neighbor_ast_a['id']),
+                                                  int(neighbor_ast_c['id']))
     duration = format((time.time() - time_check) / 60, '.3f')
     emitter.information("Namespace Mapping: " + str(duration))
 
