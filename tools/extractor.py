@@ -686,6 +686,7 @@ def extract_pre_macro_list(source_file, only_if=False):
     with open(result_file, 'r') as log_file:
         read_lines = log_file.readlines()
         for line in read_lines:
+            line = line.replace("\t", " ").replace("\n", "")
             if "ifdef" in line:
                 pre_macro_list.add(line.split(" ")[-1])
             elif "ifndef" in line:
