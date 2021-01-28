@@ -193,6 +193,15 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     script_lines = list()
     segment_type = values.segment_map[seg_code]
     count = 0
+
+    if values.Project_A.header_list:
+        if source_file_a in values.Project_A.header_list:
+            if "added" in values.Project_A.header_list[source_file_a]:
+                new_header_file_list = values.Project_A.header_list[source_file_a]['added']
+                for header_file in new_header_file_list:
+                    header_file = header_file.replace("#include", "").replace("\n", "").replace("<", "").replace(">", "").strip()
+                    missing_header_list[header_file] = source_file_d
+
     for instruction in instruction_list:
         count = count + 1
         # Emitter.normal("\t[action]transplanting code segment " + str(count))
