@@ -516,16 +516,15 @@ def identify_missing_definitions(function_node, missing_function_list):
     return list(set(missing_definition_list))
 
 
-def identify_missing_macros(ast_node, source_file, target_file, namespace_map_key):
+def identify_missing_macros(ast_node, source_file, target_file, namespace_map_key, ast_tree_global_c):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\t\tanalysing for missing macros")
     # print(ast_node)
     missing_macro_list = dict()
-    target_ast_tree = Gen.generate_ast_json(target_file, values.TARGET_REQUIRE_MACRO)
     node_type = str(ast_node['type'])
     target_macro_def_list = list(converter.convert_macro_list_to_dict(
         extractor.extract_macro_definitions(target_file)).keys())
-    target_macro_ref_list = extractor.extract_macro_ref_list(target_ast_tree)
+    target_macro_ref_list = extractor.extract_macro_ref_list(ast_tree_global_c)
     if node_type == "Macro":
         node_macro_list = extractor.extract_macro_definition(ast_node, source_file, target_file)
         # print(node_macro_list)

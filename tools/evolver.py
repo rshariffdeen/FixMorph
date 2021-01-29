@@ -264,7 +264,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
             missing_macro_list.update(identifier.identify_missing_macros(check_node,
                                                                          source_file_b,
                                                                          source_file_d,
-                                                                         namespace_map_key
+                                                                         namespace_map_key,
+                                                                         ast_tree_global_c
                                                                          ))
 
             missing_var_list.update(identifier.identify_missing_var(neighborhood_a,
