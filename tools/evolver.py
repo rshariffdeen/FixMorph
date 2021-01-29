@@ -180,7 +180,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     neighborhood_a = extractor.extract_neighborhood(source_file_a, seg_code, seg_id_a, values.DONOR_REQUIRE_MACRO)
     neighborhood_b = extractor.extract_neighborhood(source_file_b, seg_code, seg_id_a, values.DONOR_REQUIRE_MACRO)
     neighborhood_c = extractor.extract_neighborhood(source_file_c, seg_code, seg_id_c, values.TARGET_REQUIRE_MACRO)
-
+    decl_list_c = extractor.extract_decl_node_list(neighborhood_c)
+    # ref_list = extractor.extract_reference_node_list(neighborhood_c)
     if not neighborhood_a or not neighborhood_c:
         emitter.error("[error] neighborhood not found")
         emitter.error("Seg Code: " + str(seg_code))
@@ -211,6 +212,11 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
         if "Insert" in instruction:
             check_node_id = instruction.split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
+            if check_node['type'] == "DeclStmt":
+                var_node = check_node['children'][0]
+                var_name = var_node['identifier']
+                if var_name in decl_list_c.keys():
+                    continue
             relative_pos = instruction.split(" into ")[-1].replace("\n", "")
         elif "Replace" in instruction:
             target_node_id = instruction.split(" with ")[0].split("(")[1].split(")")[0]
