@@ -735,6 +735,8 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
 
             modified_AB.append((definitions.UPDATE, nodeA, nodeB))
         elif inst == definitions.MOVE:
+            if values.diff_del_only:
+                continue
             nodeB1 = id_from_string(i[1])
             nodeB1 = ASTlists[values.Project_B.name][nodeB1]
             nodeB2 = id_from_string(i[2])
