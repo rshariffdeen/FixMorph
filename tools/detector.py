@@ -128,15 +128,10 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                 seg_type_c = segment_c.replace(".vec", "").split("_")[0]
                 segment_identifier_c = "_".join(segment_c.replace(".vec", "").split("_")[1:])
                 slice_file_c = source_file_c + "." + seg_type_c + "." + segment_identifier_c + ".slice"
-                seg_found = slicer.slice_source_file(source_file_c, seg_type_c, segment_identifier_c,
+                slicer.slice_source_file(source_file_c, seg_type_c, segment_identifier_c,
                                          values.CONF_PATH_C,
                                          values.TARGET_REQUIRE_MACRO)
-                if not seg_found:
-                    values.TARGET_REQUIRE_MACRO = True
-                    values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
-                    slicer.slice_source_file(source_file_c, seg_type_c, segment_identifier_c,
-                                             values.CONF_PATH_C,
-                                             values.TARGET_REQUIRE_MACRO)
+
                 if not os.path.isfile(slice_file_c):
                     continue
                 if os.stat(slice_file_c).st_size == 0:
