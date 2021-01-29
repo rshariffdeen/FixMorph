@@ -193,22 +193,25 @@ def weave_headers(missing_header_list, modified_source_list):
         emitter.normal(header_file_a)
         target_file = missing_header_list[header_file_a]
         header_file_c = finder.find_clone(header_file_a)
-        target_file_dir_path = "/".join(target_file.split("/")[:-1]).replace(values.Project_D.path, "")
-        if target_file_dir_path[0] == "/":
-            target_file_dir_path = target_file_dir_path[1:]
-        header_file_dir_path = "/".join(header_file_c.split("/")[:-1])
-        if header_file_dir_path[0] == "/":
-            header_file_dir_path = header_file_dir_path[1:]
         if header_file_c:
-            emitter.success("\t\tfound clone header file: " + header_file_c)
-            header_name = header_file_c.replace(values.Project_C.path, "")
-        else:
-            header_name = header_file_a.replace(values.Project_A.path, "")
+            target_file_dir_path = "/".join(target_file.split("/")[:-1]).replace(values.Project_D.path, "")
+            if target_file_dir_path[0] == "/":
+                target_file_dir_path = target_file_dir_path[1:]
+            header_file_dir_path = "/".join(header_file_c.split("/")[:-1])
+            if header_file_dir_path[0] == "/":
+                header_file_dir_path = header_file_dir_path[1:]
+            if header_file_c:
+                emitter.success("\t\tfound clone header file: " + header_file_c)
+                header_name = header_file_c.replace(values.Project_C.path, "")
+            else:
+                header_name = header_file_a.replace(values.Project_A.path, "")
 
-        if target_file_dir_path == header_file_dir_path:
-            header_name = header_name.split("/")[-1]
-        if header_name[0] == "/":
-            header_name = header_name[1:]
+            if target_file_dir_path == header_file_dir_path:
+                header_name = header_name.split("/")[-1]
+            if header_name[0] == "/":
+                header_name = header_name[1:]
+        else:
+            header_name = header_file_a
 
         if "/" in header_name:
             transplant_code = "\n#include<" + header_name + ">\n"
