@@ -306,10 +306,10 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
             var_info = missing_var_list[var]
             if "pre-exist" not in var_info:
                 continue
-            if not var_info['pre-exist'] or var_info['map-exist']:
-                continue
             if var_info['is_global']:
                 missing_global_var_list[var] = var_info
+                continue
+            if not var_info['pre-exist'] or var_info['map-exist']:
                 continue
             if "ast-node" in var_info.keys():
                 ast_node = var_info['ast-node']
