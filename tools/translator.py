@@ -1,8 +1,8 @@
 import sys
 from common import definitions, values, utilities
 from common.utilities import execute_command, error_exit, get_source_name_from_slice
-from tools import emitter, logger, mapper
-from ast import ast_parser
+from tools import emitter, logger, mapper, finder
+from ast import ast_parser, ast_generator
 
 
 def id_from_string(simplestring):
@@ -212,7 +212,7 @@ def extract_child_id_list(ast_object):
     return id_list
 
 
-def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump, map_ba, map_ac):
+def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump, map_ba, map_ac, neighbor_id_c):
     translated_instruction_list = list()
     inserted_node_list_d = list()
     update_list_d = list()
@@ -236,7 +236,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     txt_target_node = map_ac[txt_target_node_a]
                     target_node_id = id_from_string(txt_target_node)
                     target_node = json_ast_dump[values.Project_C.name][target_node_id]
-
+                    if int(target_node_id) < neighbor_id_c:
+                        continue
                     if update_node.type != target_node.type:
                         instruction = get_instruction((definitions.REPLACE, target_node, update_node))
                         translated_instruction_list.append(instruction)
@@ -275,7 +276,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     txt_target_node = map_ac[txt_target_node_a]
                     target_node_id = id_from_string(txt_target_node)
                     target_node = json_ast_dump[values.Project_C.name][target_node_id]
-
+                    if int(target_node_id) < neighbor_id_c:
+                        continue
                     if target_node.line is None:
                         target_node.line = target_node.parent.line
                     instruction = get_instruction((definitions.REPLACE, target_node, update_node))
@@ -296,6 +298,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 if txt_delete_node_a in map_ac.keys():
                     txt_delete_node = map_ac[txt_delete_node_a]
                     delete_node_id = id_from_string(txt_delete_node)
+                    if int(delete_node_id) < neighbor_id_c:
+                        continue
                     delete_node = json_ast_dump[values.Project_C.name][delete_node_id]
                     instruction = get_instruction((definitions.DELETE, delete_node))
                     if delete_node.line is None:
@@ -341,6 +345,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if txt_target_node_a in map_ac.keys():
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
+                        if int(target_node_id) < neighbor_id_c:
+                            continue
                         target_node = json_ast_dump[values.Project_C.name][target_node_id]
                     else:
                         # TODO: Manage case for unmatched nodeA2
@@ -447,6 +453,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if txt_target_node_a in map_ac.keys():
                         txt_target_node = map_ac[txt_target_node_a]
                         target_node_id = id_from_string(txt_target_node)
+                        if int(target_node_id) < neighbor_id_c:
+                            continue
                         target_node = json_ast_dump[values.Project_C.name][target_node_id]
                     else:
                         # TODO: Manage case for unmatched txt_target_node_a
@@ -632,6 +640,8 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if target_node is not None and type(target_node) == ast_parser.AST:
                         if target_node.line == None:
                             target_node.line = target_node.parent.line
+                        if int(target_node.id) < neighbor_id_c:
+                            continue
                         if target_node not in inserted_node_list_d:
                             if int(offset) > len(target_node.children):
                                 offset = len(target_node.children)
@@ -1013,10 +1023,32 @@ def translate_script_list(file_list, generated_data):
     vector_source_a = get_source_name_from_slice(slice_file_a)
     vector_source_b = get_source_name_from_slice(slice_file_b)
     vector_source_c = get_source_name_from_slice(slice_file_c)
+    ast_tree_a = ast_generator.get_ast_json(vector_source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(vector_source_c, values.DONOR_REQUIRE_MACRO, regenerate=True)
 
     utilities.shift_slice_source(slice_file_a, slice_file_c)
     emitter.normal("\tgenerating AST in JSON")
     json_ast_dump = gen_temp_json(vector_source_a, vector_source_b, vector_source_c)
+
+    neighbor_ast_a = None
+    neighbor_ast_c = None
+    neighbor_ast_range = None
+    neighbor_type_a, neighbor_name_a, slice_a = str(slice_file_a).split("/")[-1].split(".c.")[-1].split(".")
+    neighbor_type_c, neighbor_name_c, slice_c = str(slice_file_c).split("/")[-1].split(".c.")[-1].split(".")
+    if neighbor_type_a == "func":
+        neighbor_ast_a = finder.search_function_node_by_name(ast_tree_a, neighbor_name_a)
+        neighbor_ast_c = finder.search_function_node_by_name(ast_tree_c, neighbor_name_c)
+    elif neighbor_type_a == "var":
+        # neighbor_name = neighbor_name[:neighbor_name.rfind("_")]
+        neighbor_ast_a = finder.search_node(ast_tree_a, "VarDecl", neighbor_name_a)
+        neighbor_ast_c = finder.search_node(ast_tree_c, "VarDecl", neighbor_name_c)
+    elif neighbor_type_a == "struct":
+        neighbor_ast_a = finder.search_node(ast_tree_a, "RecordDecl", neighbor_name_a)
+        neighbor_ast_c = finder.search_node(ast_tree_c, "RecordDecl", neighbor_name_c)
+    if neighbor_ast_a:
+        neighbor_ast_range = (int(neighbor_ast_a['begin']), int(neighbor_ast_a['end']))
+    else:
+        utilities.error_exit("No neighbor AST Found")
 
     original_script = list()
     for instruction in generated_data[0]:
@@ -1033,7 +1065,7 @@ def translate_script_list(file_list, generated_data):
     # We get the matching nodes from Pa to Pc into a dict
     map_ac = values.ast_map[(slice_file_a, slice_file_c)]
     translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
-                                                 generated_data[2], map_ac)
+                                                 generated_data[2], map_ac, int(neighbor_ast_c['id']))
     emitter.information(translated_script)
     if not translated_script:
         emitter.warning("failed to translate AST transformation")
