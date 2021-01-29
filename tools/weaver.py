@@ -196,7 +196,7 @@ def weave_headers(missing_header_list, modified_source_list):
         target_file_dir_path = "/".join(target_file.split("/")[:-1]).replace(values.Project_D.path, "")
         if target_file_dir_path[0] == "/":
             target_file_dir_path = target_file_dir_path[1:]
-        header_file_dir_path = "/".join(header_name.split("/")[:-1])
+        header_file_dir_path = "/".join(header_file_c.split("/")[:-1])
         if header_file_dir_path[0] == "/":
             header_file_dir_path = header_file_dir_path[1:]
         if header_file_c:
