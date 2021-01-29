@@ -177,9 +177,9 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
     # Check for an edit script
     script_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_script"
     syntax_error_file_name = definitions.DIRECTORY_OUTPUT + "/" + str(seg_id_c) + "_syntax_errors"
-    neighborhood_a = extractor.extract_neighborhood(source_file_a, seg_code, seg_id_a)
-    neighborhood_b = extractor.extract_neighborhood(source_file_b, seg_code, seg_id_a)
-    neighborhood_c = extractor.extract_neighborhood(source_file_c, seg_code, seg_id_c)
+    neighborhood_a = extractor.extract_neighborhood(source_file_a, seg_code, seg_id_a, values.DONOR_REQUIRE_MACRO)
+    neighborhood_b = extractor.extract_neighborhood(source_file_b, seg_code, seg_id_a, values.DONOR_REQUIRE_MACRO)
+    neighborhood_c = extractor.extract_neighborhood(source_file_c, seg_code, seg_id_c, values.TARGET_REQUIRE_MACRO)
 
     if not neighborhood_a or not neighborhood_c:
         emitter.error("[error] neighborhood not found")
