@@ -1073,7 +1073,7 @@ def translate_script_list(file_list, generated_data):
         values.TARGET_REQUIRE_MACRO = not values.TARGET_REQUIRE_MACRO
         # values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
-                                                     generated_data[2], map_ac)
+                                                     generated_data[2], map_ac,int(neighbor_ast_c['id']))
         if not translated_script:
             error_exit("Unable to translate the script")
 
