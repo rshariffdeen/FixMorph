@@ -1023,11 +1023,12 @@ def translate_script_list(file_list, generated_data):
     vector_source_a = get_source_name_from_slice(slice_file_a)
     vector_source_b = get_source_name_from_slice(slice_file_b)
     vector_source_c = get_source_name_from_slice(slice_file_c)
-    ast_tree_a = ast_generator.get_ast_json(vector_source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
-    ast_tree_c = ast_generator.get_ast_json(vector_source_c, values.DONOR_REQUIRE_MACRO, regenerate=True)
 
     utilities.shift_slice_source(slice_file_a, slice_file_c)
     emitter.normal("\tgenerating AST in JSON")
+    ast_tree_a = ast_generator.get_ast_json(vector_source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(vector_source_c, values.DONOR_REQUIRE_MACRO, regenerate=True)
+
     json_ast_dump = gen_temp_json(vector_source_a, vector_source_b, vector_source_c)
 
     neighbor_ast_a = None
@@ -1073,7 +1074,7 @@ def translate_script_list(file_list, generated_data):
         values.TARGET_REQUIRE_MACRO = not values.TARGET_REQUIRE_MACRO
         # values.ast_map, values.map_namespace_global = mapper.generate_map(values.generated_script_files)
         translated_script = transform_script_gumtree(modified_script, generated_data[1], json_ast_dump,
-                                                     generated_data[2], map_ac,int(neighbor_ast_c['id']))
+                                                     generated_data[2], map_ac, int(neighbor_ast_c['id']))
         if not translated_script:
             error_exit("Unable to translate the script")
 
