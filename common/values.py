@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from common import definitions
 
+TOOL_NAME = "FixMorph"
 Project_A = None
 Project_B = None
 Project_C = None

@@ -14,7 +14,7 @@ def create():
     log_file_path = definitions.DIRECTORY_LOG_BASE + "/" + log_file_name
     definitions.FILE_MAIN_LOG = log_file_path
     with open(definitions.FILE_MAIN_LOG, 'w+') as log_file:
-        log_file.write("[Start] Crochet started at " + str(datetime.datetime.now()) + "\n")
+        log_file.write("[Start] " + values.TOOL_NAME + " started at " + str(datetime.datetime.now()) + "\n")
     if os.path.exists(definitions.FILE_LAST_LOG):
         os.remove(definitions.FILE_LAST_LOG)
     if os.path.exists(definitions.FILE_ERROR_LOG):
@@ -22,7 +22,7 @@ def create():
     if os.path.exists(definitions.FILE_COMMAND_LOG):
         os.remove(definitions.FILE_COMMAND_LOG)
     with open(definitions.FILE_LAST_LOG, 'w+') as last_log:
-        last_log.write("[Start] Crochet started at " + str(datetime.datetime.now()) + "\n")
+        last_log.write("[Start] " + values.TOOL_NAME + " started at " + str(datetime.datetime.now()) + "\n")
 
 
 def log(log_message):
@@ -114,7 +114,7 @@ def store():
 
 
 def end(time_duration, is_error=False):
-    output("[END] Crochet ended at " + str(datetime.datetime.now()))
+    output("[END] " + values.TOOL_NAME + " ended at " + str(datetime.datetime.now()))
     output("Initialization: " + time_duration[definitions.KEY_DURATION_INITIALIZATION] + " minutes")
     output("Build: " + time_duration[definitions.KEY_DURATION_BUILD_ANALYSIS] + " minutes")
     output("Diff Analysis: " + time_duration[definitions.KEY_DURATION_DIFF_ANALYSIS] + " minutes")
@@ -131,7 +131,7 @@ def end(time_duration, is_error=False):
     output("Comparison: " + time_duration[definitions.KEY_DURATION_COMPARISON] + " minutes")
     output("Summarizing: " + time_duration[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
     if is_error:
-        output("Crochet exited with an error after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
+        output(values.TOOL_NAME + " exited with an error after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
     else:
-        output("Crochet finished successfully after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
+        output(values.TOOL_NAME + " finished successfully after " + time_duration[definitions.KEY_DURATION_TOTAL] + " minutes")
 

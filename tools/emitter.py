@@ -171,13 +171,15 @@ def end(time_info, is_error=False):
     statistics("Comparison: " + time_info[definitions.KEY_DURATION_COMPARISON] + " minutes")
     statistics("Summarizing: " + time_info[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
     if is_error:
-        error("Crochet exited with an error after " + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
+        error(values.TOOL_NAME + " exited with an error after " + time_info[definitions.KEY_DURATION_TOTAL]
+              + " minutes\n")
     else:
-        success("\nCrochet finished successfully after " + time_info[definitions.KEY_DURATION_TOTAL] + " minutes\n")
+        success(values.TOOL_NAME + " finished successfully after " + time_info[definitions.KEY_DURATION_TOTAL]
+                + " minutes\n")
 
 
 def help():
-    print("Usage: python crochet [OPTIONS] " + definitions.ARG_CONF_FILE + "$FILE_PATH")
+    print("Usage: python " + values.TOOL_NAME +  " [OPTIONS] " + definitions.ARG_CONF_FILE + "$FILE_PATH")
 
     print("Options are:")
     print("\t" + definitions.ARG_DEBUG + "\t| " + "enable debugging information")

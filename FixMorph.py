@@ -72,7 +72,7 @@ def create_files():
 
 
 def bootstrap(arg_list):
-    emitter.title("Starting Crochet - Automated Code Transfer")
+    emitter.title("Starting " + values.TOOL_NAME + " - Automated Code Transfer")
     emitter.sub_title("Loading Configurations")
     configuration.read_conf(arg_list)
     if values.FILE_CONFIGURATION:
@@ -193,8 +193,8 @@ if __name__ == "__main__":
     finally:
         # Final running time and exit message
         utilities.restore_slice_source()
-        duration = format((time.time() - start_time) / 60, '.3f')
-        time_info[definitions.KEY_DURATION_TOTAL] = str(duration)
+        total_duration = format((time.time() - start_time) / 60, '.3f')
+        time_info[definitions.KEY_DURATION_TOTAL] = str(total_duration)
         emitter.end(time_info, is_error)
         logger.end(time_info, is_error)
         logger.store()
