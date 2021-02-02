@@ -360,9 +360,14 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                 if "ref_type" in node:
                     if node['ref_type'] == "FunctionDecl":
                         node_value = node_value + "("
-
+            elif node_type == "Macro":
+                if "(" in node_value:
+                    node_value = node_value.split("(")[0] + "("
             if node_value in namespace_map:
-                filtered_namespace_map[node_value] = namespace_map[node_value]
+                mapped_value = namespace_map[node_value]
+                if "." not in node_value and "." in mapped_value:
+                    mapped_value = mapped_value[1:]
+                filtered_namespace_map[node_value] = mapped_value
             else:
                 if node_type in ["MemberExpr", "FieldDecl"]:
                     struct_node = node['children'][0]

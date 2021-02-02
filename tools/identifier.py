@@ -67,7 +67,9 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                     num_args = len(macro_value.replace(function_name, "").split(","))
                     if num_args == num_param:
                         continue
-                missing_function_list[function_name] = macro_node
+                    # TODO: handle if diff args
+                else:
+                    missing_function_list[function_name] = macro_node
 
     for call_expr in call_list_b:
         # print(call_expr)
@@ -82,7 +84,9 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
                 num_args = len(call_expr['children'][0]) - 1
                 if num_args == num_param:
                     continue
-            missing_function_list[function_name] = function_ref_node
+                # TODO: handle if diff args
+            else:
+                missing_function_list[function_name] = function_ref_node
 
     for function_name in missing_function_list:
         # line_number = function_ref_node['start line']
@@ -179,6 +183,9 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                         var_list.append(identifier)
                 for identifier in var_list:
                     if identifier not in set(list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())):
+                        is_mapping = (identifier in var_map) and \
+                                     (var_map[identifier] in set(
+                                         list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                         if identifier not in missing_var_list.keys():
                             info = dict()
                             info['ref_list'] = [neighborhood_b['value']]
@@ -189,9 +196,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = True
                                 info['is_global'] = False
                                 info['target-file'] = source_path_d
-                                is_mapping = (identifier in var_map) and \
-                                             (var_map[identifier] in set(
-                                                 list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
 
                             elif identifier in dec_list_global_a.keys():
@@ -199,9 +203,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = True
                                 info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_global_b[identifier]
-                                is_mapping = (identifier in var_map) and \
-                                             (var_map[identifier] in set(
-                                                 list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
 
                             elif identifier in dec_list_local_b.keys():
@@ -209,9 +210,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = False
                                 info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_local_b[identifier]
-                                is_mapping = (identifier in var_map) and \
-                                             (var_map[identifier] in set(
-                                                 list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
 
                             elif identifier in dec_list_global_b.keys():
@@ -219,9 +217,6 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                 info['pre-exist'] = False
                                 info['target-file'] = source_path_d
                                 info['ast-node'] = dec_list_global_b[identifier]
-                                is_mapping = (identifier in var_map) and \
-                                             (var_map[identifier] in set(
-                                                 list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
                             else:
                                 print(identifier)
@@ -346,7 +341,8 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                              (var_map[identifier] in set(
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
                                 info['map-exist'] = is_mapping
-                                info['pre-exist'] = False
+                                info['pre-exist'] = True
+                                info['is_global'] = False
                                 info['target-file'] = source_path_d
                                 missing_var_list[identifier] = info
 
@@ -520,16 +516,15 @@ def identify_missing_definitions(function_node, missing_function_list):
     return list(set(missing_definition_list))
 
 
-def identify_missing_macros(ast_node, source_file, target_file, namespace_map_key):
+def identify_missing_macros(ast_node, source_file, target_file, namespace_map_key, ast_tree_global_c):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.normal("\t\t\tanalysing for missing macros")
     # print(ast_node)
     missing_macro_list = dict()
-    target_ast_tree = Gen.generate_ast_json(source_file, values.TARGET_REQUIRE_MACRO)
     node_type = str(ast_node['type'])
     target_macro_def_list = list(converter.convert_macro_list_to_dict(
         extractor.extract_macro_definitions(target_file)).keys())
-    target_macro_ref_list = extractor.extract_macro_ref_list(target_ast_tree)
+    target_macro_ref_list = extractor.extract_macro_ref_list(ast_tree_global_c)
     if node_type == "Macro":
         node_macro_list = extractor.extract_macro_definition(ast_node, source_file, target_file)
         # print(node_macro_list)
@@ -539,6 +534,12 @@ def identify_missing_macros(ast_node, source_file, target_file, namespace_map_ke
             if macro_name not in (target_macro_def_list + target_macro_ref_list):
                 if macro_name not in values.map_namespace_global[namespace_map_key]:
                     missing_macro_list[macro_name] = node_macro_list[macro_name]
+                else:
+                    mapped_value = values.map_namespace_global[namespace_map_key][macro_name]
+                    # print(macro_name, mapped_value)
+                    if "(" in macro_name and "(" not in mapped_value:
+                        missing_macro_list[macro_name] = node_macro_list[macro_name]
+
     else:
         macro_node_list = extractor.extract_macro_node_list(ast_node)
         macro_def_list = dict()
@@ -554,6 +555,11 @@ def identify_missing_macros(ast_node, source_file, target_file, namespace_map_ke
             if macro_name not in (target_macro_def_list + target_macro_ref_list):
                 if macro_name not in values.map_namespace_global[namespace_map_key]:
                     missing_macro_list[macro_name] = macro_def_list[macro_name]
+                else:
+                    mapped_value = values.map_namespace_global[namespace_map_key][macro_name]
+                    # print(macro_name, mapped_value)
+                    if "(" in macro_name and "(" not in mapped_value:
+                        missing_macro_list[macro_name] = macro_def_list[macro_name]
 
     # print(missing_macro_list)
     return missing_macro_list
@@ -923,7 +929,7 @@ def create_vectors(project, source_file, segmentation_list, pertinent_lines, out
     for var_name, begin_line, finish_line in decl_list:
         var_name = "var_" + var_name.split(";")[0]
         var_type = (var_name.split("(")[1]).split(")")[0]
-        var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
+        var_name = var_name.split("(")[0]
         for start_line, end_line in pertinent_lines:
             if is_intersect(begin_line, finish_line, start_line, end_line):
                 values.IS_TYPEDEC = True

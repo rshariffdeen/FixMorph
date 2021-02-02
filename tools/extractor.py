@@ -64,7 +64,9 @@ def extract_complete_function_node(function_def_node, source_path):
         if str(header_file_loc).startswith("."):
             header_file_loc = source_dir + "/" + function_def_node['file']
         # print(header_file_loc)
-
+        project_path = extract_project_path(header_file_loc)
+        if not project_path:
+            header_file_loc = values.CONF_PATH_B + "/" + header_file_loc
         function_name = function_def_node['identifier']
         source_file_loc = header_file_loc.replace(".h", ".c")
         source_file_loc = os.path.abspath(source_file_loc)
@@ -381,8 +383,10 @@ def extract_macro_ref_list(ast_node):
     macro_ref_list = set()
     for macro_node in macro_node_list:
         if "value" in macro_node:
-            macro_value = macro_node['value'].strip().replace("\n", "")
-            macro_ref_list.add(macro_value)
+            macro_name = macro_node['value'].strip().replace("\n", "")
+            if "(" in macro_name:
+                macro_name = macro_name.split("(")[0] + "("
+            macro_ref_list.add(macro_name)
     return list(macro_ref_list)
 
 
@@ -653,8 +657,14 @@ def extract_project_path(source_path):
         return values.CONF_PATH_A
     elif values.CONF_PATH_B in source_path:
         return values.CONF_PATH_B
+    elif values.Project_D.path in source_path:
+        return values.Project_D.path
     elif values.CONF_PATH_C in source_path:
         return values.CONF_PATH_C
+    elif values.CONF_PATH_E in source_path:
+        return values.CONF_PATH_E
+    else:
+        return None
 
 
 def extract_header_list(source_path):
@@ -678,6 +688,7 @@ def extract_pre_macro_list(source_file, only_if=False):
     with open(result_file, 'r') as log_file:
         read_lines = log_file.readlines()
         for line in read_lines:
+            line = line.replace("\t", " ").replace("\n", "")
             if "ifdef" in line:
                 pre_macro_list.add(line.split(" ")[-1])
             elif "ifndef" in line:

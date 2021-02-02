@@ -12,10 +12,16 @@ from tools import extractor, oracle, logger, filter, emitter, transformer
 
 def slice_source_file(source_path, segment_code, segment_identifier, project_path, use_macro=False):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    output_file_name = "." + segment_code + "." + segment_identifier + ".slice"
+    output_file_path = source_path + output_file_name
+    if os.path.isfile(output_file_path):
+        return True
     ast_tree = ASTGenerator.get_ast_json(source_path, use_macro, True)
     segment_type = values.segment_map[segment_code]
     ast_script = list()
-    source_relative_path = source_path.replace(project_path, ".")
+    project_path = extractor.extract_project_path(source_path)
+    source_relative_path = source_path.replace(project_path, "")[1:]
+
     segment_found = False
     for ast_node in ast_tree['children']:
         node_id = ast_node['id']
@@ -25,14 +31,24 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
             if node_identifier != segment_identifier:
                 # ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
                 if 'file' in ast_node.keys():
-                    if ast_node['file'] == source_path.replace(project_path, "")[1:]:
+                    file_path = ast_node['file']
+                    file_project_path = extractor.extract_project_path(file_path)
+                    file_relative_path = file_path
+                    if file_project_path:
+                        file_relative_path = file_path.replace(file_project_path, "")[1:]
+                    if file_relative_path == source_relative_path:
                         ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
             else:
                 segment_found = True
         elif node_type == "FunctionDecl":
             # ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
             if 'file' in ast_node.keys():
-                if ast_node['file'] == source_path.replace(project_path, "")[1:]:
+                file_path = ast_node['file']
+                file_project_path = extractor.extract_project_path(file_path)
+                file_relative_path = file_path
+                if file_project_path:
+                    file_relative_path = file_path.replace(file_project_path, "")[1:]
+                if file_relative_path == source_relative_path:
                     ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
 
     if not segment_found:
@@ -40,8 +56,6 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
         return False
 
     # print(ast_script)
-    output_file_name = "." + segment_code + "." + segment_identifier + ".slice"
-    output_file_path = source_path + output_file_name
     ast_script_path = definitions.DIRECTORY_OUTPUT + "/" + output_file_path.split("/")[-1] + ".ast"
     if ast_script:
         transformer.transform_source_file(source_path, ast_script, output_file_path, ast_script_path)

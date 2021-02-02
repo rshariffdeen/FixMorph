@@ -43,6 +43,10 @@ def save_current_state():
     pickle.dump(values.Project_B, open(definitions.FILE_PROJECT_B, 'wb'))
     pickle.dump(values.Project_C, open(definitions.FILE_PROJECT_C, 'wb'))
     pickle.dump(values.Project_D, open(definitions.FILE_PROJECT_D, 'wb'))
+
+    segment_state = [values.IS_STRUCT, values.IS_ENUM, values.IS_MACRO, values.IS_TYPEDEC, values.IS_FUNCTION]
+    pickle.dump(segment_state, open(definitions.FILE_SEGMENT_STATE, 'wb'))
+
     pickle.dump(values.map_namespace_global, open(definitions.FILE_VAR_MAP_STORE, 'wb'))
     pickle.dump(values.VECTOR_MAP, open(definitions.FILE_VEC_MAP_STORE, 'wb'))
     pickle.dump(values.SOURCE_MAP, open(definitions.FILE_SOURCE_MAP_STORE, 'wb'))
@@ -64,6 +68,12 @@ def load_state():
     values.missing_data_type_list = pickle.load(open(definitions.FILE_MISSING_TYPES, 'rb'))
     values.missing_macro_list = pickle.load(open(definitions.FILE_MISSING_MACROS, 'rb'))
     values.missing_header_list = pickle.load(open(definitions.FILE_MISSING_HEADERS, 'rb'))
+    segment_state = pickle.load(open(definitions.FILE_SEGMENT_STATE, 'rb'))
+    values.IS_STRUCT = segment_state[0]
+    values.IS_ENUM = segment_state[1]
+    values.IS_MACRO = segment_state[2]
+    values.IS_TYPEDEC = segment_state[3]
+    values.IS_FUNCTION = segment_state[4]
 
 
 def error_exit(*args):
@@ -260,6 +270,16 @@ def get_source_name_from_slice(slice_path):
     else:
         source_path = slice_path.split(".h.")[0] + ".h"
     return source_path
+
+
+def get_identifier_from_slice(slice_path):
+    if ".c." in slice_path:
+        source_path, segment = slice_path.split(".c.")
+    else:
+        source_path, segment = slice_path.split(".h.")
+
+    segment_identifier = segment.replace(".slice", "").split(".")[1]
+    return segment_identifier
 
 
 def shift_per_slice(slice_file):

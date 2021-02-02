@@ -1,0 +1,3 @@
+1. Mapping across member expressions: a->x->y to a->b, challenge to map a->x to a and ->y to ->b
+2. Finding references to member expressions from global context
+3. Extend searching for mappings of different macros

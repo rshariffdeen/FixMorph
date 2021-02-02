@@ -58,6 +58,11 @@ def analyse_source_diff():
         emitter.normal("\t\tcollecting diff line information for header files")
         diff_info_h = differ.diff_line(diff_h_file_list, definitions.FILE_TEMP_DIFF)
     diff_info = merger.merge_diff_info(diff_info_c, diff_info_h)
+    for diff_loc in diff_info:
+        diff_loc_info = diff_info[diff_loc]
+        diff_op = diff_loc_info['operation']
+        if diff_op != "delete":
+            values.diff_del_only = False
 
 
 def analyse_ast_diff():
@@ -100,6 +105,7 @@ def load_values():
     definitions.FILE_TEMP_DIFF = definitions.DIRECTORY_OUTPUT + "/temp_diff"
     definitions.FILE_AST_DIFF_ERROR = definitions.DIRECTORY_OUTPUT + "/errors_ast_diff"
     definitions.FILE_ORIG_N = definitions.DIRECTORY_OUTPUT + "/n-orig"
+    definitions.FILE_SEGMENT_STATE = definitions.DIRECTORY_OUTPUT + "/seg-state"
 
 
 def save_values():

@@ -6,11 +6,79 @@ import io
 import os
 
 import json
-from common.utilities import execute_command, error_exit, find_files, get_file_extension_list
-from tools import emitter, logger, extractor, finder, merger
-from ast import ast_vector, ast_parser, ast_generator as ASTGenerator
-from common.utilities import error_exit, clean_parse
-from common import definitions, values
+from common.utilities import execute_command, find_files
+from tools import emitter, logger, extractor, finder, merger, slicer, mapper, parallel
+from ast import ast_vector, ast_generator
+from common.utilities import error_exit
+from common import definitions, values, utilities
+
+
+def generate_slice_for_vector(vector_path, use_macro=False):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    source_file, segment = vector_path.split(".c.")
+    source_file = source_file + ".c"
+    seg_type = segment.replace(".vec", "").split("_")[0]
+    segment_identifier = "_".join(segment.replace(".vec", "").split("_")[1:])
+    slice_file = source_file + "." + seg_type + "." + segment_identifier + ".slice"
+    project_path = extractor.extract_project_path(source_file)
+    seg_found = slicer.slice_source_file(source_file, seg_type, segment_identifier,
+                             project_path,
+                             use_macro)
+    if not seg_found and values.CONF_PATH_C in project_path:
+        values.TARGET_REQUIRE_MACRO = True
+        values.PRE_PROCESS_MACRO = values.TARGET_PRE_PROCESS_MACRO
+        slicer.slice_source_file(source_file, seg_type, segment_identifier,
+                                 project_path,
+                                 True)
+    if not os.path.isfile(slice_file) or os.stat(slice_file).st_size == 0:
+        return None
+    return slice_file
+
+
+def generate_semantic_distance():
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+
+
+def generate_similarity_score(vector_path_a, vector_path_c):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    slice_file_a = generate_slice_for_vector(vector_path_a, values.DONOR_REQUIRE_MACRO)
+    slice_file_c = generate_slice_for_vector(vector_path_c, values.TARGET_REQUIRE_MACRO)
+    source_file_a = utilities.get_source_name_from_slice(slice_file_a)
+    source_file_c = utilities.get_source_name_from_slice(slice_file_c)
+    utilities.shift_per_slice(slice_file_a)
+    utilities.shift_per_slice(slice_file_c)
+    map_file_name = definitions.DIRECTORY_TMP + "/morph.map"
+    segment_identifier_a = utilities.get_identifier_from_slice(slice_file_a)
+    segment_identifier_c = utilities.get_identifier_from_slice(slice_file_c)
+    ast_tree_a = ast_generator.get_ast_json(source_file_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
+    ast_tree_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
+    ast_node_a = finder.search_function_node_by_name(ast_tree_a, segment_identifier_a)
+    ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
+    mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
+    ast_node_map = parallel.read_mapping(map_file_name)
+    utilities.restore_per_slice(slice_file_a)
+    utilities.restore_per_slice(slice_file_c)
+    if not ast_node_a or not ast_node_c:
+        return 1.0
+    id_list_a = extractor.extract_child_id_list(ast_node_a)
+    id_list_c = extractor.extract_child_id_list(ast_node_c)
+
+    node_size_a = len(id_list_a)
+    node_size_c = len(id_list_c)
+    match_count = 0
+    for node_str_a in ast_node_map:
+        node_id_a = utilities.id_from_string(node_str_a)
+        if node_id_a in id_list_a:
+            match_count = match_count + 1
+    similarity = float(match_count / (node_size_a + node_size_c))
+    emitter.information("Segment A Name: " + str(segment_identifier_a))
+    emitter.information("Segment C Name: " + str(segment_identifier_c))
+    emitter.information("Match Count: " + str(match_count))
+    emitter.information("Size of A: " + str(node_size_a))
+    emitter.information("Size of C: " + str(node_size_c))
+    emitter.information("Similarity: " + str(similarity))
+
+    return similarity
 
 
 def find_source_file(diff_file_list, project, log_file, file_extension):
@@ -97,7 +165,7 @@ def generate_segmentation(source_file, use_macro=False):
     if use_macro:
         heading = heading + " using macros"
     emitter.normal("\t\t\t" + heading)
-    function_list, definition_list = ASTGenerator.parse_ast(source_file, use_deckard=False, use_macro=use_macro, use_local=True)
+    function_list, definition_list = ast_generator.parse_ast(source_file, use_deckard=False, use_macro=use_macro, use_local=True)
     ast_tree = generate_ast_json(source_file, use_macro)
     if ast_tree is None:
         return None
@@ -187,7 +255,7 @@ def create_vectors(project, source_file, segmentation_list):
                                                                                   begin_line,
                                                                                   finish_line, True)
 
-        ASTGenerator.get_vars(project, source_file, definition_list)
+        ast_generator.get_vars(project, source_file, definition_list)
 
     if values.IS_STRUCT:
         # Emitter.normal("\t\t\tgenerating struct vectors")
@@ -201,7 +269,7 @@ def create_vectors(project, source_file, segmentation_list):
         for var_name, begin_line, finish_line in decl_list:
             var_name = "var_" + var_name.split(";")[0]
             var_type = (var_name.split("(")[1]).split(")")[0]
-            var_name = var_name.split("(")[0] + "_" + var_type.split(" ")[0]
+            var_name = var_name.split("(")[0]
             project.decl_list[source_file][var_name] = ast_vector.Vector(source_file, var_name, begin_line, finish_line,
                                                                          True)
 

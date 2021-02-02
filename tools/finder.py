@@ -237,7 +237,8 @@ def find_clone(file_name):
         return candidate_path
     file_path_list = set()
     source_path = file_name.replace(values.CONF_PATH_A, "")
-    source_path = source_path[1:]
+    if source_path[0] == "/":
+        source_path = source_path[1:]
     git_query = "cd " + values.CONF_PATH_A + ";"
     result_file = definitions.DIRECTORY_TMP + "/list"
     git_query += "git log --follow --pretty=\"\" --name-only " + source_path + " > " + result_file

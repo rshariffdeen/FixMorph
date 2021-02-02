@@ -167,3 +167,5 @@ missing_header_list = dict()
 missing_data_type_list = dict()
 modified_source_list = list()
 missing_var_list = dict()
+
+diff_del_only = True

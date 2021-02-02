@@ -5,7 +5,7 @@
 import sys
 import os
 from common.utilities import error_exit
-from tools import emitter, finder, logger, parallel, mapper, extractor, slicer
+from tools import emitter, finder, logger, parallel, mapper, extractor, slicer, generator
 from common import definitions, values, utilities
 from ast import ast_vector, ast_parser, ast_generator
 
@@ -96,17 +96,17 @@ def detect_matching_variables(func_name_a, file_a, func_name_c, file_c):
 
 def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    candidate_list_all = dict()
+    candidate_list_all_a = dict()
+    candidate_list_all_b = dict()
     map_file_name = definitions.DIRECTORY_TMP + "/sydit.map"
     for vector_a in vector_list_a:
-        candidate_list = []
+        candidate_list_a = []
+        candidate_list_b = []
         vector_path_a, vector_matrix_a = vector_a
         source_file_a, segment_a = vector_path_a.split(".c.")
         source_file_a = source_file_a + ".c"
         seg_type_a = segment_a.replace(".vec", "").split("_")[0]
         segment_identifier_a = "_".join(segment_a.replace(".vec", "").split("_")[1:])
-        emitter.information("Segment A Type: " + str(seg_type_a))
-        emitter.information("Segment A Name: " + str(segment_identifier_a))
         slice_file_a = source_file_a + "." + seg_type_a + "." + segment_identifier_a + ".slice"
         slicer.slice_source_file(source_file_a, seg_type_a, segment_identifier_a,
                                  values.CONF_PATH_A,
@@ -128,11 +128,10 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                 seg_type_c = segment_c.replace(".vec", "").split("_")[0]
                 segment_identifier_c = "_".join(segment_c.replace(".vec", "").split("_")[1:])
                 slice_file_c = source_file_c + "." + seg_type_c + "." + segment_identifier_c + ".slice"
-                emitter.information("Segment C Type: " + str(seg_type_c))
-                emitter.information("Segment C Name: " + str(segment_identifier_c))
                 slicer.slice_source_file(source_file_c, seg_type_c, segment_identifier_c,
                                          values.CONF_PATH_C,
                                          values.TARGET_REQUIRE_MACRO)
+
                 if not os.path.isfile(slice_file_c):
                     continue
                 if os.stat(slice_file_c).st_size == 0:
@@ -150,32 +149,45 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                     node_id_a = utilities.id_from_string(node_str_a)
                     if node_id_a in id_list_a:
                         match_count = match_count + 1
-                similarity = float(match_count / (node_size_a))
+                similarity_a = float(match_count / (node_size_a))
+                similarity_b = float(match_count / (node_size_a + node_size_c))
+                emitter.information("Segment A Type: " + str(seg_type_a))
+                emitter.information("Segment A Name: " + str(segment_identifier_a))
+                emitter.information("Segment C Type: " + str(seg_type_c))
+                emitter.information("Segment C Name: " + str(segment_identifier_c))
                 emitter.information("Match Count: " + str(match_count))
                 emitter.information("Size of A: " + str(node_size_a))
                 emitter.information("Size of C: " + str(node_size_c))
-                emitter.information("Similarity: " + str(similarity))
-                if len(candidate_list) > 1:
-                    emitter.error("Found more than one candidate")
-                    for candidate in candidate_list:
-                        emitter.error(str(candidate))
-                    utilities.error_exit("Too many candidates")
-                if similarity > values.DEFAULT_SIMILARITY_FACTOR:
-                    candidate_list.append((vector_path_c, similarity))
-            if len(candidate_list) > 1:
-                emitter.error("Found more than one candidate")
-                for candidate in candidate_list:
-                    emitter.error(str(candidate))
-                utilities.error_exit("Too many candidates")
-            elif len(candidate_list) == 0:
-                utilities.error_exit("NO CANDIDATE FOUND")
-            if len(candidate_list) == 1:
-                candidate_list_all[vector_path_a] = candidate_list
+                emitter.information("Similarity 1: " + str(similarity_a))
+                emitter.information("Similarity 2: " + str(similarity_b))
+                # if len(candidate_list) > 1:
+                #     emitter.error("Found more than one candidate")
+                #     for candidate in candidate_list:
+                #         emitter.error(str(candidate))
+                #     utilities.error_exit("Too many candidates")
+                if similarity_a > values.DEFAULT_SIMILARITY_FACTOR:
+                    candidate_list_a.append((vector_path_c, similarity_a))
+                if similarity_b > values.DEFAULT_SIMILARITY_FACTOR:
+                    candidate_list_b.append((vector_path_c, similarity_b))
+            # if len(candidate_list) > 1:
+            #     emitter.error("Found more than one candidate")
+            #     for candidate in candidate_list:
+            #         emitter.error(str(candidate))
+            #     utilities.error_exit("Too many candidates")
+            # elif len(candidate_list) == 0:
+            #     utilities.error_exit("NO CANDIDATE FOUND")
+            # if len(candidate_list) == 1:
+            #     candidate_list_all[vector_path_a] = candidate_list
+            candidate_list_all_a[vector_path_a] = (len(candidate_list_a), candidate_list_a)
+            candidate_list_all_b[vector_path_a] = (len(candidate_list_b), candidate_list_b)
         else:
             utilities.error_exit("DOES NOT SUPPORT OTHER SEGMENTS THAN FUNCTIONS")
 
         utilities.restore_per_slice(slice_file_a)
-    return candidate_list_all
+    print(candidate_list_all_a)
+    print(candidate_list_all_b)
+    exit()
+    return candidate_list_all_a
 
 
 def detect_segment_clone_by_distance(vector_list_a, vector_list_c, dist_factor):
@@ -331,12 +343,14 @@ def detect_struct_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
-        if float(candidate_distance) == 0.0:
+        similarity_sore = generator.generate_similarity_score(vector_path_a, candidate_file_path)
+        if float(similarity_sore) > 0.4:
             values.IS_IDENTICAL = True
         else:
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path
@@ -364,12 +378,14 @@ def detect_enum_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
-        if float(candidate_distance) == 0.0:
+        similarity_sore = generator.generate_similarity_score(vector_path_a, candidate_file_path)
+        if float(similarity_sore) > 0.4:
             values.IS_IDENTICAL = True
         else:
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tEnum Definition: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path
@@ -405,12 +421,14 @@ def detect_function_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
-        if float(candidate_distance) == 0.0:
+        similarity_sore = generator.generate_similarity_score(vector_path_a, candidate_file_path)
+        if float(similarity_sore) > 0.4:
             values.IS_IDENTICAL = True
         else:
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tFunction: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path
@@ -445,12 +463,14 @@ def detect_decl_clones():
         candidate_source_path = str(candidate_source_path).replace(values.Project_C.path, '')
         candidate_name = candidate_name.replace(".vec", "")
         candidate_distance = best_candidate[1]
-        if float(candidate_distance) == 0.0:
+        similarity_sore = generator.generate_similarity_score(vector_path_a, candidate_file_path)
+        if float(similarity_sore) > 0.4:
             values.IS_IDENTICAL = True
         else:
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tDeclaration: " + candidate_name + " in $Pc/" + str(candidate_source_path))
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path

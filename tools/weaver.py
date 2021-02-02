@@ -54,7 +54,8 @@ def execute_ast_transformation(script_path, source_file_info):
     parameters += " -destination=" + file_b + " -target=" + file_c
     parameters += " -map=" + definitions.FILE_NAMESPACE_MAP_LOCAL
 
-    patch_command = definitions.PATCH_COMMAND + parameters + " > " + definitions.FILE_TEMP_FIX
+    patch_command = definitions.PATCH_COMMAND + parameters + " > " + definitions.FILE_TEMP_FIX \
+                    + " 2> " + definitions.FILE_ERROR_LOG
 
     ret_code = int(execute_command(patch_command))
 
@@ -193,13 +194,24 @@ def weave_headers(missing_header_list, modified_source_list):
         target_file = missing_header_list[header_file_a]
         header_file_c = finder.find_clone(header_file_a)
         if header_file_c:
-            emitter.success("\t\tfound clone header file: " + header_file_c)
-            header_name = header_file_c.replace(values.Project_C.path, "")
-        else:
-            header_name = header_file_a.replace(values.Project_A.path, "")
+            target_file_dir_path = "/".join(target_file.split("/")[:-1]).replace(values.Project_D.path, "")
+            if target_file_dir_path[0] == "/":
+                target_file_dir_path = target_file_dir_path[1:]
+            header_file_dir_path = "/".join(header_file_c.split("/")[:-1])
+            if header_file_dir_path[0] == "/":
+                header_file_dir_path = header_file_dir_path[1:]
+            if header_file_c:
+                emitter.success("\t\tfound clone header file: " + header_file_c)
+                header_name = header_file_c.replace(values.Project_C.path, "")
+            else:
+                header_name = header_file_a.replace(values.Project_A.path, "")
 
-        if header_name[0] == "/":
-            header_name = header_name[1:]
+            if target_file_dir_path == header_file_dir_path:
+                header_name = header_name.split("/")[-1]
+            if header_name[0] == "/":
+                header_name = header_name[1:]
+        else:
+            header_name = header_file_a
 
         if "/" in header_name:
             transplant_code = "\n#include<" + header_name + ">\n"
@@ -289,11 +301,11 @@ def weave_definitions(missing_definition_list, modified_source_list):
                 for macro_def in macro_def_list:
                     if def_name in macro_def:
                         # print(macro_def)
-                        if "#define" in macro_def:
-                            if def_name in macro_def.split(" "):
-                                transplant_code += "\n" + macro_def + "\n"
-                            elif str(macro_def).count(def_name) == 1:
-                                transplant_code += "\n" + macro_def + "\n"
+                        if "#define " + def_name in macro_def:
+                            transplant_code += "\n" + macro_def + "\n"
+                            # TODO: not sure why we need this
+                            # elif str(macro_def).count(def_name) == 1:
+                            #     transplant_code += "\n" + macro_def + "\n"
                 # TODO: check if internal functions inside macro
                 if "})" in transplant_code:
                     transplant_code = "#include<" + header_file.split("include/")[-1] + ">\n" + transplant_code
@@ -438,15 +450,19 @@ def weave_slice(slice_info):
             segment_node_source = finder.search_node(ast_tree_source, segment_type, segment_identifier)
             start_line_source = int(segment_node_source['start line'])
             end_line_source = int(segment_node_source['end line'])
-            start_line_slice = int(segment_node_slice['start line'])
-            end_line_slice = int(segment_node_slice['end line'])
-            weave_list[start_line_source] = (slice_file, end_line_source, start_line_slice, end_line_slice)
+            if segment_node_slice:
+                start_line_slice = int(segment_node_slice['start line'])
+                end_line_slice = int(segment_node_slice['end line'])
+                weave_list[start_line_source] = (slice_file, end_line_source, start_line_slice, end_line_slice)
+            else:
+                weave_list[start_line_source] = (slice_file, end_line_source, None, None)
 
         for start_line_source in reversed(sorted(weave_list.keys())):
             slice_file, end_line_source, start_line_slice, end_line_slice = weave_list[start_line_source]
-            slice_code = get_code_range(slice_file, start_line_slice, end_line_slice)
             delete_code(source_file_d, start_line_source, end_line_source)
-            insert_code_range(slice_code, source_file_d, start_line_source)
+            if start_line_slice:
+                slice_code = get_code_range(slice_file, start_line_slice, end_line_slice)
+                insert_code_range(slice_code, source_file_d, start_line_source)
 
         source_file_a = source_file_b.replace(values.CONF_PATH_B, values.CONF_PATH_A)
         show_patch(source_file_a, source_file_b, source_file_c, source_file_d, segment_identifier)

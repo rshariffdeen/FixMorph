@@ -46,7 +46,7 @@ def abortable_worker(func, *args, **kwargs):
         return default_value, index
 
 
-def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
+def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighbor_id_c):
     global pool, result_list, expected_count
     result_list = []
 
@@ -55,22 +55,26 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
     emitter.normal("\tderiving namespace map")
     ast_tree_a = ast_generator.get_ast_json(source_a, values.DONOR_REQUIRE_MACRO, regenerate=True)
     ast_tree_c = ast_generator.get_ast_json(source_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
-
+    # neighborhood_c = finder.search_ast_node_by_id(ast_tree_c, neighbor_id_c)
+    # dec_list_local_c = extractor.extract_decl_node_list(neighborhood_c)
+    # dec_list_global_c = extractor.extract_decl_node_list_global(ast_tree_c)
+    ast_array_a = converter.convert_dict_to_array(ast_tree_a)
+    ast_array_c = converter.convert_dict_to_array(ast_tree_c)
     emitter.normal("\t\tstarting parallel computing")
     pool = mp.Pool(mp.cpu_count())
     for ast_node_txt_a in ast_node_map:
         ast_node_txt_c = ast_node_map[ast_node_txt_a]
         ast_node_id_a = int(str(ast_node_txt_a).split("(")[1].split(")")[0])
         ast_node_id_c = int(str(ast_node_txt_c).split("(")[1].split(")")[0])
-        ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
-        ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
         if ast_node_id_a == 0 or ast_node_id_c == 0:
             continue
-
+        ast_node_a = ast_array_a[ast_node_id_a]
+        ast_node_c = ast_array_c[ast_node_id_c]
         parent_id_a = int(ast_node_a['parent_id'])
         parent_id_c = int(ast_node_c['parent_id'])
         if (int(ast_node_id_a) < int(neighbor_id_a)) and (parent_id_a != 0 and parent_id_c != 0):
-            if ast_node_a['type'] == "DeclRefExpr" or ast_node_c['type'] == "DeclRefExpr":
+            if ast_node_a['type'] in ["DeclRefExpr", "ParmVarDecl", "VarDecl"]:
+            # if oracle.is_node_in_func(ast_node_a, ast_tree_a):
                 continue
         value_score = 1
         if ast_node_a:
@@ -85,9 +89,6 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a):
     for id_a, id_c, score, type_a, type_c in result_list:
         if id_a is None or id_c is None:
             continue
-        # if type_a in ["VarDecl", "ParmVarDecl"]:
-        #     if score < 100:
-        #         continue
         if id_a not in namespace_map:
             namespace_map[id_a] = dict()
         if id_c not in namespace_map[id_a]:
@@ -186,8 +187,8 @@ def extend_mapping(ast_node_map, source_a, source_c, neighbor_id_a):
         ast_node_a = finder.search_ast_node_by_id(ast_tree_a, ast_node_id_a)
         ast_node_c = finder.search_ast_node_by_id(ast_tree_c, ast_node_id_c)
         # result_list.append(mapper.anti_unification(ast_node_a, ast_node_c))
-        if (int(ast_node_id_a) < int(neighbor_id_a)) and ("Macro" not in node_a and "Decl" not in node_a):
-            continue
+        # if (int(ast_node_id_a) < int(neighbor_id_a)) and ("Macro" not in node_a and "Decl" not in node_a):
+        #     continue
 
         pool.apply_async(mapper.anti_unification, args=(ast_node_a, ast_node_c),
                          callback=collect_result)

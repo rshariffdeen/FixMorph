@@ -5,8 +5,8 @@
 import sys
 import time
 from common.utilities import error_exit
-from common import values, definitions
-from tools import logger, emitter, slicer
+from common import values, definitions, utilities
+from tools import logger, emitter, slicer, reader
 
 
 def fix_definitions(file_list_to_patch):
@@ -95,6 +95,16 @@ def revert_definitions(file_list_to_patch):
             error_exit("something went wrong with slicing phase")
 
 
+def load_values():
+    if not values.file_list_to_patch:
+        values.file_list_to_patch = reader.read_json(definitions.FILE_LIST_PATCH_FILES)
+    utilities.load_state()
+
+
+def save_values():
+    utilities.save_current_state()
+
+
 def safe_exec(function_def, title, *args):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     start_time = time.time()
@@ -118,7 +128,9 @@ def safe_exec(function_def, title, *args):
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.title("Slicing Source Files")
+    load_values()
     if values.PHASE_SETTING[definitions.PHASE_SLICING]:
         safe_exec(slice_code, "slice segments", values.file_list_to_patch)
+        save_values()
     else:
         emitter.special("\n\t-skipping this phase-")
