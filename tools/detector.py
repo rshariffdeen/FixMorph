@@ -350,7 +350,7 @@ def detect_struct_clones():
             values.IS_IDENTICAL = False
         emitter.normal("\t\tPossible match for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
         emitter.success("\t\t\tStructure: " + candidate_name + " in $Pc/" + str(candidate_source_path))
-        emitter.success("\t\t\tSimilarity: " + str(similarity_sore) + "\n")
+        emitter.success("\t\t\tSimilarity: " + str(similarity_sore))
         emitter.success("\t\t\tDistance: " + str(candidate_distance) + "\n")
         clone_list.append((vector_path_a, candidate_file_path, None))
         values.VECTOR_MAP[vector_path_a] = candidate_file_path
