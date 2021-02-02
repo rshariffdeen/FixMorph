@@ -88,9 +88,9 @@ def read_conf_file():
         elif definitions.CONF_BACKPORT in configuration:
             value = configuration.replace(definitions.CONF_BACKPORT, '')
             if "true" in value:
-                values.BACKPORT = True
+                values.IS_BACKPORT = True
             else:
-                values.BACKPORT = False
+                values.IS_BACKPORT = False
 
 
 def read_conf(arg_list):
@@ -108,9 +108,9 @@ def read_conf(arg_list):
             elif definitions.ARG_USE_CACHE in arg:
                 values.CONF_USE_CACHE = True
             elif definitions.ARG_BACKPORT in arg:
-                values.BACKPORT = True
+                values.IS_BACKPORT = True
             elif definitions.ARG_FORK in arg:
-                values.FORK = True
+                values.IS_FORK = True
             elif definitions.ARG_CONF_FILE in arg:
                 values.FILE_CONFIGURATION = str(arg).replace(definitions.ARG_CONF_FILE, '')
             elif definitions.ARG_LINUX_KERNEL in arg:
@@ -215,6 +215,8 @@ def print_configuration():
     emitter.configuration("timeout limit", values.DEFAULT_OVERALL_TIMEOUT)
     emitter.configuration("debug mode", values.DEBUG)
     emitter.configuration("debug data", values.DEBUG_DATA)
+    emitter.configuration("Linux Kernel", values.IS_LINUX_KERNEL)
+    emitter.configuration("Backport", values.IS_BACKPORT)
 
 
 def update_configuration():

@@ -658,7 +658,7 @@ def identify_insertion_points(candidate_function):
         insertion_point_list[exec_line] = score
         if score > best_score:
             best_score = score
-    if best_score == 0 and not values.BACKPORT:
+    if best_score == 0 and not values.IS_BACKPORT:
         print(unique_var_name_list)
         print(target_var_list)
         error_exit("no matching line")
@@ -718,7 +718,7 @@ def identify_divergent_point(byte_list, sym_path_info, trace_list, stack_info):
             count_latest = len(list(set(byte_list).intersection(bytes_latest)))
             if count_latest == count_common:
                 count_instant = 1
-                if values.BACKPORT:
+                if values.IS_BACKPORT:
                     return str(trace_loc_0), len(sym_path_list)
                 for sym_path in sym_path_list:
                     # print(sym_path)
@@ -738,7 +738,7 @@ def identify_divergent_point(byte_list, sym_path_info, trace_list, stack_info):
             bytes_latest = extractor.extract_input_bytes_used(sym_path_latest)
             count_latest = len(list(set(byte_list).intersection(bytes_latest)))
             if count_latest == count_common:
-                if values.BACKPORT:
+                if values.IS_BACKPORT:
                     return str(trace_loc_0), len(sym_path_list)
                 count_instant = 1
                 for sym_path in sym_path_list:
@@ -759,7 +759,7 @@ def identify_divergent_point(byte_list, sym_path_info, trace_list, stack_info):
             bytes_latest = extractor.extract_input_bytes_used(sym_path_latest)
             count_latest = len(list(set(byte_list).intersection(bytes_latest)))
             if count_latest == count_common:
-                if values.BACKPORT:
+                if values.IS_BACKPORT:
                     return str(trace_loc_0), len(sym_path_list)
                 count_instant = 1
                 for sym_path in sym_path_list:

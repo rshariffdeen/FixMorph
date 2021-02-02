@@ -11,9 +11,9 @@ Project_E = None
 
 DEBUG = False
 DEBUG_DATA = False
-BACKPORT = False
+IS_BACKPORT = False
 BREAK_WEAVE = False
-FORK = False
+IS_FORK = False
 IS_LINUX_KERNEL = False
 SKIP_VEC_GEN = False
 ANALYSE_N = False

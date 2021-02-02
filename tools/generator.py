@@ -300,7 +300,7 @@ def generate_vectors(file_extension, log_file, project, diff_file_list):
 
     # intelligently generate vectors
     regex = None
-    if values.BACKPORT or values.FORK:
+    if values.IS_BACKPORT or values.IS_FORK:
         find_source_file(diff_file_list, project, log_file, file_extension)
     else:
         find_files(project.path, file_extension, log_file, regex)
