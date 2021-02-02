@@ -8,9 +8,9 @@ import git
 
 DIR_TEST = os.getcwd()
 CONF_DATA_PATH = "/data"
-CONF_TOOL_PATH = "/crochet"
+CONF_TOOL_PATH = "/fixmorph"
 CONF_TOOL_PARAMS = " --backport --linux-kernel --skip-summary"
-CONF_TOOL_NAME = "python3 Crochet.py"
+CONF_TOOL_NAME = "python3 FixMorph.py"
 CONF_DEBUG = False
 CONF_SKIP_SETUP = False
 CONF_ONLY_SETUP = False
@@ -85,7 +85,7 @@ def analyse_result(bug_id, log_file_path):
 
     is_build_failed = check_word_exist(log_file_path, "BUILD FAILED")
     is_verify = check_word_exist(log_file_path, "verifying compilation")
-    is_success = check_word_exist(log_file_path, "Crochet finished successfully")
+    is_success = check_word_exist(log_file_path, "FixMorph finished successfully")
     is_failed = check_word_exist(log_file_path, "exited with an error")
     is_runtime_error = not check_word_exist(log_file_path, "FAILED") and is_failed
     is_transform_failure = check_word_exist(log_file_path, "transformation FAILED")

@@ -17,3 +17,14 @@ FixMorph is a powerful morphing tool for C source-codes. FixMorph is:
 
 
 
+# Building
+Building FixMorph is very easy with the provided Dockerfile which has all the build dependencies and libraries required
+for the source-to-source transformation. There are two versions of the Dockerfile we provide
+
+* Dockerfile: This will build the environment necessary to run the stand-alone tool
+* Dockerfile.experiments: This environment includes all necessary dependencies to re-produce the experiments
+
+You can use the following command to build the image:
+```
+docker build -f Dockerfile -t fixmorph .
+```

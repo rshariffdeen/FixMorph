@@ -61,7 +61,7 @@ RUN pip install gitpython
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
-ADD $PWD /crochet
+ADD $PWD /fixmorph
 
 
 # Tidy up the container
