@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
     ninja \
     perl \
     pkg-config \
-    python3 \
+    python3.6 \
     python3-pip \
     software-properties-common \
     subversion \
@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev
 
 
+RUN add-apt-repository -y ppa:deadsnakes/ppa
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main"
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-install-recommends --force-yes \
@@ -50,10 +51,10 @@ RUN mkdir /bear; git clone https://github.com/rizsotto/Bear.git /bear/source;
 RUN cd /bear/source; git checkout 2.2.1
 RUN mkdir /bear/build; cd /bear/build; cmake ../source; make -j32; make install
 
-RUN /usr/bin/pip3 install --upgrade pip && pip3 install \
-    pysmt \
-    six \
-    wllvm
+RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install pysmt
+RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install six
+RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install wllvm
+
 
 RUN echo "Y" | pysmt-install  --z
 
