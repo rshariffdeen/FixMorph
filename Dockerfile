@@ -52,7 +52,7 @@ RUN mkdir /bear/build; cd /bear/build; cmake ../source; make -j32; make install
 
 RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install pysmt
 RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install six
-RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install wllvm
+RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install wllvm; exit 0;
 
 
 RUN echo "Y" | pysmt-install  --z
