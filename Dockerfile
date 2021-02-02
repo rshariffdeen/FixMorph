@@ -18,20 +18,19 @@ RUN apt-get update && apt-get install -y \
     ninja \
     perl \
     pkg-config \
-    python3.6 \
-    python3-pip \
     software-properties-common \
     subversion \
     unzip \
     wget \
     zlib1g-dev
 
-
 RUN add-apt-repository -y ppa:deadsnakes/ppa
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main"
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-install-recommends --force-yes \
-    clang-9
+    clang-9 \
+    python3.6 \
+    python3-pip
 RUN mkdir -p /llvm/llvm-10; git clone https://github.com/llvm/llvm-project.git /llvm/llvm-10/source; cd /llvm/llvm-10/source; git checkout llvmorg-10.0.0
 #RUN svn co https://llvm.org/svn/llvm-project/cfe/tags/RELEASE_700/final/ /llvm/llvm-7/source/tools/clang
 RUN git clone https://github.com/rshariffdeen/clang-tools.git /llvm/llvm-10/source/clang-tools-extra/clang-tools; cd /llvm/llvm-10/source/clang-tools-extra/clang-tools; git checkout llvm-10
