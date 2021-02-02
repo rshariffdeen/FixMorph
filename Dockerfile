@@ -53,11 +53,9 @@ RUN mkdir /bear/build; cd /bear/build; cmake ../source; make -j32; make install
 RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install pysmt
 RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install six
 RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install wllvm; exit 0;
-
+RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install gitpython
 
 RUN echo "Y" | pysmt-install  --z
-
-RUN pip install gitpython
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
