@@ -18,7 +18,7 @@ int main(void)
 	int fib_number = fib(a);
 	if (fib_number > 0)
 	    goto test;
-	elif (fib_number == 5)
+	else if (fib_number == 5)
 	    goto error;
 	test:
 	    printf("fib number is %d", fib_number);
