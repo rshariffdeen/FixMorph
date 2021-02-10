@@ -218,7 +218,7 @@ STYLE_FORMAT_COMMAND = "clang-format -style=LLVM "
 crash_word_list = ["abort", "core dumped", "crashed", "exception", "dumped core"]
 error_word_list = ["runtime error", "buffer-overflow", "unsigned integer overflow"]
 
-operation_mode = {0: "crochet", 1: "patch", 2: "patch-context", 3: "sydit"}
+operation_mode = {0: "fixmorph", 1: "patch", 2: "patch-context", 3: "sydit"}
 
 
 UPDATEMOVE = "UpdateMove"
