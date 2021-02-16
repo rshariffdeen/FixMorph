@@ -213,9 +213,10 @@ def find_header_file(query, source_path, target_path):
                 candidate_file = candidate_file.replace(values.Project_D.path + "/", "")
             if candidate_file[0] == ".":
                 candidate_file = candidate_file[2:]
-            candidate_header_list.append(candidate_file)
+            if candidate_file not in candidate_header_list:
+                candidate_header_list.append(candidate_file)
         # print(candidate_header_list)
-        intersection = list(set(header_file_list_in_target).intersection(candidate_list))
+        intersection = list(set(header_file_list_in_target).intersection(candidate_header_list))
         if intersection:
             for header_file_path in intersection:
                 header_abs_path = values.CONF_PATH_C + "/" + header_file_path
