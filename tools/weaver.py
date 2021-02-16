@@ -312,13 +312,14 @@ def weave_definitions(missing_definition_list, modified_source_list):
 
                 if "(" in def_name and transplant_code == "":
                     transplant_code = "#define " + def_name + "...)\n"
-        backup_file(target_file, FILENAME_BACKUP)
-        insert_code(transplant_code, target_file, def_insert_line)
-        if target_file not in modified_source_list:
-            modified_source_list.append(target_file)
-        backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
-        show_partial_diff(backup_file_path, target_file)
-        emitter.success("\tcode transplanted at " + target_file)
+        if transplant_code != "":
+            backup_file(target_file, FILENAME_BACKUP)
+            insert_code(transplant_code, target_file, def_insert_line)
+            if target_file not in modified_source_list:
+                modified_source_list.append(target_file)
+            backup_file_path = definitions.DIRECTORY_BACKUP + "/" + FILENAME_BACKUP
+            show_partial_diff(backup_file_path, target_file)
+            emitter.success("\tcode transplanted at " + target_file)
     return modified_source_list
 
 
