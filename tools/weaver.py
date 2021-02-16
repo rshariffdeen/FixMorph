@@ -292,7 +292,7 @@ def weave_definitions(missing_definition_list, modified_source_list):
                         transplant_code += "\n" + macro_def + "\n"
 
         if transplant_code == "":
-            header_file = finder.find_header_file("#define " + def_name, source_file)
+            header_file = finder.find_header_file("#define " + def_name, source_file, target_file)
             # print(header_file)
             if header_file is not None:
                 macro_def_list = extractor.extract_macro_definitions(header_file)
