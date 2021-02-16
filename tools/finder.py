@@ -203,8 +203,18 @@ def find_header_file(query, source_path, target_path):
     execute_command(search_command)
     target_ast_tree = ast_generator.get_ast_json(target_path, regenerate=True)
     header_file_list_in_target = extractor.extract_header_file_list(target_ast_tree)
+    # print(header_file_list_in_target)
     with open(FILE_GREP_RESULT, 'r') as result_file:
         candidate_list = result_file.readlines()
+        candidate_header_list = list()
+        for candidate in candidate_list:
+            candidate_file = str(candidate).split(":")[0]
+            if values.Project_D.path in candidate_file:
+                candidate_file = candidate_file.replace(values.Project_D.path + "/", "")
+            if candidate_file[0] == ".":
+                candidate_file = candidate_file[2:]
+            candidate_header_list.append(candidate_file)
+        # print(candidate_header_list)
         intersection = list(set(header_file_list_in_target).intersection(candidate_list))
         if intersection:
             for header_file_path in intersection:
@@ -217,8 +227,7 @@ def find_header_file(query, source_path, target_path):
             # TODO: can improve selection
             best_candidate = str(candidate_list[0]).split(":")[0]
             if len(candidate_list) > 1:
-                for candidate in candidate_list:
-                    candidate_file = str(candidate).split(":")[0]
+                for candidate_file in candidate_header_list:
                     if ".h" in candidate_file:
                         best_candidate = candidate_file
                 emitter.warning("\t\t[warning] more than one definition found")

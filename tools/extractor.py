@@ -860,6 +860,8 @@ def extract_header_file_list(ast_tree):
     if "file" in ast_tree:
         file_loc = ast_tree['file']
         if ".h" in file_loc:
+            if values.Project_D.path in file_loc:
+                file_loc = file_loc.replace(values.Project_D.path + "/", "")
             header_file_list.append(file_loc)
     if len(ast_tree['children']) > 0:
         for child_node in ast_tree['children']:
