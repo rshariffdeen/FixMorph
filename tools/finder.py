@@ -220,9 +220,9 @@ def find_header_file(query, source_path, target_path):
         if intersection:
             for header_file_path in intersection:
                 header_abs_path = values.CONF_PATH_C + "/" + header_file_path
-                with open(header_abs_path, "r", 0) as header_file:
+                with open(header_abs_path, "rb", 0) as header_file:
                     with mmap.mmap(header_file.fileno(), 0, access=mmap.ACCESS_READ) as read_map:
-                        if read_map.find(query) != -1:
+                        if read_map.find(bytes(query, 'utf-8')) != -1:
                             return None
         if len(candidate_list) >= 1:
             # TODO: can improve selection
