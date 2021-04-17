@@ -76,8 +76,11 @@ def fix_return_type(source_file, source_location):
     ast_map = ast_generator.get_ast_json(source_file)
     function_node = finder.search_function_node_by_loc(ast_map, int(line_number), source_file)
     return_node = extract_return_node(function_node, line_number)
+    start_line = return_node['start line']
+    end_line = return_node['end line']
     function_definition = function_node['value']
     function_name = function_node['identifier']
+
     function_return_type = (function_definition.replace(function_name, "")).split("(")[1]
     original_statement = ""
     if function_return_type.strip() == "void":
