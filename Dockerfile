@@ -54,22 +54,16 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-in
     pypy3 \
     pypy3-dev
 
-RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install pysmt
+RUN python3.7 -m pip install --upgrade pip
+RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install pylint
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install six
-RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install wllvm; exit 0;
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install gitpython
 
 RUN pypy3 -m easy_install cython
 RUN pypy3 -m easy_install setuptools
-RUN pypy3 -m easy_install pysmt
-RUN pysmt-install --z3 --confirm-agreement
-RUN pypy3 -m easy_install funcy
 RUN pypy3 -m easy_install six
-RUN pypy3 -m easy_install numpy==1.19.1
-RUN pypy3 -m easy_install wllvm
+RUN pypy3 -m easy_install gitpython
 
-
-RUN echo "Y" | pysmt-install  --z
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
