@@ -9,7 +9,7 @@ from Cython.Build import cythonize
 
 
 EXCLUDE_FILES = [
-    'phases/main.py'
+    'app/main.py'
 ]
 
 
@@ -48,11 +48,7 @@ setup(
     version='1.0.0',
     packages=find_packages(),
     ext_modules=cythonize(
-        get_ext_paths('phases', EXCLUDE_FILES),
-        get_ext_paths('ast', EXCLUDE_FILES),
-        get_ext_paths('common', EXCLUDE_FILES),
-        get_ext_paths('entity', EXCLUDE_FILES),
-        get_ext_paths('tools', EXCLUDE_FILES),
+        get_ext_paths('app', EXCLUDE_FILES),
         compiler_directives={'language_level': 3}
     ),
     cmdclass={
