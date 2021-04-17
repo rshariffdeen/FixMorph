@@ -6,10 +6,10 @@ import time
 import os
 import traceback
 import signal
-from tools import emitter, logger, configuration
-from phases import building, differencing, detection, mapping, extraction, translation, \
+from app.tools import emitter, logger, configuration
+from app.phases import building, differencing, detection, mapping, extraction, translation, \
     evolution, weaving, verify, summarizing, slicing, comparison
-from common import definitions, values, utilities
+from app.common import definitions, values, utilities
 
 time_info = {
     definitions.KEY_DURATION_INITIALIZATION: '0', definitions.KEY_DURATION_BUILD_ANALYSIS: '0',
