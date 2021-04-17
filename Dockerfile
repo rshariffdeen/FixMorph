@@ -29,7 +29,7 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main"
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-install-recommends --force-yes \
     clang-9 \
-    python3.6 \
+    python3.7 \
     python3-pip \
     python3-setuptools
 
@@ -54,10 +54,10 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-in
     pypy3 \
     pypy3-dev
 
-RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install pysmt
-RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install six
-RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install wllvm; exit 0;
-RUN python3.6 -m pip --disable-pip-version-check --no-cache-dir install gitpython
+RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install pysmt
+RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install six
+RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install wllvm; exit 0;
+RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install gitpython
 
 RUN pypy3 -m easy_install cython
 RUN pypy3 -m easy_install setuptools
