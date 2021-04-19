@@ -61,7 +61,7 @@ RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install gitpytho
 
 RUN pypy3 -m easy_install cython
 RUN pypy3 -m easy_install setuptools
-RUN pypy3 -m easy_install six
+#RUN pypy3 -m easy_install six
 RUN pypy3 -m easy_install gitpython
 
 
