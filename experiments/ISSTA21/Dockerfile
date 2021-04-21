@@ -1,4 +1,4 @@
-FROM rshariffdeen/fixmorph:llvm-10
+FROM rshariffdeen/fixmorph
 MAINTAINER Ridwan Shariffdeen <ridwan@comp.nus.edu.sg>
 
 RUN apt-get update && apt-get install -y \
@@ -33,6 +33,7 @@ RUN apt-get update && apt-get install -y \
 RUN git config --global user.email "rshariffdeen@gmail.com"
 RUN git config --global user.name "Ridwan"
 ADD $PWD /experiment
+WORKDIR /FixMorph
 
 # Tidy up the container
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
