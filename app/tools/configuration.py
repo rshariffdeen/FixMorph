@@ -151,6 +151,9 @@ def read_conf(arg_list):
                         values.PHASE_SETTING[phase] = 1
                     else:
                         values.PHASE_SETTING[phase] = 0
+            elif "--help" in arg:
+                emitter.help()
+                exit()
             else:
                 emitter.normal("Invalid argument: " + arg)
                 emitter.help()
