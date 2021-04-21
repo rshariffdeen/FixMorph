@@ -21,8 +21,8 @@ def create():
         os.remove(definitions.FILE_ERROR_LOG)
     if os.path.exists(definitions.FILE_COMMAND_LOG):
         os.remove(definitions.FILE_COMMAND_LOG)
-        with open(definitions.FILE_COMMAND_LOG, 'w') as fp:
-            pass
+    with open(definitions.FILE_COMMAND_LOG, 'w') as fp:
+        pass
     with open(definitions.FILE_LAST_LOG, 'w+') as last_log:
         last_log.write("[Start] " + values.TOOL_NAME + " started at " + str(datetime.datetime.now()) + "\n")
 
