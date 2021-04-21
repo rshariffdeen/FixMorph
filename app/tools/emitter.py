@@ -179,10 +179,13 @@ def end(time_info, is_error=False):
 
 
 def help():
-    print("Usage: python " + values.TOOL_NAME + " [OPTIONS] " + definitions.ARG_CONF_FILE + "$FILE_PATH")
+    print("Usage: python " + values.TOOL_NAME + " [OPTIONS] " + definitions.ARG_CONF_FILE + "$CONFIGURATION_FILE_PATH")
 
     print("Options are:")
+    print("\t" + definitions.ARG_HELP + "\t| " + "displays this menu for help")
     print("\t" + definitions.ARG_DEBUG + "\t| " + "enable debugging information")
+    print("\t" + definitions.ARG_OPERATION_MODE + "\t| " + "select which tool/mode to run for backport {0: fixmorph, 1: patch, 2: patch-context, 3: sydit}")
+    print("\t" + definitions.ARG_CONTEXT_LEVEL + "\t| " + "set context level for patch-context mode")
 
     print("Skip Phases\n-----------------------\n")
     print("\t" + definitions.ARG_SKIP_BUILD + "\t| " + "skip build")
