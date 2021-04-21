@@ -184,9 +184,9 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
             utilities.error_exit("DOES NOT SUPPORT OTHER SEGMENTS THAN FUNCTIONS")
 
         utilities.restore_per_slice(slice_file_a)
-    print(candidate_list_all_a)
-    print(candidate_list_all_b)
-    exit()
+    # print(candidate_list_all_a)
+    # print(candidate_list_all_b)
+    # exit()
     return candidate_list_all_a
 
 
