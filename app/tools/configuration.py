@@ -230,7 +230,7 @@ def update_configuration():
         values.DEFAULT_TAG_ID = values.CONF_TAG_ID
     # conf_file_name = values.FILE_CONFIGURATION.split("/")[-1]
     project_name = values.FILE_CONFIGURATION.split("/")[-3]
-    dir_name = project_name + "-" + values.CONF_TAG_ID
+    dir_name = project_name + "-" + values.DEFAULT_TAG_ID
 
     # if definitions.DIRECTORY_MAIN + "/tests" in os.path.abspath(values.FILE_CONFIGURATION):
     #     values.CONF_VC = "git"
