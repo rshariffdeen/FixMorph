@@ -1,7 +1,7 @@
 import os
 import signal
 import shutil
-from app.common import definitions, values
+from app.common import definitions, values, utilities
 from app.tools import emitter
 from app.entity import project
 
@@ -157,10 +157,10 @@ def read_conf(arg_list):
             else:
                 emitter.normal("Invalid argument: " + arg)
                 emitter.help()
-                exit()
+                raise Exception("Unsupported Arguments")
     else:
         emitter.help()
-        exit()
+        raise Exception("No Arguments Provided")
 
 
 def update_phase_configuration(arg_list):

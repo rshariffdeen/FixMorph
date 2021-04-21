@@ -153,28 +153,29 @@ def configuration(setting, value):
 
 
 def end(time_info, is_error=False):
-    statistics("\nRun time statistics:\n-----------------------\n")
-    statistics("Initialization: " + time_info[definitions.KEY_DURATION_INITIALIZATION] + " minutes")
-    statistics("Build Analysis: " + time_info[definitions.KEY_DURATION_BUILD_ANALYSIS] + " minutes")
-    statistics("Diff Analysis: " + time_info[definitions.KEY_DURATION_DIFF_ANALYSIS] + " minutes")
-    statistics("Clone Analysis: " + time_info[definitions.KEY_DURATION_CLONE_ANALYSIS] + " minutes")
-    statistics("Slicing: " + time_info[definitions.KEY_DURATION_SLICE] + " minutes")
-    statistics("AST Analysis: " + time_info[definitions.KEY_DURATION_EXTRACTION] + " minutes")
-    statistics("Map Generation: " + time_info[definitions.KEY_DURATION_MAP_GENERATION] + " minutes")
-    statistics("Translation: " + time_info[definitions.KEY_DURATION_TRANSLATION] + " minutes")
-    statistics("Evolution: " + time_info[definitions.KEY_DURATION_EVOLUTION] + " minutes")
-    statistics("Transplantation: " + time_info[definitions.KEY_DURATION_TRANSPLANTATION] + " minutes")
-    statistics("Verification: " + time_info[definitions.KEY_DURATION_VERIFICATION] + " minutes")
-    # statistics("Reverse Transplantation: " + time_info[Definitions.KEY_DURATION_REVERSE] + " minutes")
-    # statistics("Evaluation: " + time_info[Definitions.KEY_DURATION_EVALUATION] + " minutes")
-    statistics("Comparison: " + time_info[definitions.KEY_DURATION_COMPARISON] + " minutes")
-    statistics("Summarizing: " + time_info[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
-    if is_error:
-        error(values.TOOL_NAME + " exited with an error after " + time_info[definitions.KEY_DURATION_TOTAL]
-              + " minutes\n")
-    else:
-        success(values.TOOL_NAME + " finished successfully after " + time_info[definitions.KEY_DURATION_TOTAL]
-                + " minutes\n")
+    if values.CONF_ARG_PASS:
+        statistics("\nRun time statistics:\n-----------------------\n")
+        statistics("Initialization: " + time_info[definitions.KEY_DURATION_INITIALIZATION] + " minutes")
+        statistics("Build Analysis: " + time_info[definitions.KEY_DURATION_BUILD_ANALYSIS] + " minutes")
+        statistics("Diff Analysis: " + time_info[definitions.KEY_DURATION_DIFF_ANALYSIS] + " minutes")
+        statistics("Clone Analysis: " + time_info[definitions.KEY_DURATION_CLONE_ANALYSIS] + " minutes")
+        statistics("Slicing: " + time_info[definitions.KEY_DURATION_SLICE] + " minutes")
+        statistics("AST Analysis: " + time_info[definitions.KEY_DURATION_EXTRACTION] + " minutes")
+        statistics("Map Generation: " + time_info[definitions.KEY_DURATION_MAP_GENERATION] + " minutes")
+        statistics("Translation: " + time_info[definitions.KEY_DURATION_TRANSLATION] + " minutes")
+        statistics("Evolution: " + time_info[definitions.KEY_DURATION_EVOLUTION] + " minutes")
+        statistics("Transplantation: " + time_info[definitions.KEY_DURATION_TRANSPLANTATION] + " minutes")
+        statistics("Verification: " + time_info[definitions.KEY_DURATION_VERIFICATION] + " minutes")
+        # statistics("Reverse Transplantation: " + time_info[Definitions.KEY_DURATION_REVERSE] + " minutes")
+        # statistics("Evaluation: " + time_info[Definitions.KEY_DURATION_EVALUATION] + " minutes")
+        statistics("Comparison: " + time_info[definitions.KEY_DURATION_COMPARISON] + " minutes")
+        statistics("Summarizing: " + time_info[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
+        if is_error:
+            error(values.TOOL_NAME + " exited with an error after " + time_info[definitions.KEY_DURATION_TOTAL]
+                  + " minutes\n")
+        else:
+            success(values.TOOL_NAME + " finished successfully after " + time_info[definitions.KEY_DURATION_TOTAL]
+                    + " minutes\n")
 
 
 def help():

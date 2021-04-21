@@ -77,6 +77,7 @@ def bootstrap(arg_list):
     configuration.read_conf(arg_list)
     if values.FILE_CONFIGURATION:
         configuration.read_conf_file()
+    values.CONF_ARG_PASS = 1
     configuration.update_configuration()
     configuration.update_phase_configuration(arg_list)
     configuration.print_configuration()

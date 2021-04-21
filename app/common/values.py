@@ -99,7 +99,7 @@ CONF_USE_CACHE = False
 CONF_TAG_ID = ""
 CONF_OPERATION_MODE = -1
 CONF_CONTEXT_LEVEL = -1
-
+CONF_ARG_PASS = 0
 
 silence_emitter = False
 file_list_to_patch = []
