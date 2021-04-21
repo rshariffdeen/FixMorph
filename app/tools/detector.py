@@ -178,8 +178,9 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
             #     utilities.error_exit("NO CANDIDATE FOUND")
             # if len(candidate_list) == 1:
             #     candidate_list_all[vector_path_a] = candidate_list
-            candidate_list_all_a[vector_path_a] = (len(candidate_list_a), candidate_list_a)
-            candidate_list_all_b[vector_path_a] = (len(candidate_list_b), candidate_list_b)
+            candidate_list_all_a[vector_path_a] = candidate_list_a
+            candidate_list_all_b[vector_path_a] = candidate_list_b
+
         else:
             utilities.error_exit("DOES NOT SUPPORT OTHER SEGMENTS THAN FUNCTIONS")
 
