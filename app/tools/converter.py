@@ -122,7 +122,7 @@ def get_node_value(ast_node):
         ast_value = convert_conditional_op_to_expr(ast_node, True)
     elif ast_type == "PredefinedExpr":
         ast_value = get_node_value(ast_node['children'][0])
-    elif ast_type in ["CharacterLiteral", "CompoundLiteralExpr"]:
+    elif ast_type in ["CharacterLiteral", "CompoundLiteralExpr", "BinaryConditionalOperator"]:
         return None
     else:
         print(ast_type)
