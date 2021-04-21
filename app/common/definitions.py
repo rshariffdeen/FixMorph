@@ -113,7 +113,8 @@ CONF_DIFF_SIZE = "diff_size:"
 CONF_VC = "version-control:"
 CONF_LINUX_KERNEL = "linux-kernel:"
 CONF_BACKPORT = "backport:"
-CONF_CONTEXT_LEVEL = "context_level"
+CONF_CONTEXT_LEVEL = "context_level:"
+CONF_TAG_ID = "tag_id:"
 
 
 # ----------------- KEY DEFINITIONS -------------------

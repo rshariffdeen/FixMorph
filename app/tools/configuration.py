@@ -52,7 +52,8 @@ def read_conf_file():
             values.CONF_COMMIT_C = configuration.replace(definitions.CONF_COMMIT_C, '')
         elif definitions.CONF_COMMIT_E in configuration:
             values.CONF_COMMIT_E = configuration.replace(definitions.CONF_COMMIT_E, '')
-
+        elif definitions.CONF_TAG_ID in configuration:
+            values.CONF_TAG_ID = configuration.replace(definitions.CONF_TAG_ID, "").strip().replace("\n", "")
         elif definitions.CONF_PATH_POC in configuration:
             values.CONF_PATH_POC = configuration.replace(definitions.CONF_PATH_POC, '')
             if "$HOME$" in values.CONF_PATH_POC:
@@ -225,9 +226,11 @@ def print_configuration():
 def update_configuration():
     emitter.normal("updating configuration values")
     # create log files and other directories
-    conf_file_name = values.FILE_CONFIGURATION.split("/")[-1]
+    if values.CONF_TAG_ID:
+        values.DEFAULT_TAG_ID = values.CONF_TAG_ID
+    # conf_file_name = values.FILE_CONFIGURATION.split("/")[-1]
     project_name = values.FILE_CONFIGURATION.split("/")[-3]
-    dir_name = project_name + "-" + conf_file_name.replace(".conf", "")
+    dir_name = project_name + "-" + values.CONF_TAG_ID
 
     # if definitions.DIRECTORY_MAIN + "/tests" in os.path.abspath(values.FILE_CONFIGURATION):
     #     values.CONF_VC = "git"

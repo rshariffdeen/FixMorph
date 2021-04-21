@@ -184,7 +184,7 @@ def clone_repo():
 
 def write_conf_file(base_dir_path, object_a, object_c, bug_id, commit_list):
     print("\t[INFO] creating configuration")
-    conf_file_name = str(bug_id) + ".conf"
+    conf_file_name = "repair.conf"
     dir_path = base_dir_path + "/" + str(bug_id)
     conf_file_path = dir_path + "/" + conf_file_name
     if os.path.isfile(conf_file_path):
@@ -195,6 +195,7 @@ def write_conf_file(base_dir_path, object_a, object_c, bug_id, commit_list):
         content += "path_b:" + dir_path + "/pb\n"
         content += "path_c:" + dir_path + "/pc\n"
         content += "path_e:" + dir_path + "/pe\n"
+        content += "tag_id:" + str(bug_id) + "\n"
         content += "commit_a:" + fix_parent + "\n"
         content += "commit_b:" + fix_commit + "\n"
         content += "commit_c:" + target_bug_commit + "\n"
