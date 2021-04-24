@@ -12,7 +12,7 @@ void printY(int y){
 
 int main( ) {
     int k = 2;
-    printX(k, "printX");
+    printN(k, "printX");
     printY(k);
     return 0;
 }
