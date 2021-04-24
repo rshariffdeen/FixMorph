@@ -4,16 +4,16 @@
     add few comments to change the line numbers
 */
 
-int fib(int n)
+int fib_n(int num)
 {
     int k = 0;
     k = k + 1;
-	if (n == 0 || n == 1)
+	if (num == 0 || num == 1)
 	{
-		return n;
+		return num;
 	}
 	printf("value of k is %d\n", k);
-	return fib(n - 1) + fib(n - 2);
+	return fib_n(num - 1) + fib_n(num - 2);
 }
 
 
@@ -21,7 +21,7 @@ int main(void)
 {
 	int a;
 	scanf("%d", &a);
-	int fib_number = fib(a);
+	int fib_number = fib_n(a);
 	printf("fib number is %d", fib_number);
 	return 0;
 }
