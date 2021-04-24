@@ -3,7 +3,7 @@
 #include <ctype.h>  
 
 void printA(int n, char* str){
-    for(int i =0; i< a; i++)
+    for(int i =0; i<n; i++)
         printf("A: the value is  %d %s\n", n, str);
 }
 
