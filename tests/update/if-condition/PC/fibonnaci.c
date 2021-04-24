@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	scanf("%d", &i);
 	int fibonacci_number = fibonacci(i);
 	int k = atoi(argv[0]);
-	if (k == 0){
+	if (k == 0) {
 	   printf("SOMETHING");
 	}
 
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
 	printf("fib number is %d", fibonacci_number);
 
-	if (fibonacci_number > 10){
+	if (fibonacci_number > 10) {
 	    i = 10;
 	    goto something;
 	}

@@ -17,11 +17,11 @@ int main(int argc, char **argv)
 	scanf("%d", &a);
 	int fib_number = fib(a);
 	int c = atoi(argv[0]);
-	if (c == NUM){
+	if (c == NUM) {
 	   printf("SOMETHING");
 	}
 
-	if (c < 0){
+	if (c < 0) {
 	   printf("INVALID");
 	}
 
