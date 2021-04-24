@@ -7,7 +7,7 @@ void printA(int a, char* str){
 }
 
 void printB(int a){
-    printf("B: the value is  %d\n", a);
+    printf("B: the value is  %d\n", b);
 }
 
 
