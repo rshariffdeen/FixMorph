@@ -2,8 +2,8 @@
 #include <string.h>
 #include <ctype.h>  
 
-void printA(int a, char* str){
-    printf("A: the value is  %d %s\n", a, str);
+void printA(int n, char* str){
+    printf("A: the value is  %d %s\n", n, str);
 }
 
 void printB(int b){
