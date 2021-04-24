@@ -7,9 +7,9 @@ void printA(int a, char* str){
         printf("A: the values are  %d %s\n", a, str);
 }
 
-void printB(int a){
-    for(int i =0; i< a; i++)
-        printf("B: the values are  %d\n", a);
+void printB(int b){
+    for(int i =0; i< b; i++)
+        printf("B: the values are  %d\n", b);
 }
 
 int main( ) {

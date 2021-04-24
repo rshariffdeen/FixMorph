@@ -2,12 +2,12 @@
 #include <string.h>
 #include <ctype.h>  
 
-void printX(int a, char* str){
-    printf("X: the values are  %d %s\n", a, str);
+void printX(int x, char* str){
+    printf("X: the values are  %d %s\n", x, str);
 }
 
-void printY(int a){
-    printf("Y: the values are  %d\n", a);
+void printY(int y){
+    printf("Y: the values are  %d\n", y);
 }
 
 int main( ) {
