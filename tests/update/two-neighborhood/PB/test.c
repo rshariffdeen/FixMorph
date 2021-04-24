@@ -2,9 +2,9 @@
 #include <string.h>
 #include <ctype.h>  
 
-void printA(int n, char* str){
-    for(int i =0; i<n; i++)
-        printf("A: the value is  %d %s\n", n, str);
+void printA(int z, char* str){
+    for(int i =0; i< z; i++)
+        printf("A: the value is  %d %s\n", z , str);
 }
 
 void printB(int b){
