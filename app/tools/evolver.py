@@ -121,8 +121,10 @@ def evolve_functions(missing_function_list):
                 else:
                     if function_name + "(" in refined_var_map:
                         del refined_var_map[function_name + "("]
+            mapping = None
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
-        else:
+
+        if not mapping:
             # ast_map_b = ast_generator.get_ast_json(source_path_b)
             function_ref_node_id = int(info['ref_node_id'])
             function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
