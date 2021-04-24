@@ -91,6 +91,16 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
         else:
             namespace_map[id_a][id_c] = namespace_map[id_a][id_c] + score
 
+        if "(" in id_a and "(" in id_c:
+            id_a = id_a.split("(")[0] + "("
+            id_c = id_c.split("(")[0] + "("
+            if id_a not in namespace_map:
+                namespace_map[id_a] = dict()
+            if id_c not in namespace_map[id_a]:
+                namespace_map[id_a][id_c] = score
+            else:
+                namespace_map[id_a][id_c] = namespace_map[id_a][id_c] + score
+
     for value_a in namespace_map:
         candidate_list = namespace_map[value_a]
         max_score = 0
@@ -103,10 +113,10 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
                 best_candidate = candidate
                 max_score = candidate_score
         if best_candidate:
-            if "(" in value_a:
-                value_a = value_a.split("(")[0] + "("
-            if "(" in best_candidate:
-                best_candidate = best_candidate.split("(")[0] + "("
+            # if "(" in value_a:
+            #     value_a = value_a.split("(")[0] + "("
+            # if "(" in best_candidate:
+            #     best_candidate = best_candidate.split("(")[0] + "("
             if not value_a or not best_candidate:
                 continue
             if any(token in str(value_a).lower() for token in BREAK_LIST):
