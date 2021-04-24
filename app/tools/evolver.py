@@ -116,13 +116,15 @@ def evolve_functions(missing_function_list):
                         method_name_c = candidate_name
                         transformation_c = transformation
                 # print(transformation_c)
-                refined_var_map[method_name_a + "("] = method_name_c + "("
+                if best_score > 1:
+                    refined_var_map[method_name_a + "("] = method_name_c + "("
+                else:
+                    if function_name + "(" in refined_var_map:
+                        del refined_var_map[function_name + "("]
+                    writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
         else:
             # ast_map_b = ast_generator.get_ast_json(source_path_b)
-            if function_name + "(" in refined_var_map:
-                del refined_var_map[function_name + "("]
-                writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
             function_ref_node_id = int(info['ref_node_id'])
             function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
             function_def_node = finder.search_ast_node_by_id(ast_global_a, int(node_id))
