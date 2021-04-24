@@ -19,7 +19,6 @@ int main(void)
 	if (a > 0){
 	    printf("TEST");
 	}
-	printf("fib number is %d", fib_number);
 	return 0;
 }
 
