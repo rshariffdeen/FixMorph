@@ -121,7 +121,6 @@ def evolve_functions(missing_function_list):
                 else:
                     if function_name + "(" in refined_var_map:
                         del refined_var_map[function_name + "("]
-                    writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
         else:
             # ast_map_b = ast_generator.get_ast_json(source_path_b)
