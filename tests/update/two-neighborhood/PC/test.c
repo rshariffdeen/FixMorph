@@ -3,11 +3,11 @@
 #include <ctype.h>  
 
 void printX(int x, char* str){
-    printf("X: the values are  %d %s\n", x, str);
+    printf("X: the value is  %d %s\n", x, str);
 }
 
 void printY(int y){
-    printf("Y: the values are  %d\n", y);
+    printf("Y: the value is  %d\n", y);
 }
 
 int main( ) {
