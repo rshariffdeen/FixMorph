@@ -101,9 +101,9 @@ def evolve_functions(missing_function_list):
                                                                        ast_global_a, ast_global_c, function_name)
 
         # if no mapping found add function for transplantation list
+        vector_pair = (ast_map_key[0], ast_map_key[2])
+        refined_var_map = values.map_namespace_global[vector_pair]
         if mapping:
-            vector_pair = (ast_map_key[0], ast_map_key[2])
-            refined_var_map = values.map_namespace_global[vector_pair]
             for method_name_a in mapping:
                 candidate_list = mapping[method_name_a]
                 best_score = 0
@@ -115,11 +115,14 @@ def evolve_functions(missing_function_list):
                         best_score = match_score
                         method_name_c = candidate_name
                         transformation_c = transformation
-                print(transformation_c)
+                # print(transformation_c)
                 refined_var_map[method_name_a + "("] = method_name_c + "("
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
         else:
             # ast_map_b = ast_generator.get_ast_json(source_path_b)
+            if function_name + "(" in refined_var_map:
+                del refined_var_map[function_name + "("]
+                writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
             function_ref_node_id = int(info['ref_node_id'])
             function_ref_node = finder.search_ast_node_by_id(ast_global_a, function_ref_node_id)
             function_def_node = finder.search_ast_node_by_id(ast_global_a, int(node_id))
