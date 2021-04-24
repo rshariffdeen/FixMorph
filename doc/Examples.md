@@ -11,8 +11,8 @@ page Getting Started to understand how to use FixMorph.
 ### Example of contextual-difference
     python3.7 FixMorph.py --conf=tests/insert/different-context/repair.conf
 
-### Example of updating membership expressions
-    python3.7 FixMorph.py --conf=tests/update/assignment/repair.conf
+### Example of adapting membership expressions
+    python3.7 FixMorph.py --conf=tests/insert/member-expr/repair.conf
 
 ### Example of updating an argument to an API call
     python3.7 FixMorph.py --conf=tests/update/method-arg/repair.conf
