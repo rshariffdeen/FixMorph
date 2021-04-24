@@ -116,12 +116,13 @@ def evolve_functions(missing_function_list):
                         method_name_c = candidate_name
                         transformation_c = transformation
                 # print(transformation_c)
-                if best_score > 1:
-                    refined_var_map[method_name_a + "("] = method_name_c + "("
-                else:
-                    if function_name + "(" in refined_var_map:
-                        del refined_var_map[function_name + "("]
-            mapping = None
+                if values.IS_LINUX_KERNEL:
+                    if best_score > 1:
+                        refined_var_map[method_name_a + "("] = method_name_c + "("
+                    else:
+                        if function_name + "(" in refined_var_map:
+                            del refined_var_map[function_name + "("]
+                        mapping = None
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
 
         if not mapping:
