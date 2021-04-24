@@ -1,23 +1,23 @@
 #include <stdio.h>
 
-int fib(int n)
+int fib_n(int num)
 {
-	if (n == 0 || n == 1)
+	if (num == 0 || num == 1)
 	{
-		return n;
+		return num;
 	}
-	return fib(n - 1) + fib(n - 2);
+	return fib_n(num - 1) + fib_n(num - 2);
 }
 
 
 int main(void)
 {
-	int a;
-	scanf("%d", &a);
-	int fib_number = fib(a);
+	int k;
+	scanf("%d", &k);
+	int fn = fib_n(k);
 
-	for (a = 0; a < fib_number; a++){
-	    printf("fib number is %d", fib_number);
+	for (k = 0; k < fn; k++){
+	    printf("fibonacci number is %d", fn);
 	}
 	return 0;
 }
