@@ -21,11 +21,14 @@ int main(int argc, char **argv)
 	   printf("SOMETHING");
 	}
 
+	if (c < 0)
+	   printf("INVALID");
+
 	printf("fib number is %d", fib_number);
 
-	if (fib_number > 10){
+	if (fib_number < 0){
 	    a = 10;
-	      goto error;
+	    goto error;
 	}
 
 	error:

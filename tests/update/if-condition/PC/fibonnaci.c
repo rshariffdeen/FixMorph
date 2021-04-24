@@ -14,22 +14,25 @@ int fibonacci(int number)
 
 int main(int argc, char **argv)
 {
-	int a;
-	scanf("%d", &a);
-	int fibonacci_number = fibonacci(a);
-	int c = atoi(argv[0]);
-	if (c == 0){
+	int i;
+	scanf("%d", &i);
+	int fibonacci_number = fibonacci(i);
+	int k = atoi(argv[0]);
+	if (k == 0){
 	   printf("SOMETHING");
 	}
+
+	if (k < 0)
+	   printf("INVALID");
 
 	printf("fib number is %d", fibonacci_number);
 
 	if (fibonacci_number > 10){
-	    a = 10;
-	      goto error;
+	    i = 10;
+	    goto something;
 	}
 
-	error:
+	something:
 	    printf("ERROR");
 	return 0;
 }

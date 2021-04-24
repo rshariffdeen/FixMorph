@@ -21,15 +21,17 @@ int main(int argc, char **argv)
 	   printf("SOMETHING");
 	}
 
+	if (c < 0){
+	   printf("INVALID");
+	}
+
 	printf("fib number is %d", fib_number);
 
-	if (fib_number > 10)
-	     goto warning;
+	if (fib_number < 0)
+	     goto error;
 
 	error:
 	    printf("ERROR");
-	warning:
-	    printf("WARNING %d", fib_number);
 	return 0;
 }
 
