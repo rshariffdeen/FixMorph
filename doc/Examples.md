@@ -22,3 +22,7 @@ page Getting Started to understand how to use FixMorph.
 
 ### Example of importing/transplanting missing dependency
     python3.7 FixMorph.py --conf=tests/insert/missing-dependency/repair.conf
+
+### Example of using global context for API mapping
+    python3.7 FixMorph.py --conf=tests/insert/method-call/repair.conf
+
