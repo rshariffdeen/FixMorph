@@ -6,7 +6,7 @@ void printA(int a, char* str){
     printf("A: the value is  %d %s\n", a, str);
 }
 
-void printB(int a){
+void printB(int b){
     printf("B: the value is  %d\n", b);
 }
 
