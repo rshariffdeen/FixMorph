@@ -45,7 +45,7 @@ Once you setup a configuration file as above you can use the following command t
 transplant the patch from donor to target program.
 
 ``
-python3.6 FixMorph.py --conf=/path/to/conf/file
+python3.7 FixMorph.py --conf=/path/to/conf/file
 ``
 
 Original Patch from donor program PA-PB:
@@ -78,3 +78,22 @@ Transplanted  Patch to target program PC:
 ```
 Many such examples are included in the 'tests' directory, simply replace the configuration file path and run the same
 command as above. 
+
+
+## Documentation ##
+
+* [Getting Started](doc/GetStart.md)
+* [Example Usage](doc/Examples.md)
+* [Experiment Replication](experiments/README.md)  
+* [Manual](doc/Manual.md)
+
+
+## Developers
+* Ridwan Shariffdeen
+* Gao Xiang
+
+## Contributors
+* Bahamondes Pedro
+
+# License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
