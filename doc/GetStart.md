@@ -45,7 +45,7 @@ int main(void)
 Let's check the diff to observe the original patch
 
 ### Code diff Pa-Pb
-```diff
+```c
 > 	if (fib_number > 0)
 > 	    goto test;
 > 	else if (fib_number == 5)
@@ -94,16 +94,16 @@ Now that we have setup everything, we run FixMorph to backport/transplant the pa
     python3.7 FixMorph.py --conf=path/to/conf/file
 
 ### Morphed Fix / Adapted Patch
-```diff
+```c
 17a18,22
 >  if (fib_number > 0)
-> 	    goto test_c ;
-> 	else if (fib_number == 5)
-> 	    goto error;
+> 	goto test_c;
+>  else if (fib_number == 5)
+> 	goto error;
 >
 19a25,27
 >  error:
-> 	    return -1;
+> 	return -1;
 > 
 ```
 
