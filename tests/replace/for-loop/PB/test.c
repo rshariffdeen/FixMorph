@@ -13,6 +13,6 @@ int main( ) {
           else
             printf("NONE");
     }
-
+    printf("number is %d", j);
     return 0;
 }

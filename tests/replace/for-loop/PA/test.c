@@ -6,6 +6,7 @@
 int main( ) {
     int j = 2, k = 2, l = 5;
     for (j=0; j  < 8; j++)
-        printf("number is %d", j);
+        l = k + j;
+    printf("number is %d", j);
     return 0;
 }
