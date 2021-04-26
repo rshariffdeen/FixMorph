@@ -16,7 +16,7 @@ int main(void)
 	int a, v=10, c = 1;
 	scanf("%d", &a);
 	int fib_number = fib(a , v , c);
-	int fib_number2 = fib_number + a - c;
+	v = fib_number + a - c;
 	return 0;
 }
 
