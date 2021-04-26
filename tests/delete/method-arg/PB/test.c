@@ -1,4 +1,5 @@
 #include <stdio.h>
+#define NULL 2
 
 int fib(int n, int o)
 {

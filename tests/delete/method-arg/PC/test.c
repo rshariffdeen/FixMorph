@@ -1,4 +1,5 @@
 #include <stdio.h>
+#define NULL 2
 
 int fib_n(int num, int just, int random)
 {
