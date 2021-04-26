@@ -1,23 +1,18 @@
 #include <stdio.h>
-
-int fib_n(int num)
-{
-	if (num == 0 || num == 1)
-	{
-		return num;
-	}
-	return fib_n(num - 1) + fib_n(num - 2);
-}
-
+#define SQUARE(x) (x*x)
+#define TRACE_LOG(fmt, args...) fprintf(stdout, fmt, ##args);
+#define NUM 10
 
 int main(void)
 {
 	int k;
 	scanf("%d", &k);
-	int fn = fib_n(k);
-	k = printf("fib number is %d", fn);
+	int fn = SQUARE(k);
+	k = printf("fib number is %d", NUM);
 	if (k > 0)
-	    printf("TEST");
-
+	    k = SQUARE(fn);
+    printf("COMPLETE");
 	return 0;
+
+
 }

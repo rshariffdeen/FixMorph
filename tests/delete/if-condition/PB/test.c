@@ -1,21 +1,14 @@
 #include <stdio.h>
-
-int fib(int n)
-{
-	if (n == 0 || n == 1)
-	{
-		return n;
-	}
-	return fib(n - 1) + fib(n - 2);
-}
-
+#define SQUARE(x) (x*x)
+#define TRACE_LOG(fmt, args...) fprintf(stdout, fmt, ##args);
+#define NUM 10
 
 int main(void)
 {
 	int a;
 	scanf("%d", &a);
-	int fib_number = fib(a);
-
+	int fib_number = SQUARE(a);
+    printf("COMPLETE");
 	return 0;
 }
 
