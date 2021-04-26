@@ -11,6 +11,11 @@ def load_standard_list():
         values.STANDARD_FUNCTION_LIST = [line[:-1] for line in list_file]
     with open(definitions.FILE_STANDARD_MACRO_LIST, "r") as list_file:
         values.STANDARD_MACRO_LIST = [line[:-1] for line in list_file]
+    with open(definitions.FILE_STANDARD_DATATYPE_LIST, "r") as list_file:
+        for line in list_file:
+            values.STANDARD_DATATYPE_LIST.append(line[:-1])
+            values.STANDARD_DATATYPE_LIST.append("const " + line[:-1])
+            values.STANDARD_DATATYPE_LIST.append(line[:-1] + " *")
 
 
 def read_conf_file():
