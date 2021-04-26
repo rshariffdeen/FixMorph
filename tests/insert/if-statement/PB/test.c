@@ -19,5 +19,10 @@ int main( ) {
        for (int l =0; ;)
         printf("RANDOM");
     }
+
+    if (j < 0){
+       j = 9;
+       printf("OK");
+    }
     return 0;
 }
