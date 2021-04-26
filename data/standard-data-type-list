@@ -8,3 +8,4 @@ char *
 unsigned long
 long
 void
+u32
