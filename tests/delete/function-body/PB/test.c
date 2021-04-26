@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-int fib(int n)
+int fib(int number)
 {
-	return n;
+	return number;
 }
 
 
