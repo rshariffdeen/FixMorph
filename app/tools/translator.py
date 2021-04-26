@@ -215,6 +215,7 @@ def extract_child_id_list(ast_object):
 def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump, map_ba, map_ac, neighbor_id_c):
     translated_instruction_list = list()
     inserted_node_list_d = list()
+    replace_node_list_d = list()
     update_list_d = list()
     deleted_node_list_d = dict()
     map_bd = dict()
@@ -270,6 +271,9 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 update_node_id = id_from_string(txt_update_node)
                 if int(update_node_id) in update_list_d:
                     continue
+                if int(txt_target_node_a) in replace_node_list_d:
+                    continue
+                replace_node_list_d.append(int(txt_target_node_a))
                 update_node = json_ast_dump[values.Project_B.name][update_node_id]
 
                 if txt_target_node_a in map_ac.keys():
@@ -833,8 +837,9 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             if nodeB2.id not in insert_pos_list.keys():
                 insert_pos_list[nodeB2.id] = dict()
             inserted_pos_node_list = insert_pos_list[nodeB2.id]
-            if int(pos) - 1 in inserted_pos_node_list.keys():
-                adjusted_pos = inserted_pos_node_list[int(pos) - 1]
+            if nodeB2.type != "ForStmt":
+                if int(pos) - 1 in inserted_pos_node_list.keys():
+                    adjusted_pos = inserted_pos_node_list[int(pos) - 1]
             inserted_pos_node_list[int(pos)] = adjusted_pos
             if nodeB2.type in ["UnaryOperator", "ConditionalOperator"]:
                 nodeA = match_BA[i[2]]
@@ -851,6 +856,17 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     nodeA = id_from_string(nodeA)
                     nodeA = ASTlists[values.Project_A.name][nodeA]
                     replace_node = nodeA.children[0]
+                    if replace_node.parent_id not in replaced:
+                        replaced.append(replace_node.id)
+                        modified_AB.append((definitions.REPLACE, replace_node, nodeB1))
+                else:
+                    modified_AB.append((definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
+            elif nodeB2.type in ["ForStmt"]:
+                if adjusted_pos == 3:
+                    nodeA = match_BA[i[2]]
+                    nodeA = id_from_string(nodeA)
+                    nodeA = ASTlists[values.Project_A.name][nodeA]
+                    replace_node = nodeA.children[3]
                     if replace_node.parent_id not in replaced:
                         replaced.append(replace_node.id)
                         modified_AB.append((definitions.REPLACE, replace_node, nodeB1))
