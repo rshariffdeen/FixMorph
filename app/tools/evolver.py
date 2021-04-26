@@ -351,8 +351,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
                         script_lines.insert(1, instruction + "\n")
                         emitter.highlight("\t\tadditional initialization added with instruction: " + instruction)
 
-            elif "value" in var_info.keys():
-                var_map[var] = str(var_info['value'])
+            elif "enum-value" in var_info.keys():
+                var_map[var] = str(var_info['enum-value'])
 
         values.map_namespace_global[(source_file_a, source_file_c)] = var_map
         writer.write_var_map(var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)

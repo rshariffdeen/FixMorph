@@ -337,7 +337,7 @@ def identify_missing_var(neighborhood_a, neighborhood_b, neighborhood_c, ast_nod
                                     emitter.warning("Unhandled enum constant type")
                             enum_identifier = enum_const['identifier']
                             if enum_identifier == identifier:
-                                info['value'] = enum_value_int
+                                info['enum-value'] = enum_value_int
                                 is_mapping = (identifier in var_map) and \
                                              (var_map[identifier] in set(
                                                  list(dec_list_local_c.keys()) + list(dec_list_global_c.keys())))
