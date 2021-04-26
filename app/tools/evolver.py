@@ -256,6 +256,8 @@ def evolve_code(slice_file_list, source_file_list, instruction_list, seg_id_a, s
             relative_pos = target_parent_node['type'] + "(" + str(target_parent_node_id) + ") at " + str(relative_pos)
             check_node_id = instruction.split(" to ")[1].split("(")[1].split(")")[0]
             check_node = finder.search_ast_node_by_id(ast_tree_local_b, int(check_node_id))
+            if check_node['type'] == "IfStmt":
+                del check_node['children'][1]
 
         elif "Delete" in instruction:
             check_node = None
