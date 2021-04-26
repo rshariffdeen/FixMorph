@@ -8,7 +8,7 @@ void testLocalRefA(int a, char* str){
 
 
 int main( ) {
-    int i = 2;
-    testLocalRefA(i, "test");
+    int j = 2;
+    testLocalRefA(j, "test");
     return 0;
 }
