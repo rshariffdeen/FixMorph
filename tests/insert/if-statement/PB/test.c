@@ -14,5 +14,10 @@ int main( ) {
             j += 3;
         testLocalRefA(j, "test");
     }
+
+    if (j > 10){
+       for (int l =0; ;)
+        printf("RANDOM");
+    }
     return 0;
 }

@@ -13,5 +13,7 @@ int main( ) {
     j += 3;
     testLocalRefA(j, "test");
     }
+    for (int l =0; ;)
+        printf("RANDOM");
     return 0;
 }
