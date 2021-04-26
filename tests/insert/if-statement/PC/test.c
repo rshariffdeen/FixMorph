@@ -9,6 +9,7 @@ void testLocalRefC(int a, char* str){
 
 int main( ) {
     int k = 2;
+    k += 3;
     testLocalRefC(k, "test");
     return 0;
 }

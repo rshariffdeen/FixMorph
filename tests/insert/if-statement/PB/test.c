@@ -9,6 +9,8 @@ void testLocalRefA(int a, char* str){
 
 int main( ) {
     int j = 2;
+    if (j > 1)
+        j += 3;
     if ( j > 0)
         testLocalRefA(j, "test");
     return 0;
