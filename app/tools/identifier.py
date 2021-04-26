@@ -90,6 +90,8 @@ def identify_missing_functions(ast_node, source_path_b, source_path_d, ast_tree_
     for function_name in missing_function_list:
         # line_number = function_ref_node['start line']
         # print(line_number)
+        if function_name in values.STANDARD_FUNCTION_LIST:
+            continue
         ref_node = missing_function_list[function_name]
         function_node_a = finder.search_function_node_by_name(ast_tree_a, function_name)
         function_node_b = finder.search_function_node_by_name(ast_tree_b, function_name)
