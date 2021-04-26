@@ -12,7 +12,7 @@ from app.tools import oracle, merger
 from app.tools import converter, generator as Gen, emitter, finder, extractor, logger
 from app.ast import ast_vector, ast_generator
 
-# STANDARD_DATA_TYPES = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *",
+# STANDARD_DATATYPE_LIST = ["int", "char", "float", "unsigned int", "uint32_t", "uint8_t", "char *",
 #                         "unsigned long", "long", "void"]
 
 
@@ -374,7 +374,7 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
                 var_name = str(ref_node['value'])
                 # print(var_name)
                 identifier = identifier.replace("struct ", "")
-                if identifier in values.STANDARD_DATA_TYPES or identifier in var_map or \
+                if identifier in values.STANDARD_DATATYPE_LIST or identifier in var_map or \
                         identifier not in type_def_node_list_a.keys():
                     continue
                 # print("cont")
@@ -442,7 +442,7 @@ def identify_missing_data_types(ast_tree_a, ast_tree_b, ast_tree_c, ast_node_b, 
         type_loc_node = type_loc_node_list[type_loc_name]
         identifier = str(type_loc_node['value']).replace("struct ", "").replace("*", "").strip()
         if identifier not in type_def_node_list_c:
-            if identifier in values.STANDARD_DATA_TYPES:
+            if identifier in values.STANDARD_DATATYPE_LIST:
                 continue
             if "(" in identifier:
                 continue
