@@ -863,11 +863,11 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 else:
                     modified_AB.append((definitions.INSERT, nodeB1, nodeB2, adjusted_pos))
             elif nodeB2.type in ["ForStmt"]:
-                if adjusted_pos == 3:
+                if adjusted_pos in [3, 2]:
                     nodeA = match_BA[i[2]]
                     nodeA = id_from_string(nodeA)
                     nodeA = ASTlists[values.Project_A.name][nodeA]
-                    replace_node = nodeA.children[3]
+                    replace_node = nodeA.children[adjusted_pos]
                     if replace_node.parent_id not in replaced:
                         replaced.append(replace_node.id)
                         modified_AB.append((definitions.REPLACE, replace_node, nodeB1))
