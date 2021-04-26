@@ -3,3 +3,4 @@ va_end
 va_start
 free
 printf
+memcpy
