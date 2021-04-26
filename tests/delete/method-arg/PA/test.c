@@ -6,7 +6,7 @@ int fib(int n, int m, int o)
 	{
 		return n;
 	}
-	return fib(n - 1, m, o) + fib(n - 2, m, o);
+	return fib(n - 1 , m , o) + fib(n - 2 , m , o);
 }
 
 
@@ -14,7 +14,7 @@ int main(void)
 {
 	int a, b=10, c = 1;
 	scanf("%d", &a);
-	int fib_number = fib(a, b, c);
+	int fib_number = fib(a , b , c);
 	return 0;
 }
 
