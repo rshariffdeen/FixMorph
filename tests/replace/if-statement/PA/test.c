@@ -10,8 +10,8 @@ void testLocalRefA(int a, char* str){
 int main( ) {
     int j = 2;
     if (j > 0){
-        j += 3;
         testLocalRefA(j, "test");
+        j += 3;
     }
     printf("CHECK");
     return 0;
