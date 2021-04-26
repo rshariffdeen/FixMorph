@@ -821,7 +821,14 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             # Emitter.white("\t" + Common.INSERT + " - " + str(nodeB1) + " - " + str(nodeB2) + " - " + str(pos))
             inserted.append(nodeB1)
             if nodeB2 in inserted:
-                continue
+                if nodeB2.type == "IfStmt":
+                    if adjusted_pos == 0:
+                        continue
+                    compound_node = nodeB2.parent
+                    adjusted_pos = compound_node.children.index(nodeB2)
+                    nodeB2 = compound_node
+                else:
+                    continue
 
             if nodeB2.id not in insert_pos_list.keys():
                 insert_pos_list[nodeB2.id] = dict()
