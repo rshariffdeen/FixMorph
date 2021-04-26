@@ -13,10 +13,10 @@ int fib(int n, int m, int o)
 
 int main(void)
 {
-	int a, b=10, c = 1;
+	int a, v=10, c = 1;
 	scanf("%d", &a);
-	int fib_number = fib(a , b , c);
-	int fib_number2 = fib_number + a - fib(b,c,a) - c;
+	int fib_number = fib(a , v , c);
+	int fib_number2 = fib_number + a - fib(v,c,a) - c;
 	return 0;
 }
 
