@@ -268,12 +268,13 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 txt_target_node_a = instruction[1]
                 txt_update_node = instruction[2]
                 target_node = "?"
+                target_node_id = id_from_string(txt_target_node_a)
                 update_node_id = id_from_string(txt_update_node)
                 if int(update_node_id) in update_list_d:
                     continue
-                if int(txt_target_node_a) in replace_node_list_d:
+                if target_node_id in replace_node_list_d:
                     continue
-                replace_node_list_d.append(int(txt_target_node_a))
+                replace_node_list_d.append(target_node_id)
                 update_node = json_ast_dump[values.Project_B.name][update_node_id]
 
                 if txt_target_node_a in map_ac.keys():
