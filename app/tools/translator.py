@@ -275,6 +275,10 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                 if target_node_id in replace_node_list_d:
                     continue
                 replace_node_list_d.append(target_node_id)
+                target_node_a = json_ast_dump[values.Project_A.name][target_node_id]
+                child_id_list = extract_child_id_list(target_node_a)
+                for id in child_id_list:
+                    replace_node_list_d.append(id)
                 update_node = json_ast_dump[values.Project_B.name][update_node_id]
 
                 if txt_target_node_a in map_ac.keys():
