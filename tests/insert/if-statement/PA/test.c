@@ -15,5 +15,6 @@ int main( ) {
     }
     for (int l =0; ;)
         printf("RANDOM");
+    printf("CHECK");
     return 0;
 }

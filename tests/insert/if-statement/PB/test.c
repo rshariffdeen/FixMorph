@@ -20,6 +20,8 @@ int main( ) {
         printf("RANDOM");
     }
 
+    printf("CHECK");
+
     if (j < 0){
        j = 9;
        printf("OK");
