@@ -758,8 +758,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 continue
             nodeB1 = id_from_string(i[1])
             nodeB1 = ASTlists[values.Project_B.name][nodeB1]
-            if nodeB1.id in deleted:
-                continue
+
             nodeB2 = id_from_string(i[2])
             nodeB2 = ASTlists[values.Project_B.name][nodeB2]
             pos = i[3]
@@ -767,6 +766,8 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             nodeA1 = match_BA[i[1]]
             nodeA1 = id_from_string(nodeA1)
             nodeA1 = ASTlists[values.Project_A.name][nodeA1]
+            if nodeA1.id in deleted:
+                continue
             if i[2] in match_BA.keys():
                 nodeA2 = match_BA[i[2]]
                 nodeA2 = id_from_string(nodeA2)
