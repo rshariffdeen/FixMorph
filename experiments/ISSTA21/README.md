@@ -179,11 +179,14 @@ transformation compared to the patch that developer manually ported.
 
 ### Transplanted Patch (FixMorph Generated)
 ```diff
-+ if (sp->stream.avail_out > sp->tbuf_size)
-+ {
-+ 	TIFFErrorExt(tif->tif_clientdata, module, “sp->stream.avail_out > sp->tbuf_size”);
-+ 	return (0);
-+ }
+413a414,415
+>  int status = urb->status; 
+
+430c432,434
+< 		return;
+---
+> if ((status != -ENOENT) || (urb->actual_length == 0))
+> 			return;
 ```
 
 ## General Notes
