@@ -164,14 +164,12 @@ def run(arg_list):
     time_info[definitions.KEY_DURATION_VERIFICATION] = str(duration)
 
     time_check = time.time()
-    if values.CONF_PATH_E:
-        comparison.start()
+    comparison.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_COMPARISON] = str(duration)
 
     time_check = time.time()
-    if values.CONF_PATH_E:
-        summarizing.start()
+    summarizing.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_SUMMARIZATION] = str(duration)
 
