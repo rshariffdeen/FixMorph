@@ -513,7 +513,7 @@ def identify_missing_definitions(function_node, missing_function_list):
                     continue
                 if identifier not in missing_function_list:
                     # print(identifier)
-                    emitter.warning("[warning]: found a dependent function that is missing, attempting to transplant..")
+                    emitter.warning("\t\t[warning]: found a dependent function that is missing, attempting to transplant..")
                     dependent_missing_function_list.append(identifier)
                     # print(values.STANDARD_FUNCTION_LIST)
                     # error_exit("FOUND NEW DEPENDENT FUNCTION")

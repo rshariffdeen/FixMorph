@@ -161,6 +161,9 @@ def evolve_functions(missing_function_list, depth_level):
                 for dep_fun_name in dependent_function_name_list:
                     dep_info = dict()
                     dep_source_tree = ast_generator.get_ast_json(function_source_file, values.DONOR_REQUIRE_MACRO, regenerate=True)
+                    func_list_dep_source = extractor.extract_function_node_list(dep_source_tree)
+                    if dep_fun_name not in func_list_dep_source:
+                        continue
                     dependent_function_node = extractor.extract_function_node_list(dep_source_tree)[dep_fun_name]
                     dep_info['node_id'] = dependent_function_node['id']
                     dep_info['ref_node_id'] = function_node['id']
