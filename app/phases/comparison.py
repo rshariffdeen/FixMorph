@@ -75,18 +75,9 @@ def load_values():
 
 
 def save_values():
+    global ported_diff_info
     writer.write_as_json(ported_diff_info, definitions.FILE_PORT_DIFF_INFO)
-    writer.write_as_json(original_diff_info, definitions.FILE_ORIG_DIFF_INFO)
-    writer.write_as_json(transplanted_diff_info, definitions.FILE_TRANSPLANT_DIFF_INFO)
-    file_list_a = set()
     file_list_c = set()
-    for path_a in original_diff_info:
-        path_a = path_a.split(":")[0]
-        file_list_a.add(path_a)
-    for path_a in file_list_a:
-        path_b = path_a.replace(values.Project_A.path, values.Project_B.path)
-        diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + definitions.FILE_ORIG_DIFF
-        execute_command(diff_command)
     for path_c in ported_diff_info:
         path_c = path_c.split(":")[0]
         file_list_c.add(path_c)
@@ -95,11 +86,6 @@ def save_values():
         path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
         diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + definitions.FILE_PORT_DIFF
         execute_command(diff_command)
-    for path_c in file_list_c:
-        path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
-        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + definitions.FILE_TRANSPLANT_DIFF
-        execute_command(diff_command)
-
 
     is_identical = True
 
@@ -122,7 +108,6 @@ def save_values():
         else:
             result = "DIFFERENT"
         result_file.write(result)
-
     save_current_state()
 
 
