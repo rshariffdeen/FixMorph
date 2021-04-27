@@ -137,14 +137,22 @@ def evolve_functions(missing_function_list, depth_level):
             function_source_file = function_def_node['file']
             found_header_file = False
             if function_source_file[-1] == "h":
-                if "include" in function_source_file:
-                    header_file = function_source_file.split("/include/")[-1]
-                else:
-                    header_file = function_source_file.split("/")[-1]
+                header_file = function_source_file
                 clone_header_file = finder.find_clone(header_file)
                 if clone_header_file:
+                    clone_header_file = clone_header_file.split("/include/")[-1]
                     found_header_file = True
                     missing_header_list[clone_header_file] = target_path
+                else:
+                    if "include" in function_source_file:
+                        header_file = function_source_file.split("/include/")[-1]
+                    else:
+                        header_file = function_source_file.split("/")[-1]
+                    clone_header_file = finder.find_clone(header_file)
+                    if clone_header_file:
+                        clone_header_file = clone_header_file.split("/include/")[-1]
+                        found_header_file = True
+                        missing_header_list[clone_header_file] = target_path
 
             if not found_header_file:
                 filtered_missing_function_list[function_name] = info
