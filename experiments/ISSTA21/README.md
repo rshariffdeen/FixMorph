@@ -184,9 +184,14 @@ transformation compared to the patch that developer manually ported.
 ```
 
 ## General Notes
-The same steps need to be performed for all other subjects. The experimental results can differ in terms of TIMEOUT for different computation power
-TIMEOUT is set to 1hr by default, which can be modified passing the argument "--time=VALUE" as shown in below command. In addition, you can specify
-which mode of transformation to use from {0: FixMorph, 1: Linux Patch No-Context, 2: Linux Patch using Context, 3: SYDIT }
+The same steps need to be performed for all other subjects. The experimental results can differ in terms of timeout for different computation power
+TIMEOUT is set to 1hr by default, which can be modified passing the argument "--time=TIME" as shown in below command. In addition, you can specify
+which mode of transformation to use from
+* 0: FixMorph
+* 1: Linux Patch No-Context 
+* 2: Linux Patch using Context
+* 3: SYDIT
+
 ```bash
 
 cd /FixMorph
