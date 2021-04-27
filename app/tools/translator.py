@@ -722,14 +722,21 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             # remove for ID:
             if nodeA.type in ["CompoundStmt"]:
                 continue
+
             if nodeA.value == nodeB.value and nodeA.type not in ["CompoundStmt", "IfStmt", "GCCAsmStmt"]:
                 if nodeA.type == "IntegerLiteral":
                     if nodeA.col_end == nodeB.col_end:
                         emitter.warning("skipping update for value and length match")
                         continue
+                elif nodeA.type in ["VarDecl"]:
+                    # initializer is removed
+                    if len(nodeA.children) > len(nodeB.children):
+                        modified_AB.append((definitions.DELETE, nodeA.children[1]))
+                        continue
                 else:
                     emitter.warning("skipping update for value match")
                     continue
+
 
             if nodeB.parent_id in updated:
                 updated.append(nodeB.id)
