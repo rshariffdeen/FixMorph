@@ -78,14 +78,20 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
             pool.apply_async(extractor.extract_mapping, args=(ast_node_a, ast_node_c, value_score),
                              callback=collect_result)
         if parent_id_c != 0:
-            parent_c = ast_array_c[parent_id_c]
+
             # TODO: Improve this mapping
+            if parent_id_c != 0:
+                parent_c = ast_array_c[parent_id_c]
             if ast_node_c['type'] == "MemberExpr" and parent_c['type'] == "MemberExpr":
-                pool.apply_async(extractor.extract_mapping, args=(ast_node_a, parent_c, value_score),
-                                 callback=collect_result)
-                # new_mapping = ast_node_a['value'][1:], parent_c['value'][1:] + "." + ast_node_c['value'][1:], value_score, "MemberExpr", "MemberExpr"
-                # print(new_mapping)
-                # result_list.append(new_mapping)
+                grand_id = parent_c['parent_id']
+                if grand_id != 0:
+                    grand_parent_c = ast_array_c[parent_c['parent_id']]
+                    pool.apply_async(extractor.extract_mapping, args=(ast_node_a, parent_c, value_score),
+                                     callback=collect_result)
+                    if grand_parent_c["type"] == "BinaryOperator" and ast_node_c['type'] == "ktime_t":
+                        new_mapping = ast_node_a['value'][1:], parent_c['value'][1:] + "." + ast_node_c['value'][1:], 100, "MemberExpr", "MemberExpr"
+                        # print(new_mapping)
+                        result_list.append(new_mapping)
 
     pool.close()
     emitter.normal("\t\twaiting for thread completion")
