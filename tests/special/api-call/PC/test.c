@@ -12,11 +12,14 @@ void testGlobalRefY(){
 
 
 void testLocalX(int a, char* str){
+    int b = a + 10;
     testGlobalRefX();
     printf("the values are  %d %s\n", a, str);
 }
 
 void testLocalY(int a, char* str){
+    int b = a - 10;
+    int c = 1;
     testGlobalRefX();
     printf("the values are  %d %s\n", a, str);
 }
