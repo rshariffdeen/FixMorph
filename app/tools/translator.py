@@ -732,7 +732,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     # initializer is removed
                     if len(nodeA.children) > len(nodeB.children):
                         modified_AB.append((definitions.DELETE, nodeA.children[1]))
-                        deleted.append(nodeA.id)
+                        deleted.append(nodeA.children[1].id)
                         continue
                 else:
                     emitter.warning("skipping update for value match")
