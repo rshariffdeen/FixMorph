@@ -84,7 +84,7 @@ command as above.
 
 * [Getting Started](doc/GetStart.md)
 * [Example Usage](doc/Examples.md)
-* [Experiment Replication](experiments/README.md)  
+* [ISSTA'21 Experiment Replication](experiments/ISSTA21/README.md)  
 * [Manual](doc/Manual.md)
 
 
