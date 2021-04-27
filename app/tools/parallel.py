@@ -79,9 +79,13 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
                              callback=collect_result)
         if parent_id_c != 0:
             parent_c = ast_array_c[parent_id_c]
+            # TODO: Improve this mapping
             if ast_node_c['type'] == "MemberExpr" and parent_c['type'] == "MemberExpr":
                 pool.apply_async(extractor.extract_mapping, args=(ast_node_a, parent_c, value_score),
                                  callback=collect_result)
+                # new_mapping = ast_node_a['value'][1:], parent_c['value'][1:] + "." + ast_node_c['value'][1:], value_score, "MemberExpr", "MemberExpr"
+                # print(new_mapping)
+                # result_list.append(new_mapping)
 
     pool.close()
     emitter.normal("\t\twaiting for thread completion")
@@ -121,6 +125,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
         if best_candidate:
             if "(" in value_a:
                 function_name_cache.append(value_a)
+                function_name_cache.append(value_a[:-1])
                 continue
             if value_a in function_name_cache:
                 continue
