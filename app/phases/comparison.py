@@ -77,6 +77,7 @@ def load_values():
 def save_values():
     global ported_diff_info
     writer.write_as_json(ported_diff_info, definitions.FILE_PORT_DIFF_INFO)
+    open(definitions.FILE_PORT_DIFF, 'w').close()
     file_list_c = set()
     for path_c in ported_diff_info:
         path_c = path_c.split(":")[0]

@@ -79,6 +79,8 @@ def save_values():
     global original_diff_info, transplanted_diff_info
     writer.write_as_json(original_diff_info, definitions.FILE_ORIG_DIFF_INFO)
     writer.write_as_json(transplanted_diff_info, definitions.FILE_TRANSPLANT_DIFF_INFO)
+    open(definitions.FILE_ORIG_DIFF, 'w').close()
+    open(definitions.FILE_TRANSPLANT_DIFF, 'w').close()
     file_list_a = set()
     file_list_c = set()
     for path_a in original_diff_info:
