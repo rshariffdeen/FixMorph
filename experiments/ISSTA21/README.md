@@ -166,19 +166,19 @@ You can observe the transformation from the following artefacts, which shows tha
 transformation compared to the patch that developer manually ported. 
 
 ### Original Patch
-```diff
+```c
 430a431
 > 		if ((status != -ENOENT) || (urb->actual_length == 0))
 ```
 
 ### Ported Patch (Manual Dev)
-```diff
+```c
 429a430
 > 		if ((urb->status != -ENOENT) || (urb->actual_length == 0))
 ```
 
 ### Transplanted Patch (FixMorph Generated)
-```diff
+```c
 413a414,415
 >  int status = urb->status; 
 
