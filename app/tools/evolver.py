@@ -145,29 +145,30 @@ def evolve_functions(missing_function_list, depth_level):
                 if clone_header_file:
                     found_header_file = True
                     missing_header_list[clone_header_file] = target_path
-                    
-            function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
-                                                                                           source_path)
-            missing_def_list, dependent_function_name_list = identifier.identify_missing_definitions(function_node,
-                                                                                                missing_function_list)
 
-            missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
-                                                                            target_path)
-            missing_header_list = identifier.identify_missing_headers(function_node, target_path)
-            
-            for dep_fun_name in dependent_function_name_list:
-                info = dict()
-                dep_source_tree = ast_generator.get_ast_json(function_source_file, values.DONOR_REQUIRE_MACRO, regenerate=True)
-                dependent_function_node = extractor.extract_function_node_list(dep_source_tree)[dep_fun_name]
-                info['node_id'] = dependent_function_node['id']
-                info['ref_node_id'] = function_node['id']
-                info['source_a'] = function_source_file
-                info['source_d'] = target_path
-                info['ast-key'] = ast_map_key
-                dependent_missing_function_list[dep_fun_name] = info
-                 
             if not found_header_file:
                 filtered_missing_function_list[function_name] = info
+
+                function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
+                                                                                               source_path)
+                missing_def_list, dependent_function_name_list = identifier.identify_missing_definitions(function_node,
+                                                                                                         missing_function_list)
+
+                missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
+                                                                                target_path)
+                missing_header_list = identifier.identify_missing_headers(function_node, target_path)
+
+                for dep_fun_name in dependent_function_name_list:
+                    dep_info = dict()
+                    dep_source_tree = ast_generator.get_ast_json(function_source_file, values.DONOR_REQUIRE_MACRO, regenerate=True)
+                    dependent_function_node = extractor.extract_function_node_list(dep_source_tree)[dep_fun_name]
+                    dep_info['node_id'] = dependent_function_node['id']
+                    dep_info['ref_node_id'] = function_node['id']
+                    dep_info['source_a'] = function_source_file
+                    dep_info['source_d'] = target_path
+                    dep_info['ast-key'] = ast_map_key
+                    dependent_missing_function_list[dep_fun_name] = dep_info
+
             emitter.success("\t\tfound definition in: " + function_source_file)
             # print(function_name)
     if dependent_function_name_list and depth_level > 1:
