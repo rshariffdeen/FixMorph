@@ -88,7 +88,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
                     grand_parent_c = ast_array_c[parent_c['parent_id']]
                     pool.apply_async(extractor.extract_mapping, args=(ast_node_a, parent_c, value_score),
                                      callback=collect_result)
-                    if grand_parent_c["type"] == "BinaryOperator" and ast_node_c['type'] == "ktime_t":
+                    if grand_parent_c["type"] == "BinaryOperator" and ast_node_c['data_type'] == "ktime_t":
                         new_mapping = ast_node_a['value'][1:], parent_c['value'][1:] + "." + ast_node_c['value'][1:], 100, "MemberExpr", "MemberExpr"
                         # print(new_mapping)
                         result_list.append(new_mapping)
