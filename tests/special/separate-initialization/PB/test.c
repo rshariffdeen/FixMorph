@@ -15,7 +15,7 @@ int main(void)
 	int a;
 	scanf("%d", &a);
 	int fib_number;
-    fib_number = fib(a);
+	fib_number = fib(a);
 	for (a = 0; a < fib_number; a++){
 	    printf("fib number is %d", fib_number);
 	}
