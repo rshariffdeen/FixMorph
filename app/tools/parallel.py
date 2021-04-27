@@ -67,6 +67,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
         ast_node_c = ast_array_c[ast_node_id_c]
         parent_id_a = int(ast_node_a['parent_id'])
         parent_id_c = int(ast_node_c['parent_id'])
+
         # if (int(ast_node_id_a) < int(neighbor_id_a)) and (parent_id_a != 0 and parent_id_c != 0):
         #     if ast_node_a['type'] in ["DeclRefExpr", "ParmVarDecl", "VarDecl"]:
         #     # if oracle.is_node_in_func(ast_node_a, ast_tree_a):
@@ -76,6 +77,11 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
             # result_list.append(extractor.extract_mapping(ast_node_a, ast_node_c, value_score))
             pool.apply_async(extractor.extract_mapping, args=(ast_node_a, ast_node_c, value_score),
                              callback=collect_result)
+        if parent_id_c != 0:
+            parent_c = ast_array_c[parent_id_c]
+            if ast_node_c['type'] == "MemberExpr" and parent_c['type'] == "MemberExpr":
+                pool.apply_async(extractor.extract_mapping, args=(ast_node_a, parent_c, value_score),
+                                 callback=collect_result)
 
     pool.close()
     emitter.normal("\t\twaiting for thread completion")
