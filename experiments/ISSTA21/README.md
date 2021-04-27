@@ -133,102 +133,66 @@ Alternatively, you can run the experiment manually (after setting up)
 python3.7 FixMorph.py --conf=/path/to/configuration
 ``
 
-## Running CVE-2016-5314
-Lets run one of the experiments (CVE-2016-5314) in our data-set using the following command. The experiment timeout is set to 1hr. 
-[Note: to stop a run, please use CTRL+z and kill the background process with “ps -aux | grep python | awk ‘{print $2}’ | xargs kill -9”.]
+## Running experiment #238 (Patch Type-3)
+Lets run one of the experiments (Bug-ID 238) in our data-set using the following command. The general experiment timeout is set to 1hr. 
+[Note: to stop a run, please use CTRL+C]
 
-``
-pypy3 FixMorph.py --conf=/FixMorph/tests/bug-types/div-zero/div-zero-1/repair.conf
-``
+### Step 1 - Setting up the experiment
+First, we need to prepare the experiment by setting up the source directories. We use the following command:
+```bash
 
-## Intermediate Results
-You can check the /output folder for intermediate results.
-For example after the initial generation of the patches: cat /output/CVE-2016-5314/patch-set-gen
-The expected output looks as follows:
-
-	Patch #1
-	L65: (x <= x)
-			Partition: 1
-			Patch Count: 1
-			Path Coverage: 0
-			Is Under-approximating: False
-			Is Over-approximating: False
-	Patch #2
-	L65: (x <= y)
-			Partition: 1
-			Patch Count: 1
-			Path Coverage: 0
-			Is Under-approximating: False
-			Is Over-approximating: False
-	Patch #3
-	L65: (x <= constant_a)
-			Partition: 1
-				Constant: const_a
-				Range: -10 <= const_a <= 10
-				Dimension: 21
-			Patch Count: 21
-			Path Coverage: 0
-			Is Under-approximating: False
-			Is Over-approximating: False
-...
-
-In total there are 28 (abstract) patches generated for this subject, representing 388 concrete patches.
-Note that the initial ranking has no meaning and might vary. FixMorph will finish automatically after the timeout of 1 hour.
-
-## Final Results
-The correct patch, in this case, should be a guarded exit, check the developer patch at the corresponding commit.
-The link is https://github.com/vadz/libtiff/commit/391e77f
+cd /FixMorph/experiments/ISSTA21
+python3.7 driver.py --only-setup --bug-id=238
 
 ```
+
+Once the setup is completed, you can verify the setup is located at /data/backport/linux/BUG_ID
+
+## Step 2 - Running FixMorph
+Next step is to invoke FixMorph with the experiment configuration, using the following command:
+```bash
+
+cd /FixMorph
+python3.7 FixMorph.py --conf=/data/backport/linux/238/repair.conf
+
+```
+The transformation should be completed in ~10 minutes. 
+
+## Step 3 - Analysing Results
+You can observe the transformation from the following artefacts, which shows that FixMorph generated a semantically equivalent
+transformation compared to the patch that developer manually ported. 
+
+### Original Patch
+```diff
+430a431
+> 		if ((status != -ENOENT) || (urb->actual_length == 0))
+```
+
+### Ported Patch (Manual Dev)
+```diff
+429a430
+> 		if ((urb->status != -ENOENT) || (urb->actual_length == 0))
+```
+
+### Transplanted Patch (FixMorph Generated)
+```diff
 + if (sp->stream.avail_out > sp->tbuf_size)
 + {
 + 	TIFFErrorExt(tif->tif_clientdata, module, “sp->stream.avail_out > sp->tbuf_size”);
 + 	return (0);
 + }
 ```
-The correct expression would be: sp->stream.avail_out > sp->tbuf_size
-
-In our paper Table 1, we show that FixMorph identifies a semantic-equivalent patch ranked at position *1*. Therefore, you can check the output file to compare with the patch at rank 1.
-
-```
-less /FixMorph/output/CVE-2016-5314/patch-set-ranked
-``` 
-
-
-The resulting FixMorph/output/CVE-2016-5314/patch-set-ranked will show the patch:
-	Patch #1
-	L65: (x < y)
-
-In the setup script: /experiments/extractfix/libtiff/CVE-2016-5314/setup.sh, we apply some annotation to inject our patch.
-In setup.sh:line 33:
-
-```
-sed -i ‘786i if(__trident_choice(“L65”, “bool”, (int[]){sp->tbuf_size,sp->stream.avail_out, nsamples}, (char*[]){“x”, “y”, “z”}, 3, (int*[]){}, (char*[]){}, 0)) return 0;\n’ libtiff/tif_pixarlog.c
-```
-
-
-"trident_choice" represents the function call to retrieve a patch
-* x is mapped to sp->tbuf_size
-* y is mapped to sp->stream.avail_out
-* z is mapped to nsamples
-
-
-If we put all this information together, it is clear, that FixMorph successfully identified the developer patch at rank 1.
-Additionally, to the ranking our Table 1 and Table 3 also show information about the patch pool size and the path exploration. The information can be checked with the “Run time statistics” printed at the end of each experiment, or by checking the logs in /FixMorph/logs/<tag_id>.
-
-| Metric in Paper   | Description   | Metric in Logs/Output   |
-|----------|----------|------|
-| P_init |  the number of plausible patches, mostly similar to the concrete patches after patch synthesis step (before concolic exploration) | “Patch Start Count” |
-| P_final |    the number of concrete patches after concolic exploration  |   “Patch End Count” |
-| phi_explored | number of explored paths |   “Paths Explored” |
-| phi_skipped | number of infeasible paths that have been skipped during concolic exploration|  “Paths Skipped” |
-
-
-(In some cases FixMorph has more concrete patches after the patch synthesis: FixMorph works with abstract patches, which are not refined during synthesis, but pruned based on the failing test case. Therefore, abstract patches that in general allow to pass the failing test case would be kept completely, which means that some concrete values for the parameters might actually violate the failing test case. This is a technical detail and performance decision: an additional refinement of the abstract patches would slow down the initial patch synthesis significantly. In the paper we report the number of plausible patches that might deviate form “Patch Start Count” for some subjects, otherwise the comparison with CEGIS (which shows the actual number of plausible patches) would not be fair, as FixMorph could lead to a higher patch reduction ratio.)
-
 
 ## General Notes
 The same steps need to be performed for all other subjects. The experimental results can differ in terms of TIMEOUT for different computation power
+TIMEOUT is set to 1hr by default, which can be modified passing the argument "--time=VALUE" as shown in below command. In addition, you can specify
+which mode of transformation to use from {0: FixMorph, 1: Linux Patch No-Context, 2: Linux Patch using Context, 3: SYDIT }
+```bash
+
+cd /FixMorph
+python3.7 FixMorph.py --conf=/data/backport/linux/238/repair.conf --time=TIME --mode=MODE_NUMBER
+
+```
 
 # Additional Links
 * [Getting Started](../../doc/GetStart.md)

@@ -157,6 +157,7 @@ PHASE_SUMMARIZE = "summary"
 
 # ---------------- ARGUMENTS ---------------------------
 ARG_CONF_FILE = "--conf="
+ARG_TIMEOUT = "--time="
 ARG_DEBUG = "--debug"
 ARG_HELP = "--help"
 ARG_DEBUG_DATA = "--debug-data"

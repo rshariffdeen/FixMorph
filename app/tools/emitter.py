@@ -184,6 +184,7 @@ def help():
     print("Options are:")
     print("\t" + definitions.ARG_HELP + "\t| " + "displays this menu for help")
     print("\t" + definitions.ARG_DEBUG + "\t| " + "enable debugging information")
+    print("\t" + definitions.ARG_TIMEOUT + "\t| " + "timeout in minutes (default=60)")
     print("\t" + definitions.ARG_OPERATION_MODE + "\t| " + "select which tool/mode to run for backport {0: fixmorph, 1: patch, 2: patch-context, 3: sydit}")
     print("\t" + definitions.ARG_CONTEXT_LEVEL + "\t| " + "set context level for patch-context mode")
 

@@ -107,6 +107,8 @@ def read_conf(arg_list):
                 values.DEBUG_DATA = True
             elif definitions.ARG_DEBUG in arg:
                 values.DEBUG = True
+            elif definitions.ARG_TIMEOUT in arg:
+                values.CONF_TIMEOUT = int(arg.replace(definitions.ARG_TIMEOUT, "").strip()) * 60
             elif definitions.ARG_SKIP_VEC_GEN in arg:
                 values.SKIP_VEC_GEN = True
             elif definitions.ARG_SKIP_RESTORE in arg:
@@ -263,6 +265,9 @@ def update_configuration():
     if values.DEFAULT_OPERATION_MODE in [1, 2]:
         values.DEFAULT_OVERALL_TIMEOUT = 1200
 
+    if values.CONF_TIMEOUT > 0:
+        values.DEFAULT_OVERALL_TIMEOUT = values.CONF_TIMEOUT
+        
     signal.alarm(values.DEFAULT_OVERALL_TIMEOUT)
     patch_dir = values.CONF_PATH_C + "-patch"
     if os.path.isdir(patch_dir):

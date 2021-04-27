@@ -175,8 +175,6 @@ def run(arg_list):
     time_info[definitions.KEY_DURATION_COMPARISON] = str(duration)
 
 
-
-
 def main():
     import sys
     is_error = False
