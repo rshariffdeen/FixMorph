@@ -113,7 +113,8 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
                 best_candidate = candidate
                 max_score = candidate_score
         if best_candidate:
-            # if "(" in value_a:
+            if "(" in value_a:
+                continue
             #     value_a = value_a.split("(")[0] + "("
             # if "(" in best_candidate:
             #     best_candidate = best_candidate.split("(")[0] + "("
