@@ -74,13 +74,15 @@ def evolve_data_type(missing_data_type_list):
     return missing_header_list, missing_macro_list
 
 
-def evolve_functions(missing_function_list):
+def evolve_functions(missing_function_list, depth_level):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     if not missing_function_list:
         emitter.normal("\t-none-")
     def_insert_point = ""
     missing_header_list = dict()
     missing_macro_list = dict()
+    dependent_function_name_list = list()
+    dependent_missing_function_list = dict()
     filtered_missing_function_list = dict()
     for function_name in missing_function_list:
         info = missing_function_list[function_name]
@@ -143,18 +145,36 @@ def evolve_functions(missing_function_list):
                 if clone_header_file:
                     found_header_file = True
                     missing_header_list[clone_header_file] = target_path
+                    
+            function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
+                                                                                           source_path)
+            missing_def_list, dependent_function_name_list = identifier.identify_missing_definitions(function_node,
+                                                                                                missing_function_list)
 
-            else:
-                function_node, function_source_file = extractor.extract_complete_function_node(function_def_node,
-                                                                                               source_path)
-                missing_def_list = identifier.identify_missing_definitions(function_node, missing_function_list)
-                missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
-                                                                                target_path)
-                missing_header_list = identifier.identify_missing_headers(function_node, target_path)
+            missing_macro_list = identifier.identify_missing_macros_in_func(function_node, function_source_file,
+                                                                            target_path)
+            missing_header_list = identifier.identify_missing_headers(function_node, target_path)
+            
+            for dep_fun_name in dependent_function_name_list:
+                info = dict()
+                info['node_id'] = node_id
+                info['source_a'] = function_source_file
+                info['source_d'] = target_path
+                info['ast-key'] = ast_map_key
+                dependent_missing_function_list[dep_fun_name] = info
+                 
             if not found_header_file:
                 filtered_missing_function_list[function_name] = info
             emitter.success("\t\tfound definition in: " + function_source_file)
             # print(function_name)
+    if dependent_function_name_list and depth_level > 1:
+        dep_header_list, dep_macro_list, dep_missing_function_list = evolve_functions(dependent_missing_function_list, 
+                                                                                       depth_level - 1)
+    
+        missing_macro_list.update(dep_macro_list)
+        missing_header_list.update(dep_header_list)
+        filtered_missing_function_list.update(dep_missing_function_list)
+    
     return missing_header_list, missing_macro_list, filtered_missing_function_list
 
 

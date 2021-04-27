@@ -499,6 +499,7 @@ def identify_missing_definitions(function_node, missing_function_list):
     ref_list = extractor.extract_reference_node_list(function_node)
     dec_list = extractor.extract_decl_list(function_node)
     function_identifier = function_node['identifier']
+    dependent_missing_function_list = list()
     for ref_node in ref_list:
         node_type = str(ref_node['type'])
         if node_type == "DeclRefExpr":
@@ -511,10 +512,12 @@ def identify_missing_definitions(function_node, missing_function_list):
                 if identifier in values.STANDARD_FUNCTION_LIST:
                     continue
                 if identifier not in missing_function_list:
-                    print(identifier)
+                    # print(identifier)
+                    emitter.warning("[warning]: found a dependent function that is missing, attempting to transplant..")
+                    dependent_missing_function_list.append(identifier)
                     # print(values.STANDARD_FUNCTION_LIST)
-                    error_exit("FOUND NEW DEPENDENT FUNCTION")
-    return list(set(missing_definition_list))
+                    # error_exit("FOUND NEW DEPENDENT FUNCTION")
+    return list(set(missing_definition_list)), dependent_missing_function_list
 
 
 def identify_missing_macros(ast_node, source_file, target_file, namespace_map_key, ast_tree_global_c):
