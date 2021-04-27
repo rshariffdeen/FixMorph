@@ -100,7 +100,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
                 namespace_map[id_a][id_c] = score
             else:
                 namespace_map[id_a][id_c] = namespace_map[id_a][id_c] + score
-
+    function_name_cache = list()
     for value_a in namespace_map:
         candidate_list = namespace_map[value_a]
         max_score = 0
@@ -114,6 +114,9 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
                 max_score = candidate_score
         if best_candidate:
             if "(" in value_a:
+                function_name_cache.append(value_a)
+                continue
+            if value_a in function_name_cache:
                 continue
             #     value_a = value_a.split("(")[0] + "("
             # if "(" in best_candidate:
