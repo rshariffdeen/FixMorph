@@ -157,7 +157,10 @@ def evolve_functions(missing_function_list, depth_level):
             
             for dep_fun_name in dependent_function_name_list:
                 info = dict()
-                info['node_id'] = node_id
+                dep_source_tree = ast_generator.get_ast_json(function_source_file, values.DONOR_REQUIRE_MACRO, regenerate=True)
+                dependent_function_node = extractor.extract_function_node_list(dep_source_tree)[dep_fun_name]
+                info['node_id'] = dependent_function_node['id']
+                info['ref_node_id'] = function_node['id']
                 info['source_a'] = function_source_file
                 info['source_d'] = target_path
                 info['ast-key'] = ast_map_key
@@ -170,7 +173,6 @@ def evolve_functions(missing_function_list, depth_level):
     if dependent_function_name_list and depth_level > 1:
         dep_header_list, dep_macro_list, dep_missing_function_list = evolve_functions(dependent_missing_function_list, 
                                                                                        depth_level - 1)
-    
         missing_macro_list.update(dep_macro_list)
         missing_header_list.update(dep_header_list)
         filtered_missing_function_list.update(dep_missing_function_list)
