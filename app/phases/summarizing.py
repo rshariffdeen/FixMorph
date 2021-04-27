@@ -73,6 +73,7 @@ def load_values():
     definitions.FILE_ORIG_DIFF = definitions.DIRECTORY_OUTPUT + "/orig-diff"
     definitions.FILE_PORT_DIFF = definitions.DIRECTORY_OUTPUT + "/port-diff"
     definitions.FILE_TRANSPLANT_DIFF = definitions.DIRECTORY_OUTPUT + "/transplant-diff"
+    definitions.FILE_TRANS_N = definitions.DIRECTORY_OUTPUT + "/n-trans"
 
 
 def save_values():
@@ -489,12 +490,7 @@ def start():
         clear_values(values.Project_A)
         original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
                                        values.CONF_PATH_A, values.CONF_PATH_B)
-        segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
-
-        clear_values(values.Project_C)
-        transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
-                                           values.CONF_PATH_C, values.Project_D.path)
-        segment_code(transplanted_diff_info, values.Project_C, definitions.FILE_TRANS_N)
+        segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)       
 
         save_values()
     else:
