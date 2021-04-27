@@ -17,7 +17,7 @@ void testLocalX(int a, char* str){
 }
 
 void testLocalY(int a, char* str){
-    testGlobalRefY();
+    testGlobalRefX();
     printf("the values are  %d %s\n", a, str);
 }
 
