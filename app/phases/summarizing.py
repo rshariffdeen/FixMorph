@@ -77,27 +77,17 @@ def load_values():
 
 
 def save_values():
-    global original_diff_info, transplanted_diff_info
+    global original_diff_info
     writer.write_as_json(original_diff_info, definitions.FILE_ORIG_DIFF_INFO)
-    writer.write_as_json(transplanted_diff_info, definitions.FILE_TRANSPLANT_DIFF_INFO)
     open(definitions.FILE_ORIG_DIFF, 'w').close()
-    open(definitions.FILE_TRANSPLANT_DIFF, 'w').close()
     file_list_a = set()
-    file_list_c = set()
     for path_a in original_diff_info:
         path_a = path_a.split(":")[0]
         file_list_a.add(path_a)
     for path_a in file_list_a:
         path_b = path_a.replace(values.Project_A.path, values.Project_B.path)
         diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + definitions.FILE_ORIG_DIFF
-        execute_command(diff_command)
-    for path_c in transplanted_diff_info:
-        path_c = path_c.split(":")[0]
-        file_list_c.add(path_c)
-    for path_c in file_list_c:
-        path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
-        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + definitions.FILE_TRANSPLANT_DIFF
-        execute_command(diff_command)
+        execute_command(diff_command)    
     save_current_state()
 
 

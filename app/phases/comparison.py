@@ -75,9 +75,12 @@ def load_values():
 
 
 def save_values():
-    global ported_diff_info
+    global ported_diff_info, transplanted_diff_info
     writer.write_as_json(ported_diff_info, definitions.FILE_PORT_DIFF_INFO)
+    writer.write_as_json(transplanted_diff_info, definitions.FILE_TRANSPLANT_DIFF_INFO)
     open(definitions.FILE_PORT_DIFF, 'w').close()
+    open(definitions.FILE_TRANSPLANT_DIFF, 'w').close()
+    
     file_list_c = set()
     for path_c in ported_diff_info:
         path_c = path_c.split(":")[0]
@@ -87,7 +90,11 @@ def save_values():
         path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
         diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + definitions.FILE_PORT_DIFF
         execute_command(diff_command)
-
+    for path_c in file_list_c:
+        path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
+        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + definitions.FILE_TRANSPLANT_DIFF
+        execute_command(diff_command)
+        
     is_identical = True
 
     for path_c in file_list_c:
@@ -142,7 +149,7 @@ def segment_code(diff_info, project, out_file_path):
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global original_diff_info, ported_diff_info, transplanted_diff_info
+    global ported_diff_info, transplanted_diff_info
     emitter.title("Comparison with Manual Porting")
     load_values()
 
