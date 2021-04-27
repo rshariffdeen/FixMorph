@@ -373,6 +373,8 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                 if node_type in ["MemberExpr", "FieldDecl"]:
                     struct_node = node['children'][0]
                     while struct_node['type'] != "DeclRefExpr":
+                        if 'children' not in struct_node.keys() or len(struct_node['children']) == 0:
+                            break
                         struct_node = struct_node['children'][0]
                     if "data_type" in struct_node:
                         struct_name = struct_node['data_type'].replace("struct ", "").split(" ")[0]
