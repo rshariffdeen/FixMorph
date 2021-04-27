@@ -67,12 +67,13 @@ The output message at the end of the execution should look similar to the follow
 	Map Generation: 0.011 minutes
 	Translation: 0.002 minutes
 	Evolution: 0.004 minutes
-	Transplantation: 0.003 minutes
+	Transplantation: 0.004 minutes
 	Verification: 0.002 minutes
 	Comparison: 0.000 minutes
-	Summarizing: 0.000 minutes
+	Summarizing: 0.002 minutes
+    
+    FixMorph finished successfully after 0.032 minutes
 
-    FixMorph finished successfully after 0.029 minutes
 
 ### Analysing Results
 FixMorph was able to successfully generate an updated version of the target program from the transformation learnt from the
@@ -83,26 +84,16 @@ reference program. During this process FixMorph produces several files and we wi
 	* log-error: this log captures any errors (if observed), which can be use for debugging purpose
 	* log-make: this log captures the output of the build process of each program
 * /FixMorph/output/TAG_ID directory stores all artefacts generated for the transformation, the "TAG_ID" should be specified in the configuration file
-	* transplant-patch: this file captures the transformation applied to the target program
-	* orig-patch: this file captures the transformation in the reference program
-	* port-patch
+	* orig-diff: this file captures the transformation in the reference program
+	* transplant-diff: this file captures the transformation applied to the target program
+	* port-diff: this file captures the transformation done in manual (comparison phase will run only if an additional version of target program "Pe" is provided in configuration)
+	* vector-map: this file shows the mapping for the function/source files
+	* namespace-map-global: this file shows the generated global mapping for each function/slice mapped
 
-It generated 5 abstract patches (see "Template Start Count") and ended also with 5 (see "Template End Count").
-In the beginning, the 5 abstract patches represented 85 concrete patches (see "Patch Start Count").
-During exploration FixMorph ruled out 43 (= 85-42) of them.
 
 To better explore the final outcome, please check the FixMorph output directory which is in
-/FixMorph/output/<tag_id> (for this example the tag_id defined in the configuration file is 'crash') i.e. /FixMorph/output/crash
-Similarly, the logs are also stored in /FixMorph/logs/<tag_id>. 
-
-This output folder will contain "patch-set-gen" and "patch-set-ranked".
-"patch-set-gen" are the patches after the initial synthesis step.
-"patch-set-ranked" are the patches after FixMorph finished.
-
-Note that the order (i.e., the ranking) of the patches changed during our concolic exploration.
-The correct patch would be "x+1 == 0".
-FixMorph identifies "(constant_a == x)" with constant_a in [1, 1], which is semantically equivalent to the correct patch.
-FixMorph ranks this patch at position 1.
+/FixMorph/output/<tag_id> (for this example the tag_id defined in the configuration file is 'update-test') i.e. /FixMorph/output/update-test
+Similarly, the logs are also stored in /FixMorph/logs/<tag_id>.
 
 For more examples refer [this guide](../doc/Examples.md)
 
@@ -113,10 +104,10 @@ Once you build the docker image, you spin up a container as mentioned above.
 
 Inside the container the following directories will be used
 - /FixMorph - this will be the tool directory
-- /experiments - all experiment setups will be deployed in this directory
+- /experiments/ISSTA21 - all experiment setups will be deployed in this directory
 
 
-In /experiments directory a python driver is provided to run all experiments. 
+In /experiments/ISSTA21 directory a python driver is provided to run all experiments. 
 You can run all the experiments using the following command
 
 ``
@@ -139,7 +130,7 @@ python3.7 driver.py --bug-id=BUG_ID
 Alternatively, you can run the experiment manually (after setting up)
 
 ``
-pypy3 FixMorph.py --conf=/path/to/configuration
+python3.7 FixMorph.py --conf=/path/to/configuration
 ``
 
 ## Running CVE-2016-5314
