@@ -93,6 +93,26 @@ Now that we have setup everything, we run FixMorph to backport/transplant the pa
 
     python3.7 FixMorph.py --conf=path/to/conf/file
 
+### Analysing Results
+FixMorph was able to successfully generate an updated version of the target program from the transformation learnt from the
+reference program. During this process FixMorph produces several files and we will analyse each below:
+
+* /FixMorph/logs/TAG_ID directory stores all logs, the "TAG_ID" should be specified in the configuration file
+	* log-latest: this is the main application log which captures each step of the program transformation
+	* log-error: this log captures any errors (if observed), which can be use for debugging purpose
+	* log-make: this log captures the output of the build process of each program
+* /FixMorph/output/TAG_ID directory stores all artefacts generated for the transformation, the "TAG_ID" should be specified in the configuration file
+	* orig-diff: this file captures the transformation in the reference program
+	* transplant-diff: this file captures the transformation applied to the target program
+	* port-diff: this file captures the transformation done in manual (comparison phase will run only if an additional version of target program "Pe" is provided in configuration)
+	* vector-map: this file shows the mapping for the function/source files
+	* namespace-map-global: this file shows the generated global mapping for each function/slice mapped
+
+
+To better explore the final outcome, please check the FixMorph output directory which is in
+/FixMorph/output/<tag_id>  i.e. /FixMorph/output/update-test
+Similarly, the logs are also stored in /FixMorph/logs/<tag_id>.
+
 ### Morphed Fix / Adapted Patch
 ```c
 17a18,22
