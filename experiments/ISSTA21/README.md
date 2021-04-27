@@ -34,53 +34,59 @@ docker run --name FixMorph -it rshariffdeen/fixmorph:issta21 bash
 ``
 
 ## Test Input Files
-For our example test run, we choose /FixMorph/tests/bug-types/div-zero/div-zero-1, which is a simple divide-by-zero repair. There are 3 input files provided for this 
-example. 
+We will first run a test example to verify that FixMorph is working in the given environment, for this purpose we will use
+the test-case provided in the directory 'tests/update/assignment'. In this example we provide three C source files and their
+corresponding Makefiles, in addition we also provide the configuration file for FixMorph. 
 
-* /FixMorph/tests/bug-types/div-zero/div-zero-1/repair.conf shows the FixMorph configuration file.
-* /FixMorph/tests/bug-types/div-zero/div-zero-1/spec.smt2 shows the user-provided specification.
-* /FixMorph/tests/bug-types/div-zero/div-zero-1/t1.smt2 shows the expected output for the failing test case (x=1, as defined in the repair.conf at line 7).
+
+* /FixMorph/tests/update/assignment/repair.conf shows the FixMorph configuration file.
+* /FixMorph/tests/update/assignment/PA lists the source files for pre-transform version of the reference program
+* /FixMorph/tests/update/assignment/PB lists the source files for post-transform version of the reference program
+* /FixMorph/tests/update/assignment/PC lists the source files for target program
 
 ## Test Run
-You can check if everything is working well, by running a simple test-case from our test-suite. 
+You can check if everything is working well, by running the above test-case from our test-suite. 
 
 ``
-pypy3 FixMorph.py --conf=/FixMorph/tests/bug-types/div-zero/div-zero-1/repair.conf
+python3.7 FixMorph.py --conf=tests/update/assignment/repair.conf
 ``
 
-The program /FixMorph/tests/bug-types/div-zero/div-zero-1/test.c contains a simple division-by-zero error, which we want to fix with FixMorph.
+The example test-case provided illustrates a change in the sorting logic in the donor/reference program by updating the field
+use for the sorting logic, from 'rank' to the entity 'id'. We use FixMorph to learn the transformation and apply it to another 
+similar but different program. 
 
 ### FixMorph Output
 The output message at the end of the execution should look similar to the following:
 
-	Startup: 0.003 minutes
-	Build: 0.009 minutes
-	Testing: 0.054 minutes
-	Synthesis: 0.010 minutes
-	Explore: 0.167 minutes
-	Refine: 0.463 minutes
-	Reduce: 0.875 minutes
-	Iteration Count: 4
-	Patch Start Count: 85
-	Patch End Seed Count: 42
-	Patch End Count: 42
-	Template Start Count: 5
-	Template End Seed Count: 5
-	Template End Count: 5
-	Paths Detected: 2
-	Paths Explored: 2
-	Paths Skipped: 0
-	Paths Hit Patch Loc: 3
-	Paths Hit Observation Loc: 2
-	Paths Hit Crash Loc: 2
-	Paths Crashed: 1
-	Component Count: 6
-	Component Count Gen: 4
-	Component Count Cus: 2
-	Gen Limit: 40
+	Initialization: 0.000 minutes
+	Build Analysis: 0.000 minutes
+	Diff Analysis: 0.001 minutes
+	Clone Analysis: 0.005 minutes
+	Slicing: 0.000 minutes
+	AST Analysis: 0.001 minutes
+	Map Generation: 0.011 minutes
+	Translation: 0.002 minutes
+	Evolution: 0.004 minutes
+	Transplantation: 0.003 minutes
+	Verification: 0.002 minutes
+	Comparison: 0.000 minutes
+	Summarizing: 0.000 minutes
+
+    FixMorph finished successfully after 0.029 minutes
 
 ### Analysing Results
-FixMorph performed 4 iterations with the concolic exploration.
+FixMorph was able to successfully generate an updated version of the target program from the transformation learnt from the
+reference program. During this process FixMorph produces several files and we will analyse each below:
+
+* /FixMorph/logs/TAG_ID directory stores all logs, the "TAG_ID" should be specified in the configuration file
+	* log-latest: this is the main application log which captures each step of the program transformation
+	* log-error: this log captures any errors (if observed), which can be use for debugging purpose
+	* log-make: this log captures the output of the build process of each program
+* /FixMorph/output/TAG_ID directory stores all artefacts generated for the transformation, the "TAG_ID" should be specified in the configuration file
+	* transplant-patch: this file captures the transformation applied to the target program
+	* orig-patch: this file captures the transformation in the reference program
+	* port-patch
+
 It generated 5 abstract patches (see "Template Start Count") and ended also with 5 (see "Template End Count").
 In the beginning, the 5 abstract patches represented 85 concrete patches (see "Patch Start Count").
 During exploration FixMorph ruled out 43 (= 85-42) of them.

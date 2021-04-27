@@ -489,15 +489,12 @@ def start():
     load_values()
 
     if values.PHASE_SETTING[definitions.PHASE_SUMMARIZE]:
-        if not values.CONF_PATH_E:
-            emitter.special("\n\t-skipping this phase-")
-        else:
-            # classify_porting(Values.PATH_B, Values.Project_D.path)
-            clear_values(values.Project_A)
-            original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
-                                           values.CONF_PATH_A, values.CONF_PATH_B)
-            segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
-
+        # classify_porting(Values.PATH_B, Values.Project_D.path)
+        clear_values(values.Project_A)
+        original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
+                                       values.CONF_PATH_A, values.CONF_PATH_B)
+        segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
+        if values.CONF_PATH_E:
             clear_values(values.Project_C)
             ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
                                          values.CONF_PATH_C, values.CONF_PATH_E)
