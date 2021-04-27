@@ -16,15 +16,18 @@ Dockerhub Repo: https://hub.docker.com/repository/docker/rshariffdeen/fixmorph
 Setup environment can be built using the Dockerfile provided within, which will encompass the dependencies, configurations
 and setup scripts. Use the following command:
 
-``
+```bash
+cd /FixMorph
+docker build -t rshariffdeen/fixmorph .
+cd /FixMorph/experiments/ISSTA21
 docker build -t rshariffdeen/fixmorph:issta21 .
-``
+```
 
 Note that the build process can be time-consuming, hence you can also use the pre-built docker image using the command:
 
-``
+```bash
 docker pull rshariffdeen/fixmorph:issta21
-``
+```
 
 Having the image, you can now start a Docker container. We recommend linking the container to folders in the filesystem,
 so that it is possible to check the logs and generated outputs also outside of the Docker container. 

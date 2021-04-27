@@ -25,8 +25,10 @@ for the source-to-source transformation. There are two versions of the Dockerfil
 * Dockerfile.experiments: This environment includes all necessary dependencies to re-produce the experiments
 
 You can use the following command to build the image:
-```
-docker build -f Dockerfile -t fixmorph .
+
+```bash
+cd /FixMorph
+docker build -t rshariffdeen/fixmorph .
 ```
 
 # Example Usage
@@ -44,9 +46,10 @@ config_command_c:skip
 Once you setup a configuration file as above you can use the following command to run FixMorph which will 
 transplant the patch from donor to target program.
 
-``
+```bash
+
 python3.7 FixMorph.py --conf=/path/to/conf/file
-``
+```
 
 Original Patch from donor program PA-PB:
 ```c
