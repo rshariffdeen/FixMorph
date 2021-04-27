@@ -494,11 +494,11 @@ def start():
         original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
                                        values.CONF_PATH_A, values.CONF_PATH_B)
         segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
-        if values.CONF_PATH_E:
-            clear_values(values.Project_C)
-            ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Manual Ported Patch",
-                                         values.CONF_PATH_C, values.CONF_PATH_E)
-            segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
+
+        clear_values(values.Project_C)
+        transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
+                                           values.CONF_PATH_C, values.Project_D.path)
+        segment_code(transplanted_diff_info, values.Project_C, definitions.FILE_TRANS_N)
 
         save_values()
     else:

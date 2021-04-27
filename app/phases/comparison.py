@@ -161,20 +161,13 @@ def start():
     load_values()
 
     if values.PHASE_SETTING[definitions.PHASE_COMPARE]:
-        if values.CONF_PATH_E:
-            clear_values(values.Project_C)
-            ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
-                                         values.CONF_PATH_C, values.CONF_PATH_E)
-            # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
-            #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
-            segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
-
         clear_values(values.Project_C)
-        transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
-                                           values.CONF_PATH_C, values.Project_D.path)
-        # transplanted_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Transplanted Patch",
-        #                                  Values.PATH_C, Values.Project_D.path, transplanted_diff_info)
-        segment_code(transplanted_diff_info, values.Project_C, definitions.FILE_TRANS_N)
+        ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
+                                     values.CONF_PATH_C, values.CONF_PATH_E)
+        # ported_diff_info = safe_exec(analyse_ast_diff, "analysing ast diff of Ported Patch",
+        #                              Values.PATH_C, Values.PATH_E, ported_diff_info)
+        segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
+
         if not values.ANALYSE_N:
             save_values()
     else:
