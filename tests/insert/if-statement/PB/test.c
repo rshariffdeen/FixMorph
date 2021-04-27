@@ -23,8 +23,8 @@ int main( ) {
     if (j < 0){
        j = 9;
        printf("OK");
-    } else {
+    } else
        printf("CHECK");
-    }
+
     return 0;
 }
