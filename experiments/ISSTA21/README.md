@@ -95,7 +95,7 @@ To better explore the final outcome, please check the FixMorph output directory 
 /FixMorph/output/<tag_id> (for this example the tag_id defined in the configuration file is 'update-test') i.e. /FixMorph/output/update-test
 Similarly, the logs are also stored in /FixMorph/logs/<tag_id>.
 
-For more examples refer [this guide](../doc/Examples.md)
+For more examples refer [this guide](../../doc/Examples.md)
 
 
 # Running Experiments
