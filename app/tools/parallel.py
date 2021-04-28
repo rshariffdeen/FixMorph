@@ -92,7 +92,7 @@ def derive_namespace_map(ast_node_map, source_a, source_c, neighbor_id_a, neighb
                         var_mapping = "." + ast_node_a['value'][1:], "." + ast_node_c['value'][1:] + "." + parent_c['value'][1:], 100, "MemberExpr", "MemberExpr"
                         # print(new_mapping)
                         result_list.append(var_mapping)
-                        datatype_mapping = ast_node_a['data_type'], parent_c['data_type'], 100, "DataType", "DataType"
+                        values.data_type_map[ast_node_a['data_type']] = parent_c['data_type']
 
     pool.close()
     emitter.normal("\t\twaiting for thread completion")

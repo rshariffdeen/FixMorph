@@ -376,11 +376,6 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                         if field_name_b in namespace_map:
                             field_name_c = namespace_map[field_name_b]
                             filtered_namespace_map[field_name_b] = field_name_c
-                            if "data_type" in node:
-                                data_type_b = node['data_type']
-                                if data_type_b in namespace_map:
-                                    data_type_c = namespace_map[data_type_b]
-                                    filtered_namespace_map[data_type_b] = data_type_c
                         if 'children' not in struct_node.keys() or len(struct_node['children']) == 0:
                             break
                         struct_node = struct_node['children'][0]

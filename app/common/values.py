@@ -117,7 +117,7 @@ map_allow_type_list = [
     ]
 original_diff_info = dict()
 ported_diff_info = dict()
-
+data_type_map = dict()
 current_slice_tuple = None
 
 Pa = None
