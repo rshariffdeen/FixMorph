@@ -16,6 +16,6 @@ int main(void)
 	int k, l = 10, p=1;
 	scanf("%d", &k);
 	int fn = fib_n(k , l , p);
-	int fn2 = fib_n(a , NULL , c);
+	int fn2 = fib_n(k , NULL , p);
 	return 0;
 }
