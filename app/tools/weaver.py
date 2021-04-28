@@ -1,5 +1,7 @@
 from app.common import definitions, values
-from app.common.utilities import execute_command, error_exit, get_code, backup_file, show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range
+from app.common.utilities import execute_command, error_exit, get_code, backup_file, \
+    show_partial_diff, backup_file_orig, restore_file_orig, replace_file, get_code_range, \
+    find_file_using_path
 from app.tools import converter, emitter, finder, extractor, logger
 from app.ast import ast_generator
 
@@ -210,7 +212,14 @@ def weave_headers(missing_header_list, modified_source_list):
             if header_name[0] == "/":
                 header_name = header_name[1:]
         else:
-            header_name = header_file_a
+            filepath = definitions.DIRECTORY_TMP + "/find_header"
+            find_file_using_path(project.path, extension, filepath, None)
+            with open(filepath, "r", errors='replace') as result:
+                files = [path.strip() for path in result.readlines()]
+            if files:
+                header_name = header_file_a
+            else:
+                continue
 
         if "/" in header_name:
             transplant_code = "\n#include<" + header_name + ">\n"
