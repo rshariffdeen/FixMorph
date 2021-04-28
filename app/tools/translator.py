@@ -313,6 +313,10 @@ def transform_script_gumtree(modified_script, inserted_node_list, json_ast_dump,
                     if int(delete_node_id) < neighbor_id_c:
                         continue
                     delete_node = json_ast_dump[values.Project_C.name][delete_node_id]
+                    if delete_node.type == "CompoundStmt":
+                        parent_node = json_ast_dump[values.Project_C.name][delete_node.parent_id]
+                        if parent_node.type == "FunctionDecl":
+                            continue
                     instruction = get_instruction((definitions.DELETE, delete_node))
                     if delete_node.line is None:
                         delete_node.line = delete_node.parent.line
