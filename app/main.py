@@ -53,6 +53,8 @@ def create_files():
     open(definitions.FILE_PROJECT_D, 'a').close()
     definitions.FILE_VAR_MAP_STORE = definitions.DIRECTORY_OUTPUT + "/var-map-store"
     open(definitions.FILE_VAR_MAP_STORE, 'a').close()
+    definitions.FILE_DATATYPE_MAP = definitions.DIRECTORY_OUTPUT + "/datatype-map"
+    open(definitions.FILE_DATATYPE_MAP, 'a').close()
     definitions.FILE_VEC_MAP_STORE = definitions.DIRECTORY_OUTPUT + "/vec-map-store"
     open(definitions.FILE_VEC_MAP_STORE, 'a').close()
     definitions.FILE_SOURCE_MAP_STORE = definitions.DIRECTORY_OUTPUT + "/source-map-store"
