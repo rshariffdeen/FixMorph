@@ -253,7 +253,7 @@ def find_file_in_dir(query, search_dir):
 def find_clone(file_name):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     # check if obvious exist
-    candidate_path = file_name.replace(values.CONF_PATH_A, values.CONF_PATH_C)
+    candidate_path = file_name.replace(values.CONF_PATH_A, values.CONF_PATH_C).replace(values.CONF_PATH_B, values.CONF_PATH_C)
     if os.path.isfile(candidate_path):
         return candidate_path
     file_path_list = set()
