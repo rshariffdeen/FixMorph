@@ -96,7 +96,7 @@ def find_files(src_path, extension, output, regex):
 def find_file_using_path(src_path, partial_path, output, regex):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     # Save paths to all files in src_path with extension extension to output
-    find_command = "find " + src_path + " -path '" + extension + "' "
+    find_command = "find " + src_path + " -path '" + partial_path + "' "
     if regex is not None:
         find_command += " | grep '" + regex + "' "
     find_command += " > " + output
