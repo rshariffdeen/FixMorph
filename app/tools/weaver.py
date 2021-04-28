@@ -213,7 +213,8 @@ def weave_headers(missing_header_list, modified_source_list):
                 header_name = header_name[1:]
         else:
             filepath = definitions.DIRECTORY_TMP + "/find_header"
-            find_file_using_path(project.path, extension, filepath, None)
+            partial_path = "*/" + header_file_a
+            find_file_using_path(values.Project_C.path, partial_path, filepath, None)
             with open(filepath, "r", errors='replace') as result:
                 files = [path.strip() for path in result.readlines()]
             if files:
