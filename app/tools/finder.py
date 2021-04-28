@@ -257,7 +257,7 @@ def find_clone(file_name):
     if os.path.isfile(candidate_path):
         return candidate_path
     file_path_list = set()
-    source_path = file_name.replace(values.CONF_PATH_A, "")
+    source_path = file_name.replace(values.CONF_PATH_A, "").replace(values.CONF_PATH_B, "")
     if source_path[0] == "/":
         source_path = source_path[1:]
     git_query = "cd " + values.CONF_PATH_A + ";"
