@@ -27,6 +27,7 @@ ARG_START_ID = "--start-id="
 ARG_END_ID = "--end-id="
 ARG_BUG_ID = "--bug-id="
 ARG_BUG_ID_LIST = "--bug-id-list="
+ARG_DATA_SET = "--data="
 
 
 CONF_DATA_PATH = "/data"
@@ -42,8 +43,9 @@ CONF_BUG_ID = None
 CONF_BUG_ID_LIST = None
 CONF_UPDATE_TEST = False
 CONF_ANALYSIS_MODE = False
+CONF_DATA_SET = ""
 
-FILE_META_DATA = "issta21.json"
+# FILE_META_DATA = "issta21.json"
 FILE_ERROR_LOG = "error-log"
 
 
@@ -156,7 +158,7 @@ def write_as_json(data_list, output_file_path):
 
 
 def evaluate(conf_path, bug_id):
-    global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME, DIR_LOGS, COUNT_SUCCESS
+    global CONF_TOOL_PARAMS, CONF_TOOL_PATH, CONF_TOOL_NAME, DIR_LOGS, COUNT_SUCCESS, CONF_DATA_SET
     print("\t[INFO] running evaluation")
     tool_command = "{ cd " + CONF_TOOL_PATH + ";" + CONF_TOOL_NAME + " --conf=" + conf_path + " "+ CONF_TOOL_PARAMS + ";} 2> " + FILE_ERROR_LOG
     ret_code = execute_command(tool_command)
@@ -166,11 +168,15 @@ def evaluate(conf_path, bug_id):
         os.makedirs(exp_dir)
     if os.path.isdir(exp_dir + "/output"):
         shutil.rmtree(exp_dir + "/output")
-    shutil.copytree("/FixMorph/output/linux-" + str(bug_id), exp_dir + "/output")
-    copy_file("/FixMorph/logs/linux-" + str(bug_id) + "/log-latest", exp_dir + "/log-latest")
-    copy_file("/FixMorph/logs/linux-" + str(bug_id) + "/log-make", exp_dir + "/log-make")
-    copy_file("/FixMorph/logs/linux-" + str(bug_id) + "/log-error", exp_dir + "/log-error")
-    copy_file("/FixMorph/logs/linux-" + str(bug_id) + "/log-command", exp_dir + "/log-command")
+    
+    DIR_PREFIX = "/FixMorph/logs/linux-"
+    if CONF_DATA_SET == "cve-data.json":
+        DIR_PREFIX = "/FixMorph/logs/linux-cve-"
+    shutil.copytree(DIR_PREFIX + str(bug_id), exp_dir + "/output")
+    copy_file(DIR_PREFIX + str(bug_id) + "/log-latest", exp_dir + "/log-latest")
+    copy_file(DIR_PREFIX + str(bug_id) + "/log-make", exp_dir + "/log-make")
+    copy_file(DIR_PREFIX + str(bug_id) + "/log-error", exp_dir + "/log-error")
+    copy_file(DIR_PREFIX + str(bug_id) + "/log-command", exp_dir + "/log-command")
 
     return ret_code
 
@@ -219,15 +225,17 @@ def write_conf_file(base_dir_path, object_a, object_c, bug_id, commit_list):
 
 
 def load_experiment():
-    global experiment_list
+    global experiment_list, CONF_DATA_SET
     print("[DRIVER] Loading experiment data\n")
-    with open(FILE_META_DATA, 'r') as in_file:
+    if not os.path.isfile(CONF_DATA_SET):
+        exit("data-set not found")
+    with open(CONF_DATA_SET, 'r') as in_file:
         json_data = json.load(in_file)
         experiment_list = json_data
 
 
 def read_arg(arg_list):
-    global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS
+    global CONF_DATA_PATH, CONF_TOOL_NAME, CONF_TOOL_PARAMS, CONF_DATA_SET
     global CONF_TOOL_PATH, CONF_DEBUG, CONF_SKIP_SETUP, CONF_ONLY_SETUP, CONF_BUG_ID_LIST
     global CONF_BUG_ID, CONF_START_ID, CONF_END_ID, CONF_UPDATE_TEST, CONF_ANALYSIS_MODE
     print("[DRIVER] Reading configuration values")
@@ -253,6 +261,8 @@ def read_arg(arg_list):
                 CONF_BUG_ID_LIST = arg.replace(ARG_BUG_ID_LIST, "").split(",")
             elif ARG_UPDATE_TEST in arg:
                 CONF_UPDATE_TEST = True
+            elif ARG_DATA_SET in arg:
+                CONF_DATA_SET = arg.replace(ARG_DATA_SET, "")
             elif ARG_START_ID in arg:
                 CONF_START_ID = int(str(arg).replace(ARG_START_ID, ""))
             elif ARG_END_ID in arg:
@@ -273,16 +283,21 @@ def read_arg(arg_list):
 def run(arg_list):
     global experiment_list, DIR_MAIN, CONF_DATA_PATH, CONF_TOOL_PARAMS
     global DIR_EXPERIMENT, COUNT_IDENTICAL, COUNT_EXPERIMENT
-    global CONF_START_ID, CONF_END_ID, CONF_BUG_ID
+    global CONF_START_ID, CONF_END_ID, CONF_BUG_ID, CONF_DATA_SET
     print("[DRIVER] Running experiment driver")
     read_arg(arg_list)
     clone_repo()
     load_experiment()
     create_directories()
     DIR_EXPERIMENT = CONF_DATA_PATH + "/backport/linux"
+    if CONF_DATA_SET == "cve-data.json":
+        DIR_EXPERIMENT = CONF_DATA_PATH + "/backport/linux-cve"
     sorted_experiment_list = sorted(experiment_list, key=lambda tup: tup['id'])
     for experiment_item in sorted_experiment_list:
         index = int(experiment_item['id'])
+        tag_id = None
+        if "CVE-ID" in experiment_item.keys():
+            tag_id = experiment_item["CVE-ID"]
         if CONF_START_ID:
             if index < CONF_START_ID:
                 continue
@@ -329,6 +344,8 @@ def run(arg_list):
         if not CONF_ONLY_SETUP:
             ret_code = evaluate(conf_file_path, index)
             log_file_path = "/FixMorph/logs/linux-" + str(index) + "/log-latest"
+            if CONF_DATA_SET == "cve-data.json":
+                log_file_path = "/FixMorph/logs/linux-cve-" + str(index) + "/log-latest"
             if CONF_ANALYSIS_MODE:
                 if int(ret_code) != 0:
                     if "--analyse-n" in CONF_TOOL_PARAMS:
@@ -338,6 +355,8 @@ def run(arg_list):
             analyse_result(index, log_file_path)
 
         comparison_result_file = "/FixMorph/output/linux-" + str(index) + "/comparison-result"
+        if CONF_DATA_SET == "cve-data.json":
+            comparison_result_file = "/FixMorph/output/linux-cve-" + str(index) + "/comparison-result"
         if os.path.isfile(comparison_result_file):
             with open(comparison_result_file, "r") as result_file:
                 content = result_file.readline()
