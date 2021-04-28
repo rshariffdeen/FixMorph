@@ -395,7 +395,7 @@ def weave_functions(missing_function_list, modified_source_list):
             original_statement = get_code(function_source_file, int(i))
             for data_type_a in values.data_type_map:
                 data_type_c = values.data_type_map[data_type_a]
-                if data_type in original_statement:
+                if data_type_a in original_statement:
                     original_statement = original_statement.replace(data_type_a, data_type_c)
             original_function += original_statement + "\n"
         # translated_patch = translate_patch(original_patch, var_map_ac)
