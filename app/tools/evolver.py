@@ -140,7 +140,9 @@ def evolve_functions(missing_function_list, depth_level):
                 header_file = function_source_file
                 clone_header_file = finder.find_clone(header_file)
                 if clone_header_file:
-                    header_func_list = extractor.extract_function_node_list(clone_header_file)
+                    ast_header = ast_generator.get_ast_json(clone_header_file, values.DONOR_REQUIRE_MACRO,
+                                                                regenerate=True)
+                    header_func_list = extractor.extract_function_node_list(ast_header)
                     if function_name in header_func_list:
                         clone_header_file = clone_header_file.split("/include/")[-1]
                         found_header_file = True
@@ -152,7 +154,9 @@ def evolve_functions(missing_function_list, depth_level):
                         header_file = function_source_file.split("/")[-1]
                     clone_header_file = finder.find_clone(header_file)
                     if clone_header_file:
-                        header_func_list = extractor.extract_function_node_list(clone_header_file)
+                        ast_header = ast_generator.get_ast_json(clone_header_file, values.DONOR_REQUIRE_MACRO,
+                                                                regenerate=True)
+                        header_func_list = extractor.extract_function_node_list(ast_header)
                         if function_name in header_func_list:
                             clone_header_file = clone_header_file.split("/include/")[-1]
                             found_header_file = True
