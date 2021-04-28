@@ -32,9 +32,9 @@ docker pull rshariffdeen/fixmorph:issta21
 Having the image, you can now start a Docker container. We recommend linking the container to folders in the filesystem,
 so that it is possible to check the logs and generated outputs also outside of the Docker container. 
 
-``
+```bash
 docker run --name FixMorph -it rshariffdeen/fixmorph:issta21 bash
-``
+```
 
 ## Test Input Files
 We will first run a test example to verify that FixMorph is working in the given environment, for this purpose we will use
@@ -50,9 +50,9 @@ corresponding Makefiles, in addition we also provide the configuration file for 
 ## Test Run
 You can check if everything is working well, by running the above test-case from our test-suite. 
 
-``
+```bash
 python3.7 FixMorph.py --conf=tests/update/assignment/repair.conf
-``
+```
 
 The example test-case provided illustrates a change in the sorting logic in the donor/reference program by updating the field
 use for the sorting logic, from 'rank' to the entity 'id'. We use FixMorph to learn the transformation and apply it to another 
@@ -105,36 +105,40 @@ For more examples refer [this guide](../../doc/Examples.md)
 Following details how to run the scripts and the tool to replicate the results of our experiments.
 Once you build the docker image, you spin up a container as mentioned above. 
 
-Inside the container the following directories will be used
+Inside the container the following directories/files will be used
 - /FixMorph - this will be the tool directory
 - /experiments/ISSTA21 - all experiment setups will be deployed in this directory
+- /experiments/ISSTA21/main-data.json - this contains the meta-data for the main experiment of (350 commits)
+- /experiments/ISSTA21/cve-data.json - this contains the meta-data for the cve-fixes
 
 
 In /experiments/ISSTA21 directory a python driver is provided to run all experiments. 
 You can run all the experiments using the following command
 
-``
-python3.7 driver.py
-``
+```bash
+python3.7 driver.py --data=[cve-data.json/main-data.json]
+```
 
 You can specify the driver to setup the environment and manually run the tool later by using following command, which will 
 setup the experiment data in /data directory. 
 
-``
-python3.7 driver.py --only-setup
-``
+```bash
+python3.7 driver.py --data=[cve-data.json/main-data.json] --only-setup
+```
 
 You can also select a single test-case you want to replicate by running the following command, where the bug ID is the id specified in our benchmark.
 
-``
-python3.7 driver.py --bug-id=BUG_ID
-``
+```bash
+python3.7 driver.py --data=[cve-data.json/main-data.json] --bug-id=BUG_ID
+```
 
 Alternatively, you can run the experiment manually (after setting up)
 
-``
+```bash
 python3.7 FixMorph.py --conf=/path/to/configuration
-``
+python3.7 FixMorph.py --conf=/data/backport/linux/1/repair.conf
+python3.7 FixMorph.py --conf=/data/backport/linux-cve/1/repair.conf
+```
 
 ## Running experiment #238 (Patch Type-3)
 Lets run one of the experiments (Bug-ID 238) in our data-set using the following command. The general experiment timeout is set to 1hr. 
@@ -145,7 +149,7 @@ First, we need to prepare the experiment by setting up the source directories. W
 ```bash
 
 cd /FixMorph/experiments/ISSTA21
-python3.7 driver.py --only-setup --bug-id=238
+python3.7 driver.py --data=main-data.json --only-setup --bug-id=238
 
 ```
 
