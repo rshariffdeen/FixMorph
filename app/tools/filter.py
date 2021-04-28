@@ -381,18 +381,18 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                         struct_node = struct_node['children'][0]
             else:
                 if node_type in ["MemberExpr", "FieldDecl"]:
-                    struct_node = node
+                    struct_node = node['children'][0]
                     while struct_node['type'] != "DeclRefExpr":
-                        if "data_type" in struct_node:
-                            struct_name = struct_node['data_type'].replace("struct ", "").split(" ")[0]
-                            node_value = "." + struct_name + node['value'].replace(":", ".")
-                            if node_value in namespace_map:
-                                field_name_c = "." + namespace_map[node_value].split(".")[-1]
-                                field_name_b = "." + node_value.split(".")[-1]
-                                filtered_namespace_map[field_name_b] = field_name_c
-                        if 'children' not in struct_node.keys() or len(struct_node['children']) == 0:
-                            break
                         struct_node = struct_node['children'][0]
+                        if 'children' not in struct_node:
+                            break
+                    if "data_type" in struct_node:
+                        struct_name = struct_node['data_type'].replace("struct ", "").split(" ")[0]
+                        node_value = "." + struct_name + node['value'].replace(":", ".")
+                        if node_value in namespace_map:
+                            field_name_c = "." + namespace_map[node_value].split(".")[-1]
+                            field_name_b = "." + node_value.split(".")[-1]
+                            filtered_namespace_map[field_name_b] = field_name_c
 
     # print(filtered_namespace_map)
     return filtered_namespace_map
