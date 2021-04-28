@@ -46,8 +46,8 @@ def evolve_definitions(missing_definition_list):
         #                                                             source_path_d)
         # missing_header_list = Identifier.identify_missing_headers(ast_node, source_path_d)
         #
-    print(missing_header_list)
-    print(missing_macro_list)
+    # print(missing_header_list)
+    # print(missing_macro_list)
     return missing_header_list, missing_macro_list
 
 

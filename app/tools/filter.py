@@ -369,20 +369,30 @@ def filter_namespace_map(namespace_map, edit_script, source_b):
                 if "." not in node_value and "." in mapped_value:
                     mapped_value = mapped_value[1:]
                 filtered_namespace_map[node_value] = mapped_value
-            else:
                 if node_type in ["MemberExpr", "FieldDecl"]:
-                    struct_node = node['children'][0]
+                    struct_node = node
                     while struct_node['type'] != "DeclRefExpr":
+                        field_name_b = node['value'].replace(":", ".")
+                        if field_name_b in namespace_map:
+                            field_name_c = namespace_map[field_name_b]
+                            filtered_namespace_map[field_name_b] = field_name_c
                         if 'children' not in struct_node.keys() or len(struct_node['children']) == 0:
                             break
                         struct_node = struct_node['children'][0]
-                    if "data_type" in struct_node:
-                        struct_name = struct_node['data_type'].replace("struct ", "").split(" ")[0]
-                        node_value = "." + struct_name + node['value'].replace(":", ".")
-                        if node_value in namespace_map:
-                            field_name_c = "." + namespace_map[node_value].split(".")[-1]
-                            field_name_b = "." + node_value.split(".")[-1]
-                            filtered_namespace_map[field_name_b] = field_name_c
+            else:
+                if node_type in ["MemberExpr", "FieldDecl"]:
+                    struct_node = node
+                    while struct_node['type'] != "DeclRefExpr":
+                        if "data_type" in struct_node:
+                            struct_name = struct_node['data_type'].replace("struct ", "").split(" ")[0]
+                            node_value = "." + struct_name + node['value'].replace(":", ".")
+                            if node_value in namespace_map:
+                                field_name_c = "." + namespace_map[node_value].split(".")[-1]
+                                field_name_b = "." + node_value.split(".")[-1]
+                                filtered_namespace_map[field_name_b] = field_name_c
+                        if 'children' not in struct_node.keys() or len(struct_node['children']) == 0:
+                            break
+                        struct_node = struct_node['children'][0]
 
     # print(filtered_namespace_map)
     return filtered_namespace_map
