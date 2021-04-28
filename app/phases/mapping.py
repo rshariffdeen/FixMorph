@@ -35,6 +35,7 @@ def load_values():
 
     definitions.FILE_AST_MAP_LOCAL = definitions.DIRECTORY_OUTPUT + "/map-info"
     # definitions.FILE_NAMESPACE_MAP = definitions.DIRECTORY_OUTPUT + "/namespace-map"
+    definitions.FILE_DATATYPE_MAP = definitions.DIRECTORY_OUTPUT + "/datatype-map"
     definitions.FILE_NAMESPACE_MAP_LOCAL = definitions.DIRECTORY_OUTPUT + "/namespace-map-local"
     definitions.FILE_NAMESPACE_MAP_GLOBAL = definitions.DIRECTORY_OUTPUT + "/namespace-map-global"
 

@@ -46,7 +46,7 @@ def save_current_state():
 
     segment_state = [values.IS_STRUCT, values.IS_ENUM, values.IS_MACRO, values.IS_TYPEDEC, values.IS_FUNCTION]
     pickle.dump(segment_state, open(definitions.FILE_SEGMENT_STATE, 'wb'))
-
+    pickle.dump(values.data_type_map, open(definitions.FILE_DATATYPE_MAP, 'wb'))
     pickle.dump(values.map_namespace_global, open(definitions.FILE_VAR_MAP_STORE, 'wb'))
     pickle.dump(values.VECTOR_MAP, open(definitions.FILE_VEC_MAP_STORE, 'wb'))
     pickle.dump(values.SOURCE_MAP, open(definitions.FILE_SOURCE_MAP_STORE, 'wb'))
@@ -68,6 +68,7 @@ def load_state():
     values.missing_data_type_list = pickle.load(open(definitions.FILE_MISSING_TYPES, 'rb'))
     values.missing_macro_list = pickle.load(open(definitions.FILE_MISSING_MACROS, 'rb'))
     values.missing_header_list = pickle.load(open(definitions.FILE_MISSING_HEADERS, 'rb'))
+    values.data_type_map = pickle.load(open(definitions.FILE_DATATYPE_MAP, 'rb'))
     segment_state = pickle.load(open(definitions.FILE_SEGMENT_STATE, 'rb'))
     values.IS_STRUCT = segment_state[0]
     values.IS_ENUM = segment_state[1]
