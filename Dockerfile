@@ -70,6 +70,7 @@ WORKDIR /FixMorph
 RUN python3.7 setup.py build_ext
 RUN mv /FixMorph/build/lib.linux-x86_64-3.7/ /FixMorph/build/fixmorph
 RUN rm -rf /FixMorph/app
+RUN rm -rf /FixMorph/.git
 
 # Tidy up the container
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
