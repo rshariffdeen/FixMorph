@@ -1,4 +1,5 @@
 # FixMorph
+[![Docker Pulls](https://img.shields.io/docker/pulls/rshariffdeen/fixmorph.svg)](https://hub.docker.com/r/rshariffdeen/fixmorph)
 
 FixMorph is a tool to automatically morph fixes (patches) from one program version to a
 different yet syntactically similar program version. Component-oriented programming
@@ -10,9 +11,9 @@ help automate this process.
 
 FixMorph is a powerful morphing tool for C source-codes. FixMorph is:
 
-* Scalable: FixMorph can reliably backport large/complex source bases such as the Linux Kernel
+* Scalable: FixMorph can backport bug-fixing patches in large/complex source bases such as the Linux Kernel
 * Compilable: The morphed patch is verified to be free of syntax errors
-* Extensible: FixMorph is designed so that it can be easily extended to support advanced transformations/components
+* Extensible: FixMorph is designed so that it can be easily extended to support advanced transformations
 
 
 
@@ -43,7 +44,7 @@ config_command_c:skip
 ```
 
 Once a configuration file has been set up as above, the following command will run FixMorph to 
-transplant the patch from donor to target program.
+adapt the patch from the reference program to target program.
 
 ```bash
 
@@ -64,7 +65,7 @@ Original Patch from donor program PA-PB:
     >         min = list[j].book_id;
 ```
 
-Transplanted  Patch to target program PC:
+Adapted  Patch to target program PC:
 
 ```c
     18c18
