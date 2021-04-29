@@ -46,7 +46,7 @@ CONF_ANALYSIS_MODE = False
 CONF_DATA_SET = ""
 
 # FILE_META_DATA = "issta21.json"
-FILE_ERROR_LOG = "error-log"
+FILE_ERROR_LOG = "../ISSTA21/error-log"
 
 
 DIR_MAIN = os.getcwd()
@@ -372,10 +372,10 @@ def run(arg_list):
         print("verify error count: " + str(COUNT_VERIFY_FAILED))
         print("runtime error count: " + str(COUNT_RUNTIME_ERRORS) + "\n\n")
 
-    write_as_json(list_other_failed, "fail_list_other")
-    write_as_json(list_build_failed, "fail_list_build")
-    write_as_json(list_verify_failed, "fail_list_verify")
-    write_as_json(list_success, "success_list")
+    write_as_json(list_other_failed, "../ISSTA21/fail_list_other")
+    write_as_json(list_build_failed, "../ISSTA21/fail_list_build")
+    write_as_json(list_verify_failed, "../ISSTA21/fail_list_verify")
+    write_as_json(list_success, "../ISSTA21/success_list")
 
 
 if __name__ == "__main__":

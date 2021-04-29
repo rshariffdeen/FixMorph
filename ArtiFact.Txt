@@ -1,0 +1,294 @@
+##############################################################
+## Artifact for Paper #237	Automated Patch Backporting in Linux (Experience Paper)
+#############
+This is the artifact for the ISSTA'2021 submission #237 #237 Automated Patch Backporting in Linux (Experience Paper)  by the authors:
+
+Ridwan Shariffdeen
+Gao Xiang
+Gregory J Duck
+Shin Hwei Tan
+Julia Lawall
+Abhik Roychoudhury
+
+
+##############################################################
+## Content
+#############
+This archive contains the following content:
+* FixMorph.py: the tool for automated backporting
+* cpr-experiments/: all benchmark subjects and scripts to reproduce our evaluation
+* pldi21-paper130.pdf: our PLDI'2021 submission as PDF
+* ExtractFix.pdf: information about the ExtractFix subjects and the corresponding developer patches
+* SVCOMP.pdf: information about the SV-COMP subjects and the correct patches
+
+After acceptance, we will make all data and source files openly accessible.
+The artifact will be also assigned a DOI via https://zenodo.org to ensure accessibility.
+
+
+##############################################################
+## List of Claims that are supported by this artifact
+#############
+With this artifact the reviewer can reproduce the *CPR* results presented in
+* Table 1,
+* Table 2, and
+* Table 3.
+However, in order to retrieve the "rank" for Table 1 and Table 3, and the patch classification in Table 2, it requires some manual investigation of the generated outputs.
+For the rank of the "correct patch": the reviewer would need to examine the produced output and search for the semantically equivalent to the developer patch.
+For example, if the correct patch would be the expression "TRUE", CPR might produce a patch "x==x", which would be semantically equivalent.
+For the patch classification: the reviewer would need to manually compare the developer patches with the patches produced by CPR in order to classify them as just "Generated Patch", i.e., a plausible patch (fixing the failing test case) or "Correct Patch", i.e., semantically equivalent with the developer patch. Note that all generated patches are plausible.
+In order to support the reviewer in this task, we provide the ExtractFix.pdf and SVCOMP.pdf, which contain additional information, the developer fix (for ExtractFix the URL to the fixing commit, for SV-COMP the correct patch), and CPR's ranking. The reviewer, therefore, needs to check whether the CPR's patch with the mentioned ranking matches the developer patch.
+All in all, this artifact provides all means to reproduce all results presented in the paper.
+
+
+##############################################################
+## Getting Started Guide
+#############
+The folder "cpr/" includes the source code for our tool CPR and also comes with its own README (cpr/README.md), which includes details on the parameters. However, for the reproduction of our results, it is not necessary to explore and understand this folder.
+The folder "cpr-experiments/" contains all necessary parts to reproduce our results. The contained Dockerfile can be used to retrieve the pre-built Docker image of CPR and its components.
+
+Please make sure to have the access rights for our repository. We created a private access token for evaluation purpose:
+$ docker login --username rshariffdeen
+Password: ae842dda-9c68-43fd-b973-0892d3c0d07c
+(Depending on the OS this might run into issues with docker: https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket)
+
+Then one can retrieve our image:
+$ cd cpr-experiments/
+$ docker build -t cpr .
+
+Having the image, the reviewer can now start a Docker container. We recommend to link the container to folders in the filesystem, so that it is possible to check the logs and generated outputs also outside of the Docker container. Therefore, run (please fill in the appropriate paths to the artifact):
+
+$ docker run -v <PATH_TO_ARTIFACT>/paper130/cpr-experiments:/experiments -v <PATH_TO_ARTIFACT>/paper130/data:/data -v <PATH_TO_ARTIFACT>/paper130/output:/CPR/output -v <PATH_TO_ARTIFACT>/paper130/logs:/CPR/logs --name cpr-container -it cpr bash
+
+As a small test, please run the following example:
+$ ls /CPR/tests/bug-types/div-zero/div-zero-1/
+
+The program /CPR/tests/bug-types/div-zero/div-zero-1/test.c contains a simple division-by-zero error, which we want to fix with CPR.
+
+/CPR/tests/bug-types/div-zero/div-zero-1/repair.conf shows the CPR configuration file.
+/CPR/tests/bug-types/div-zero/div-zero-1/spec.smt2 shows the user-provided specification.
+/CPR/tests/bug-types/div-zero/div-zero-1/t1.smt2 shows the expected output for the failing test case (x=1, as defined in the repair.conf at line 7).
+
+To run CPR, navigate to the CPR tool folder:
+$ cd /CPR
+
+Execute CPR with the configuration stored in the subject folder (it should take around 1 minute):
+$ python3.7 CPR.py --conf=/CPR/tests/bug-types/div-zero/div-zero-1/repair.conf
+
+The output message at the end of the execution should look similar to the following:
+
+Run time statistics:
+-----------------------
+
+	Startup: 0.003 minutes
+	Build: 0.009 minutes
+	Testing: 0.054 minutes
+	Synthesis: 0.010 minutes
+	Explore: 0.167 minutes
+	Refine: 0.463 minutes
+	Reduce: 0.875 minutes
+	Iteration Count: 4
+	Patch Gen Count: 0
+	Patch Start Count: 85
+	Patch End Seed Count: 5
+	Patch End Count: 42
+	Template Gen Count: 0
+	Template Start Count: 5
+	Template End Count: 5
+	Paths Detected: 2
+	Paths Explored: 2
+	Paths Skipped: 0
+	Component Count: 6
+	Component Count Gen: 4
+	Component Count Cus: 2
+	Gen Limit: 40
+
+CPR performed 4 iterations with the concolic exploration.
+It generated 5 abstract patches (see "Template Start Count") and ended also with 5 (see "Template End Count").
+In the beginning, the 5 abstract patches represented 85 concrete patches (see "Patch Start Count").
+During exploration CPR ruled out 43 (= 85-42) of them.
+
+To better explore the final outcome, please check the output folder:
+$ cd /CPR/output/crash
+("crash" is in this case the tag_id mentioned in the repair.conf file; in general the reviewer can check the output in the folder /CPR/output/<tag_id>)
+
+This output folder will contain "patch-set-gen" and "patch-set-ranked".
+"patch-set-gen" are the patches after the initial synthesis step.
+"patch-set-ranked" are the patches after CPR finished.
+
+Note that the order (i.e., the ranking) of the patches changed during our concolic exploration.
+The correct patch would be "x+1 == 0".
+CPR identifies "(constant_a == x)" with constant_a in [1, 1], which is semantically equivalent to the correct patch.
+CPR ranks this patch at position 1.
+
+
+##############################################################
+## Step-by-Step Instructions
+#############
+Assuming that the steps in the "Getting Started Guide" have been successfully followed, the reviewer can re-run each experiment to reproduce our results.
+
+There are four general steps:
+(a) run the setup script for the subject
+(b) run CPR with the configuration of the subject
+(c) wait for 1 hour
+(d) check the results in the /output folder (please identify the correct patches with the information provided in ExtractFix.pdf and SVCOMP.pdf)
+
+Each subject has its own tag_id which corresponds with the subject ids in the tables in our paper.
+The "/cpr-experiments" folder contains two subfolders: "/cpr-experiments/extractfix" and "/cpr-experiments/svcomp".
+"/cpr-experiments/extractfix" contains the subjects necessary for Table 1 and Table 2.
+"/cpr-experiments/svcomp" contains the subjects necessary for Table 3.
+
+The tables show results for the timeout for 1 hour. Running each subject might be too much effort for the reviewer. Therefore, we recommend to pick some subjects and to try them exemplary.
+
+In the following we show the details for one of the subjects:
+extractfix/libtiff/CVE-2016-5314
+
+(1) Navigate to the experimental setup folder:
+$ cd /experiments/extractfix/libtiff/CVE-2016-5314
+
+(2) Execute the setup script with the parameter pointing to the /data folder:
+$ ./setup.sh /data
+
+(3) Check the generated experiment environment in the /data folder:
+$ ls /data/extractfix/libtiff/CVE-2016-5314
+(Expected output: "components  exploit.tif  repair.conf  spec.smt2  src  t1.smt2")
+
+(4) Navigate to the CPR tool folder:
+$ cd /CPR
+
+(5) Execute CPR with the configuration stored in the /data folder:
+$ python3.7 CPR.py --conf=/data/extractfix/libtiff/CVE-2016-5314/repair.conf
+
+... (this will run now for 1 hour)
+[Note: to stop a run, please use CTRL+z and kill the background process with "ps -aux | grep python | awk '{print $2}' | xargs kill -9".]
+
+(6) In the meantime the reviewer can check the /output folder for intermediate results.
+For example after the initial generation of the patches: cat /output/CVE-2016-5314/patch-set-gen
+The expected output looks as follows:
+
+Patch #1
+L65: (x <= x)
+                Partition: 1
+                Patch Count: 1
+                Path Coverage: 0
+                Is Under-approximating: False
+                Is Over-approximating: False
+Patch #2
+L65: (x <= y)
+                Partition: 1
+                Patch Count: 1
+                Path Coverage: 0
+                Is Under-approximating: False
+                Is Over-approximating: False
+Patch #3
+L65: (x <= constant_a)
+                Partition: 1
+                        Constant: const_a
+                        Range: -10 <= const_a <= 10
+                        Dimension: 21
+                Patch Count: 21
+                Path Coverage: 0
+                Is Under-approximating: False
+                Is Over-approximating: False
+...
+
+In total there are 28 (abstract) patches generated for this subject, representing 388 concrete patches.
+
+CPR will finish automatically after the timeout of 1 hour.
+
+...
+
+(7) The correct patch, in this case, should be a guarded exit (see ExtractFix.pdf).
+Please check the developer patch at the corresponding commit.
+The link is provided in the file ExtractFix.pdf: https://github.com/vadz/libtiff/commit/391e77f
+
++ if (sp->stream.avail_out > sp->tbuf_size)
++ {
++ 	TIFFErrorExt(tif->tif_clientdata, module, "sp->stream.avail_out > sp->tbuf_size");
++ 	return (0);
++ }
+
+The correct expression would be: sp->stream.avail_out > sp->tbuf_size
+
+(8) In our paper Table 1, and also in ExtractFix.pdf we show that CPR identifies a semantic-equivalent patch ranked at position *1*. Therefore, the reviewer needs to check the output file to compare with the patch at rank 1.
+$ less /CPR/output/CVE-2016-5314/patch-set-ranked
+
+The resulting CPR/output/CVE-2016-5314/patch-set-ranked will show the patch:
+	Patch #1
+	L65: (x < y)
+
+In the setup script: /experiments/extractfix/libtiff/CVE-2016-5314/setup.sh, we apply some annotation to inject our patch.
+In setup.sh:line 33:
+sed -i '786i if(__trident_choice("L65", "bool", (int[]){sp->tbuf_size,sp->stream.avail_out, nsamples}, (char*[]){"x", "y", "z"}, 3, (int*[]){}, (char*[]){}, 0)) return 0;\n' libtiff/tif_pixarlog.c
+
+__trident_choice represents the function call to retrieve a patch
+x is mapped to sp->tbuf_size
+y is mapped to sp->stream.avail_out
+z is mapped to nsamples
+
+If we put all this information together, it is clear, that CPR successfully identified the developer patch at rank 1.
+
+Additionally, to the ranking our Table 1 and Table 3 also show information about the patch pool size and the path exploration. The information can be checked with the "Run time statistics" printed at the end of each experiment, or by checking the logs in /CPR/logs/<tag_id>.
+
+|P_init|: the number of concrete patches after patch synthesis step (before concolic exploration)
+-> Check "Patch Start Count"
+
+|P_final|: the number of concrete patches after concolic exploration
+-> Check "Patch End Count"
+
+phi_explored: number of explored paths
+-> Check "Paths Explored"
+
+phi_skipped: number of infeasible paths that have been skipped during concolic exploration
+-> Check "Paths Skipped"
+
+General Notes:
+The same steps need to be performed for all other subjects. The experimental results can differ for different computation power, e.g., when more or fewer paths can be explored in the given timeout of one hour. The reviewers can compare the number of explored paths in our experiments with their own experiments to detect such differences.
+
+Here is a list of paths accessible in the docker container, which represent all subjects from our paper:
+
+/experiments/extractfix/libtiff/CVE-2016-5321
+/experiments/extractfix/libtiff/CVE-2014-8128
+/experiments/extractfix/libtiff/CVE-2016-3186
+/experiments/extractfix/libtiff/CVE-2016-5314
+/experiments/extractfix/libtiff/CVE-2016-9273
+/experiments/extractfix/libtiff/bugzilla-2633
+/experiments/extractfix/libtiff/CVE-2016-10094
+/experiments/extractfix/libtiff/CVE-2017-7601
+/experiments/extractfix/libtiff/CVE-2016-3623
+/experiments/extractfix/libtiff/CVE-2017-7595
+/experiments/extractfix/libtiff/bugzilla-2611
+/experiments/extractfix/binutils/CVE-2018-10372
+/experiments/extractfix/binutils/CVE-2017-15025
+/experiments/extractfix/libxml2/CVE-2016-1834
+/experiments/extractfix/libxml2/CVE-2016-1838
+/experiments/extractfix/libxml2/CVE-2016-1839
+/experiments/extractfix/libxml2/CVE-2012-5134
+/experiments/extractfix/libxml2/CVE-2017-5969
+/experiments/extractfix/libjpeg/CVE-2018-14498
+/experiments/extractfix/libjpeg/CVE-2018-19664
+/experiments/extractfix/libjpeg/CVE-2017-15232
+/experiments/extractfix/libjpeg/CVE-2012-2806
+/experiments/extractfix/ffmpeg/CVE-2017-9992
+/experiments/extractfix/ffmpeg/bugzilla-1404
+/experiments/extractfix/jasper/CVE-2016-8691
+/experiments/extractfix/jasper/CVE-2016-9387
+/experiments/extractfix/coreutils/bugzilla-26545
+/experiments/extractfix/coreutils/gnubug-25003
+/experiments/extractfix/coreutils/gnubug-25023
+/experiments/extractfix/coreutils/bugzilla-19784
+/experiments/svcomp/loops/insertion_sort
+/experiments/svcomp/loops/linear_search
+/experiments/svcomp/loops/string
+/experiments/svcomp/loops/eureka
+/experiments/svcomp/loop-crafted/nested_delay
+/experiments/svcomp/loops/sum
+/experiments/svcomp/array/bubble_sort
+/experiments/svcomp/array/unique_list
+/experiments/svcomp/array/standard_run
+/experiments/svcomp/recursive/addition
+
+
+
+#############
+## END-OF-FILE
+##############################################################
