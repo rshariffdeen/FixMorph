@@ -1,11 +1,9 @@
 from app.common import definitions, values, utilities
-from app.common.utilities import get_source_name_from_slice
+from app.common.utilities import get_source_name_from_slice, generate_map_gumtree
 from app.tools import parallel, emitter, finder, logger
 from app.ast import ast_generator
 import sys
 import time
-
-from app.tools.generator import generate_map_gumtree
 
 BREAK_LIST = [",", " ", " _", ";", "\n"]
 

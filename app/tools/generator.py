@@ -8,9 +8,9 @@ import os
 import json
 
 import app.common.utilities
-from app.common.utilities import execute_command, find_files, definitions, error_exit
-from app.tools import merger, emitter
-from app.tools import mapper, slicer, parallel, emitter, finder, extractor, logger
+from app.common.utilities import execute_command, find_files, generate_map_gumtree
+from app.tools import merger
+from app.tools import slicer, parallel, emitter, finder, extractor, logger
 from app.ast import ast_vector, ast_generator
 from app.common.utilities import error_exit
 from app.common import values, utilities, definitions
@@ -415,27 +415,3 @@ def generate_edit_diff(file_a, file_b, output_file):
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
 
 
-def generate_map_gumtree(file_a, file_b, output_file):
-    name_a = file_a.split("/")[-1]
-    name_b = file_b.split("/")[-1]
-    emitter.normal("\tsource: " + file_a)
-    emitter.normal("\ttarget: " + file_b)
-    emitter.normal("\tgenerating ast map")
-    try:
-        extra_arg = ""
-        if file_a[-1] == 'h':
-            extra_arg = " --"
-        generate_command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
-        if values.DONOR_REQUIRE_MACRO:
-            generate_command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
-            if values.CONF_PATH_B in file_b:
-                generate_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg-c") + " "
-        if values.TARGET_REQUIRE_MACRO:
-            if values.CONF_PATH_C in file_b:
-                generate_command += " " + values.TARGET_PRE_PROCESS_MACRO + " "
-        generate_command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
-        # command += "| grep '^Match ' "
-        generate_command += " > " + output_file
-        execute_command(generate_command, False)
-    except Exception as e:
-        error_exit(e, "Unexpected fail at generating map: " + output_file)

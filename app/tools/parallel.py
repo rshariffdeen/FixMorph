@@ -1,5 +1,6 @@
 import multiprocessing as mp
 
+import app.common.utilities
 import app.tools.generator
 from app.common import definitions, values, utilities
 from app.tools import converter, emitter, finder, extractor
@@ -242,7 +243,7 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
     emitter.normal("\tderiving method invocation map")
 
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
-    app.tools.generator.generate_map_gumtree(source_a, source_c, map_file_name)
+    app.common.utilities.generate_map_gumtree(source_a, source_c, map_file_name)
     global_ast_node_map = read_mapping(map_file_name)
     result_list = []
     emitter.normal("\t\tstarting parallel computing")
