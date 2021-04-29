@@ -821,7 +821,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                         else:
                             modified_AB.append((definitions.DELETE, nodeA))
                             child_id_list = extract_child_id_list(nodeA)
-                            for child_id in child_list:
+                            for child_id in child_id_list:
                                 child_node = ASTlists[values.Project_A.name][child_id]
                                 modified_AB.append((definitions.DELETE, child_node))
                     else:
