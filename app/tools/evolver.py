@@ -127,6 +127,7 @@ def evolve_functions(missing_function_list, depth_level):
                         mapping = None
                 else:
                     refined_var_map[method_name_a + "("] = method_name_c + "("
+                    values.FUNCTION_MAP_GLOBAL[method_name_a + "("] = method_name_c + "("
             writer.write_var_map(refined_var_map, definitions.FILE_NAMESPACE_MAP_LOCAL)
 
         if not mapping:
