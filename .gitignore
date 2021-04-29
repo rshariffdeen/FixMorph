@@ -9,7 +9,6 @@ cmake-build-debug
 src/CmakeFiles
 src/cmake_install.cmake
 cmake-build-debug
-build
 output
 diff-lines
 diff-files
