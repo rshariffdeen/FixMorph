@@ -72,7 +72,7 @@ ARG CACHEBUST=1
 RUN git clone https://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:x-oauth-basic@github.com/rshariffdeen/FixMorph.git /FixMorph
 RUN rm /FixMorph/Dockerfile
 WORKDIR /FixMorph
-RUN pypy3 setup.py build_ext --inplace
+# RUN pypy3 setup.py build_ext --inplace
 # Tidy up the container
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
