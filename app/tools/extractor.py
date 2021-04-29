@@ -97,8 +97,11 @@ def extract_call_node_list(ast_node):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     call_expr_list = list()
     node_type = str(ast_node["type"])
-    if node_type == "CallExpr":
-        call_expr_list.append(ast_node)
+    if node_type == "DeclRefExpr":
+        if "ref_type" in ast_node:
+            ref_type = str(ast_node["ref_type"])
+            if ref_type == "FunctionDecl":
+                call_expr_list.append(ast_node)
     else:
         if len(ast_node['children']) > 0:
             for child_node in ast_node['children']:
