@@ -5,6 +5,8 @@
 import sys
 import os
 from pathlib import Path
+
+import app.common.utilities
 from app.ast import ast_vector, ast_generator
 from app.tools import oracle
 from app.tools import emitter, extractor, logger
@@ -195,7 +197,7 @@ def find_definition_insertion_point(source_path):
 def find_header_file(query, source_path, target_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global FILE_GREP_RESULT
-    project_dir = extractor.extract_project_path(source_path)
+    project_dir = app.common.utilities.extract_project_path(source_path)
     FILE_GREP_RESULT = definitions.DIRECTORY_OUTPUT + "/grep-output"
     search_command = "cd " + project_dir + ";"
     search_command += "grep -inr -e \"" + query + "\" . | grep define"

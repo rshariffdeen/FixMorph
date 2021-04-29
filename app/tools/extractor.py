@@ -1,7 +1,8 @@
 import sys
 import re
 from app.tools import converter, emitter, finder, logger
-from app.common.utilities import execute_command, get_file_list, error_exit, is_intersect, definitions
+from app.common.utilities import execute_command, get_file_list, error_exit, is_intersect, definitions, \
+    extract_project_path
 import os
 from app.common import values
 from app.ast import ast_generator
@@ -651,22 +652,6 @@ def extract_unique_in_order(list):
     seen_set = set()
     seen_add = seen_set.add
     return [x for x in list if not (x in seen_set or seen_add(x))]
-
-
-def extract_project_path(source_path):
-    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if values.CONF_PATH_A + "/" in source_path:
-        return values.CONF_PATH_A
-    elif values.CONF_PATH_B in source_path:
-        return values.CONF_PATH_B
-    elif values.Project_D.path in source_path:
-        return values.Project_D.path
-    elif values.CONF_PATH_C in source_path:
-        return values.CONF_PATH_C
-    elif values.CONF_PATH_E in source_path:
-        return values.CONF_PATH_E
-    else:
-        return None
 
 
 def extract_pre_macro_list(source_file, only_if=False):

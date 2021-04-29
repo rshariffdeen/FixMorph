@@ -347,3 +347,19 @@ def restore_slice_source():
         # restore_file_orig(vector_source_b)
         # restore_file_orig(vector_source_c)
         # restore_file_orig(vector_source_d)
+
+
+def extract_project_path(source_path):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    if values.CONF_PATH_A + "/" in source_path:
+        return values.CONF_PATH_A
+    elif values.CONF_PATH_B in source_path:
+        return values.CONF_PATH_B
+    elif values.Project_D.path in source_path:
+        return values.Project_D.path
+    elif values.CONF_PATH_C in source_path:
+        return values.CONF_PATH_C
+    elif values.CONF_PATH_E in source_path:
+        return values.CONF_PATH_E
+    else:
+        return None
