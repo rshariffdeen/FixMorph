@@ -1,6 +1,6 @@
 # FixMorph
 
-FixMorph is a tool to automatically morph fixes (patches) from one program version to
+FixMorph is a tool to automatically morph fixes (patches) from one program version to a
 different yet syntactically similar program version. Component-oriented programming
 enables ad-hoc and low-cost code integration from multiple sources, which has a negative connotations because 
 it requires developers to port changes and bug fixes from peer projects during software evolution. Adding features and
@@ -11,18 +11,17 @@ help automate this process.
 FixMorph is a powerful morphing tool for C source-codes. FixMorph is:
 
 * Scalable: FixMorph can reliably backport large/complex source bases such as the Linux Kernel
-* Compilable: The morphed patch is verified to be syntax-error-free
-* Extensible: FixMorph is designed so that it can be easily extended to support advance transformations/components
+* Compilable: The morphed patch is verified to be free of syntax errors
+* Extensible: FixMorph is designed so that it can be easily extended to support advanced transformations/components
 
 
 
 
 # Building
-Building FixMorph is very easy with the provided Dockerfile which has all the build dependencies and libraries required
-for the source-to-source transformation. There are two versions of the Dockerfile we provide
+Building FixMorph is easy with the provided Dockerfile, which has all the build dependencies and libraries required. We provide two versions of the Dockerfile
 
 * Dockerfile: This will build the environment necessary to run the stand-alone tool
-* Dockerfile.experiments: This environment includes all necessary dependencies to re-produce the experiments
+* Dockerfile.experiments: This environment includes all necessary dependencies to reproduce the experiments
 
 You can use the following command to build the image:
 
@@ -32,7 +31,7 @@ docker build -t rshariffdeen/fixmorph .
 ```
 
 # Example Usage
-FixMorph requires a configuration file which specifies the source code path to the donor program and
+FixMorph requires a configuration file that specifies the source code path to the donor program and
 the target program. Following is an example configuration file in the provided test cases.
 
 ```c
@@ -43,7 +42,7 @@ config_command_a:skip
 config_command_c:skip
 ```
 
-Once you setup a configuration file as above you can use the following command to run FixMorph which will 
+Once a configuration file has been set up as above, the following command will run FixMorph to 
 transplant the patch from donor to target program.
 
 ```bash
