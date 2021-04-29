@@ -809,12 +809,17 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                     nodeA = id_from_string(nodeA)
                     nodeA = ASTlists[values.Project_A.name][nodeA]
                     if nodeB2.id not in replacing:
-                        replaced.append(nodeA.id)
-                        replacing.append(nodeB2.id)
-                        modified_AB.append((definitions.REPLACE, nodeA, nodeB2))
-                        for instruction in modified_AB:
-                            if instruction[0] == definitions.INSERT and instruction[1].id == nodeB2.id:
-                                modified_AB.remove(instruction)
+                        posTarget = nodeB2.parent.children.index(nodeB2)
+                        posOld = nodeA.parent.children.index(nodeA)
+                        if posOld == posTarget:
+                            replaced.append(nodeA.id)
+                            replacing.append(nodeB2.id)
+                            modified_AB.append((definitions.REPLACE, nodeA, nodeB2))
+                            for instruction in modified_AB:
+                                if instruction[0] == definitions.INSERT and instruction[1].id == nodeB2.id:
+                                    modified_AB.remove(instruction)
+                        else:
+                            modified_AB.append((definitions.DELETE, nodeA))
                     else:
                         modified_AB.append((definitions.DELETE, nodeA))
                 else:
