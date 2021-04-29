@@ -1,0 +1,79 @@
+[Sun Apr 25 13:54:38 2021][COMMAND]: export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python
+[Sun Apr 25 13:54:38 2021][COMMAND]: cd /data/backport/linux/115/pa/;git clean -fd; git reset --hard HEAD
+[Sun Apr 25 13:54:44 2021][COMMAND]: cd /data/backport/linux/115/pb/;git clean -fd; git reset --hard HEAD
+[Sun Apr 25 13:54:55 2021][COMMAND]: cd /data/backport/linux/115/pc/;git clean -fd; git reset --hard HEAD
+[Sun Apr 25 13:54:57 2021][COMMAND]: cd /data/backport/linux/115/pc-patch/;git clean -fd; git reset --hard HEAD; git checkout 8f5b7e3f415c208962b3fe4308486c4484d37b9f
+[Sun Apr 25 13:55:27 2021][COMMAND]: cd /data/backport/linux/115/pe/;git clean -fd; git reset --hard HEAD
+[Sun Apr 25 13:55:39 2021][COMMAND]: cd /data/backport/linux/115/pa/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sun Apr 25 13:56:42 2021][COMMAND]: cd /data/backport/linux/115/pb/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sun Apr 25 13:56:50 2021][COMMAND]: cd /data/backport/linux/115/pc/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sun Apr 25 13:56:57 2021][COMMAND]: cd /data/backport/linux/115/pc-patch/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sun Apr 25 13:57:05 2021][COMMAND]: cd /data/backport/linux/115/pe/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sun Apr 25 13:57:15 2021][COMMAND]: cd /data/backport/linux/115/pa/;make allyesconfig
+[Sun Apr 25 13:57:17 2021][COMMAND]: cd /data/backport/linux/115/pb/;make allyesconfig
+[Sun Apr 25 13:57:19 2021][COMMAND]: cd /data/backport/linux/115/pc/;make allyesconfig
+[Sun Apr 25 13:57:22 2021][COMMAND]: cd /data/backport/linux/115/pc-patch/;make allyesconfig
+[Sun Apr 25 13:57:24 2021][COMMAND]: cd /data/backport/linux/115/pe/;make allyesconfig
+[Sun Apr 25 13:57:26 2021][COMMAND]: cd /data/backport/linux/115/pa/;bear make drivers/acpi/nfit/core.o > /FixMorph/logs/log-make 2>&1
+[Sun Apr 25 13:58:01 2021][COMMAND]: cd /data/backport/linux/115/pa/;cp compile_commands.json /FixMorph/output/linux-115/compile_commands.json.pa
+[Sun Apr 25 13:58:01 2021][COMMAND]: cd /data/backport/linux/115/pb/;bear make drivers/acpi/nfit/core.o > /FixMorph/logs/log-make 2>&1
+[Sun Apr 25 13:58:17 2021][COMMAND]: cd /data/backport/linux/115/pb/;cp compile_commands.json /FixMorph/output/linux-115/compile_commands.json.pb
+[Sun Apr 25 13:58:17 2021][COMMAND]: cd /data/backport/linux/115/pc/;bear make drivers/acpi/nfit.o > /FixMorph/logs/log-make 2>&1
+[Sun Apr 25 13:58:49 2021][COMMAND]: cd /data/backport/linux/115/pc/;cp compile_commands.json /FixMorph/output/linux-115/compile_commands.json.pc
+[Sun Apr 25 13:58:49 2021][COMMAND]: cd /data/backport/linux/115/pc-patch/;bear make drivers/acpi/nfit.o > /FixMorph/logs/log-make 2>&1
+[Sun Apr 25 13:59:02 2021][COMMAND]: cd /data/backport/linux/115/pc-patch/;cp compile_commands.json /FixMorph/output/linux-115/compile_commands.json.pc-patch
+[Sun Apr 25 13:59:02 2021][COMMAND]: cd /data/backport/linux/115/pe/;bear make drivers/acpi/nfit.o > /FixMorph/logs/log-make 2>&1
+[Sun Apr 25 13:59:15 2021][COMMAND]: cd /data/backport/linux/115/pe/;cp compile_commands.json /FixMorph/output/linux-115/compile_commands.json.pe
+[Sun Apr 25 13:59:15 2021][COMMAND]: find /data/backport/linux/115/pa -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-115/tmp/excluded-extensions-a
+[Sun Apr 25 13:59:41 2021][COMMAND]: find /data/backport/linux/115/pb -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-115/tmp/excluded-extensions-b
+[Sun Apr 25 13:59:46 2021][COMMAND]: cd /data/backport/linux/115/pa;git ls-files --others --exclude-standard > /FixMorph/output/linux-115/tmp/excluded-extensions
+[Sun Apr 25 13:59:46 2021][COMMAND]: diff -ENBZbwr /data/backport/linux/115/pa/drivers/acpi/nfit/core.c /data/backport/linux/115/pb/drivers/acpi/nfit/core.c > /FixMorph/output/linux-115/temp_diff
+[Sun Apr 25 13:59:46 2021][COMMAND]: cat /data/backport/linux/115/pa/drivers/acpi/nfit/core.c | grep '#include' > /FixMorph/output/linux-115/tmp/header-list
+[Sun Apr 25 13:59:46 2021][COMMAND]: cat /data/backport/linux/115/pb/drivers/acpi/nfit/core.c | grep '#include' > /FixMorph/output/linux-115/tmp/header-list
+[Sun Apr 25 13:59:46 2021][COMMAND]: cat /data/backport/linux/115/pa/drivers/acpi/nfit/core.c | grep '#if' > /FixMorph/output/linux-115/tmp/result
+[Sun Apr 25 13:59:46 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 13:59:50 2021][COMMAND]: echo /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.func_read_blk_stat.vec >> /FixMorph/output/linux-115/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 1526 --end-line-number 1535 /data/backport/linux/115/pa/drivers/acpi/nfit/core.c -o /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.func_read_blk_stat.vec 2> /FixMorph/output/linux-115/tmp/deckard_error_log
+[Sun Apr 25 13:59:50 2021][COMMAND]: cd /data/backport/linux/115/pa;git log --follow --pretty="" --name-only drivers/acpi/nfit/core.c > /FixMorph/output/linux-115/tmp/list
+[Sun Apr 25 14:00:04 2021][COMMAND]: cat /data/backport/linux/115/pc//drivers/acpi/nfit.c | grep '#if' > /FixMorph/output/linux-115/tmp/result
+[Sun Apr 25 14:00:04 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc//drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc//drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:00:08 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc//drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc//drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:00:13 2021][COMMAND]: crochet-diff -ast-dump-json    /data/backport/linux/115/pc//drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc//drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:00:17 2021][COMMAND]: crochet-diff -ast-dump-json    /data/backport/linux/115/pc//drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc//drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:00:19 2021][COMMAND]: find /data/backport/linux/115/pa/ -name '*.func_*\.vec'  > /FixMorph/output/linux-115/vectors_C_Pa
+[Sun Apr 25 14:00:20 2021][COMMAND]: echo /data/backport/linux/115/pc//drivers/acpi/nfit.c.func_read_blk_stat.vec >> /FixMorph/output/linux-115/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 1071 --end-line-number 1080 /data/backport/linux/115/pc//drivers/acpi/nfit.c -o /data/backport/linux/115/pc//drivers/acpi/nfit.c.func_read_blk_stat.vec 2> /FixMorph/output/linux-115/tmp/deckard_error_log
+[Sun Apr 25 14:00:20 2021][COMMAND]: find /data/backport/linux/115/pa/ -name '*.func_*\.vec'  > /FixMorph/output/linux-115/vectors_C_Pa
+[Sun Apr 25 14:00:20 2021][COMMAND]: find /data/backport/linux/115/pc/ -name '*.func_*\.vec'  > /FixMorph/output/linux-115/vectors_C_Pc
+[Sun Apr 25 14:00:37 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:00:42 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-115/core.c.func.read_blk_stat.slice.ast -source=/data/backport/linux/115/pa/drivers/acpi/nfit/core.c -destination=/data/backport/linux/115/pa/drivers/acpi/nfit/core.c -target=/data/backport/linux/115/pa/drivers/acpi/nfit/core.c -map= 2> output/errors > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.func.read_blk_stat.slice
+[Sun Apr 25 14:00:48 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:00:53 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-115/nfit.c.func.read_blk_stat.slice.ast -source=/data/backport/linux/115/pc/drivers/acpi/nfit.c -destination=/data/backport/linux/115/pc/drivers/acpi/nfit.c -target=/data/backport/linux/115/pc/drivers/acpi/nfit.c -map= 2> output/errors > /data/backport/linux/115/pc/drivers/acpi/nfit.c.func.read_blk_stat.slice
+[Sun Apr 25 14:00:58 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:01:04 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:01:09 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux/115/pa/drivers/acpi/nfit/core.c /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> output/errors_clang_diff  > /FixMorph/output/linux-115/tmp/morph.map
+[Sun Apr 25 14:02:14 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pb/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pb/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:02:18 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-115/core.c.func.read_blk_stat.slice.ast -source=/data/backport/linux/115/pb/drivers/acpi/nfit/core.c -destination=/data/backport/linux/115/pb/drivers/acpi/nfit/core.c -target=/data/backport/linux/115/pb/drivers/acpi/nfit/core.c -map= 2> output/errors > /data/backport/linux/115/pb/drivers/acpi/nfit/core.c.func.read_blk_stat.slice
+[Sun Apr 25 14:02:23 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc-patch//drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc-patch//drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:02:28 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-115/nfit.c.func.read_blk_stat.slice.ast -source=/data/backport/linux/115/pc-patch//drivers/acpi/nfit.c -destination=/data/backport/linux/115/pc-patch//drivers/acpi/nfit.c -target=/data/backport/linux/115/pc-patch//drivers/acpi/nfit.c -map= 2> output/errors > /data/backport/linux/115/pc-patch//drivers/acpi/nfit.c.func.read_blk_stat.slice
+[Sun Apr 25 14:02:32 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux/115/pa/drivers/acpi/nfit/core.c /data/backport/linux/115/pb/drivers/acpi/nfit/core.c 2> output/errors_clang_diff  > /FixMorph/output/linux-115/tmp/diff_script_AB
+[Sun Apr 25 14:03:18 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:03:22 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:03:27 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux/115/pa/drivers/acpi/nfit/core.c /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> output/errors_clang_diff  > /FixMorph/output/linux-115/core.c.func.read_blk_stat.slice.map
+[Sun Apr 25 14:04:33 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:04:37 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:08:43 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:08:47 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:09:04 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:09:08 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:09:12 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /FixMorph/output/linux-115/json_Pa
+[Sun Apr 25 14:09:16 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux/115/pb/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /FixMorph/output/linux-115/json_Pb
+[Sun Apr 25 14:09:19 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /FixMorph/output/linux-115/json_Pc
+[Sun Apr 25 14:09:23 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:09:28 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pb/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pb/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:09:33 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:09:38 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pb/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pb/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:09:45 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:09:50 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pa/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pa/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:09:55 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pb/drivers/acpi/nfit/core.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pb/drivers/acpi/nfit/core.c.AST
+[Sun Apr 25 14:10:02 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/115/pc/drivers/acpi/nfit.c 2> /FixMorph/output/linux-115/errors_AST_dump > /data/backport/linux/115/pc/drivers/acpi/nfit.c.AST
+[Sun Apr 25 14:10:06 2021][COMMAND]: cat /data/backport/linux/115/pc-patch//drivers/acpi/nfit.c | grep '#ifdef' > /FixMorph/output/linux-115/tmp/result
+[Sun Apr 25 14:10:06 2021][COMMAND]: clang -E -dD -dM /data/backport/linux/115/pc-patch//drivers/acpi/nfit.c > /FixMorph/output/linux-115/tmp/macro-def

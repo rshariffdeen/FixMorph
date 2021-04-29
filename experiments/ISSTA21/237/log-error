@@ -1,0 +1,41 @@
+Transformation Failed
+BUILD FAILED!!
+Exit Code: 2
+Crash during verifying compilation, after 0.317 minutes.
+Transformation Failed
+Error. Exiting...
+Unexpected error during verifying compilation.
+Runtime Error
+Error. Exiting...
+Traceback (most recent call last):
+  File "/FixMorph/app/phases/verify.py", line 71, in safe_exec
+    result = function_def()
+  File "/FixMorph/app/phases/verify.py", line 19, in verify_compilation
+    verifier.run_compilation()
+  File "/FixMorph/app/tools/verifier.py", line 11, in run_compilation
+    builder.build_verify()
+  File "/FixMorph/app/tools/builder.py", line 374, in build_verify
+    build_project(values.Project_D.path, values.CONF_BUILD_COMMAND_C, verify=True)
+  File "/FixMorph/app/tools/builder.py", line 184, in build_project
+    error_exit("BUILD FAILED!!\nExit Code: " + str(ret_code))
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/FixMorph/app/main.py", line 184, in main
+    run(sys.argv[1:])
+  File "/FixMorph/app/main.py", line 162, in run
+    verify.start()
+  File "/FixMorph/app/phases/verify.py", line 98, in start
+    safe_exec(verify_compilation, "verifying compilation")
+  File "/FixMorph/app/phases/verify.py", line 79, in safe_exec
+    error_exit(exception, "Unexpected error during " + description + ".")
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+FixMorph exited with an error after 34.777 minutes
+

@@ -1,0 +1,106 @@
+[Wed Apr 28 23:07:07 2021][COMMAND]: export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python
+[Wed Apr 28 23:07:07 2021][COMMAND]: cd /data/backport/linux-cve/13/pa/;git clean -fd; git reset --hard HEAD
+[Wed Apr 28 23:07:12 2021][COMMAND]: cd /data/backport/linux-cve/13/pb/;git clean -fd; git reset --hard HEAD
+[Wed Apr 28 23:07:14 2021][COMMAND]: cd /data/backport/linux-cve/13/pc/;git clean -fd; git reset --hard HEAD
+[Wed Apr 28 23:07:15 2021][COMMAND]: cd /data/backport/linux-cve/13/pc-patch/;git clean -fd; git reset --hard HEAD; git checkout 9099e472af7619a380b5a02a2f607be98661281f
+[Wed Apr 28 23:07:24 2021][COMMAND]: cd /data/backport/linux-cve/13/pe/;git clean -fd; git reset --hard HEAD
+[Wed Apr 28 23:07:25 2021][COMMAND]: cd /data/backport/linux-cve/13/pa/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 23:07:35 2021][COMMAND]: cd /data/backport/linux-cve/13/pb/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 23:08:19 2021][COMMAND]: cd /data/backport/linux-cve/13/pc/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 23:08:29 2021][COMMAND]: cd /data/backport/linux-cve/13/pc-patch/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 23:08:35 2021][COMMAND]: cd /data/backport/linux-cve/13/pe/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 23:08:42 2021][COMMAND]: cd /data/backport/linux-cve/13/pa/;make allyesconfig
+[Wed Apr 28 23:08:45 2021][COMMAND]: cd /data/backport/linux-cve/13/pb/;make allyesconfig
+[Wed Apr 28 23:08:48 2021][COMMAND]: cd /data/backport/linux-cve/13/pc/;make allyesconfig
+[Wed Apr 28 23:08:50 2021][COMMAND]: cd /data/backport/linux-cve/13/pc-patch/;make allyesconfig
+[Wed Apr 28 23:08:52 2021][COMMAND]: cd /data/backport/linux-cve/13/pe/;make allyesconfig
+[Wed Apr 28 23:08:54 2021][COMMAND]: cd /data/backport/linux-cve/13/pa/;bear make fs/ext4/xattr.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 23:09:21 2021][COMMAND]: cd /data/backport/linux-cve/13/pa/;cp compile_commands.json /FixMorph/output/linux-cve-13/compile_commands.json.pa
+[Wed Apr 28 23:09:21 2021][COMMAND]: cd /data/backport/linux-cve/13/pb/;bear make fs/ext4/xattr.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 23:09:41 2021][COMMAND]: cd /data/backport/linux-cve/13/pb/;cp compile_commands.json /FixMorph/output/linux-cve-13/compile_commands.json.pb
+[Wed Apr 28 23:09:41 2021][COMMAND]: cd /data/backport/linux-cve/13/pc/;bear make fs/ext4/xattr.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 23:09:55 2021][COMMAND]: cd /data/backport/linux-cve/13/pc/;cp compile_commands.json /FixMorph/output/linux-cve-13/compile_commands.json.pc
+[Wed Apr 28 23:09:55 2021][COMMAND]: cd /data/backport/linux-cve/13/pc-patch/;bear make fs/ext4/xattr.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 23:10:12 2021][COMMAND]: cd /data/backport/linux-cve/13/pc-patch/;cp compile_commands.json /FixMorph/output/linux-cve-13/compile_commands.json.pc-patch
+[Wed Apr 28 23:10:12 2021][COMMAND]: cd /data/backport/linux-cve/13/pe/;bear make fs/ext4/xattr.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 23:10:22 2021][COMMAND]: cd /data/backport/linux-cve/13/pe/;cp compile_commands.json /FixMorph/output/linux-cve-13/compile_commands.json.pe
+[Wed Apr 28 23:10:22 2021][COMMAND]: find /data/backport/linux-cve/13/pa -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-13/tmp/excluded-extensions-a
+[Wed Apr 28 23:10:22 2021][COMMAND]: find /data/backport/linux-cve/13/pb -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-13/tmp/excluded-extensions-b
+[Wed Apr 28 23:10:23 2021][COMMAND]: cd /data/backport/linux-cve/13/pa;git ls-files --others --exclude-standard > /FixMorph/output/linux-cve-13/tmp/excluded-extensions
+[Wed Apr 28 23:10:24 2021][COMMAND]: diff -ENBZbwr /data/backport/linux-cve/13/pa/fs/ext4/xattr.c /data/backport/linux-cve/13/pb/fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/temp_diff
+[Wed Apr 28 23:10:24 2021][COMMAND]: cat /data/backport/linux-cve/13/pa/fs/ext4/xattr.c | grep '#include' > /FixMorph/output/linux-cve-13/tmp/header-list
+[Wed Apr 28 23:10:24 2021][COMMAND]: cat /data/backport/linux-cve/13/pb/fs/ext4/xattr.c | grep '#include' > /FixMorph/output/linux-cve-13/tmp/header-list
+[Wed Apr 28 23:10:24 2021][COMMAND]: cat /data/backport/linux-cve/13/pa/fs/ext4/xattr.c | grep '#if' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:10:24 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:10:27 2021][COMMAND]: echo /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.func_ext4_xattr_set_entry.vec >> /FixMorph/output/linux-cve-13/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 1558 --end-line-number 1795 /data/backport/linux-cve/13/pa/fs/ext4/xattr.c -o /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.func_ext4_xattr_set_entry.vec 2> /FixMorph/output/linux-cve-13/tmp/deckard_error_log
+[Wed Apr 28 23:10:27 2021][COMMAND]: cat /data/backport/linux-cve/13/pc/fs/ext4/xattr.c | grep '#if' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:10:27 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:10:33 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:10:36 2021][COMMAND]: crochet-diff -ast-dump-json   --extra-arg="-D CONFIG_EXT4_FS_POSIX_ACL=1 "  --extra-arg="-D CONFIG_EXT4_FS_SECURITY=1 "  --extra-arg="-D EXT4_XATTR_DEBUG=1 "   /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:10:40 2021][COMMAND]: crochet-diff -ast-dump-json   --extra-arg="-D CONFIG_EXT4_FS_POSIX_ACL=1 "  --extra-arg="-D CONFIG_EXT4_FS_SECURITY=1 "  --extra-arg="-D EXT4_XATTR_DEBUG=1 "   /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:10:42 2021][COMMAND]: find /data/backport/linux-cve/13/pa/ -name '*.func_*\.vec'  > /FixMorph/output/linux-cve-13/vectors_C_Pa
+[Wed Apr 28 23:10:43 2021][COMMAND]: echo /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.func_ext4_xattr_set_entry.vec >> /FixMorph/output/linux-cve-13/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 612 --end-line-number 721 /data/backport/linux-cve/13/pc/fs/ext4/xattr.c -o /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.func_ext4_xattr_set_entry.vec 2> /FixMorph/output/linux-cve-13/tmp/deckard_error_log
+[Wed Apr 28 23:10:43 2021][COMMAND]: find /data/backport/linux-cve/13/pa/ -name '*.func_*\.vec'  > /FixMorph/output/linux-cve-13/vectors_C_Pa
+[Wed Apr 28 23:10:43 2021][COMMAND]: find /data/backport/linux-cve/13/pc/ -name '*.func_*\.vec'  > /FixMorph/output/linux-cve-13/vectors_C_Pc
+[Wed Apr 28 23:10:44 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:10:52 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-13/xattr.c.func.ext4_xattr_set_entry.slice.ast -source=/data/backport/linux-cve/13/pa/fs/ext4/xattr.c -destination=/data/backport/linux-cve/13/pa/fs/ext4/xattr.c -target=/data/backport/linux-cve/13/pa/fs/ext4/xattr.c -map= 2> output/errors > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.func.ext4_xattr_set_entry.slice
+[Wed Apr 28 23:11:00 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:11:06 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-13/xattr.c.func.ext4_xattr_set_entry.slice.ast -source=/data/backport/linux-cve/13/pc/fs/ext4/xattr.c -destination=/data/backport/linux-cve/13/pc/fs/ext4/xattr.c -target=/data/backport/linux-cve/13/pc/fs/ext4/xattr.c -map= 2> output/errors > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.func.ext4_xattr_set_entry.slice
+[Wed Apr 28 23:11:11 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:11:17 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:11:23 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux-cve/13/pa/fs/ext4/xattr.c /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> output/errors_clang_diff  > /FixMorph/output/linux-cve-13/tmp/morph.map
+[Wed Apr 28 23:14:21 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pb/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pb/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:14:28 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-13/xattr.c.func.ext4_xattr_set_entry.slice.ast -source=/data/backport/linux-cve/13/pb/fs/ext4/xattr.c -destination=/data/backport/linux-cve/13/pb/fs/ext4/xattr.c -target=/data/backport/linux-cve/13/pb/fs/ext4/xattr.c -map= 2> output/errors > /data/backport/linux-cve/13/pb/fs/ext4/xattr.c.func.ext4_xattr_set_entry.slice
+[Wed Apr 28 23:14:35 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c.AST
+[Wed Apr 28 23:14:40 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-13/xattr.c.func.ext4_xattr_set_entry.slice.ast -source=/data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c -destination=/data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c -target=/data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c -map= 2> output/errors > /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c.func.ext4_xattr_set_entry.slice
+[Wed Apr 28 23:14:44 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux-cve/13/pa/fs/ext4/xattr.c /data/backport/linux-cve/13/pb/fs/ext4/xattr.c 2> output/errors_clang_diff  > /FixMorph/output/linux-cve-13/tmp/diff_script_AB
+[Wed Apr 28 23:16:05 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:16:12 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:16:17 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux-cve/13/pa/fs/ext4/xattr.c /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> output/errors_clang_diff  > /FixMorph/output/linux-cve-13/xattr.c.func.ext4_xattr_set_entry.slice.map
+[Wed Apr 28 23:19:14 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:19:22 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:24:32 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:24:39 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:24:58 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:25:03 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:25:07 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /FixMorph/output/linux-cve-13/json_Pa
+[Wed Apr 28 23:25:12 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux-cve/13/pb/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /FixMorph/output/linux-cve-13/json_Pb
+[Wed Apr 28 23:25:17 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /FixMorph/output/linux-cve-13/json_Pc
+[Wed Apr 28 23:25:20 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:25:27 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pb/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pb/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:25:34 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:25:40 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pb/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pb/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:25:45 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:25:51 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pa/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pa/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:25:57 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pb/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pb/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:26:04 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:26:09 2021][COMMAND]: cat /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c | grep '#ifdef' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:26:09 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_EXT4_FS_POSIX_ACL  -D CONFIG_EXT4_FS_SECURITY  -D EXT4_XATTR_DEBUG /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/macro-def
+[Wed Apr 28 23:26:17 2021][COMMAND]: cat /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c | grep '#ifdef' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:26:17 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_EXT4_FS_POSIX_ACL  -D CONFIG_EXT4_FS_SECURITY  -D EXT4_XATTR_DEBUG /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/macro-def
+[Wed Apr 28 23:26:22 2021][COMMAND]: cat /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c | grep '#ifdef' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:26:22 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_EXT4_FS_POSIX_ACL  -D CONFIG_EXT4_FS_SECURITY  -D EXT4_XATTR_DEBUG /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/macro-def
+[Wed Apr 28 23:26:29 2021][COMMAND]: cat /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c | grep '#ifdef' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:26:29 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_EXT4_FS_POSIX_ACL  -D CONFIG_EXT4_FS_SECURITY  -D EXT4_XATTR_DEBUG /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/macro-def
+[Wed Apr 28 23:26:35 2021][COMMAND]: cat /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c | grep '#ifdef' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:26:35 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_EXT4_FS_POSIX_ACL  -D CONFIG_EXT4_FS_SECURITY  -D EXT4_XATTR_DEBUG /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/macro-def
+[Wed Apr 28 23:26:43 2021][COMMAND]: cat /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c | grep '#ifdef' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:26:44 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_EXT4_FS_POSIX_ACL  -D CONFIG_EXT4_FS_SECURITY  -D EXT4_XATTR_DEBUG /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/macro-def
+[Wed Apr 28 23:26:50 2021][COMMAND]: cat /data/backport/linux-cve/13/pb/fs/ext4/xattr.c | grep '#ifdef' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:26:50 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_EXT4_FS_POSIX_ACL  -D CONFIG_LOCKDEP  -D CONFIG_EXT4_FS_SECURITY  -D EXT4_XATTR_DEBUG /data/backport/linux-cve/13/pb/fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/macro-def
+[Wed Apr 28 23:26:51 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pb/fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pb/fs/ext4/xattr.c.AST
+[Wed Apr 28 23:26:57 2021][COMMAND]: cp /data/backport/linux-cve/13/pc/fs/ext4/xattr.c /FixMorph/backup/1_xattr.c
+[Wed Apr 28 23:26:57 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-13/ext4_xattr_set_entry_script -source=/data/backport/linux-cve/13/pa/fs/ext4/xattr.c -destination=/data/backport/linux-cve/13/pb/fs/ext4/xattr.c -target=/data/backport/linux-cve/13/pc/fs/ext4/xattr.c -map=/FixMorph/output/linux-cve-13/namespace-map-local > /FixMorph/output/linux-cve-13/tmp/temp-fix 2> /FixMorph/logs/log-error
+[Wed Apr 28 23:31:11 2021][COMMAND]: cp /FixMorph/output/linux-cve-13/tmp/temp-fix /data/backport/linux-cve/13/pc-patch/fs/ext4/xattr.c
+[Wed Apr 28 23:31:11 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/13/pc/fs/ext4/xattr.c /data/backport/linux-cve/13/pc-patch/fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/gen-patch
+[Wed Apr 28 23:31:11 2021][COMMAND]: clang-check -fixit /data/backport/linux-cve/13/pc-patch/fs/ext4/xattr.c 2>/FixMorph/output/linux-cve-13/1_syntax_errors
+[Wed Apr 28 23:31:11 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c.AST
+[Wed Apr 28 23:31:15 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c.AST
+[Wed Apr 28 23:31:21 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/13/pa/fs/ext4/xattr.c /data/backport/linux-cve/13/pb/fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/ext4_xattr_set_entry-original-patch
+[Wed Apr 28 23:31:21 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/13/pc/fs/ext4/xattr.c /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/ext4_xattr_set_entry-generated-patch
+[Wed Apr 28 23:31:21 2021][COMMAND]: cat /data/backport/linux-cve/13/pb/fs/ext4/xattr.c | grep '#ifdef' > /FixMorph/output/linux-cve-13/tmp/result
+[Wed Apr 28 23:31:21 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_EXT4_FS_POSIX_ACL  -D CONFIG_LOCKDEP  -D CONFIG_EXT4_FS_SECURITY  -D EXT4_XATTR_DEBUG /data/backport/linux-cve/13/pb/fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/macro-def
+[Wed Apr 28 23:31:21 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c 2> /FixMorph/output/linux-cve-13/errors_AST_dump > /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c.AST
+[Wed Apr 28 23:31:26 2021][COMMAND]: cp /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c /FixMorph/backup/temp-source
+[Wed Apr 28 23:31:26 2021][COMMAND]: diff -ENZBbwr /FixMorph/backup/temp-source /data/backport/linux-cve/13/pc-patch//fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/tmp/gen-patch
+[Wed Apr 28 23:31:26 2021][COMMAND]: clang-check -analyze /data/backport/linux-cve/13/pc-patch/fs/ext4/xattr.c > /FixMorph/output/linux-cve-13/syntax-errors 2>&1

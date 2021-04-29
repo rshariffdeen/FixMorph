@@ -1,0 +1,36 @@
+Transformation Failed
+Unable to translate the script
+Crash during translation of generated scripts, after 0.396 minutes.
+Transformation Failed
+Error. Exiting...
+Unexpected error during translation of generated scripts.
+Runtime Error
+Error. Exiting...
+Traceback (most recent call last):
+  File "/FixMorph/app/phases/translation.py", line 32, in safe_exec
+    result = function_def()
+  File "/FixMorph/app/phases/translation.py", line 20, in translate_scripts
+    translated_script, original_script = translator.translate_script_list(file_list, generated_data)
+  File "/FixMorph/app/tools/translator.py", line 1126, in translate_script_list
+    error_exit("Unable to translate the script")
+  File "/FixMorph/app/common/utilities.py", line 84, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/FixMorph/app/main.py", line 184, in main
+    run(sys.argv[1:])
+  File "/FixMorph/app/main.py", line 144, in run
+    translation.start()
+  File "/FixMorph/app/phases/translation.py", line 66, in start
+    safe_exec(translate_scripts, "translation of generated scripts")
+  File "/FixMorph/app/phases/translation.py", line 40, in safe_exec
+    error_exit(exception, "Unexpected error during " + description + ".")
+  File "/FixMorph/app/common/utilities.py", line 84, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+FixMorph exited with an error after 18.930 minutes
+

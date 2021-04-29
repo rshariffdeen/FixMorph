@@ -1,0 +1,300 @@
+error: unknown argument: '-mno-fp-ret-in-387'
+error: unknown argument: '-mpreferred-stack-boundary=3'
+error: unknown argument: '-mskip-rax-setup'
+error: unknown argument: '-mindirect-branch=thunk-extern'
+error: unknown argument: '-mindirect-branch-register'
+error: unknown argument: '-fno-ipa-cp-clone'
+error: unknown argument: '-fno-partial-inlining'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fasan-shadow-offset=0xdffffc0000000000'
+warning: optimization flag '-falign-jumps=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-falign-loops=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-reorder-blocks' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fmerge-constants' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:538:17: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        this_cpu_write(cpu_tss_rw.x86_tss.sp0, sp0);
+                       ^~~~~~~~~~~~~~~~~~~~~~
+./include/linux/percpu-defs.h:495:68: note: expanded from macro 'this_cpu_write'
+#define this_cpu_write(pcp, val)        __pcpu_size_call(this_cpu_write_, pcp, val)
+                                                                          ^~~
+./include/linux/percpu-defs.h:362:22: note: expanded from macro '__pcpu_size_call'
+        __verify_pcpu_ptr(&(variable));                                 \
+                            ^~~~~~~~
+./include/linux/percpu-defs.h:206:47: note: expanded from macro '__verify_pcpu_ptr'
+        const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+                                                     ^~~
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:219:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:224:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:229:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:234:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from fs/ext4/super.c:27:
+In file included from ./include/linux/backing-dev.h:16:
+In file included from ./include/linux/writeback.h:205:
+In file included from ./include/linux/cgroup.h:27:
+./include/linux/cgroup-defs.h:392:16: warning: field 'cgrp' with variable sized type 'struct cgroup' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+        struct cgroup cgrp;
+                      ^
+In file included from fs/ext4/super.c:47:
+In file included from fs/ext4/ext4.h:23:
+./include/linux/jbd2.h:1598:21: warning: field 'shash' with variable sized type 'struct shash_desc' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+                struct shash_desc shash;
+                                  ^
+In file included from fs/ext4/super.c:47:
+fs/ext4/ext4.h:2041:21: warning: field 'shash' with variable sized type 'struct shash_desc' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+                struct shash_desc shash;
+                                  ^
+error: unknown argument: '-mno-fp-ret-in-387'
+error: unknown argument: '-mpreferred-stack-boundary=3'
+error: unknown argument: '-mskip-rax-setup'
+error: unknown argument: '-mindirect-branch=thunk-extern'
+error: unknown argument: '-mindirect-branch-register'
+error: unknown argument: '-fno-ipa-cp-clone'
+error: unknown argument: '-fno-partial-inlining'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fasan-shadow-offset=0xdffffc0000000000'
+warning: optimization flag '-falign-jumps=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-falign-loops=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-reorder-blocks' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fmerge-constants' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:538:17: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        this_cpu_write(cpu_tss_rw.x86_tss.sp0, sp0);
+                       ^~~~~~~~~~~~~~~~~~~~~~
+./include/linux/percpu-defs.h:495:68: note: expanded from macro 'this_cpu_write'
+#define this_cpu_write(pcp, val)        __pcpu_size_call(this_cpu_write_, pcp, val)
+                                                                          ^~~
+./include/linux/percpu-defs.h:362:22: note: expanded from macro '__pcpu_size_call'
+        __verify_pcpu_ptr(&(variable));                                 \
+                            ^~~~~~~~
+./include/linux/percpu-defs.h:206:47: note: expanded from macro '__verify_pcpu_ptr'
+        const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+                                                     ^~~
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:219:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:224:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:229:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from fs/ext4/super.c:19:
+In file included from ./include/linux/module.h:10:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:6:
+In file included from ./include/linux/seqlock.h:36:
+In file included from ./include/linux/spinlock.h:51:
+In file included from ./include/linux/preempt.h:81:
+In file included from ./arch/x86/include/asm/preempt.h:7:
+In file included from ./include/linux/thread_info.h:38:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:234:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from fs/ext4/super.c:27:
+In file included from ./include/linux/backing-dev.h:16:
+In file included from ./include/linux/writeback.h:205:
+In file included from ./include/linux/cgroup.h:27:
+./include/linux/cgroup-defs.h:392:16: warning: field 'cgrp' with variable sized type 'struct cgroup' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+        struct cgroup cgrp;
+                      ^
+In file included from fs/ext4/super.c:47:
+In file included from fs/ext4/ext4.h:23:
+./include/linux/jbd2.h:1598:21: warning: field 'shash' with variable sized type 'struct shash_desc' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+                struct shash_desc shash;
+                                  ^
+In file included from fs/ext4/super.c:47:
+fs/ext4/ext4.h:2041:21: warning: field 'shash' with variable sized type 'struct shash_desc' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+                struct shash_desc shash;
+                                  ^

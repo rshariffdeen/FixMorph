@@ -1,0 +1,821 @@
+error: unknown argument: '-mno-fp-ret-in-387'
+error: unknown argument: '-mpreferred-stack-boundary=3'
+error: unknown argument: '-mskip-rax-setup'
+error: unknown argument: '-maccumulate-outgoing-args'
+error: unknown argument: '-fno-ipa-cp-clone'
+error: unknown argument: '-fno-partial-inlining'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fasan-shadow-offset=0xdffffc0000000000'
+warning: optimization flag '-falign-jumps=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-falign-loops=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-reorder-blocks' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:19:
+In file included from include/linux/timex.h:56:
+In file included from include/uapi/linux/timex.h:56:
+In file included from include/linux/time.h:5:
+In file included from include/linux/seqlock.h:35:
+In file included from include/linux/spinlock.h:50:
+In file included from include/linux/preempt.h:59:
+In file included from ./arch/x86/include/asm/preempt.h:6:
+In file included from include/linux/thread_info.h:54:
+In file included from ./arch/x86/include/asm/thread_info.h:52:
+./arch/x86/include/asm/processor.h:463:30: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_tss.x86_tss.sp0);
+                                    ^~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:391:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:218:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:19:
+In file included from include/linux/timex.h:56:
+In file included from include/uapi/linux/timex.h:56:
+In file included from include/linux/time.h:5:
+In file included from include/linux/seqlock.h:35:
+In file included from include/linux/spinlock.h:50:
+In file included from include/linux/preempt.h:59:
+In file included from ./arch/x86/include/asm/preempt.h:6:
+In file included from include/linux/thread_info.h:54:
+In file included from ./arch/x86/include/asm/thread_info.h:52:
+./arch/x86/include/asm/processor.h:463:30: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_tss.x86_tss.sp0);
+                                    ^~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:391:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:223:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:19:
+In file included from include/linux/timex.h:56:
+In file included from include/uapi/linux/timex.h:56:
+In file included from include/linux/time.h:5:
+In file included from include/linux/seqlock.h:35:
+In file included from include/linux/spinlock.h:50:
+In file included from include/linux/preempt.h:59:
+In file included from ./arch/x86/include/asm/preempt.h:6:
+In file included from include/linux/thread_info.h:54:
+In file included from ./arch/x86/include/asm/thread_info.h:52:
+./arch/x86/include/asm/processor.h:463:30: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_tss.x86_tss.sp0);
+                                    ^~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:391:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:228:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:19:
+In file included from include/linux/timex.h:56:
+In file included from include/uapi/linux/timex.h:56:
+In file included from include/linux/time.h:5:
+In file included from include/linux/seqlock.h:35:
+In file included from include/linux/spinlock.h:50:
+In file included from include/linux/preempt.h:59:
+In file included from ./arch/x86/include/asm/preempt.h:6:
+In file included from include/linux/thread_info.h:54:
+In file included from ./arch/x86/include/asm/thread_info.h:52:
+./arch/x86/include/asm/processor.h:463:30: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_tss.x86_tss.sp0);
+                                    ^~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:391:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:233:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:61:
+include/linux/cgroup-defs.h:320:16: warning: field 'cgrp' with variable sized type 'struct cgroup' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+        struct cgroup cgrp;
+                      ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:132:2: error: implicit declaration of function 'rtl92s_init_aspm_vars' [-Werror,-Wimplicit-function-declaration]
+        rtl92s_init_aspm_vars(hw);
+        ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:132:2: note: did you mean 'rtl92s_init_sw_vars'?
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:48:12: note: 'rtl92s_init_sw_vars' declared here
+static int rtl92s_init_sw_vars(struct ieee80211_hw *hw)
+           ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:153:11: error: use of undeclared identifier 'rtl92se_fw_cb'; did you mean 'rtl_fw_cb'?
+                                      rtl92se_fw_cb);
+                                      ^~~~~~~~~~~~~
+                                      rtl_fw_cb
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/../core.h:76:6: note: 'rtl_fw_cb' declared here
+void rtl_fw_cb(const struct firmware *firmware, void *context);
+     ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:167:20: error: use of undeclared identifier 'rtl92s_deinit_sw_vars'; did you mean 'rtl92s_init_sw_vars'?
+        .deinit_sw_vars = rtl92s_deinit_sw_vars,
+                          ^~~~~~~~~~~~~~~~~~~~~
+                          rtl92s_init_sw_vars
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:48:12: note: 'rtl92s_init_sw_vars' declared here
+static int rtl92s_init_sw_vars(struct ieee80211_hw *hw)
+           ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:198:23: error: use of undeclared identifier 'rtl92se_is_tx_desc_closed'
+        .is_tx_desc_closed = rtl92se_is_tx_desc_closed,
+                             ^
+error: unknown argument: '-mno-fp-ret-in-387'
+error: unknown argument: '-mpreferred-stack-boundary=3'
+error: unknown argument: '-mskip-rax-setup'
+error: unknown argument: '-maccumulate-outgoing-args'
+error: unknown argument: '-fno-ipa-cp-clone'
+error: unknown argument: '-fno-partial-inlining'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fasan-shadow-offset=0xdffffc0000000000'
+warning: optimization flag '-falign-jumps=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-falign-loops=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-reorder-blocks' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:19:
+In file included from include/linux/timex.h:56:
+In file included from include/uapi/linux/timex.h:56:
+In file included from include/linux/time.h:5:
+In file included from include/linux/seqlock.h:35:
+In file included from include/linux/spinlock.h:50:
+In file included from include/linux/preempt.h:59:
+In file included from ./arch/x86/include/asm/preempt.h:6:
+In file included from include/linux/thread_info.h:54:
+In file included from ./arch/x86/include/asm/thread_info.h:52:
+./arch/x86/include/asm/processor.h:463:30: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_tss.x86_tss.sp0);
+                                    ^~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:391:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:218:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:19:
+In file included from include/linux/timex.h:56:
+In file included from include/uapi/linux/timex.h:56:
+In file included from include/linux/time.h:5:
+In file included from include/linux/seqlock.h:35:
+In file included from include/linux/spinlock.h:50:
+In file included from include/linux/preempt.h:59:
+In file included from ./arch/x86/include/asm/preempt.h:6:
+In file included from include/linux/thread_info.h:54:
+In file included from ./arch/x86/include/asm/thread_info.h:52:
+./arch/x86/include/asm/processor.h:463:30: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_tss.x86_tss.sp0);
+                                    ^~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:391:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:223:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:19:
+In file included from include/linux/timex.h:56:
+In file included from include/uapi/linux/timex.h:56:
+In file included from include/linux/time.h:5:
+In file included from include/linux/seqlock.h:35:
+In file included from include/linux/spinlock.h:50:
+In file included from include/linux/preempt.h:59:
+In file included from ./arch/x86/include/asm/preempt.h:6:
+In file included from include/linux/thread_info.h:54:
+In file included from ./arch/x86/include/asm/thread_info.h:52:
+./arch/x86/include/asm/processor.h:463:30: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_tss.x86_tss.sp0);
+                                    ^~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:391:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:228:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:19:
+In file included from include/linux/timex.h:56:
+In file included from include/uapi/linux/timex.h:56:
+In file included from include/linux/time.h:5:
+In file included from include/linux/seqlock.h:35:
+In file included from include/linux/spinlock.h:50:
+In file included from include/linux/preempt.h:59:
+In file included from ./arch/x86/include/asm/preempt.h:6:
+In file included from include/linux/thread_info.h:54:
+In file included from ./arch/x86/include/asm/thread_info.h:52:
+./arch/x86/include/asm/processor.h:463:30: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_tss.x86_tss.sp0);
+                                    ^~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:391:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:233:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:30:
+In file included from drivers/net/wireless/realtek/rtlwifi/rtl8192se/../wifi.h:31:
+In file included from include/linux/sched.h:61:
+include/linux/cgroup-defs.h:320:16: warning: field 'cgrp' with variable sized type 'struct cgroup' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+        struct cgroup cgrp;
+                      ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:134:2: error: implicit declaration of function 'rtl92s_init_aspm_vars' [-Werror,-Wimplicit-function-declaration]
+        rtl92s_init_aspm_vars(hw);
+        ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:134:2: note: did you mean 'rtl92s_init_sw_vars'?
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:48:12: note: 'rtl92s_init_sw_vars' declared here
+static int rtl92s_init_sw_vars(struct ieee80211_hw *hw)
+           ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:155:11: error: use of undeclared identifier 'rtl92se_fw_cb'; did you mean 'rtl_fw_cb'?
+                                      rtl92se_fw_cb);
+                                      ^~~~~~~~~~~~~
+                                      rtl_fw_cb
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/../core.h:76:6: note: 'rtl_fw_cb' declared here
+void rtl_fw_cb(const struct firmware *firmware, void *context);
+     ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:169:20: error: use of undeclared identifier 'rtl92s_deinit_sw_vars'; did you mean 'rtl92s_init_sw_vars'?
+        .deinit_sw_vars = rtl92s_deinit_sw_vars,
+                          ^~~~~~~~~~~~~~~~~~~~~
+                          rtl92s_init_sw_vars
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:48:12: note: 'rtl92s_init_sw_vars' declared here
+static int rtl92s_init_sw_vars(struct ieee80211_hw *hw)
+           ^
+drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c:200:23: error: use of undeclared identifier 'rtl92se_is_tx_desc_closed'
+        .is_tx_desc_closed = rtl92se_is_tx_desc_closed,
+                             ^
+error: unknown argument: '-maccumulate-outgoing-args'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-femit-struct-debug-baseonly'
+error: unknown argument: '-fconserve-stack'
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:31:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:27:
+In file included from include/linux/sysctl.h:933:
+include/linux/rcupdate.h:808:2: error: array size is negative
+        BUILD_BUG_ON(!__builtin_constant_p(offset));
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/kernel.h:717:22: note: expanded from macro 'BUILD_BUG_ON'
+                ((void)sizeof(char[1 - 2*!!(condition)]));      \
+                                   ^~~~~~~~~~~~~~~~~~~
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:31:
+In file included from include/linux/module.h:18:
+In file included from include/linux/tracepoint.h:20:
+In file included from include/linux/jump_label.h:17:
+/data/backport/linux/129/pc/arch/x86/include/asm/jump_label.h:16:2: error: implicit declaration of function 'asm_volatile_goto' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+        asm_volatile_goto("1:"
+        ^
+/data/backport/linux/129/pc/arch/x86/include/asm/jump_label.h:22:3: error: expected ')'
+                : :  "i" (key) : : l_yes);
+                ^
+/data/backport/linux/129/pc/arch/x86/include/asm/jump_label.h:16:19: note: to match this '('
+        asm_volatile_goto("1:"
+                         ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:81:11: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[3] | set->sig[2] |
+                        ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:81:25: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[3] | set->sig[2] |
+                                      ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:82:4: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                        set->sig[1] | set->sig[0]) == 0;
+                        ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:84:11: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[1] | set->sig[0]) == 0;
+                        ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:142:31: note: expanded from macro '_SIG_SET_OP'
+            case 4: set->sig[3] = op(set->sig[3]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:142:14: note: expanded from macro '_SIG_SET_OP'
+            case 4: set->sig[3] = op(set->sig[3]);                      \
+                    ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:143:24: note: expanded from macro '_SIG_SET_OP'
+                    set->sig[2] = op(set->sig[2]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:143:7: note: expanded from macro '_SIG_SET_OP'
+                    set->sig[2] = op(set->sig[2]);                      \
+                    ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:144:31: note: expanded from macro '_SIG_SET_OP'
+            case 2: set->sig[1] = op(set->sig[1]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:144:14: note: expanded from macro '_SIG_SET_OP'
+            case 2: set->sig[1] = op(set->sig[1]);                      \
+                    ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:164:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = 0;
+                ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:176:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = -1;
+                ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:206:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = 0;
+                ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:33:
+In file included from /data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/../wifi.h:33:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:218:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = -1;
+                ^        ~
+/data/backport/linux/129/pc/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+/data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:106:2: error: implicit declaration of function 'rtl92c_init_aspm_vars' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+        rtl92c_init_aspm_vars(hw);
+        ^
+/data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:106:2: note: did you mean 'rtl92c_init_sw_vars'?
+/data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:47:5: note: 'rtl92c_init_sw_vars' declared here
+int rtl92c_init_sw_vars(struct ieee80211_hw *hw)
+    ^
+/data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:353:13: error: use of undeclared identifier 'rtl92ce_module_init'
+module_init(rtl92ce_module_init);
+            ^
+/data/backport/linux/129/pc/drivers/net/wireless/rtlwifi/rtl8192ce/sw.c:354:13: error: use of undeclared identifier 'rtl92ce_module_exit'
+module_exit(rtl92ce_module_exit);
+            ^
+Segmentation fault (core dumped)
+Transformation Failed
+	 AST transformation FAILED
+Crash during transforming slices, after 6.099 minutes.
+Transformation Failed
+Error. Exiting...
+Unexpected error during transforming slices.
+Runtime Error
+Error. Exiting...
+Traceback (most recent call last):
+  File "/FixMorph/app/phases/weaving.py", line 25, in safe_exec
+    result = function_def()
+  File "/FixMorph/app/phases/weaving.py", line 115, in transplant_code
+    modified_source_list
+  File "/FixMorph/app/tools/weaver.py", line 412, in weave_code
+    execute_ast_transformation(script_file_name, file_info)
+  File "/FixMorph/app/tools/weaver.py", line 67, in execute_ast_transformation
+    error_exit("\t AST transformation FAILED")
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/FixMorph/app/main.py", line 184, in main
+    run(sys.argv[1:])
+  File "/FixMorph/app/main.py", line 157, in run
+    weaving.start()
+  File "/FixMorph/app/phases/weaving.py", line 201, in start
+    safe_exec(transplant_code, "transforming slices")
+  File "/FixMorph/app/phases/weaving.py", line 33, in safe_exec
+    error_exit(exception, "Unexpected error during " + description + ".")
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+FixMorph exited with an error after 31.079 minutes
+

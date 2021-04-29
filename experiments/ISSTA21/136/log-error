@@ -1,0 +1,53 @@
+TIMEOUT Exception
+Transformation Failed
+end of time
+Unexpected fail at generating map: /FixMorph/output/linux-136/hns3_enet.c.func.hns3_replace_buffer.slice.map
+Crash during derivation of variable/data-structure map, after 26.941 minutes.
+Transformation Failed
+Error. Exiting...
+Unexpected error during derivation of variable/data-structure map.
+Runtime Error
+Error. Exiting...
+Traceback (most recent call last):
+  File "/FixMorph/app/tools/mapper.py", line 45, in generate_map_gumtree
+    execute_command(generate_command, False)
+  File "/FixMorph/app/common/utilities.py", line 36, in execute_command
+    (output, error) = process.communicate()
+  File "/usr/lib/python3.7/subprocess.py", line 951, in communicate
+    stdout = self.stdout.read()
+  File "/FixMorph/app/main.py", line 35, in timeout_handler
+    raise Exception("end of time")
+Exception: end of time
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/FixMorph/app/phases/mapping.py", line 50, in safe_exec
+    result = function_def()
+  File "/FixMorph/app/phases/mapping.py", line 20, in generate_map
+    ast_node_map, namespace_map = mapper.generate_map(file_list)
+  File "/FixMorph/app/tools/mapper.py", line 115, in generate_map
+    generate_map_gumtree(vector_source_a, vector_source_c, map_file_name)
+  File "/FixMorph/app/tools/mapper.py", line 47, in generate_map_gumtree
+    error_exit(e, "Unexpected fail at generating map: " + output_file)
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/FixMorph/app/main.py", line 184, in main
+    run(sys.argv[1:])
+  File "/FixMorph/app/main.py", line 137, in run
+    mapping.start()
+  File "/FixMorph/app/phases/mapping.py", line 74, in start
+    safe_exec(generate_map, 'derivation of variable/data-structure map')
+  File "/FixMorph/app/phases/mapping.py", line 58, in safe_exec
+    error_exit(exception, "Unexpected error during " + description + ".")
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+FixMorph exited with an error after 60.009 minutes
+

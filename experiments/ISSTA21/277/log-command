@@ -1,0 +1,89 @@
+[Sat Apr 24 19:23:11 2021][COMMAND]: export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python
+[Sat Apr 24 19:23:11 2021][COMMAND]: cd /data/backport/linux/277/pa/;git clean -fd; git reset --hard HEAD
+[Sat Apr 24 19:23:24 2021][COMMAND]: cd /data/backport/linux/277/pb/;git clean -fd; git reset --hard HEAD
+[Sat Apr 24 19:23:25 2021][COMMAND]: cd /data/backport/linux/277/pc/;git clean -fd; git reset --hard HEAD
+[Sat Apr 24 19:23:26 2021][COMMAND]: cd /data/backport/linux/277/pc-patch/;git clean -fd; git reset --hard HEAD; git checkout fdfce812d2c6bd0c1eb6ccd3196fe34b5e293c6b
+[Sat Apr 24 19:23:40 2021][COMMAND]: cd /data/backport/linux/277/pe/;git clean -fd; git reset --hard HEAD
+[Sat Apr 24 19:23:54 2021][COMMAND]: cd /data/backport/linux/277/pa/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sat Apr 24 19:24:01 2021][COMMAND]: cd /data/backport/linux/277/pb/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sat Apr 24 19:24:11 2021][COMMAND]: cd /data/backport/linux/277/pc/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sat Apr 24 19:24:19 2021][COMMAND]: cd /data/backport/linux/277/pc-patch/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sat Apr 24 19:24:25 2021][COMMAND]: cd /data/backport/linux/277/pe/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Sat Apr 24 19:24:30 2021][COMMAND]: cd /data/backport/linux/277/pa/;make allyesconfig
+[Sat Apr 24 19:24:32 2021][COMMAND]: cd /data/backport/linux/277/pb/;make allyesconfig
+[Sat Apr 24 19:24:35 2021][COMMAND]: cd /data/backport/linux/277/pc/;make allyesconfig
+[Sat Apr 24 19:24:37 2021][COMMAND]: cd /data/backport/linux/277/pc-patch/;make allyesconfig
+[Sat Apr 24 19:24:39 2021][COMMAND]: cd /data/backport/linux/277/pe/;make allyesconfig
+[Sat Apr 24 19:24:41 2021][COMMAND]: cd /data/backport/linux/277/pa/;bear make fs/proc/task_mmu.o > /FixMorph/logs/log-make 2>&1
+[Sat Apr 24 19:24:51 2021][COMMAND]: cd /data/backport/linux/277/pa/;cp compile_commands.json /FixMorph/output/linux-277/compile_commands.json.pa
+[Sat Apr 24 19:24:51 2021][COMMAND]: cd /data/backport/linux/277/pb/;bear make fs/proc/task_mmu.o > /FixMorph/logs/log-make 2>&1
+[Sat Apr 24 19:25:00 2021][COMMAND]: cd /data/backport/linux/277/pb/;cp compile_commands.json /FixMorph/output/linux-277/compile_commands.json.pb
+[Sat Apr 24 19:25:00 2021][COMMAND]: cd /data/backport/linux/277/pc/;bear make fs/proc/task_mmu.o > /FixMorph/logs/log-make 2>&1
+[Sat Apr 24 19:25:09 2021][COMMAND]: cd /data/backport/linux/277/pc/;cp compile_commands.json /FixMorph/output/linux-277/compile_commands.json.pc
+[Sat Apr 24 19:25:09 2021][COMMAND]: cd /data/backport/linux/277/pc-patch/;bear make fs/proc/task_mmu.o > /FixMorph/logs/log-make 2>&1
+[Sat Apr 24 19:25:17 2021][COMMAND]: cd /data/backport/linux/277/pc-patch/;cp compile_commands.json /FixMorph/output/linux-277/compile_commands.json.pc-patch
+[Sat Apr 24 19:25:17 2021][COMMAND]: cd /data/backport/linux/277/pe/;bear make fs/proc/task_mmu.o > /FixMorph/logs/log-make 2>&1
+[Sat Apr 24 19:25:25 2021][COMMAND]: cd /data/backport/linux/277/pe/;cp compile_commands.json /FixMorph/output/linux-277/compile_commands.json.pe
+[Sat Apr 24 19:25:25 2021][COMMAND]: find /data/backport/linux/277/pa -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-277/tmp/excluded-extensions-a
+[Sat Apr 24 19:25:26 2021][COMMAND]: find /data/backport/linux/277/pb -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-277/tmp/excluded-extensions-b
+[Sat Apr 24 19:25:26 2021][COMMAND]: cd /data/backport/linux/277/pa;git ls-files --others --exclude-standard > /FixMorph/output/linux-277/tmp/excluded-extensions
+[Sat Apr 24 19:25:26 2021][COMMAND]: diff -ENBZbwr /data/backport/linux/277/pa/fs/proc/task_mmu.c /data/backport/linux/277/pb/fs/proc/task_mmu.c > /FixMorph/output/linux-277/temp_diff
+[Sat Apr 24 19:25:26 2021][COMMAND]: cat /data/backport/linux/277/pa/fs/proc/task_mmu.c | grep '#include' > /FixMorph/output/linux-277/tmp/header-list
+[Sat Apr 24 19:25:26 2021][COMMAND]: cat /data/backport/linux/277/pb/fs/proc/task_mmu.c | grep '#include' > /FixMorph/output/linux-277/tmp/header-list
+[Sat Apr 24 19:25:26 2021][COMMAND]: cat /data/backport/linux/277/pa/fs/proc/task_mmu.c | grep '#if' > /FixMorph/output/linux-277/tmp/result
+[Sat Apr 24 19:25:26 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:25:28 2021][COMMAND]: echo /data/backport/linux/277/pa/fs/proc/task_mmu.c.func_pagemap_pte_range.vec >> /FixMorph/output/linux-277/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 1053 --end-line-number 1139 /data/backport/linux/277/pa/fs/proc/task_mmu.c -o /data/backport/linux/277/pa/fs/proc/task_mmu.c.func_pagemap_pte_range.vec 2> /FixMorph/output/linux-277/tmp/deckard_error_log
+[Sat Apr 24 19:25:28 2021][COMMAND]: cat /data/backport/linux/277/pc/fs/proc/task_mmu.c | grep '#if' > /FixMorph/output/linux-277/tmp/result
+[Sat Apr 24 19:25:28 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:25:31 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:25:32 2021][COMMAND]: crochet-diff -ast-dump-json   --extra-arg="-D CONFIG_PROC_PAGE_MONITOR=1 "  --extra-arg="-D CONFIG_NUMA=1 "  --extra-arg="-D CONFIG_HUGETLB_PAGE=1 "  --extra-arg="-D CONFIG_MEM_SOFT_DIRTY=1 "  --extra-arg="-D CONFIG_TRANSPARENT_HUGEPAGE=1 "   /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:25:36 2021][COMMAND]: crochet-diff -ast-dump-json   --extra-arg="-D CONFIG_PROC_PAGE_MONITOR=1 "  --extra-arg="-D CONFIG_NUMA=1 "  --extra-arg="-D CONFIG_HUGETLB_PAGE=1 "  --extra-arg="-D CONFIG_MEM_SOFT_DIRTY=1 "  --extra-arg="-D CONFIG_TRANSPARENT_HUGEPAGE=1 "   /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:25:38 2021][COMMAND]: find /data/backport/linux/277/pa/ -name '*.func_*\.vec'  > /FixMorph/output/linux-277/vectors_C_Pa
+[Sat Apr 24 19:25:38 2021][COMMAND]: echo /data/backport/linux/277/pc/fs/proc/task_mmu.c.func_pagemap_pte_range.vec >> /FixMorph/output/linux-277/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 994 --end-line-number 1079 /data/backport/linux/277/pc/fs/proc/task_mmu.c -o /data/backport/linux/277/pc/fs/proc/task_mmu.c.func_pagemap_pte_range.vec 2> /FixMorph/output/linux-277/tmp/deckard_error_log
+[Sat Apr 24 19:25:38 2021][COMMAND]: find /data/backport/linux/277/pa/ -name '*.func_*\.vec'  > /FixMorph/output/linux-277/vectors_C_Pa
+[Sat Apr 24 19:25:39 2021][COMMAND]: find /data/backport/linux/277/pc/ -name '*.func_*\.vec'  > /FixMorph/output/linux-277/vectors_C_Pc
+[Sat Apr 24 19:25:39 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:25:43 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-277/task_mmu.c.func.pagemap_pte_range.slice.ast -source=/data/backport/linux/277/pa/fs/proc/task_mmu.c -destination=/data/backport/linux/277/pa/fs/proc/task_mmu.c -target=/data/backport/linux/277/pa/fs/proc/task_mmu.c -map= 2> output/errors > /data/backport/linux/277/pa/fs/proc/task_mmu.c.func.pagemap_pte_range.slice
+[Sat Apr 24 19:25:46 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:25:50 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-277/task_mmu.c.func.pagemap_pte_range.slice.ast -source=/data/backport/linux/277/pc/fs/proc/task_mmu.c -destination=/data/backport/linux/277/pc/fs/proc/task_mmu.c -target=/data/backport/linux/277/pc/fs/proc/task_mmu.c -map= 2> output/errors > /data/backport/linux/277/pc/fs/proc/task_mmu.c.func.pagemap_pte_range.slice
+[Sat Apr 24 19:25:54 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:25:58 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:26:01 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux/277/pa/fs/proc/task_mmu.c /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> output/errors_clang_diff  > /FixMorph/output/linux-277/tmp/morph.map
+[Sat Apr 24 19:27:08 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pb/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pb/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:27:12 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-277/task_mmu.c.func.pagemap_pte_range.slice.ast -source=/data/backport/linux/277/pb/fs/proc/task_mmu.c -destination=/data/backport/linux/277/pb/fs/proc/task_mmu.c -target=/data/backport/linux/277/pb/fs/proc/task_mmu.c -map= 2> output/errors > /data/backport/linux/277/pb/fs/proc/task_mmu.c.func.pagemap_pte_range.slice
+[Sat Apr 24 19:27:16 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:27:19 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-277/task_mmu.c.func.pagemap_pte_range.slice.ast -source=/data/backport/linux/277/pc-patch//fs/proc/task_mmu.c -destination=/data/backport/linux/277/pc-patch//fs/proc/task_mmu.c -target=/data/backport/linux/277/pc-patch//fs/proc/task_mmu.c -map= 2> output/errors > /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c.func.pagemap_pte_range.slice
+[Sat Apr 24 19:27:23 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux/277/pa/fs/proc/task_mmu.c /data/backport/linux/277/pb/fs/proc/task_mmu.c 2> output/errors_clang_diff  > /FixMorph/output/linux-277/tmp/diff_script_AB
+[Sat Apr 24 19:28:08 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:28:11 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:28:16 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux/277/pa/fs/proc/task_mmu.c /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> output/errors_clang_diff  > /FixMorph/output/linux-277/task_mmu.c.func.pagemap_pte_range.slice.map
+[Sat Apr 24 19:29:21 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:29:26 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:32:53 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:32:57 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:12 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:15 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:19 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /FixMorph/output/linux-277/json_Pa
+[Sat Apr 24 19:33:22 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux/277/pb/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /FixMorph/output/linux-277/json_Pb
+[Sat Apr 24 19:33:25 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /FixMorph/output/linux-277/json_Pc
+[Sat Apr 24 19:33:28 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:32 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pb/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pb/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:36 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:41 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pb/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pb/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:45 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:50 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pa/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pa/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:53 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pb/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pb/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:33:58 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pc/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pc/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:34:02 2021][COMMAND]: cat /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c | grep '#ifdef' > /FixMorph/output/linux-277/tmp/result
+[Sat Apr 24 19:34:02 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_HUGETLB_PAGE  -D CONFIG_PROC_PAGE_MONITOR  -D CONFIG_NUMA  -D CONFIG_TRANSPARENT_HUGEPAGE /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c > /FixMorph/output/linux-277/tmp/macro-def
+[Sat Apr 24 19:34:07 2021][COMMAND]: cat /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c | grep '#ifdef' > /FixMorph/output/linux-277/tmp/result
+[Sat Apr 24 19:34:07 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_HUGETLB_PAGE  -D CONFIG_PROC_PAGE_MONITOR  -D CONFIG_NUMA  -D CONFIG_TRANSPARENT_HUGEPAGE /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c > /FixMorph/output/linux-277/tmp/macro-def
+[Sat Apr 24 19:34:11 2021][COMMAND]: cat /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c | grep '#ifdef' > /FixMorph/output/linux-277/tmp/result
+[Sat Apr 24 19:34:11 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_HUGETLB_PAGE  -D CONFIG_PROC_PAGE_MONITOR  -D CONFIG_NUMA  -D CONFIG_TRANSPARENT_HUGEPAGE /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c > /FixMorph/output/linux-277/tmp/macro-def
+[Sat Apr 24 19:34:15 2021][COMMAND]: cat /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c | grep '#ifdef' > /FixMorph/output/linux-277/tmp/result
+[Sat Apr 24 19:34:15 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_HUGETLB_PAGE  -D CONFIG_PROC_PAGE_MONITOR  -D CONFIG_NUMA  -D CONFIG_TRANSPARENT_HUGEPAGE /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c > /FixMorph/output/linux-277/tmp/macro-def
+[Sat Apr 24 19:34:18 2021][COMMAND]: cat /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c | grep '#ifdef' > /FixMorph/output/linux-277/tmp/result
+[Sat Apr 24 19:34:18 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_HUGETLB_PAGE  -D CONFIG_PROC_PAGE_MONITOR  -D CONFIG_NUMA  -D CONFIG_TRANSPARENT_HUGEPAGE /data/backport/linux/277/pc-patch//fs/proc/task_mmu.c > /FixMorph/output/linux-277/tmp/macro-def
+[Sat Apr 24 19:34:22 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux/277/pb/fs/proc/task_mmu.c 2> /FixMorph/output/linux-277/errors_AST_dump > /data/backport/linux/277/pb/fs/proc/task_mmu.c.AST
+[Sat Apr 24 19:34:25 2021][COMMAND]: cp /data/backport/linux/277/pc/fs/proc/task_mmu.c /FixMorph/backup/1_task_mmu.c
+[Sat Apr 24 19:34:25 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-277/pagemap_pte_range_script -source=/data/backport/linux/277/pa/fs/proc/task_mmu.c -destination=/data/backport/linux/277/pb/fs/proc/task_mmu.c -target=/data/backport/linux/277/pc/fs/proc/task_mmu.c -map=/FixMorph/output/linux-277/namespace-map-local > /FixMorph/output/linux-277/tmp/temp-fix 2> /FixMorph/logs/log-error

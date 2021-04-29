@@ -1,0 +1,36 @@
+Crash during correcting syntax errors, after 0.060 minutes.
+Transformation Failed
+'NoneType' object is not subscriptable
+Unexpected error during correcting syntax errors.
+Runtime Error
+Error. Exiting...
+Traceback (most recent call last):
+  File "/FixMorph/app/phases/weaving.py", line 27, in safe_exec
+    result = function_def(*args)
+  File "/FixMorph/app/tools/fixer.py", line 352, in check
+    check_syntax_errors(modified_source_list)
+  File "/FixMorph/app/tools/fixer.py", line 339, in check_syntax_errors
+    fix_syntax_errors(source_file)
+  File "/FixMorph/app/tools/fixer.py", line 193, in fix_syntax_errors
+    fix_argument_errors(source_file, source_location)
+  File "/FixMorph/app/tools/fixer.py", line 155, in fix_argument_errors
+    start_line = goto_node['start line']
+TypeError: 'NoneType' object is not subscriptable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/FixMorph/app/main.py", line 184, in main
+    run(sys.argv[1:])
+  File "/FixMorph/app/main.py", line 157, in run
+    weaving.start()
+  File "/FixMorph/app/phases/weaving.py", line 213, in start
+    safe_exec(fixer.check, "correcting syntax errors", modified_source_list)
+  File "/FixMorph/app/phases/weaving.py", line 33, in safe_exec
+    error_exit(exception, "Unexpected error during " + description + ".")
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+FixMorph exited with an error after 29.154 minutes
+

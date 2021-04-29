@@ -1,0 +1,671 @@
+error: unknown argument: '-mno-fp-ret-in-387'
+error: unknown argument: '-mpreferred-stack-boundary=3'
+error: unknown argument: '-mskip-rax-setup'
+error: unknown argument: '-fno-ipa-cp-clone'
+error: unknown argument: '-fno-partial-inlining'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fasan-shadow-offset=0xdffffc0000000000'
+warning: optimization flag '-falign-jumps=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-falign-loops=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-reorder-blocks' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:541:17: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        this_cpu_write(cpu_tss_rw.x86_tss.sp0, sp0);
+                       ^~~~~~~~~~~~~~~~~~~~~~
+./include/linux/percpu-defs.h:510:68: note: expanded from macro 'this_cpu_write'
+#define this_cpu_write(pcp, val)        __pcpu_size_call(this_cpu_write_, pcp, val)
+                                                                          ^~~
+./include/linux/percpu-defs.h:377:22: note: expanded from macro '__pcpu_size_call'
+        __verify_pcpu_ptr(&(variable));                                 \
+                            ^~~~~~~~
+./include/linux/percpu-defs.h:221:47: note: expanded from macro '__verify_pcpu_ptr'
+        const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+                                                     ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:558:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:381:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:219:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:558:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:381:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:224:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:558:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:381:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:229:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:558:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:381:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:234:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:11:
+In file included from ./include/linux/etherdevice.h:26:
+In file included from ./include/linux/netdevice.h:46:
+In file included from ./include/net/netprio_cgroup.h:17:
+In file included from ./include/linux/cgroup.h:28:
+./include/linux/cgroup-defs.h:449:16: warning: field 'cgrp' with variable sized type 'struct cgroup' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+        struct cgroup cgrp;
+                      ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:120:9: error: implicit declaration of function 'hns3_nic_net_stop' [-Werror,-Wimplicit-function-declaration]
+                (void)hns3_nic_net_stop(netdev);
+                      ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:120:9: note: did you mean 'hns3_nic_net_xmit'?
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:132:20: error: implicit declaration of function 'hns3_nic_net_open' [-Werror,-Wimplicit-function-declaration]
+        if (if_running && hns3_nic_net_open(netdev))
+                          ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:132:20: note: did you mean 'hns3_nic_net_xmit'?
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:141:15: error: use of undeclared identifier 'hns3_nic_net_open'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_open               = hns3_nic_net_open,
+                                  ^~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:142:15: error: use of undeclared identifier 'hns3_nic_net_stop'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_stop               = hns3_nic_net_stop,
+                                  ^~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:144:21: error: use of undeclared identifier 'hns3_nic_net_timeout'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_tx_timeout         = hns3_nic_net_timeout,
+                                  ^~~~~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:145:25: error: use of undeclared identifier 'hns3_nic_net_set_mac_address'; did you mean 'device_get_mac_address'?
+        .ndo_set_mac_address    = hns3_nic_net_set_mac_address,
+                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                  device_get_mac_address
+./include/linux/property.h:280:7: note: 'device_get_mac_address' declared here
+void *device_get_mac_address(struct device *dev, char *addr, int alen);
+      ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:147:22: error: use of undeclared identifier 'hns3_nic_set_features'
+        .ndo_set_features       = hns3_nic_set_features,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:148:21: error: use of undeclared identifier 'hns3_nic_get_stats64'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_get_stats64        = hns3_nic_get_stats64,
+                                  ^~~~~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:149:19: error: use of undeclared identifier 'hns3_nic_setup_tc'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_setup_tc           = hns3_nic_setup_tc,
+                                  ^~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:150:21: error: use of undeclared identifier 'hns3_nic_set_rx_mode'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_set_rx_mode        = hns3_nic_set_rx_mode,
+                                  ^~~~~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:151:24: error: use of undeclared identifier 'hns3_nic_udp_tunnel_add'
+        .ndo_udp_tunnel_add     = hns3_nic_udp_tunnel_add,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:152:24: error: use of undeclared identifier 'hns3_nic_udp_tunnel_del'
+        .ndo_udp_tunnel_del     = hns3_nic_udp_tunnel_del,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:153:25: error: use of undeclared identifier 'hns3_vlan_rx_add_vid'
+        .ndo_vlan_rx_add_vid    = hns3_vlan_rx_add_vid,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:154:26: error: use of undeclared identifier 'hns3_vlan_rx_kill_vid'
+        .ndo_vlan_rx_kill_vid   = hns3_vlan_rx_kill_vid,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:155:21: error: use of undeclared identifier 'hns3_ndo_set_vf_vlan'
+        .ndo_set_vf_vlan        = hns3_ndo_set_vf_vlan,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:176:14: error: use of undeclared identifier 'hns3_probe'; did you mean 'hns3_driver'?
+        .probe    = hns3_probe,
+                    ^~~~~~~~~~
+                    hns3_driver
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:173:26: note: 'hns3_driver' declared here
+static struct pci_driver hns3_driver = {
+                         ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:177:14: error: use of undeclared identifier 'hns3_remove'
+        .remove   = hns3_remove,
+                    ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:258:19: error: use of undeclared identifier 'hns3_client_init'
+        .init_instance = hns3_client_init,
+                         ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:259:21: error: use of undeclared identifier 'hns3_client_uninit'
+        .uninit_instance = hns3_client_uninit,
+                           ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+error: unknown argument: '-mno-fp-ret-in-387'
+error: unknown argument: '-mpreferred-stack-boundary=3'
+error: unknown argument: '-mskip-rax-setup'
+error: unknown argument: '-fno-ipa-cp-clone'
+error: unknown argument: '-fno-partial-inlining'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fasan-shadow-offset=0xdffffc0000000000'
+warning: optimization flag '-falign-jumps=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-falign-loops=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-reorder-blocks' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:541:17: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        this_cpu_write(cpu_tss_rw.x86_tss.sp0, sp0);
+                       ^~~~~~~~~~~~~~~~~~~~~~
+./include/linux/percpu-defs.h:510:68: note: expanded from macro 'this_cpu_write'
+#define this_cpu_write(pcp, val)        __pcpu_size_call(this_cpu_write_, pcp, val)
+                                                                          ^~~
+./include/linux/percpu-defs.h:377:22: note: expanded from macro '__pcpu_size_call'
+        __verify_pcpu_ptr(&(variable));                                 \
+                            ^~~~~~~~
+./include/linux/percpu-defs.h:221:47: note: expanded from macro '__verify_pcpu_ptr'
+        const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+                                                     ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:558:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:381:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:219:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:558:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:381:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:224:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:558:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:381:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:229:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:558:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:381:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:234:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:11:
+In file included from ./include/linux/etherdevice.h:26:
+In file included from ./include/linux/netdevice.h:46:
+In file included from ./include/net/netprio_cgroup.h:17:
+In file included from ./include/linux/cgroup.h:28:
+./include/linux/cgroup-defs.h:449:16: warning: field 'cgrp' with variable sized type 'struct cgroup' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+        struct cgroup cgrp;
+                      ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:120:9: error: implicit declaration of function 'hns3_nic_net_stop' [-Werror,-Wimplicit-function-declaration]
+                (void)hns3_nic_net_stop(netdev);
+                      ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:120:9: note: did you mean 'hns3_nic_net_xmit'?
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:134:20: error: implicit declaration of function 'hns3_nic_net_open' [-Werror,-Wimplicit-function-declaration]
+        if (if_running && hns3_nic_net_open(netdev))
+                          ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:134:20: note: did you mean 'hns3_nic_net_xmit'?
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:143:15: error: use of undeclared identifier 'hns3_nic_net_open'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_open               = hns3_nic_net_open,
+                                  ^~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:144:15: error: use of undeclared identifier 'hns3_nic_net_stop'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_stop               = hns3_nic_net_stop,
+                                  ^~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:146:21: error: use of undeclared identifier 'hns3_nic_net_timeout'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_tx_timeout         = hns3_nic_net_timeout,
+                                  ^~~~~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:147:25: error: use of undeclared identifier 'hns3_nic_net_set_mac_address'; did you mean 'device_get_mac_address'?
+        .ndo_set_mac_address    = hns3_nic_net_set_mac_address,
+                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                  device_get_mac_address
+./include/linux/property.h:280:7: note: 'device_get_mac_address' declared here
+void *device_get_mac_address(struct device *dev, char *addr, int alen);
+      ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:149:22: error: use of undeclared identifier 'hns3_nic_set_features'
+        .ndo_set_features       = hns3_nic_set_features,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:150:21: error: use of undeclared identifier 'hns3_nic_get_stats64'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_get_stats64        = hns3_nic_get_stats64,
+                                  ^~~~~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:151:19: error: use of undeclared identifier 'hns3_nic_setup_tc'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_setup_tc           = hns3_nic_setup_tc,
+                                  ^~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:152:21: error: use of undeclared identifier 'hns3_nic_set_rx_mode'; did you mean 'hns3_nic_net_xmit'?
+        .ndo_set_rx_mode        = hns3_nic_set_rx_mode,
+                                  ^~~~~~~~~~~~~~~~~~~~
+                                  hns3_nic_net_xmit
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:604:13: note: 'hns3_nic_net_xmit' declared here
+netdev_tx_t hns3_nic_net_xmit(struct sk_buff *skb, struct net_device *netdev);
+            ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:153:24: error: use of undeclared identifier 'hns3_nic_udp_tunnel_add'
+        .ndo_udp_tunnel_add     = hns3_nic_udp_tunnel_add,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:154:24: error: use of undeclared identifier 'hns3_nic_udp_tunnel_del'
+        .ndo_udp_tunnel_del     = hns3_nic_udp_tunnel_del,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:155:25: error: use of undeclared identifier 'hns3_vlan_rx_add_vid'
+        .ndo_vlan_rx_add_vid    = hns3_vlan_rx_add_vid,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:156:26: error: use of undeclared identifier 'hns3_vlan_rx_kill_vid'
+        .ndo_vlan_rx_kill_vid   = hns3_vlan_rx_kill_vid,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:157:21: error: use of undeclared identifier 'hns3_ndo_set_vf_vlan'
+        .ndo_set_vf_vlan        = hns3_ndo_set_vf_vlan,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:178:14: error: use of undeclared identifier 'hns3_probe'; did you mean 'hns3_driver'?
+        .probe    = hns3_probe,
+                    ^~~~~~~~~~
+                    hns3_driver
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:175:26: note: 'hns3_driver' declared here
+static struct pci_driver hns3_driver = {
+                         ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:179:14: error: use of undeclared identifier 'hns3_remove'
+        .remove   = hns3_remove,
+                    ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:260:19: error: use of undeclared identifier 'hns3_client_init'
+        .init_instance = hns3_client_init,
+                         ^
+drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:261:21: error: use of undeclared identifier 'hns3_client_uninit'
+        .uninit_instance = hns3_client_uninit,
+                           ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+error: unknown argument: '-mno-fp-ret-in-387'
+error: unknown argument: '-mpreferred-stack-boundary=3'
+error: unknown argument: '-mskip-rax-setup'
+error: unknown argument: '-mindirect-branch=thunk-extern'
+error: unknown argument: '-mindirect-branch-register'
+error: unknown argument: '-fno-ipa-cp-clone'
+error: unknown argument: '-fno-partial-inlining'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fasan-shadow-offset=0xdffffc0000000000'
+warning: optimization flag '-falign-jumps=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-falign-loops=1' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-reorder-blocks' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: optimization flag '-fmerge-constants' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Werror=designated-init'; did you mean '-Werror=deprecated-copy'? [-Wunknown-warning-option]
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:538:17: warning: taking address of packed member 'sp0' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        this_cpu_write(cpu_tss_rw.x86_tss.sp0, sp0);
+                       ^~~~~~~~~~~~~~~~~~~~~~
+./include/linux/percpu-defs.h:495:68: note: expanded from macro 'this_cpu_write'
+#define this_cpu_write(pcp, val)        __pcpu_size_call(this_cpu_write_, pcp, val)
+                                                                          ^~~
+./include/linux/percpu-defs.h:362:22: note: expanded from macro '__pcpu_size_call'
+        __verify_pcpu_ptr(&(variable));                                 \
+                            ^~~~~~~~
+./include/linux/percpu-defs.h:206:47: note: expanded from macro '__verify_pcpu_ptr'
+        const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+                                                     ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:219:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:224:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:229:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:10:
+In file included from ./include/linux/dma-mapping.h:7:
+In file included from ./include/linux/device.h:17:
+In file included from ./include/linux/kobject.h:21:
+In file included from ./include/linux/sysfs.h:16:
+In file included from ./include/linux/kernfs.h:13:
+In file included from ./include/linux/mutex.h:20:
+./arch/x86/include/asm/processor.h:555:30: warning: taking address of packed member 'sp1' of class or structure 'x86_hw_tss' may result in an unaligned pointer value [-Waddress-of-packed-member]
+        return this_cpu_read_stable(cpu_current_top_of_stack);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/processor.h:380:34: note: expanded from macro 'cpu_current_top_of_stack'
+#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+./arch/x86/include/asm/percpu.h:392:59: note: expanded from macro 'this_cpu_read_stable'
+#define this_cpu_read_stable(var)       percpu_stable_op("mov", var)
+                                                                ^~~
+./arch/x86/include/asm/percpu.h:234:16: note: expanded from macro 'percpu_stable_op'
+                    : "p" (&(var)));                    \
+                             ^~~
+In file included from drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:11:
+In file included from ./include/linux/etherdevice.h:26:
+In file included from ./include/linux/netdevice.h:46:
+In file included from ./include/net/netprio_cgroup.h:17:
+In file included from ./include/linux/cgroup.h:27:
+./include/linux/cgroup-defs.h:392:16: warning: field 'cgrp' with variable sized type 'struct cgroup' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+        struct cgroup cgrp;
+                      ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:117:9: error: implicit declaration of function 'hns3_nic_net_stop' [-Werror,-Wimplicit-function-declaration]
+                (void)hns3_nic_net_stop(netdev);
+                      ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:129:20: error: implicit declaration of function 'hns3_nic_net_open' [-Werror,-Wimplicit-function-declaration]
+        if (if_running && hns3_nic_net_open(netdev))
+                          ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:136:15: error: use of undeclared identifier 'hns3_nic_net_open'; did you mean 'hns3_nic_netdev_ops'?
+        .ndo_open               = hns3_nic_net_open,
+                                  ^~~~~~~~~~~~~~~~~
+                                  hns3_nic_netdev_ops
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:135:36: note: 'hns3_nic_netdev_ops' declared here
+static const struct net_device_ops hns3_nic_netdev_ops = {
+                                   ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:137:15: error: use of undeclared identifier 'hns3_nic_net_stop'; did you mean 'hns3_nic_netdev_ops'?
+        .ndo_stop               = hns3_nic_net_stop,
+                                  ^~~~~~~~~~~~~~~~~
+                                  hns3_nic_netdev_ops
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:135:36: note: 'hns3_nic_netdev_ops' declared here
+static const struct net_device_ops hns3_nic_netdev_ops = {
+                                   ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:138:21: error: use of undeclared identifier 'hns3_nic_net_xmit'
+        .ndo_start_xmit         = hns3_nic_net_xmit,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:139:25: error: use of undeclared identifier 'hns3_nic_net_set_mac_address'; did you mean 'device_get_mac_address'?
+        .ndo_set_mac_address    = hns3_nic_net_set_mac_address,
+                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                  device_get_mac_address
+./include/linux/property.h:280:7: note: 'device_get_mac_address' declared here
+void *device_get_mac_address(struct device *dev, char *addr, int alen);
+      ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:141:22: error: use of undeclared identifier 'hns3_nic_set_features'
+        .ndo_set_features       = hns3_nic_set_features,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:142:21: error: use of undeclared identifier 'hns3_nic_get_stats64'
+        .ndo_get_stats64        = hns3_nic_get_stats64,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:143:19: error: use of undeclared identifier 'hns3_nic_setup_tc'
+        .ndo_setup_tc           = hns3_nic_setup_tc,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:144:21: error: use of undeclared identifier 'hns3_nic_set_rx_mode'
+        .ndo_set_rx_mode        = hns3_nic_set_rx_mode,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:145:24: error: use of undeclared identifier 'hns3_nic_udp_tunnel_add'
+        .ndo_udp_tunnel_add     = hns3_nic_udp_tunnel_add,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:146:24: error: use of undeclared identifier 'hns3_nic_udp_tunnel_del'
+        .ndo_udp_tunnel_del     = hns3_nic_udp_tunnel_del,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:147:25: error: use of undeclared identifier 'hns3_vlan_rx_add_vid'
+        .ndo_vlan_rx_add_vid    = hns3_vlan_rx_add_vid,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:148:26: error: use of undeclared identifier 'hns3_vlan_rx_kill_vid'
+        .ndo_vlan_rx_kill_vid   = hns3_vlan_rx_kill_vid,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:149:21: error: use of undeclared identifier 'hns3_ndo_set_vf_vlan'
+        .ndo_set_vf_vlan        = hns3_ndo_set_vf_vlan,
+                                  ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:170:14: error: use of undeclared identifier 'hns3_probe'; did you mean 'hns3_driver'?
+        .probe    = hns3_probe,
+                    ^~~~~~~~~~
+                    hns3_driver
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:167:26: note: 'hns3_driver' declared here
+static struct pci_driver hns3_driver = {
+                         ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:171:14: error: use of undeclared identifier 'hns3_remove'
+        .remove   = hns3_remove,
+                    ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:237:19: error: use of undeclared identifier 'hns3_client_init'
+        .init_instance = hns3_client_init,
+                         ^
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hns3_enet.c:238:21: error: use of undeclared identifier 'hns3_client_uninit'
+        .uninit_instance = hns3_client_uninit,
+                           ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+TIMEOUT Exception
+Crash during transforming slices, after 5.350 minutes.
+Transformation Failed
+end of time
+Unexpected error during transforming slices.
+Runtime Error
+Error. Exiting...
+Traceback (most recent call last):
+  File "/FixMorph/app/phases/weaving.py", line 25, in safe_exec
+    result = function_def()
+  File "/FixMorph/app/phases/weaving.py", line 115, in transplant_code
+    modified_source_list
+  File "/FixMorph/app/tools/weaver.py", line 412, in weave_code
+    execute_ast_transformation(script_file_name, file_info)
+  File "/FixMorph/app/tools/weaver.py", line 59, in execute_ast_transformation
+    ret_code = int(execute_command(patch_command))
+  File "/FixMorph/app/common/utilities.py", line 36, in execute_command
+    (output, error) = process.communicate()
+  File "/usr/lib/python3.7/subprocess.py", line 951, in communicate
+    stdout = self.stdout.read()
+  File "/FixMorph/app/main.py", line 35, in timeout_handler
+    raise Exception("end of time")
+Exception: end of time
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/FixMorph/app/main.py", line 184, in main
+    run(sys.argv[1:])
+  File "/FixMorph/app/main.py", line 157, in run
+    weaving.start()
+  File "/FixMorph/app/phases/weaving.py", line 201, in start
+    safe_exec(transplant_code, "transforming slices")
+  File "/FixMorph/app/phases/weaving.py", line 33, in safe_exec
+    error_exit(exception, "Unexpected error during " + description + ".")
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+FixMorph exited with an error after 60.001 minutes
+

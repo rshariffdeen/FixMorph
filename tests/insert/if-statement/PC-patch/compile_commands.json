@@ -1,0 +1,12 @@
+[
+    {
+        "command": "cc -c -g -O0 -DNDEBUG -fsanitize= -o test.o test.c", 
+        "directory": "/FixMorph/tests/insert/if-statement/PC-patch", 
+        "file": "/FixMorph/tests/insert/if-statement/PC-patch/test.c"
+    }, 
+    {
+        "command": "cc -c -o test.o test.c", 
+        "directory": "/FixMorph/tests/insert/if-statement/PC-patch", 
+        "file": "/FixMorph/tests/insert/if-statement/PC-patch/test.c"
+    }
+]

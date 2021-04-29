@@ -1,0 +1,128 @@
+[Wed Apr 28 18:29:50 2021][COMMAND]: export PYTHONPATH=/home/rshariffdeen/workspace/z3/build/python
+[Wed Apr 28 18:29:50 2021][COMMAND]: cd /data/backport/linux-cve/5/pa/;git clean -fd; git reset --hard HEAD
+[Wed Apr 28 18:29:54 2021][COMMAND]: cd /data/backport/linux-cve/5/pb/;git clean -fd; git reset --hard HEAD
+[Wed Apr 28 18:29:55 2021][COMMAND]: cd /data/backport/linux-cve/5/pc/;git clean -fd; git reset --hard HEAD
+[Wed Apr 28 18:29:56 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/;git clean -fd; git reset --hard HEAD; git checkout 2609aab91aded56745a33c738f63d68ecf1b1092
+[Wed Apr 28 18:30:03 2021][COMMAND]: cd /data/backport/linux-cve/5/pe/;git clean -fd; git reset --hard HEAD
+[Wed Apr 28 18:30:04 2021][COMMAND]: cd /data/backport/linux-cve/5/pa/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 18:30:49 2021][COMMAND]: cd /data/backport/linux-cve/5/pb/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 18:31:03 2021][COMMAND]: cd /data/backport/linux-cve/5/pc/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 18:31:07 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 18:31:11 2021][COMMAND]: cd /data/backport/linux-cve/5/pe/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 18:31:16 2021][COMMAND]: cd /data/backport/linux-cve/5/pa/;make allyesconfig
+[Wed Apr 28 18:31:18 2021][COMMAND]: cd /data/backport/linux-cve/5/pb/;make allyesconfig
+[Wed Apr 28 18:31:21 2021][COMMAND]: cd /data/backport/linux-cve/5/pc/;make allyesconfig
+[Wed Apr 28 18:31:23 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/;make allyesconfig
+[Wed Apr 28 18:31:25 2021][COMMAND]: cd /data/backport/linux-cve/5/pe/;make allyesconfig
+[Wed Apr 28 18:31:27 2021][COMMAND]: cd /data/backport/linux-cve/5/pa/;bear make fs/ext4/inode.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 18:31:53 2021][COMMAND]: cd /data/backport/linux-cve/5/pa/;cp compile_commands.json /FixMorph/output/linux-cve-5/compile_commands.json.pa
+[Wed Apr 28 18:31:53 2021][COMMAND]: cd /data/backport/linux-cve/5/pb/;bear make fs/ext4/inode.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 18:32:20 2021][COMMAND]: cd /data/backport/linux-cve/5/pb/;cp compile_commands.json /FixMorph/output/linux-cve-5/compile_commands.json.pb
+[Wed Apr 28 18:32:20 2021][COMMAND]: cd /data/backport/linux-cve/5/pc/;bear make fs/ext4/inode.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 18:32:26 2021][COMMAND]: cd /data/backport/linux-cve/5/pc/;cp compile_commands.json /FixMorph/output/linux-cve-5/compile_commands.json.pc
+[Wed Apr 28 18:32:26 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/;bear make fs/ext4/inode.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 18:32:35 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/;cp compile_commands.json /FixMorph/output/linux-cve-5/compile_commands.json.pc-patch
+[Wed Apr 28 18:32:35 2021][COMMAND]: cd /data/backport/linux-cve/5/pe/;bear make fs/ext4/inode.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 18:32:45 2021][COMMAND]: cd /data/backport/linux-cve/5/pe/;cp compile_commands.json /FixMorph/output/linux-cve-5/compile_commands.json.pe
+[Wed Apr 28 18:32:45 2021][COMMAND]: find /data/backport/linux-cve/5/pa -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-5/tmp/excluded-extensions-a
+[Wed Apr 28 18:32:46 2021][COMMAND]: find /data/backport/linux-cve/5/pb -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-5/tmp/excluded-extensions-b
+[Wed Apr 28 18:32:47 2021][COMMAND]: cd /data/backport/linux-cve/5/pa;git ls-files --others --exclude-standard > /FixMorph/output/linux-cve-5/tmp/excluded-extensions
+[Wed Apr 28 18:32:47 2021][COMMAND]: diff -ENBZbwr /data/backport/linux-cve/5/pa/fs/ext4/inode.c /data/backport/linux-cve/5/pb/fs/ext4/inode.c > /FixMorph/output/linux-cve-5/temp_diff
+[Wed Apr 28 18:32:47 2021][COMMAND]: cat /data/backport/linux-cve/5/pa/fs/ext4/inode.c | grep '#include' > /FixMorph/output/linux-cve-5/tmp/header-list
+[Wed Apr 28 18:32:47 2021][COMMAND]: cat /data/backport/linux-cve/5/pb/fs/ext4/inode.c | grep '#include' > /FixMorph/output/linux-cve-5/tmp/header-list
+[Wed Apr 28 18:32:47 2021][COMMAND]: cat /data/backport/linux-cve/5/pa/fs/ext4/inode.c | grep '#if' > /FixMorph/output/linux-cve-5/tmp/result
+[Wed Apr 28 18:32:47 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:32:53 2021][COMMAND]: echo /data/backport/linux-cve/5/pa/fs/ext4/inode.c.func_ext4_iget.vec >> /FixMorph/output/linux-cve-5/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 4707 --end-line-number 4961 /data/backport/linux-cve/5/pa/fs/ext4/inode.c -o /data/backport/linux-cve/5/pa/fs/ext4/inode.c.func_ext4_iget.vec 2> /FixMorph/output/linux-cve-5/tmp/deckard_error_log
+[Wed Apr 28 18:32:53 2021][COMMAND]: cat /data/backport/linux-cve/5/pc/fs/ext4/inode.c | grep '#if' > /FixMorph/output/linux-cve-5/tmp/result
+[Wed Apr 28 18:32:54 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:33:02 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:33:04 2021][COMMAND]: crochet-diff -ast-dump-json   --extra-arg="-D CONFIG_QUOTA=1 "   /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:33:08 2021][COMMAND]: crochet-diff -ast-dump-json   --extra-arg="-D CONFIG_QUOTA=1 "   /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:33:12 2021][COMMAND]: find /data/backport/linux-cve/5/pa/ -name '*.func_*\.vec'  > /FixMorph/output/linux-cve-5/vectors_C_Pa
+[Wed Apr 28 18:33:12 2021][COMMAND]: echo /data/backport/linux-cve/5/pc/fs/ext4/inode.c.func_ext4_iget.vec >> /FixMorph/output/linux-cve-5/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 3881 --end-line-number 4080 /data/backport/linux-cve/5/pc/fs/ext4/inode.c -o /data/backport/linux-cve/5/pc/fs/ext4/inode.c.func_ext4_iget.vec 2> /FixMorph/output/linux-cve-5/tmp/deckard_error_log
+[Wed Apr 28 18:33:13 2021][COMMAND]: find /data/backport/linux-cve/5/pa/ -name '*.func_*\.vec'  > /FixMorph/output/linux-cve-5/vectors_C_Pa
+[Wed Apr 28 18:33:13 2021][COMMAND]: find /data/backport/linux-cve/5/pc/ -name '*.func_*\.vec'  > /FixMorph/output/linux-cve-5/vectors_C_Pc
+[Wed Apr 28 18:33:14 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:33:25 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-5/inode.c.func.ext4_iget.slice.ast -source=/data/backport/linux-cve/5/pa/fs/ext4/inode.c -destination=/data/backport/linux-cve/5/pa/fs/ext4/inode.c -target=/data/backport/linux-cve/5/pa/fs/ext4/inode.c -map= 2> output/errors > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.func.ext4_iget.slice
+[Wed Apr 28 18:33:35 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:33:39 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-5/inode.c.func.ext4_iget.slice.ast -source=/data/backport/linux-cve/5/pc/fs/ext4/inode.c -destination=/data/backport/linux-cve/5/pc/fs/ext4/inode.c -target=/data/backport/linux-cve/5/pc/fs/ext4/inode.c -map= 2> output/errors > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.func.ext4_iget.slice
+[Wed Apr 28 18:33:44 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:33:54 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:33:59 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux-cve/5/pa/fs/ext4/inode.c /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> output/errors_clang_diff  > /FixMorph/output/linux-cve-5/tmp/morph.map
+[Wed Apr 28 18:37:38 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pb/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pb/fs/ext4/inode.c.AST
+[Wed Apr 28 18:37:46 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-5/inode.c.func.ext4_iget.slice.ast -source=/data/backport/linux-cve/5/pb/fs/ext4/inode.c -destination=/data/backport/linux-cve/5/pb/fs/ext4/inode.c -target=/data/backport/linux-cve/5/pb/fs/ext4/inode.c -map= 2> output/errors > /data/backport/linux-cve/5/pb/fs/ext4/inode.c.func.ext4_iget.slice
+[Wed Apr 28 18:37:55 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c.AST
+[Wed Apr 28 18:38:00 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-5/inode.c.func.ext4_iget.slice.ast -source=/data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c -destination=/data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c -target=/data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c -map= 2> output/errors > /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c.func.ext4_iget.slice
+[Wed Apr 28 18:38:04 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux-cve/5/pa/fs/ext4/inode.c /data/backport/linux-cve/5/pb/fs/ext4/inode.c 2> output/errors_clang_diff  > /FixMorph/output/linux-cve-5/tmp/diff_script_AB
+[Wed Apr 28 18:39:39 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:39:46 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:39:50 2021][COMMAND]: crochet-diff  -s=1000 -dump-matches /data/backport/linux-cve/5/pa/fs/ext4/inode.c /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> output/errors_clang_diff  > /FixMorph/output/linux-cve-5/inode.c.func.ext4_iget.slice.map
+[Wed Apr 28 18:43:27 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:43:34 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:47:32 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:47:39 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:47:56 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:48:02 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:48:07 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /FixMorph/output/linux-cve-5/json_Pa
+[Wed Apr 28 18:48:13 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux-cve/5/pb/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /FixMorph/output/linux-cve-5/json_Pb
+[Wed Apr 28 18:48:20 2021][COMMAND]: crochet-diff  -s=1000 -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /FixMorph/output/linux-cve-5/json_Pc
+[Wed Apr 28 18:48:24 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:48:32 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pb/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pb/fs/ext4/inode.c.AST
+[Wed Apr 28 18:48:41 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:48:46 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pb/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pb/fs/ext4/inode.c.AST
+[Wed Apr 28 18:48:52 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:48:57 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:49:07 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pb/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pb/fs/ext4/inode.c.AST
+[Wed Apr 28 18:49:16 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:49:21 2021][COMMAND]: cat /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c | grep '#ifdef' > /FixMorph/output/linux-cve-5/tmp/result
+[Wed Apr 28 18:49:22 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_QUOTA /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c > /FixMorph/output/linux-cve-5/tmp/macro-def
+[Wed Apr 28 18:49:27 2021][COMMAND]: cat /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c | grep '#ifdef' > /FixMorph/output/linux-cve-5/tmp/result
+[Wed Apr 28 18:49:27 2021][COMMAND]: clang -E -dD -dM  -D CONFIG_QUOTA /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c > /FixMorph/output/linux-cve-5/tmp/macro-def
+[Wed Apr 28 18:49:34 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pb/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pb/fs/ext4/inode.c.AST
+[Wed Apr 28 18:49:42 2021][COMMAND]: cp /data/backport/linux-cve/5/pc/fs/ext4/inode.c /FixMorph/backup/1_inode.c
+[Wed Apr 28 18:49:42 2021][COMMAND]: crochet-patch -s=1000 -script=/FixMorph/output/linux-cve-5/ext4_iget_script -source=/data/backport/linux-cve/5/pa/fs/ext4/inode.c -destination=/data/backport/linux-cve/5/pb/fs/ext4/inode.c -target=/data/backport/linux-cve/5/pc/fs/ext4/inode.c -map=/FixMorph/output/linux-cve-5/namespace-map-local > /FixMorph/output/linux-cve-5/tmp/temp-fix 2> /FixMorph/logs/log-error
+[Wed Apr 28 18:54:13 2021][COMMAND]: cp /FixMorph/output/linux-cve-5/tmp/temp-fix /data/backport/linux-cve/5/pc-patch/fs/ext4/inode.c
+[Wed Apr 28 18:54:13 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/5/pc/fs/ext4/inode.c /data/backport/linux-cve/5/pc-patch/fs/ext4/inode.c > /FixMorph/output/linux-cve-5/tmp/gen-patch
+[Wed Apr 28 18:54:13 2021][COMMAND]: clang-check -fixit /data/backport/linux-cve/5/pc-patch/fs/ext4/inode.c 2>/FixMorph/output/linux-cve-5/1_syntax_errors
+[Wed Apr 28 18:54:14 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c.AST
+[Wed Apr 28 18:54:17 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c.AST
+[Wed Apr 28 18:54:22 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/5/pa/fs/ext4/inode.c /data/backport/linux-cve/5/pb/fs/ext4/inode.c > /FixMorph/output/linux-cve-5/ext4_iget-original-patch
+[Wed Apr 28 18:54:22 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/5/pc/fs/ext4/inode.c /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c > /FixMorph/output/linux-cve-5/ext4_iget-generated-patch
+[Wed Apr 28 18:54:22 2021][COMMAND]: clang-check -analyze /data/backport/linux-cve/5/pc-patch/fs/ext4/inode.c > /FixMorph/output/linux-cve-5/syntax-errors 2>&1
+[Wed Apr 28 18:54:23 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/; make clean; make distclean; rm CMakeCache.txt; rm -rf CMakeFiles
+[Wed Apr 28 18:54:29 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/;make allyesconfig
+[Wed Apr 28 18:54:31 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/;bear make fs/ext4/inode.o > /FixMorph/logs/log-make 2>&1
+[Wed Apr 28 18:54:37 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/;cp compile_commands.json /FixMorph/output/linux-cve-5/compile_commands.json.pc-patch
+[Wed Apr 28 18:54:37 2021][COMMAND]: cd /data/backport/linux-cve/5/pc-patch/;git add *.c;git add *.h;git commit -m 'committing transplantation'
+[Wed Apr 28 18:54:38 2021][COMMAND]: find /data/backport/linux-cve/5/pa -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-5/tmp/excluded-extensions-a
+[Wed Apr 28 18:54:39 2021][COMMAND]: find /data/backport/linux-cve/5/pb -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-5/tmp/excluded-extensions-b
+[Wed Apr 28 18:54:42 2021][COMMAND]: cd /data/backport/linux-cve/5/pa;git ls-files --others --exclude-standard > /FixMorph/output/linux-cve-5/tmp/excluded-extensions
+[Wed Apr 28 18:54:42 2021][COMMAND]: diff -ENBZbwr /data/backport/linux-cve/5/pa/fs/ext4/inode.c /data/backport/linux-cve/5/pb/fs/ext4/inode.c > /FixMorph/output/linux-cve-5/temp_diff
+[Wed Apr 28 18:54:42 2021][COMMAND]: cat /data/backport/linux-cve/5/pa/fs/ext4/inode.c | grep '#include' > /FixMorph/output/linux-cve-5/tmp/header-list
+[Wed Apr 28 18:54:42 2021][COMMAND]: cat /data/backport/linux-cve/5/pb/fs/ext4/inode.c | grep '#include' > /FixMorph/output/linux-cve-5/tmp/header-list
+[Wed Apr 28 18:54:42 2021][COMMAND]: cat /data/backport/linux-cve/5/pa/fs/ext4/inode.c | grep '#if' > /FixMorph/output/linux-cve-5/tmp/result
+[Wed Apr 28 18:54:42 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pa/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pa/fs/ext4/inode.c.AST
+[Wed Apr 28 18:54:47 2021][COMMAND]: echo /data/backport/linux-cve/5/pa/fs/ext4/inode.c.func_ext4_iget.vec >> /FixMorph/output/linux-cve-5/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 4707 --end-line-number 4961 /data/backport/linux-cve/5/pa/fs/ext4/inode.c -o /data/backport/linux-cve/5/pa/fs/ext4/inode.c.func_ext4_iget.vec 2> /FixMorph/output/linux-cve-5/tmp/deckard_error_log
+[Wed Apr 28 18:54:47 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/5/pa/fs/ext4/inode.c /data/backport/linux-cve/5/pb/fs/ext4/inode.c >> /FixMorph/output/linux-cve-5/orig-diff
+[Wed Apr 28 18:54:47 2021][COMMAND]: find /data/backport/linux-cve/5/pc -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-5/tmp/excluded-extensions-a
+[Wed Apr 28 18:54:49 2021][COMMAND]: find /data/backport/linux-cve/5/pc-patch/ -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-5/tmp/excluded-extensions-b
+[Wed Apr 28 18:54:50 2021][COMMAND]: cd /data/backport/linux-cve/5/pc;git ls-files --others --exclude-standard > /FixMorph/output/linux-cve-5/tmp/excluded-extensions
+[Wed Apr 28 18:54:50 2021][COMMAND]: diff -ENBZbwr /data/backport/linux-cve/5/pc/fs/ext4/inode.c /data/backport/linux-cve/5/pc-patch//fs/ext4/inode.c > /FixMorph/output/linux-cve-5/temp_diff
+[Wed Apr 28 18:54:50 2021][COMMAND]: cat /data/backport/linux-cve/5/pc/fs/ext4/inode.c | grep '#include' > /FixMorph/output/linux-cve-5/tmp/header-list
+[Wed Apr 28 18:54:50 2021][COMMAND]: cat /data/backport/linux-cve/5/pc/fs/ext4/inode.c | grep '#include' > /FixMorph/output/linux-cve-5/tmp/header-list
+[Wed Apr 28 18:54:50 2021][COMMAND]: cat /data/backport/linux-cve/5/pc/fs/ext4/inode.c | grep '#if' > /FixMorph/output/linux-cve-5/tmp/result
+[Wed Apr 28 18:54:50 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:54:52 2021][COMMAND]: echo /data/backport/linux-cve/5/pc/fs/ext4/inode.c.func_ext4_iget.vec >> /FixMorph/output/linux-cve-5/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 3881 --end-line-number 4080 /data/backport/linux-cve/5/pc/fs/ext4/inode.c -o /data/backport/linux-cve/5/pc/fs/ext4/inode.c.func_ext4_iget.vec 2> /FixMorph/output/linux-cve-5/tmp/deckard_error_log
+[Wed Apr 28 18:54:52 2021][COMMAND]: find /data/backport/linux-cve/5/pc -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-5/tmp/excluded-extensions-a
+[Wed Apr 28 18:54:52 2021][COMMAND]: find /data/backport/linux-cve/5/pe -type f -not -name '*\.c' -not -name '*\.h' > /FixMorph/output/linux-cve-5/tmp/excluded-extensions-b
+[Wed Apr 28 18:54:55 2021][COMMAND]: cd /data/backport/linux-cve/5/pc;git ls-files --others --exclude-standard > /FixMorph/output/linux-cve-5/tmp/excluded-extensions
+[Wed Apr 28 18:54:55 2021][COMMAND]: diff -ENBZbwr /data/backport/linux-cve/5/pc/fs/ext4/inode.c /data/backport/linux-cve/5/pe/fs/ext4/inode.c > /FixMorph/output/linux-cve-5/temp_diff
+[Wed Apr 28 18:54:55 2021][COMMAND]: cat /data/backport/linux-cve/5/pc/fs/ext4/inode.c | grep '#include' > /FixMorph/output/linux-cve-5/tmp/header-list
+[Wed Apr 28 18:54:55 2021][COMMAND]: cat /data/backport/linux-cve/5/pc/fs/ext4/inode.c | grep '#include' > /FixMorph/output/linux-cve-5/tmp/header-list
+[Wed Apr 28 18:54:55 2021][COMMAND]: cat /data/backport/linux-cve/5/pc/fs/ext4/inode.c | grep '#if' > /FixMorph/output/linux-cve-5/tmp/result
+[Wed Apr 28 18:54:55 2021][COMMAND]: crochet-diff -ast-dump-json /data/backport/linux-cve/5/pc/fs/ext4/inode.c 2> /FixMorph/output/linux-cve-5/errors_AST_dump > /data/backport/linux-cve/5/pc/fs/ext4/inode.c.AST
+[Wed Apr 28 18:54:57 2021][COMMAND]: echo /data/backport/linux-cve/5/pc/fs/ext4/inode.c.func_ext4_iget.vec >> /FixMorph/output/linux-cve-5/tmp/deckard_error_log; third-party/Deckard/cvecgen_fail  --start-line-number 3881 --end-line-number 4080 /data/backport/linux-cve/5/pc/fs/ext4/inode.c -o /data/backport/linux-cve/5/pc/fs/ext4/inode.c.func_ext4_iget.vec 2> /FixMorph/output/linux-cve-5/tmp/deckard_error_log
+[Wed Apr 28 18:54:58 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/5/pc/fs/ext4/inode.c /data/backport/linux-cve/5/pe/fs/ext4/inode.c >> /FixMorph/output/linux-cve-5/port-diff
+[Wed Apr 28 18:54:58 2021][COMMAND]: diff -ENZBbwr /data/backport/linux-cve/5/pc/fs/ext4/inode.c /data/backport/linux-cve/5/pc-patch/fs/ext4/inode.c >> /FixMorph/output/linux-cve-5/transplant-diff
+[Wed Apr 28 18:54:58 2021][COMMAND]: diff -bwZEB /data/backport/linux-cve/5/pc-patch/fs/ext4/inode.c /data/backport/linux-cve/5/pe/fs/ext4/inode.c > /FixMorph/output/linux-cve-5/tmp/tmp-ast-diff
+[Wed Apr 28 18:54:58 2021][COMMAND]: crochet-diff /data/backport/linux-cve/5/pc-patch/fs/ext4/inode.c /data/backport/linux-cve/5/pe/fs/ext4/inode.c > /FixMorph/output/linux-cve-5/tmp/tmp-ast-diff

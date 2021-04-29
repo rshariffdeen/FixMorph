@@ -1,0 +1,41 @@
+TIMEOUT Exception
+Crash during analysing source diff of Ported Patch, after 2.098 minutes.
+Transformation Failed
+end of time
+Unexpected error during analysing source diff of Ported Patch.
+Runtime Error
+Error. Exiting...
+Traceback (most recent call last):
+  File "/FixMorph/app/phases/comparison.py", line 139, in safe_exec
+    result = function_def(*args)
+  File "/FixMorph/app/phases/comparison.py", line 36, in analyse_source_diff
+    path_b)
+  File "/FixMorph/app/tools/differ.py", line 20, in diff_files
+    extensions = extensions.union(get_file_extension_list(project_path_b, output_ext_b))
+  File "/FixMorph/app/common/utilities.py", line 123, in get_file_extension_list
+    execute_command(find_command)
+  File "/FixMorph/app/common/utilities.py", line 36, in execute_command
+    (output, error) = process.communicate()
+  File "/usr/lib/python3.7/subprocess.py", line 951, in communicate
+    stdout = self.stdout.read()
+  File "/FixMorph/app/main.py", line 35, in timeout_handler
+    raise Exception("end of time")
+Exception: end of time
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/FixMorph/app/main.py", line 184, in main
+    run(sys.argv[1:])
+  File "/FixMorph/app/main.py", line 168, in run
+    comparison.start()
+  File "/FixMorph/app/phases/comparison.py", line 170, in start
+    values.CONF_PATH_C, values.CONF_PATH_E)
+  File "/FixMorph/app/phases/comparison.py", line 145, in safe_exec
+    error_exit(exception, "Unexpected error during " + description + ".")
+  File "/FixMorph/app/common/utilities.py", line 83, in error_exit
+    raise Exception("Error. Exiting...")
+Exception: Error. Exiting...
+
+FixMorph exited with an error after 60.159 minutes
+

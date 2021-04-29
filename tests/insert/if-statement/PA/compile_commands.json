@@ -1,0 +1,12 @@
+[
+    {
+        "command": "cc -c -g -O0 -DNDEBUG -o test.o test.c", 
+        "directory": "/FixMorph/tests/insert/if-statement/PA", 
+        "file": "/FixMorph/tests/insert/if-statement/PA/test.c"
+    }, 
+    {
+        "command": "cc -c -o test.o test.c", 
+        "directory": "/FixMorph/tests/insert/if-statement/PA", 
+        "file": "/FixMorph/tests/insert/if-statement/PA/test.c"
+    }
+]

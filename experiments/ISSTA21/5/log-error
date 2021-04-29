@@ -1,0 +1,2084 @@
+error: unknown argument: '-maccumulate-outgoing-args'
+error: unknown argument: '-mindirect-branch=thunk-extern'
+error: unknown argument: '-mindirect-branch-register'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-femit-struct-debug-baseonly'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fno-tree-loop-im'
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:10:
+In file included from include/linux/stat.h:60:
+In file included from include/linux/time.h:7:
+In file included from include/linux/cache.h:4:
+In file included from include/linux/kernel.h:17:
+In file included from include/linux/bitops.h:25:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/bitops.h:16:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/alternative.h:153:
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/cpufeature.h:360:3: error: implicit declaration of function 'asm_volatile_goto' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+                asm_volatile_goto("1: jmp %l[t_no]\n"
+                ^
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/cpufeature.h:371:5: error: expected ')'
+                         : : "i" (bit) : : t_no);
+                         ^
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/cpufeature.h:360:20: note: to match this '('
+                asm_volatile_goto("1: jmp %l[t_no]\n"
+                                 ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:10:
+In file included from include/linux/stat.h:60:
+In file included from include/linux/time.h:7:
+In file included from include/linux/cache.h:4:
+In file included from include/linux/kernel.h:20:
+In file included from include/linux/printk.h:4:
+include/linux/init.h:261:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init parse_early_param(void);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+include/linux/init.h:262:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init parse_early_options(char *cmdline);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:10:
+In file included from include/linux/stat.h:60:
+In file included from include/linux/time.h:7:
+In file included from include/linux/cache.h:4:
+In file included from include/linux/kernel.h:20:
+include/linux/printk.h:118:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init setup_log_buf(int early);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/acpi.h:28:
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/numa.h:34:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init numa_add_memblk(int nodeid, u64 start, u64 end);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/acpi.h:28:
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/numa.h:35:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init numa_set_distance(int from, int to, int distance);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/acpi.h:28:
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/numa.h:64:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init init_cpu_to_node(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/acpi.h:32:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/trampoline.h:7:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/io.h:195:
+include/linux/vmalloc.h:47:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init vmalloc_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/acpi.h:32:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/trampoline.h:7:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/io.h:195:
+include/linux/vmalloc.h:134:8: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
+       ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/acpi.h:32:
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/trampoline.h:22:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init setup_trampolines(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/smp.h:15:
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/io_apic.h:172:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init mp_register_ioapic(int id, u32 address, u32 gsi_base);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/smp.h:15:
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/io_apic.h:173:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init pre_init_apic_IRQ0(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+include/linux/mmzone.h:1132:15: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+unsigned long __init node_memmap_size_bytes(int, unsigned long, unsigned long);
+              ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:33:
+include/linux/smp.h:88:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init call_function_init(void);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:33:
+include/linux/smp.h:111:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init setup_nr_cpu_ids(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:33:
+include/linux/smp.h:112:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init smp_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:120:33: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern struct pcpu_alloc_info * __init pcpu_alloc_alloc_info(int nr_groups,
+                                ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:122:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init pcpu_free_alloc_info(struct pcpu_alloc_info *ai);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:124:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:128:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:136:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init pcpu_page_first_chunk(size_t reserved_size,
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:159:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init percpu_init_late(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:27:
+In file included from include/linux/sysctl.h:933:
+include/linux/rcupdate.h:808:2: error: array size is negative
+        BUILD_BUG_ON(!__builtin_constant_p(offset));
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/kernel.h:717:22: note: expanded from macro 'BUILD_BUG_ON'
+                ((void)sizeof(char[1 - 2*!!(condition)]));      \
+                                   ^~~~~~~~~~~~~~~~~~~
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:18:
+In file included from include/linux/tracepoint.h:22:
+In file included from include/linux/jump_label.h:17:
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/jump_label.h:16:2: error: implicit declaration of function 'asm_volatile_goto' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+        asm_volatile_goto("1:"
+        ^
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/jump_label.h:22:3: error: expected ')'
+                : :  "i" (key) : : l_yes);
+                ^
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/jump_label.h:16:19: note: to match this '('
+        asm_volatile_goto("1:"
+                         ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:418:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init inode_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:419:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init inode_init_early(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:420:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init files_init(unsigned long);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:2098:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init vfs_caches_init_early(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:2099:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init vfs_caches_init(unsigned long);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:2716:5: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+int __init get_filesystem_list(char *buf);
+    ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:27:
+In file included from include/linux/buffer_head.h:13:
+In file included from include/linux/pagemap.h:7:
+include/linux/mm.h:1278:5: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+u64 __init find_memory_core_early(int nid, u64 size, u64 align,
+    ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:27:
+In file included from include/linux/buffer_head.h:13:
+In file included from include/linux/pagemap.h:7:
+include/linux/mm.h:1306:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init mmap_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:33:
+include/linux/slab.h:98:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init kmem_cache_init(void);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:33:
+include/linux/slab.h:365:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init kmem_cache_init_late(void);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:81:11: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[3] | set->sig[2] |
+                        ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:81:25: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[3] | set->sig[2] |
+                                      ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:82:4: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                        set->sig[1] | set->sig[0]) == 0;
+                        ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:84:11: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[1] | set->sig[0]) == 0;
+                        ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:142:31: note: expanded from macro '_SIG_SET_OP'
+            case 4: set->sig[3] = op(set->sig[3]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:142:14: note: expanded from macro '_SIG_SET_OP'
+            case 4: set->sig[3] = op(set->sig[3]);                      \
+                    ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:143:24: note: expanded from macro '_SIG_SET_OP'
+                    set->sig[2] = op(set->sig[2]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:143:7: note: expanded from macro '_SIG_SET_OP'
+                    set->sig[2] = op(set->sig[2]);                      \
+                    ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:144:31: note: expanded from macro '_SIG_SET_OP'
+            case 2: set->sig[1] = op(set->sig[1]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:144:14: note: expanded from macro '_SIG_SET_OP'
+            case 2: set->sig[1] = op(set->sig[1]);                      \
+                    ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:164:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = 0;
+                ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:176:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = -1;
+                ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:206:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = 0;
+                ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:218:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = -1;
+                ^        ~
+/data/backport/linux-cve/5/pc-patch/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:89:
+include/linux/hrtimer.h:480:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init hrtimers_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:92:
+include/linux/cred.h:171:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init cred_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:43:
+In file included from fs/ext4/ext4_jbd2.h:20:
+fs/ext4/ext4.h:1895:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init ext4_init_mballoc(void);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:43:
+In file included from fs/ext4/ext4_jbd2.h:20:
+fs/ext4/ext4.h:2299:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init ext4_init_system_zone(void);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:43:
+In file included from fs/ext4/ext4_jbd2.h:20:
+fs/ext4/ext4.h:2333:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init ext4_init_pageio(void);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:44:
+fs/ext4/xattr.h:86:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init ext4_init_xattr(void);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+error: unknown argument: '-maccumulate-outgoing-args'
+error: unknown argument: '-mindirect-branch=thunk-extern'
+error: unknown argument: '-mindirect-branch-register'
+error: unknown argument: '-fno-var-tracking-assignments'
+error: unknown argument: '-femit-struct-debug-baseonly'
+error: unknown argument: '-fconserve-stack'
+error: unknown argument: '-fno-tree-loop-im'
+warning: optimization flag '-fno-inline-functions-called-once' is not supported [-Wignored-optimization-argument]
+warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-maybe-uninitialized'; did you mean '-Wno-uninitialized'? [-Wunknown-warning-option]
+warning: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Wunknown-warning-option]
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:10:
+In file included from include/linux/stat.h:60:
+In file included from include/linux/time.h:7:
+In file included from include/linux/cache.h:4:
+In file included from include/linux/kernel.h:17:
+In file included from include/linux/bitops.h:25:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/bitops.h:16:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/alternative.h:153:
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/cpufeature.h:360:3: error: implicit declaration of function 'asm_volatile_goto' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+                asm_volatile_goto("1: jmp %l[t_no]\n"
+                ^
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/cpufeature.h:371:5: error: expected ')'
+                         : : "i" (bit) : : t_no);
+                         ^
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/cpufeature.h:360:20: note: to match this '('
+                asm_volatile_goto("1: jmp %l[t_no]\n"
+                                 ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:10:
+In file included from include/linux/stat.h:60:
+In file included from include/linux/time.h:7:
+In file included from include/linux/cache.h:4:
+In file included from include/linux/kernel.h:20:
+In file included from include/linux/printk.h:4:
+include/linux/init.h:261:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init parse_early_param(void);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+include/linux/init.h:262:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init parse_early_options(char *cmdline);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:10:
+In file included from include/linux/stat.h:60:
+In file included from include/linux/time.h:7:
+In file included from include/linux/cache.h:4:
+In file included from include/linux/kernel.h:20:
+include/linux/printk.h:118:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init setup_log_buf(int early);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/acpi.h:28:
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/numa.h:34:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init numa_add_memblk(int nodeid, u64 start, u64 end);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/acpi.h:28:
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/numa.h:35:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init numa_set_distance(int from, int to, int distance);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/acpi.h:28:
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/numa.h:64:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init init_cpu_to_node(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/acpi.h:32:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/trampoline.h:7:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/io.h:195:
+include/linux/vmalloc.h:47:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init vmalloc_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/acpi.h:32:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/trampoline.h:7:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/io.h:195:
+include/linux/vmalloc.h:134:8: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
+       ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/smp.h:13:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/apic.h:12:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/fixmap.h:19:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/acpi.h:32:
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/trampoline.h:22:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init setup_trampolines(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/smp.h:15:
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/io_apic.h:172:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init mp_register_ioapic(int id, u32 address, u32 gsi_base);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+In file included from include/linux/mmzone.h:816:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone.h:4:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/mmzone_64.h:10:
+In file included from /data/backport/linux-cve/5/pe/arch/x86/include/asm/smp.h:15:
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/io_apic.h:173:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init pre_init_apic_IRQ0(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:4:
+include/linux/mmzone.h:1132:15: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+unsigned long __init node_memmap_size_bytes(int, unsigned long, unsigned long);
+              ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:33:
+include/linux/smp.h:88:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init call_function_init(void);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:33:
+include/linux/smp.h:111:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init setup_nr_cpu_ids(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:33:
+include/linux/smp.h:112:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init smp_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:120:33: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern struct pcpu_alloc_info * __init pcpu_alloc_alloc_info(int nr_groups,
+                                ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:122:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init pcpu_free_alloc_info(struct pcpu_alloc_info *ai);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:124:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:128:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:136:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init pcpu_page_first_chunk(size_t reserved_size,
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:22:
+In file included from include/linux/gfp.h:7:
+In file included from include/linux/topology.h:34:
+include/linux/percpu.h:159:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init percpu_init_late(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:13:
+In file included from include/linux/kmod.h:27:
+In file included from include/linux/sysctl.h:933:
+include/linux/rcupdate.h:808:2: error: array size is negative
+        BUILD_BUG_ON(!__builtin_constant_p(offset));
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/kernel.h:717:22: note: expanded from macro 'BUILD_BUG_ON'
+                ((void)sizeof(char[1 - 2*!!(condition)]));      \
+                                   ^~~~~~~~~~~~~~~~~~~
+In file included from fs/ext4/inode.c:21:
+In file included from include/linux/module.h:18:
+In file included from include/linux/tracepoint.h:22:
+In file included from include/linux/jump_label.h:17:
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/jump_label.h:16:2: error: implicit declaration of function 'asm_volatile_goto' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+        asm_volatile_goto("1:"
+        ^
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/jump_label.h:22:3: error: expected ')'
+                : :  "i" (key) : : l_yes);
+                ^
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/jump_label.h:16:19: note: to match this '('
+        asm_volatile_goto("1:"
+                         ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:418:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init inode_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:419:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init inode_init_early(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:420:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init files_init(unsigned long);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:2098:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init vfs_caches_init_early(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:2099:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init vfs_caches_init(unsigned long);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:22:
+include/linux/fs.h:2716:5: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+int __init get_filesystem_list(char *buf);
+    ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:27:
+In file included from include/linux/buffer_head.h:13:
+In file included from include/linux/pagemap.h:7:
+include/linux/mm.h:1278:5: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+u64 __init find_memory_core_early(int nid, u64 size, u64 align,
+    ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:27:
+In file included from include/linux/buffer_head.h:13:
+In file included from include/linux/pagemap.h:7:
+include/linux/mm.h:1306:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init mmap_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:33:
+include/linux/slab.h:98:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init kmem_cache_init(void);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:33:
+include/linux/slab.h:365:6: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+void __init kmem_cache_init_late(void);
+     ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:81:11: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[3] | set->sig[2] |
+                        ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:81:25: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[3] | set->sig[2] |
+                                      ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:82:4: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                        set->sig[1] | set->sig[0]) == 0;
+                        ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:84:11: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+                return (set->sig[1] | set->sig[0]) == 0;
+                        ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:123:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigorsets, _sig_or)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:126:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandsets, _sig_and)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:8: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:106:24: note: expanded from macro '_SIG_SET_BINOP'
+                a3 = a->sig[3]; a2 = a->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:8: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:107:24: note: expanded from macro '_SIG_SET_BINOP'
+                b3 = b->sig[3]; b2 = b->sig[2];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:108:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[3] = op(a3, b3);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:109:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[2] = op(a2, b2);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:8: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:111:24: note: expanded from macro '_SIG_SET_BINOP'
+                a1 = a->sig[1]; b1 = b->sig[1];                         \
+                                     ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:129:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_BINOP(sigandnsets, _sig_andn)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:112:3: note: expanded from macro '_SIG_SET_BINOP'
+                r->sig[1] = op(a1, b1);                                 \
+                ^      ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:142:31: note: expanded from macro '_SIG_SET_OP'
+            case 4: set->sig[3] = op(set->sig[3]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:142:14: note: expanded from macro '_SIG_SET_OP'
+            case 4: set->sig[3] = op(set->sig[3]);                      \
+                    ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:143:24: note: expanded from macro '_SIG_SET_OP'
+                    set->sig[2] = op(set->sig[2]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:143:7: note: expanded from macro '_SIG_SET_OP'
+                    set->sig[2] = op(set->sig[2]);                      \
+                    ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:144:31: note: expanded from macro '_SIG_SET_OP'
+            case 2: set->sig[1] = op(set->sig[1]);                      \
+                                     ^        ~
+include/linux/signal.h:152:24: note: expanded from macro '_sig_not'
+#define _sig_not(x)     (~(x))
+                           ^
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:153:1: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+_SIG_SET_OP(signotset, _sig_not)
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/signal.h:144:14: note: expanded from macro '_SIG_SET_OP'
+            case 2: set->sig[1] = op(set->sig[1]);                      \
+                    ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:164:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = 0;
+                ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:176:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = -1;
+                ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:206:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = 0;
+                ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:73:
+include/linux/signal.h:218:10: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
+        case 2: set->sig[1] = -1;
+                ^        ~
+/data/backport/linux-cve/5/pe/arch/x86/include/asm/signal.h:31:2: note: array 'sig' declared here
+        unsigned long sig[_NSIG_WORDS];
+        ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:89:
+include/linux/hrtimer.h:480:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init hrtimers_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:24:
+In file included from include/linux/jbd2.h:277:
+In file included from include/linux/sched.h:92:
+include/linux/cred.h:171:13: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern void __init cred_init(void);
+            ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:43:
+In file included from fs/ext4/ext4_jbd2.h:20:
+fs/ext4/ext4.h:1895:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init ext4_init_mballoc(void);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:43:
+In file included from fs/ext4/ext4_jbd2.h:20:
+fs/ext4/ext4.h:2299:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init ext4_init_system_zone(void);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:43:
+In file included from fs/ext4/ext4_jbd2.h:20:
+fs/ext4/ext4.h:2333:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init ext4_init_pageio(void);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
+In file included from fs/ext4/inode.c:44:
+fs/ext4/xattr.h:86:12: warning: unknown attribute 'indirect_branch' ignored [-Wunknown-attributes]
+extern int __init ext4_init_xattr(void);
+           ^
+include/linux/init.h:50:54: note: expanded from macro '__init'
+#define __init          __section(.init.text) __cold notrace __noretpoline
+                                                             ^
+include/linux/init.h:8:38: note: expanded from macro '__noretpoline'
+#define __noretpoline __attribute__((indirect_branch("keep")))
+                                     ^
