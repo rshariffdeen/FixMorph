@@ -9,9 +9,6 @@ from Cython.Build import cythonize
 
 
 EXCLUDE_FILES = [
-    'app/main.py',
-    'app/tools/configuration.py',
-    'app/tools/oracle.py'
 ]
 
 
@@ -48,7 +45,7 @@ class build_py(_build_py):
 setup(
     name='fixmorph',
     version='1.0.0',
-    packages=find_packages(),
+    packages=[],
     ext_modules=cythonize(
         get_ext_paths('app', EXCLUDE_FILES),
         compiler_directives={'language_level': 3}
