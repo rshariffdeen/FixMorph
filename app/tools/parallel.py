@@ -1,7 +1,6 @@
 import multiprocessing as mp
 
 import app.common.utilities
-import app.tools.generator
 from app.common import definitions, values, utilities
 from app.tools import converter, emitter, finder, extractor
 from multiprocessing import TimeoutError
