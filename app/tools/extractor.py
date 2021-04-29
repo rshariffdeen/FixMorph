@@ -830,17 +830,3 @@ def extract_identifier_list(string_expression):
     return identifier_list
 
 
-def extract_header_file_list(ast_tree):
-    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    header_file_list = list()
-    if "file" in ast_tree:
-        file_loc = ast_tree['file']
-        if ".h" in file_loc:
-            if values.Project_D.path in file_loc:
-                file_loc = file_loc.replace(values.Project_D.path + "/", "")
-            header_file_list.append(file_loc)
-    if len(ast_tree['children']) > 0:
-        for child_node in ast_tree['children']:
-            child_list = extract_header_file_list(child_node)
-            header_file_list = header_file_list + child_list
-    return list(set(header_file_list))
