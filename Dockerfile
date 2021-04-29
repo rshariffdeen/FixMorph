@@ -64,12 +64,10 @@ RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install cython
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
 ARG CACHEBUST=1
-RUN git clone https://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:x-oauth-basic@github.com/rshariffdeen/FixMorph.git /FixMorph
+ADD . /FixMorph
 RUN rm /FixMorph/Dockerfile*
 WORKDIR /FixMorph
 RUN python3.7 setup.py build_ext
-RUN mv /FixMorph/build/lib.linux-x86_64-3.7/ /FixMorph/build/fixmorph
-RUN rm -rf /FixMorph/app
 
 # Tidy up the container
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
