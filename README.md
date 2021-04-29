@@ -2,9 +2,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/rshariffdeen/fixmorph.svg)](https://hub.docker.com/r/rshariffdeen/fixmorph)
 
 FixMorph is a tool to automatically morph fixes (patches) from one program version to a
-different yet syntactically similar program version. Component-oriented programming
-enables ad-hoc and low-cost code integration from multiple sources, which has a negative connotations because 
-it requires developers to port changes and bug fixes from peer projects during software evolution. Adding features and
+different yet syntactically similar program version. Adding features and
 fixing bugs often requires systematic edits that are similar but not identical changes to many code locations. Finding 
 such locations and making the correct edit is a tedious and error-prone process for developers. FixMorph can 
 help automate this process. 
