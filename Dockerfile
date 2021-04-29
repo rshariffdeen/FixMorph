@@ -30,6 +30,7 @@ RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-install-recommends --force-yes \
     clang-9 \
     python3.7 \
+    python3.7-dev \
     python3-pip \
     python3-setuptools
 
