@@ -6,12 +6,14 @@ import io
 import os
 
 import json
-from app.common.utilities import execute_command, find_files, definitions
+
+import app.common.utilities
+from app.common.utilities import execute_command, find_files, generate_map_gumtree
 from app.tools import merger
-from app.tools import mapper, slicer, parallel, emitter, finder, extractor, logger
+from app.tools import slicer, parallel, emitter, finder, extractor, logger
 from app.ast import ast_vector, ast_generator
 from app.common.utilities import error_exit
-from app.common import values, utilities
+from app.common import values, utilities, definitions
 
 
 def generate_slice_for_vector(vector_path, use_macro=False):
@@ -21,7 +23,7 @@ def generate_slice_for_vector(vector_path, use_macro=False):
     seg_type = segment.replace(".vec", "").split("_")[0]
     segment_identifier = "_".join(segment.replace(".vec", "").split("_")[1:])
     slice_file = source_file + "." + seg_type + "." + segment_identifier + ".slice"
-    project_path = extractor.extract_project_path(source_file)
+    project_path = app.common.utilities.extract_project_path(source_file)
     seg_found = slicer.slice_source_file(source_file, seg_type, segment_identifier,
                                          project_path,
                                          use_macro)
@@ -55,7 +57,7 @@ def generate_similarity_score(vector_path_a, vector_path_c):
     ast_tree_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
     ast_node_a = finder.search_function_node_by_name(ast_tree_a, segment_identifier_a)
     ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
-    mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
+    generate_map_gumtree(source_file_a, source_file_c, map_file_name)
     ast_node_map = parallel.read_mapping(map_file_name)
     utilities.restore_per_slice(slice_file_a)
     utilities.restore_per_slice(slice_file_c)
@@ -411,3 +413,5 @@ def generate_edit_diff(file_a, file_b, output_file):
         execute_command(command, False)
     except Exception as e:
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
+
+

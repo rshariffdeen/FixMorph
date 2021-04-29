@@ -5,14 +5,74 @@
 import sys
 import os
 from pathlib import Path
+
+import app.common.utilities
 from app.ast import ast_vector, ast_generator
-from app.tools import oracle
-from app.tools import emitter, extractor, logger
+from app.tools import converter, emitter, logger
 from app.common.utilities import execute_command, find_files, definitions
 from app.common import values
 import mmap
 
 FILE_GREP_RESULT = ""
+
+
+def is_node_equal(node_a, node_b, var_map):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    node_type_a = str(node_a['type'])
+    node_type_b = str(node_b['type'])
+    if node_type_a != node_type_b:
+        return False
+
+    if node_type_a in ["DeclStmt", "DeclRefExpr", "VarDecl"]:
+        node_value_a = node_a['value']
+        node_value_b = node_b['value']
+        if node_value_a == node_value_b or node_value_a == var_map[node_value_b] or \
+                node_value_b == var_map[node_value_a]:
+            return True
+        else:
+            return False
+    elif node_type_a == "ArraySubscriptExpr":
+        # print(node_a)
+        # print(node_b)
+        node_value_a, node_type_a, var_list = converter.convert_array_subscript(node_a)
+        node_value_b, node_type_b, var_list = converter.convert_array_subscript(node_b)
+        if node_value_a == node_value_b or node_value_a == var_map[node_value_b] or \
+                node_value_b == var_map[node_value_a]:
+            return True
+        else:
+            return False
+    elif node_type_a == "IntegerLiteral":
+        node_value_a = int(node_a['value'])
+        node_value_b = int(node_b['value'])
+        if node_value_a == node_value_b:
+            return True
+        else:
+            return False
+
+    elif node_type_a == "MemberExpr":
+        node_value_a, node_type_a, var_list = converter.convert_member_expr(node_a, True)
+        node_value_b, node_type_b, var_list = converter.convert_member_expr(node_b, True)
+        if node_value_a == node_value_b:
+            return True
+        else:
+            if node_value_b in var_map and node_value_a == var_map[node_value_b]:
+                return True
+            else:
+                return False
+    elif node_type_a == "ParenExpr":
+        child_node_a = node_a['children'][0]
+        child_node_b = node_b['children'][0]
+        return is_node_equal(child_node_a, child_node_b, var_map)
+    elif node_type_a == "BinaryOperator":
+        left_child_a = node_a['children'][0]
+        right_child_a = node_a['children'][1]
+        left_child_b = node_b['children'][0]
+        right_child_b = node_b['children'][1]
+        if is_node_equal(left_child_a, left_child_b, var_map) and \
+                is_node_equal(right_child_a, right_child_b, var_map):
+            return True
+        else:
+            return False
 
 
 def search_vector(file_path):
@@ -51,7 +111,7 @@ def search_matching_node(ast_node, search_node, var_map):
     node_type = str(ast_node['type'])
     search_node_type = str(search_node['type'])
     if node_type == search_node_type:
-        if oracle.is_node_equal(ast_node, search_node, var_map):
+        if is_node_equal(ast_node, search_node, var_map):
             return node_type + "(" + str(node_id) + ")"
 
     for child_node in ast_node['children']:
@@ -195,14 +255,14 @@ def find_definition_insertion_point(source_path):
 def find_header_file(query, source_path, target_path):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global FILE_GREP_RESULT
-    project_dir = extractor.extract_project_path(source_path)
+    project_dir = app.common.utilities.extract_project_path(source_path)
     FILE_GREP_RESULT = definitions.DIRECTORY_OUTPUT + "/grep-output"
     search_command = "cd " + project_dir + ";"
     search_command += "grep -inr -e \"" + query + "\" . | grep define"
     search_command += " > " + FILE_GREP_RESULT
     execute_command(search_command)
     target_ast_tree = ast_generator.get_ast_json(target_path, regenerate=True)
-    header_file_list_in_target = extractor.extract_header_file_list(target_ast_tree)
+    header_file_list_in_target = extract_header_file_list(target_ast_tree)
     # print(header_file_list_in_target)
     with open(FILE_GREP_RESULT, 'r') as result_file:
         candidate_list = result_file.readlines()
@@ -280,3 +340,18 @@ def find_clone(file_name):
 
     return clone_path
 
+
+def extract_header_file_list(ast_tree):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    header_file_list = list()
+    if "file" in ast_tree:
+        file_loc = ast_tree['file']
+        if ".h" in file_loc:
+            if values.Project_D.path in file_loc:
+                file_loc = file_loc.replace(values.Project_D.path + "/", "")
+            header_file_list.append(file_loc)
+    if len(ast_tree['children']) > 0:
+        for child_node in ast_tree['children']:
+            child_list = extract_header_file_list(child_node)
+            header_file_list = header_file_list + child_list
+    return list(set(header_file_list))

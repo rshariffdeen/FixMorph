@@ -347,3 +347,45 @@ def restore_slice_source():
         # restore_file_orig(vector_source_b)
         # restore_file_orig(vector_source_c)
         # restore_file_orig(vector_source_d)
+
+
+def extract_project_path(source_path):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    if values.CONF_PATH_A + "/" in source_path:
+        return values.CONF_PATH_A
+    elif values.CONF_PATH_B in source_path:
+        return values.CONF_PATH_B
+    elif values.Project_D.path in source_path:
+        return values.Project_D.path
+    elif values.CONF_PATH_C in source_path:
+        return values.CONF_PATH_C
+    elif values.CONF_PATH_E in source_path:
+        return values.CONF_PATH_E
+    else:
+        return None
+
+
+def generate_map_gumtree(file_a, file_b, output_file):
+    name_a = file_a.split("/")[-1]
+    name_b = file_b.split("/")[-1]
+    emitter.normal("\tsource: " + file_a)
+    emitter.normal("\ttarget: " + file_b)
+    emitter.normal("\tgenerating ast map")
+    try:
+        extra_arg = ""
+        if file_a[-1] == 'h':
+            extra_arg = " --"
+        generate_command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
+        if values.DONOR_REQUIRE_MACRO:
+            generate_command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
+            if values.CONF_PATH_B in file_b:
+                generate_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg-c") + " "
+        if values.TARGET_REQUIRE_MACRO:
+            if values.CONF_PATH_C in file_b:
+                generate_command += " " + values.TARGET_PRE_PROCESS_MACRO + " "
+        generate_command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
+        # command += "| grep '^Match ' "
+        generate_command += " > " + output_file
+        execute_command(generate_command, False)
+    except Exception as e:
+        error_exit(e, "Unexpected fail at generating map: " + output_file)

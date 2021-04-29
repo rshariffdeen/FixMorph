@@ -1,7 +1,8 @@
 import sys
 import re
 from app.tools import converter, emitter, finder, logger
-from app.common.utilities import execute_command, get_file_list, error_exit, is_intersect, definitions
+from app.common.utilities import execute_command, get_file_list, error_exit, is_intersect, definitions, \
+    extract_project_path
 import os
 from app.common import values
 from app.ast import ast_generator
@@ -653,33 +654,6 @@ def extract_unique_in_order(list):
     return [x for x in list if not (x in seen_set or seen_add(x))]
 
 
-def extract_project_path(source_path):
-    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if values.CONF_PATH_A + "/" in source_path:
-        return values.CONF_PATH_A
-    elif values.CONF_PATH_B in source_path:
-        return values.CONF_PATH_B
-    elif values.Project_D.path in source_path:
-        return values.Project_D.path
-    elif values.CONF_PATH_C in source_path:
-        return values.CONF_PATH_C
-    elif values.CONF_PATH_E in source_path:
-        return values.CONF_PATH_E
-    else:
-        return None
-
-
-def extract_header_list(source_path):
-    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    header_list = list()
-    output_file_path = definitions.DIRECTORY_TMP + "/header-list"
-    extract_command = "cat " + source_path + " | grep '#include' > " + output_file_path
-    execute_command(extract_command)
-    with open(output_file_path, 'r') as output_file:
-        header_list = output_file.readlines()
-    return header_list
-
-
 def extract_pre_macro_list(source_file, only_if=False):
     result_file = definitions.DIRECTORY_TMP + "/result"
     cat_command = "cat " + source_file + " | grep '#if' > " + result_file
@@ -856,17 +830,3 @@ def extract_identifier_list(string_expression):
     return identifier_list
 
 
-def extract_header_file_list(ast_tree):
-    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    header_file_list = list()
-    if "file" in ast_tree:
-        file_loc = ast_tree['file']
-        if ".h" in file_loc:
-            if values.Project_D.path in file_loc:
-                file_loc = file_loc.replace(values.Project_D.path + "/", "")
-            header_file_list.append(file_loc)
-    if len(ast_tree['children']) > 0:
-        for child_node in ast_tree['children']:
-            child_list = extract_header_file_list(child_node)
-            header_file_list = header_file_list + child_list
-    return list(set(header_file_list))
