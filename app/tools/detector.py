@@ -8,7 +8,7 @@ import os
 import app.common.utilities
 import app.tools.generator
 from app.common.utilities import error_exit, definitions
-from app.tools import generator, mapper, slicer, parallel, emitter, finder, extractor, logger
+from app.tools import generator, slicer, parallel, emitter, finder, extractor, logger
 from app.common import values, utilities
 from app.ast import ast_parser, ast_vector, ast_generator
 
