@@ -669,17 +669,6 @@ def extract_project_path(source_path):
         return None
 
 
-def extract_header_list(source_path):
-    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    header_list = list()
-    output_file_path = definitions.DIRECTORY_TMP + "/header-list"
-    extract_command = "cat " + source_path + " | grep '#include' > " + output_file_path
-    execute_command(extract_command)
-    with open(output_file_path, 'r') as output_file:
-        header_list = output_file.readlines()
-    return header_list
-
-
 def extract_pre_macro_list(source_file, only_if=False):
     result_file = definitions.DIRECTORY_TMP + "/result"
     cat_command = "cat " + source_file + " | grep '#if' > " + result_file

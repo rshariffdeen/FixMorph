@@ -5,10 +5,10 @@
 import sys
 import os
 
-from app.common.utilities import error_exit, is_intersect, get_code
+from app.common.utilities import error_exit, is_intersect, get_code, execute_command
 import collections
-from app.common import values
-from app.tools import oracle, merger
+from app.common import values, definitions
+from app.tools import oracle, merger, logger
 from app.tools import converter, generator as Gen, emitter, finder, extractor, logger
 from app.ast import ast_vector, ast_generator
 
@@ -1018,8 +1018,8 @@ def identify_definition_segment(diff_info, project):
     for source_file_a in grouped_line_info:
         emitter.normal("\t\t" + source_file_a)
         source_file_b = source_file_a.replace(values.CONF_PATH_A, values.CONF_PATH_B)
-        header_list_a = extractor.extract_header_list(source_file_a)
-        header_list_b = extractor.extract_header_list(source_file_b)
+        header_list_a = extract_header_list(source_file_a)
+        header_list_b = extract_header_list(source_file_b)
         added_header_list = list(set(header_list_b) - set(header_list_a))
         removed_header_list = list(set(header_list_a) - set(header_list_b))
         project.header_list[source_file_a] = dict()
@@ -1030,3 +1030,13 @@ def identify_definition_segment(diff_info, project):
         for header_file in removed_header_list:
             emitter.success("\t\t\tRemoved: " + header_file)
 
+
+def extract_header_list(source_path):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    header_list = list()
+    output_file_path = definitions.DIRECTORY_TMP + "/header-list"
+    extract_command = "cat " + source_path + " | grep '#include' > " + output_file_path
+    execute_command(extract_command)
+    with open(output_file_path, 'r') as output_file:
+        header_list = output_file.readlines()
+    return header_list
