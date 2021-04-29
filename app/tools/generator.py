@@ -8,12 +8,12 @@ import os
 import json
 
 import app.common.utilities
-from app.common.utilities import execute_command, find_files, definitions
-from app.tools import merger
+from app.common.utilities import execute_command, find_files, definitions, error_exit
+from app.tools import merger, emitter
 from app.tools import mapper, slicer, parallel, emitter, finder, extractor, logger
 from app.ast import ast_vector, ast_generator
 from app.common.utilities import error_exit
-from app.common import values, utilities
+from app.common import values, utilities, definitions
 
 
 def generate_slice_for_vector(vector_path, use_macro=False):
@@ -57,7 +57,7 @@ def generate_similarity_score(vector_path_a, vector_path_c):
     ast_tree_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
     ast_node_a = finder.search_function_node_by_name(ast_tree_a, segment_identifier_a)
     ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
-    mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
+    generate_map_gumtree(source_file_a, source_file_c, map_file_name)
     ast_node_map = parallel.read_mapping(map_file_name)
     utilities.restore_per_slice(slice_file_a)
     utilities.restore_per_slice(slice_file_c)
@@ -413,3 +413,29 @@ def generate_edit_diff(file_a, file_b, output_file):
         execute_command(command, False)
     except Exception as e:
         error_exit(e, "Unexpected fail at generating edit script: " + output_file)
+
+
+def generate_map_gumtree(file_a, file_b, output_file):
+    name_a = file_a.split("/")[-1]
+    name_b = file_b.split("/")[-1]
+    emitter.normal("\tsource: " + file_a)
+    emitter.normal("\ttarget: " + file_b)
+    emitter.normal("\tgenerating ast map")
+    try:
+        extra_arg = ""
+        if file_a[-1] == 'h':
+            extra_arg = " --"
+        generate_command = definitions.DIFF_COMMAND + " -s=" + definitions.DIFF_SIZE + " -dump-matches "
+        if values.DONOR_REQUIRE_MACRO:
+            generate_command += " " + values.DONOR_PRE_PROCESS_MACRO + " "
+            if values.CONF_PATH_B in file_b:
+                generate_command += " " + values.DONOR_PRE_PROCESS_MACRO.replace("--extra-arg-a", "--extra-arg-c") + " "
+        if values.TARGET_REQUIRE_MACRO:
+            if values.CONF_PATH_C in file_b:
+                generate_command += " " + values.TARGET_PRE_PROCESS_MACRO + " "
+        generate_command += file_a + " " + file_b + extra_arg + " 2> output/errors_clang_diff "
+        # command += "| grep '^Match ' "
+        generate_command += " > " + output_file
+        execute_command(generate_command, False)
+    except Exception as e:
+        error_exit(e, "Unexpected fail at generating map: " + output_file)
