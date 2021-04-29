@@ -58,7 +58,7 @@ RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install pylint
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install six
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install gitpython
-
+RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install cython
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
