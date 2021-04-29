@@ -18,7 +18,7 @@ and setup scripts. Use the following command:
 
 ```bash
 cd /FixMorph
-docker build -t rshariffdeen/fixmorph .
+docker build -t rshariffdeen/fixmorph:16.04 .
 cd /FixMorph/experiments/ISSTA21
 docker build -t rshariffdeen/fixmorph:issta21 .
 ```

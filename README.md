@@ -27,7 +27,7 @@ You can use the following command to build the image:
 
 ```bash
 cd /FixMorph
-docker build -t rshariffdeen/fixmorph .
+docker build -t rshariffdeen/fixmorph:16.04 .
 ```
 
 # Example Usage

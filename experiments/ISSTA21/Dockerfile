@@ -1,4 +1,4 @@
-FROM rshariffdeen/fixmorph
+FROM rshariffdeen/fixmorph:16.04
 MAINTAINER Ridwan Shariffdeen <ridwan@comp.nus.edu.sg>
 
 RUN apt-get update && apt-get install -y \
