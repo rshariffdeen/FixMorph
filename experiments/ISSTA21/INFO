@@ -1,0 +1,39 @@
+##############################################################
+## Artifact for Paper #237	Automated Patch Backporting in Linux (Experience Paper)
+#############
+This is the artifact for the ISSTA'2021 submission #237 #237 Automated Patch Backporting in Linux (Experience Paper)  by the authors:
+
+Ridwan Shariffdeen
+Gao Xiang
+Gregory J Duck
+Shin Hwei Tan
+Julia Lawall
+Abhik Roychoudhury
+
+
+##############################################################
+## Content
+#############
+This archive contains the following content:
+* FixMorph.py: the tool for automated backporting
+* experiments/ISSTA21: scripts to reproduce our evaluation
+* experiments/ISSTA21/Results.xlsx: information about the subjects and the corresponding patches
+
+
+##############################################################
+## List of Claims that are supported by this artifact
+#############
+With this artifact the reviewer can reproduce the results presented in
+* Table 3, Table 4, Table 5 and Table 6.
+
+
+##############################################################
+## Documentation
+#############
+
+doc/GetStart.md: getting started guide
+experiments/ISSTA21/README.md: a walk-through on how to reproduce the experiments with an example
+
+#############
+## END-OF-FILE
+##############################################################
