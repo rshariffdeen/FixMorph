@@ -95,7 +95,9 @@ Many such examples are included in the 'tests' directory, simply replace the con
 
 ## Publication ##
 **Automated Patch Backporting in Linux (Experience Paper)**
+
 Ridwan Shariffdeen, Xiang Gao, Gregory J. Duck, Shin Hwei Tan, Julia Lawall, Abhik Roychoudhury
+
 International Symposium on Software Testing and Analysis (ISSTA), 2021
 
 # License
