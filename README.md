@@ -4,7 +4,7 @@
 FixMorph is a tool to automatically morph fixes (patches) from one program version to a different yet syntactically similar program version. <!--Adding features and fixing bugs often requires systematic edits that are similar but not identical changes to many code locations. Finding such locations and making the correct edit is a tedious and error-prone process for developers.--> 
 To support users with different feature/stability requirements, many software systems (e.g. Linux Kernel) actively maintain multiple versions. When adding features and fixing bugs in the mainline version by introducing patches, the patches need to be backported to old stable versions. Patch backporting is a tedious and error-prone process for developers. FixMorph can help automate this process.
 
-FixMorph is a powerful morphing tool for C source-codes. FixMorph is:
+FixMorph is a powerful morphing tool for C source codes. FixMorph is:
 
 * Scalable: FixMorph can backport bug-fixing patches in large/complex source bases such as the Linux Kernel
 * Compilable: The morphed patch is verified to be free of syntax errors
@@ -30,11 +30,11 @@ cd /FixMorph
 docker build -t rshariffdeen/fixmorph:16.04 .
 ```
 
-The experiments/ISSTA21/Dockerfile depends on the fixmorph image. The instructions to build and exeucte experiments/ISSTA21/Dockerfile can be found [here](./experiments/ISSTA21).
+The experiments/ISSTA21/Dockerfile depends on the fixmorph image. The instructions to build and execute experiments/ISSTA21/Dockerfile can be found [here](./experiments/ISSTA21).
 
 
 # Example Usage
-FixMorph requires a configuration file that specifies the source code path, where *path_a* and *path_b* represet the paths of the mainline version before and after introducing the patch, which *path_c* represents the path of the version to which the patch is backport. Following is an example configuration file in the provided test cases.
+FixMorph requires a configuration file that specifies the source code path, where *path_a* and *path_b* represent the paths of the mainline version before and after introducing the patch, while *path_c* represents the path of the version to which the patch is backported. Following is an example configuration file in the provided test cases.
 
 ```c
 path_a:/fixmorph/tests/update/assignment/PA
@@ -44,7 +44,7 @@ config_command_a:skip
 config_command_c:skip
 ```
 
-Once a configuration file has been set up as above, the following command will run FixMorph to adapt the patch from the mainline version to target version.
+Once a configuration file has been set up as above, the following command will run FixMorph to adapt the patch from the mainline version to the target version.
 
 ```bash
 
@@ -89,11 +89,14 @@ Many such examples are included in the 'tests' directory, simply replace the con
 * [ISSTA'21 Experiment Replication](experiments/ISSTA21/README.md)  
 * [Manual](doc/Manual.md)
 
-
-## Developers
+## Developers ##
 * Ridwan Shariffdeen
 * Gao Xiang
 
+## Publication ##
+**Automated Patch Backporting in Linux (Experience Paper)**
+Ridwan Shariffdeen, Xiang Gao, Gregory J. Duck, Shin Hwei Tan, Julia Lawall, Abhik Roychoudhury
+International Symposium on Software Testing and Analysis (ISSTA), 2021
 
 # License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
