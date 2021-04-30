@@ -1,14 +1,9 @@
 # Experiment Replication
 
-FixMorph successfully generates correct transformation for most of the subjects in our data-set which are curated from backported
-patches in the Linux Kernel project. For each transformation, we provide an url that contains the original transformation, manually ported transformation and 
-the generated transformation by FixMorph at https://fixmorph.github.io. 
+FixMorph successfully generates correct transformation for 75.1% of the subjects in our data-set which are curated from backported patches in the Linux Kernel project. For each transformation, we provide an url that contains the original transformation, manually ported transformation and the generated transformation by FixMorph at https://fixmorph.github.io.
 
-In our replication package, we include scripts to reproduce the experiment setup which can be evaluated using our tool. 
-This directory includes scripts and Dockerfile to re-create the experiment setup, you can also use our pre-built Docker 
-which can be downloaded from following repository
-
-Dockerhub Repo: https://hub.docker.com/repository/docker/rshariffdeen/fixmorph
+In our replication package, we include scripts to reproduce the experiment using fixmorph.
+This directory includes scripts and Dockerfile to re-create the experiment setup and reproduce the evaluation results.
 
 # Getting Started
 
@@ -17,46 +12,42 @@ Setup environment can be built using the Dockerfile provided within, which will 
 and setup scripts. Use the following command:
 
 ```bash
-cd /FixMorph
+git clone https://github.com/rshariffdeen/FixMorph.git
+cd FixMorph
 docker build -t rshariffdeen/fixmorph:16.04 .
-cd /FixMorph/experiments/ISSTA21
+cd experiments/ISSTA21
 docker build -t rshariffdeen/fixmorph:issta21 .
 ```
 
-Note that the build process can be time-consuming, hence you can also use the pre-built docker image using the command:
+Note that the build process can be time-consuming, hence you can using the following command to download pre-built Docker image from following repository Dockerhub Repo: https://hub.docker.com/repository/docker/rshariffdeen/fixmorph
+
 
 ```bash
 docker pull rshariffdeen/fixmorph:issta21
 ```
 
-Having the image, you can now start a Docker container. We recommend linking the container to folders in the filesystem,
-so that it is possible to check the logs and generated outputs also outside of the Docker container. 
+Having the image, you can now start a Docker container. <!--We recommend linking the container to folders in the filesystem, so that it is possible to check the logs and generated outputs also outside of the Docker container.-->
 
 ```bash
-docker run --name FixMorph -it rshariffdeen/fixmorph:issta21 bash
+docker run -it rshariffdeen/fixmorph:issta21 bash
 ```
 
 ## Test Input Files
-We will first run a test example to verify that FixMorph is working in the given environment, for this purpose we will use
-the test-case provided in the directory 'tests/update/assignment'. In this example we provide three C source files and their
-corresponding Makefiles, in addition we also provide the configuration file for FixMorph. 
+We will first run a test example to verify that FixMorph is working in the given environment, for this purpose we will use the test-case provided in the directory 'tests/update/assignment'. In this example we provide three C source files and their corresponding Makefiles, in addition we also provide the configuration file for FixMorph.
 
-
-* /FixMorph/tests/update/assignment/repair.conf shows the FixMorph configuration file.
-* /FixMorph/tests/update/assignment/PA lists the source files for pre-transform version of the reference program
-* /FixMorph/tests/update/assignment/PB lists the source files for post-transform version of the reference program
-* /FixMorph/tests/update/assignment/PC lists the source files for target program
+* /FixMorph/tests/update/assignment/repair.conf is the FixMorph configuration file.
+* /FixMorph/tests/update/assignment/PA lists the source files for pre-transform version of the reference version
+* /FixMorph/tests/update/assignment/PB lists the source files for post-transform version of the reference version
+* /FixMorph/tests/update/assignment/PC lists the source files for target version
 
 ## Test Run
-You can check if everything is working well, by running the above test-case from our test-suite. 
+You can check if everything is working well by running the above test-case from our test-suite.
 
 ```bash
 python3.7 FixMorph.py --conf=tests/update/assignment/repair.conf
 ```
 
-The example test-case provided illustrates a change in the sorting logic in the donor/reference program by updating the field
-use for the sorting logic, from 'rank' to the entity 'id'. We use FixMorph to learn the transformation and apply it to another 
-similar but different program. 
+This example test-case illustrates a change in a sorting logic. The patch updates the field use of the sorting logic from 'rank' to entity 'id'. We use FixMorph to learn the transformation rule and apply it to another similar but different version.
 
 ### FixMorph Output
 The output message at the end of the execution should look similar to the following:
@@ -79,8 +70,7 @@ The output message at the end of the execution should look similar to the follow
 
 
 ### Analysing Results
-FixMorph was able to successfully generate an updated version of the target program from the transformation learnt from the
-reference program. During this process FixMorph produces several files and we will analyse each below:
+FixMorph is able to successfully generate an updated version of the target version by using the transformation rule learnt from the reference version. During this process, FixMorph produces several files and we will analyse each below:
 
 * /FixMorph/logs/TAG_ID directory stores all logs, the "TAG_ID" should be specified in the configuration file
 	* log-latest: this is the main application log which captures each step of the program transformation
@@ -98,29 +88,28 @@ To better explore the final outcome, please check the FixMorph output directory 
 /FixMorph/output/<tag_id> (for this example the tag_id defined in the configuration file is 'update-test') i.e. /FixMorph/output/update-test
 Similarly, the logs are also stored in /FixMorph/logs/<tag_id>.
 
-For more examples refer [this guide](../../doc/Examples.md)
+For more examples refer [this guide](../../doc/Examples.md).
 
 
 # Running Experiments
 Following details how to run the scripts and the tool to replicate the results of our experiments.
-Once you build the docker image, you spin up a container as mentioned above. 
+Once you build the docker image, you spin up a container as mentioned above.
 
 Inside the container the following directories/files will be used
-- /FixMorph - this will be the tool directory
+- /FixMorph - this is the tool directory
 - /experiments/ISSTA21 - all experiment setups will be deployed in this directory
 - /experiments/ISSTA21/main-data.json - this contains the meta-data for the main experiment of (350 commits)
 - /experiments/ISSTA21/cve-data.json - this contains the meta-data for the cve-fixes
 
 
-In /experiments/ISSTA21 directory a python driver is provided to run all experiments. 
+In /experiments/ISSTA21 directory a python driver is provided to run all experiments.
 You can run all the experiments using the following command
 
 ```bash
 python3.7 driver.py --data=[cve-data.json/main-data.json]
 ```
 
-You can specify the driver to setup the environment and manually run the tool later by using following command, which will 
-setup the experiment data in /data directory. 
+You can specify the driver to setup the environment and manually run the tool later by using following command, which will setup the experiment data in /data directory.
 
 ```bash
 python3.7 driver.py --data=[cve-data.json/main-data.json] --only-setup
@@ -213,3 +202,4 @@ python3.7 FixMorph.py --conf=/data/backport/linux/238/repair.conf --time=TIME --
 * [Getting Started](../../doc/GetStart.md)
 * [Example Usage](../../doc/Examples.md)
 * [Manual](../../doc/Manual.md)
+
