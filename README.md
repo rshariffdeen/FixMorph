@@ -11,6 +11,15 @@ FixMorph is a powerful morphing tool for C source codes. FixMorph is:
 * Compilable: The morphed patch is verified to be free of syntax errors
 * Extensible: FixMorph is designed so that it can be easily extended to support advanced transformations
 
+## Experiment Replication ##
+Please find below files useful for the replication of the experiments
+
+* [Guide for Experiment Replication](experiments/ISSTA21/README.md)  
+* [Results Sheet](experiments/ISSTA21/Results.xlsx)  
+* [Main Data Set](experiments/ISSTA21/main-data.json)
+* [CVE Data Set](experiments/ISSTA21/cve-data.json)
+
+
 [comment]: <> (# Building)
 
 [comment]: <> (We provide two options to build FixMorph: &#40;1&#41; build from source, &#40;2&#41; build using Dockerfile.)
