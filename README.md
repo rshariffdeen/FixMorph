@@ -47,11 +47,11 @@ config_command_c:skip
 Once a configuration file has been set up as above, the following command will run FixMorph to adapt the patch from the mainline version to the target version.
 
 ```bash
-
+docker run -it rshariffdeen/fixmorph:16.04 /bin/bash              # start docker
 python3.7 FixMorph.py --conf=/path/to/conf/file
 ```
 
-In this example, the original patch from mainline version PA-PB:
+The backported will be generated at ./tests/update/assignment/PC-patch directory. In this example, the original patch from mainline version PA-PB:
 ```c
     18c18
     <     min = rank;
