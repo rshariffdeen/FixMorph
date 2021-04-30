@@ -1,8 +1,7 @@
 # Experiment Replication
 
 FixMorph successfully generates correct transformation for most of the subjects in our data-set which are curated from backported
-patches in the Linux Kernel project. For each transformation, we provide an url that contains the original transformation, manually ported transformation and 
-the generated transformation by FixMorph at https://fixmorph.github.io. 
+patches in the Linux Kernel project. 
 
 In our replication package, we include scripts to reproduce the experiment setup which can be evaluated using our tool. 
 This directory includes scripts and Dockerfile to re-create the experiment setup, you can also use our pre-built Docker 
