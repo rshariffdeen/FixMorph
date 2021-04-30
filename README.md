@@ -1,5 +1,6 @@
 # FixMorph
-[![Docker Pulls](https://img.shields.io/docker/pulls/rshariffdeen/fixmorph.svg)](https://hub.docker.com/r/rshariffdeen/fixmorph)
+[![Docker Pulls](https://img.shields.io/docker/pulls/rshariffdeen/fixmorph.svg)](https://hub.docker.com/r/rshariffdeen/fixmorph) [![DOI](https://zenodo.org/badge/132082797.svg)](https://zenodo.org/badge/latestdoi/132082797)
+
 
 FixMorph is a tool to automatically morph fixes (patches) from one program version to a different yet syntactically similar program version. <!--Adding features and fixing bugs often requires systematic edits that are similar but not identical changes to many code locations. Finding such locations and making the correct edit is a tedious and error-prone process for developers.--> 
 To support users with different feature/stability requirements, many software systems (e.g. Linux Kernel) actively maintain multiple versions. When adding features and fixing bugs in the mainline version by introducing patches, the patches need to be backported to old stable versions. Patch backporting is a tedious and error-prone process for developers. FixMorph can help automate this process.
