@@ -30,6 +30,7 @@ You can use the following command to build fixmorph image:
 ```bash
 cd /FixMorph
 docker build -t rshariffdeen/fixmorph:16.04 .
+docker run -it rshariffdeen/fixmorph:16.04 /bin/bash              # start docker
 ```
 
 The experiments/ISSTA21/Dockerfile depends on the fixmorph image. The instructions to build and execute experiments/ISSTA21/Dockerfile can be found [here](./experiments/ISSTA21).
@@ -49,7 +50,6 @@ config_command_c:skip
 Once a configuration file has been set up as above, the following command will run FixMorph to adapt the patch from the mainline version to the target version.
 
 ```bash
-docker run -it rshariffdeen/fixmorph:16.04 /bin/bash              # start docker
 python3.7 FixMorph.py --conf=/path/to/conf/file
 ```
 
