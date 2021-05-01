@@ -20,6 +20,12 @@ Note: See the [Experiment Guide](experiments/ISSTA21/README.md) to replicate the
 
 [comment]: <> (TO appear)
 
+## Dependencies
+* LLVM - 10.0
+* Clang - 10.0
+* [Clang Extra Tools](https://github.com/rshariffdeen/clang-tools)
+* Python - 3.7 
+
 ## Build using Dockerfile
 
 Building FixMorph is easy with the provided Dockerfile, which has all the build dependencies and libraries required. We provide two Dockerfiles
