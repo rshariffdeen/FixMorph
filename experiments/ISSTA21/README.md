@@ -7,6 +7,7 @@ This directory includes scripts and Dockerfile to re-create the experiment setup
 
 Dockerhub Repo: https://hub.docker.com/repository/docker/rshariffdeen/fixmorph
 
+
 # Getting Started
 
 ## Building the environment
@@ -202,6 +203,14 @@ cd /FixMorph
 python3.7 FixMorph.py --conf=/data/backport/linux/238/repair.conf --time=TIME --mode=MODE_NUMBER
 
 ```
+
+## Additional Files ##
+Please find below files useful for the replication of the experiments
+
+* [Results Sheet](experiments/ISSTA21/Results.xlsx)  
+* [Main Data Set](experiments/ISSTA21/main-data.json)
+* [CVE Data Set](experiments/ISSTA21/cve-data.json)
+
 
 # Additional Links
 * [Getting Started](../../doc/GetStart.md)
