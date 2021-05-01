@@ -85,6 +85,12 @@ The backported patch to target version PC is as follows:
 ```
 Many such examples are included in the 'tests' directory, simply replace the configuration file path and run the same command as above.
 
+# Limitations #
+* Current implementation is based on LLVM/Clang, and thus inherits the limitations of that framework. 
+* Specific build configurations such as compiler directives / runtime configurations need to be provided as input to obtain the correct AST, an incomplete AST could result in an incomplete/incorrect transformation. 
+* FixMorph cannot simultaneously edit changes to source locations with contradicting compiler directives (#ifdefs)
+
+
 ## Bugs ##
 FixMorph should be considered alpha-quality software. Bugs can be reported here:
 
