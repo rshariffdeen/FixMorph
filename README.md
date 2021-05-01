@@ -2,26 +2,18 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/rshariffdeen/fixmorph.svg)](https://hub.docker.com/r/rshariffdeen/fixmorph) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4730045.svg)](https://doi.org/10.5281/zenodo.4730045)
 
 
-FixMorph is a tool to automatically morph fixes (patches) from one program version to a different yet syntactically similar program version. <!--Adding features and fixing bugs often requires systematic edits that are similar but not identical changes to many code locations. Finding such locations and making the correct edit is a tedious and error-prone process for developers.--> 
-To support users with different feature/stability requirements, many software systems (e.g. Linux Kernel) actively maintain multiple versions. When adding features and fixing bugs in the mainline version by introducing patches, the patches need to be backported to old stable versions. Patch backporting is a tedious and error-prone process for developers. FixMorph can help automate this process.
+FixMorph is a tool to automatically morph fixes (patches) from one program version to a different yet syntactically similar program version. To support users with different feature/stability requirements, many software systems (e.g. Linux Kernel) actively maintain multiple versions. When adding features and fixing bugs in the mainline version by introducing patches, the patches need to be backported to old stable versions. Patch backporting is a tedious and error-prone process for developers. FixMorph can help automate this process.
 
-FixMorph is a powerful morphing tool for C source codes. FixMorph is:
+FixMorph is a morphing tool for C source codes. FixMorph is:
 
 * Scalable: FixMorph can backport bug-fixing patches in large/complex source bases such as the Linux Kernel
 * Compilable: The morphed patch is verified to be free of syntax errors
 * Extensible: FixMorph is designed so that it can be easily extended to support advanced transformations
 
-## Experiment Replication ##
-Please find below files useful for the replication of the experiments
-
-* [Guide for Experiment Replication](experiments/ISSTA21/README.md)  
-* [Results Sheet](experiments/ISSTA21/Results.xlsx)  
-* [Main Data Set](experiments/ISSTA21/main-data.json)
-* [CVE Data Set](experiments/ISSTA21/cve-data.json)
+Note: See the [Experiment Guide](experiments/ISSTA21/README.md) to replicate the experiments for ISSTA'21. 
 
 
-[comment]: <> (# Building)
-
+# Building
 [comment]: <> (We provide two options to build FixMorph: &#40;1&#41; build from source, &#40;2&#41; build using Dockerfile.)
 
 [comment]: <> (## Build from source code)
@@ -93,6 +85,10 @@ The backported patch to target version PC is as follows:
 ```
 Many such examples are included in the 'tests' directory, simply replace the configuration file path and run the same command as above.
 
+## Bugs ##
+FixMorph should be considered alpha-quality software. Bugs can be reported here:
+
+    https://github.com/rshariffdeen/FixMorph/issues
 
 ## Documentation ##
 
@@ -112,3 +108,7 @@ International Symposium on Software Testing and Analysis (ISSTA), 2021
 
 # License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+
+## Acknowledgements ##
+This work was partially supported by the National Satellite of Excellence in Trustworthy Software Systems, funded by National Research Foundation (NRF) Singapore. 
