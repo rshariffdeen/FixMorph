@@ -1,7 +1,7 @@
 import os
 import signal
 import shutil
-from app.common import definitions, values, utilities
+from app.common import definitions, values
 from app.tools import emitter
 from app.entity import project
 

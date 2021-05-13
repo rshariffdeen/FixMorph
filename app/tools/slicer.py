@@ -9,7 +9,7 @@ import app.common.utilities
 from app.common import values, definitions
 from app.common.utilities import error_exit, execute_command
 from app.ast import ast_generator as ASTGenerator
-from app.tools import transformer, emitter, extractor, logger
+from app.tools import transformer, emitter, logger
 
 
 def slice_source_file(source_path, segment_code, segment_identifier, project_path, use_macro=False):

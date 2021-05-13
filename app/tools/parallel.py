@@ -1,6 +1,8 @@
 import multiprocessing as mp
+
+import app.common.utilities
 from app.common import definitions, values, utilities
-from app.tools import converter, mapper, emitter, finder, extractor
+from app.tools import converter, emitter, finder, extractor
 from multiprocessing import TimeoutError
 from multiprocessing.dummy import Pool as ThreadPool
 from app.ast import ast_generator
@@ -217,7 +219,7 @@ def extend_mapping(ast_node_map, source_a, source_c, neighbor_id_a):
         # if (int(ast_node_id_a) < int(neighbor_id_a)) and ("Macro" not in node_a and "Decl" not in node_a):
         #     continue
 
-        pool.apply_async(mapper.anti_unification, args=(ast_node_a, ast_node_c),
+        pool.apply_async(anti_unification, args=(ast_node_a, ast_node_c),
                          callback=collect_result)
 
     pool.close()
@@ -240,7 +242,7 @@ def generate_method_invocation_map(source_a, source_c, ast_tree_a, ast_tree_c, m
     emitter.normal("\tderiving method invocation map")
 
     map_file_name = definitions.DIRECTORY_OUTPUT + "/" + source_a.split("/")[-1] + ".map"
-    mapper.generate_map_gumtree(source_a, source_c, map_file_name)
+    app.common.utilities.generate_map_gumtree(source_a, source_c, map_file_name)
     global_ast_node_map = read_mapping(map_file_name)
     result_list = []
     emitter.normal("\t\tstarting parallel computing")
@@ -335,3 +337,32 @@ def generate_function_signature_map(source_a, source_c, ast_tree_a, ast_tree_c, 
             function_map[method_name_a] = mappings
     return function_map
 
+
+def anti_unification(ast_node_a, ast_node_c):
+    au_pairs = dict()
+    waiting_list_a = [ast_node_a]
+    waiting_list_c = [ast_node_c]
+
+    while len(waiting_list_a) != 0 and len(waiting_list_c) != 0:
+        current_a = waiting_list_a.pop()
+        current_c = waiting_list_c.pop()
+
+        children_a = current_a["children"]
+        children_c = current_c["children"]
+
+        # do not support anti-unification with different number of children yet
+        if len(children_a) != len(children_c):
+            continue
+
+        length = len(children_a)
+        for i in range(length):
+            child_a = children_a[i]
+            child_c = children_c[i]
+            if child_a["type"] == child_c["type"]:
+                waiting_list_a.append(child_a)
+                waiting_list_c.append(child_c)
+            key = child_a["type"] + "(" + str(child_a["id"]) + ")"
+            value = child_c["type"] + "(" + str(child_c["id"]) + ")"
+            au_pairs[key] = value
+
+    return au_pairs

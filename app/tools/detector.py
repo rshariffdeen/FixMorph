@@ -4,8 +4,10 @@
 
 import sys
 import os
+
+import app.common.utilities
 from app.common.utilities import error_exit, definitions
-from app.tools import generator, mapper, slicer, parallel, emitter, finder, extractor, logger
+from app.tools import generator, slicer, parallel, emitter, finder, extractor, logger
 from app.common import values, utilities
 from app.ast import ast_parser, ast_vector, ast_generator
 
@@ -140,7 +142,7 @@ def detect_segment_clone_by_similarity(vector_list_a, vector_list_c):
                 ast_tree_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
                 ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
                 id_list_c = extractor.extract_child_id_list(ast_node_c)
-                mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
+                app.common.utilities.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
                 ast_node_map = parallel.read_mapping(map_file_name)
                 utilities.restore_per_slice(slice_file_c)
                 node_size_c = len(id_list_c)

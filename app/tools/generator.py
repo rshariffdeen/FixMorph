@@ -9,8 +9,7 @@ import json
 
 import app.common.utilities
 from app.common.utilities import execute_command, find_files, definitions
-from app.tools import merger
-from app.tools import mapper, slicer, parallel, emitter, finder, extractor, logger
+from app.tools import merger, slicer, parallel, emitter, finder, extractor, logger
 from app.ast import ast_vector, ast_generator
 from app.common.utilities import error_exit
 from app.common import values, utilities
@@ -57,7 +56,7 @@ def generate_similarity_score(vector_path_a, vector_path_c):
     ast_tree_c = ast_generator.get_ast_json(source_file_c, values.TARGET_REQUIRE_MACRO, regenerate=True)
     ast_node_a = finder.search_function_node_by_name(ast_tree_a, segment_identifier_a)
     ast_node_c = finder.search_function_node_by_name(ast_tree_c, segment_identifier_c)
-    mapper.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
+    app.common.utilities.generate_map_gumtree(source_file_a, source_file_c, map_file_name)
     ast_node_map = parallel.read_mapping(map_file_name)
     utilities.restore_per_slice(slice_file_a)
     utilities.restore_per_slice(slice_file_c)
