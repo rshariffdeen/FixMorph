@@ -1,7 +1,7 @@
 FROM rshariffdeen/fixmorph
 MAINTAINER Ridwan Shariffdeen <ridwan@comp.nus.edu.sg>
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     bc \
     gtk+-3.0 \
     libavahi-client-dev \
