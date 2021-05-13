@@ -4,6 +4,8 @@
 
 import sys
 import os
+
+import app.common.utilities
 from app.common import values, definitions
 from app.common.utilities import error_exit, execute_command
 from app.ast import ast_generator as ASTGenerator
@@ -19,7 +21,7 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
     ast_tree = ASTGenerator.get_ast_json(source_path, use_macro, True)
     segment_type = values.segment_map[segment_code]
     ast_script = list()
-    project_path = extractor.extract_project_path(source_path)
+    project_path = app.common.utilities.extract_project_path(source_path)
     source_relative_path = source_path.replace(project_path, "")[1:]
 
     segment_found = False
@@ -32,7 +34,7 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
                 # ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
                 if 'file' in ast_node.keys():
                     file_path = ast_node['file']
-                    file_project_path = extractor.extract_project_path(file_path)
+                    file_project_path = app.common.utilities.extract_project_path(file_path)
                     file_relative_path = file_path
                     if file_project_path:
                         file_relative_path = file_path.replace(file_project_path, "")[1:]
@@ -44,7 +46,7 @@ def slice_source_file(source_path, segment_code, segment_identifier, project_pat
             # ast_script.append("Delete " + node_type + "(" + str(node_id) + ")")
             if 'file' in ast_node.keys():
                 file_path = ast_node['file']
-                file_project_path = extractor.extract_project_path(file_path)
+                file_project_path = app.common.utilities.extract_project_path(file_path)
                 file_relative_path = file_path
                 if file_project_path:
                     file_relative_path = file_path.replace(file_project_path, "")[1:]
