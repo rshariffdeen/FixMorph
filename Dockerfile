@@ -51,26 +51,20 @@ RUN mkdir /bear/build; cd /bear/build; cmake ../source; make -j32; make install
 RUN add-apt-repository -y ppa:pypy/ppa
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-install-recommends --force-yes \
     gfortran \
-    pypy3 \
-    pypy3-dev
+    python3.7-dev
 
 RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install pylint
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install six
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install gitpython
-
-RUN pypy3 -m easy_install cython
-RUN pypy3 -m easy_install setuptools
-#RUN pypy3 -m easy_install six
-RUN pypy3 -m easy_install gitpython
-
+RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install cython
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
 RUN git clone https://github.com/rshariffdeen/FixMorph.git /FixMorph
 RUN rm /FixMorph/Dockerfile
 WORKDIR /FixMorph
-RUN pypy3 setup.py build_ext --inplace
+RUN python3.7 setup.py build_ext --inplace
 # Tidy up the container
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
