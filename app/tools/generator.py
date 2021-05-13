@@ -6,6 +6,8 @@ import io
 import os
 
 import json
+
+import app.common.utilities
 from app.common.utilities import execute_command, find_files, definitions
 from app.tools import merger
 from app.tools import mapper, slicer, parallel, emitter, finder, extractor, logger
@@ -21,7 +23,7 @@ def generate_slice_for_vector(vector_path, use_macro=False):
     seg_type = segment.replace(".vec", "").split("_")[0]
     segment_identifier = "_".join(segment.replace(".vec", "").split("_")[1:])
     slice_file = source_file + "." + seg_type + "." + segment_identifier + ".slice"
-    project_path = extractor.extract_project_path(source_file)
+    project_path = app.common.utilities.extract_project_path(source_file)
     seg_found = slicer.slice_source_file(source_file, seg_type, segment_identifier,
                                          project_path,
                                          use_macro)
