@@ -5,7 +5,7 @@ import sys
 import subprocess
 import pickle
 import shutil
-from app.tools import emitter, logger
+from app.tools import emitter, logger, converter
 from app.common import definitions, values
 
 
@@ -363,3 +363,62 @@ def extract_project_path(source_path):
         return values.CONF_PATH_E
     else:
         return None
+
+
+def is_node_equal(node_a, node_b, var_map):
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
+    node_type_a = str(node_a['type'])
+    node_type_b = str(node_b['type'])
+    if node_type_a != node_type_b:
+        return False
+
+    if node_type_a in ["DeclStmt", "DeclRefExpr", "VarDecl"]:
+        node_value_a = node_a['value']
+        node_value_b = node_b['value']
+        if node_value_a == node_value_b or node_value_a == var_map[node_value_b] or \
+                node_value_b == var_map[node_value_a]:
+            return True
+        else:
+            return False
+    elif node_type_a == "ArraySubscriptExpr":
+        # print(node_a)
+        # print(node_b)
+        node_value_a, node_type_a, var_list = converter.convert_array_subscript(node_a)
+        node_value_b, node_type_b, var_list = converter.convert_array_subscript(node_b)
+        if node_value_a == node_value_b or node_value_a == var_map[node_value_b] or \
+                node_value_b == var_map[node_value_a]:
+            return True
+        else:
+            return False
+    elif node_type_a == "IntegerLiteral":
+        node_value_a = int(node_a['value'])
+        node_value_b = int(node_b['value'])
+        if node_value_a == node_value_b:
+            return True
+        else:
+            return False
+
+    elif node_type_a == "MemberExpr":
+        node_value_a, node_type_a, var_list = converter.convert_member_expr(node_a, True)
+        node_value_b, node_type_b, var_list = converter.convert_member_expr(node_b, True)
+        if node_value_a == node_value_b:
+            return True
+        else:
+            if node_value_b in var_map and node_value_a == var_map[node_value_b]:
+                return True
+            else:
+                return False
+    elif node_type_a == "ParenExpr":
+        child_node_a = node_a['children'][0]
+        child_node_b = node_b['children'][0]
+        return is_node_equal(child_node_a, child_node_b, var_map)
+    elif node_type_a == "BinaryOperator":
+        left_child_a = node_a['children'][0]
+        right_child_a = node_a['children'][1]
+        left_child_b = node_b['children'][0]
+        right_child_b = node_b['children'][1]
+        if is_node_equal(left_child_a, left_child_b, var_map) and \
+                is_node_equal(right_child_a, right_child_b, var_map):
+            return True
+        else:
+            return False

@@ -8,8 +8,7 @@ from pathlib import Path
 
 import app.common.utilities
 from app.ast import ast_vector, ast_generator
-from app.tools import oracle, logger
-from app.tools import emitter, extractor, logger
+from app.tools import emitter, logger
 from app.common.utilities import execute_command, find_files, definitions
 from app.common import values
 import mmap
@@ -53,7 +52,7 @@ def search_matching_node(ast_node, search_node, var_map):
     node_type = str(ast_node['type'])
     search_node_type = str(search_node['type'])
     if node_type == search_node_type:
-        if oracle.is_node_equal(ast_node, search_node, var_map):
+        if app.common.utilities.is_node_equal(ast_node, search_node, var_map):
             return node_type + "(" + str(node_id) + ")"
 
     for child_node in ast_node['children']:
