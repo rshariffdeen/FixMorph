@@ -8,7 +8,7 @@ from pathlib import Path
 
 import app.common.utilities
 from app.ast import ast_vector, ast_generator
-from app.tools import emitter, logger
+from app.tools import converter, emitter, logger
 from app.common.utilities import execute_command, find_files, definitions
 from app.common import values
 import mmap
