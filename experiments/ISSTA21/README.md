@@ -9,15 +9,27 @@ Dockerhub Repo: https://hub.docker.com/repository/docker/rshariffdeen/fixmorph
 
 
 # Getting Started
+## Hardware Requirements
+All experiments were conducted using Ubuntu 18.04 operating system on a Dell Power Edge R530 
+Intel(R) Xeon(R) CPU E5-2660 processor and 64GB RAM. 
+
 
 ## Building the environment
+Please note that the environment to run the experiments requires building 2 docker images:
+* Docker image for FixMorph tool and its dependencies (to build FixMorph)
+* Docker image for Linux kernel project build environment and its dependencies (to compile Linux kernel modules)
+
 Setup environment can be built using the Dockerfile provided within, which will encompass the dependencies, configurations
 and setup scripts. Use the following command:
 
 ```bash
 git clone https://github.com/rshariffdeen/FixMorph.git
+
+# building docker image for FixMorph
 cd /FixMorph
-docker build -t rshariffdeen/fixmorph .
+docker build -t rshariffdeen/fixmorph:16.04 .
+
+# building docker image for Linux experiments
 cd /FixMorph/experiments/ISSTA21
 docker build -t rshariffdeen/fixmorph:issta21 .
 ```

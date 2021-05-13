@@ -25,6 +25,8 @@ Note: See the [Experiment Guide](experiments/ISSTA21/README.md) to replicate the
 * Clang - 10.0
 * [Clang Extra Tools](https://github.com/rshariffdeen/clang-tools)
 * Python - 3.7 
+* Docker - 20.10.1+
+
 
 ## Build using Dockerfile
 
@@ -38,7 +40,8 @@ You can use the following command to build fixmorph image:
 ```bash
 cd /FixMorph
 docker build -t rshariffdeen/fixmorph:16.04 .
-docker run -it rshariffdeen/fixmorph:16.04 /bin/bash              # start docker
+# start docker
+docker run -it rshariffdeen/fixmorph:16.04 /bin/bash              
 ```
 
 The experiments/ISSTA21/Dockerfile depends on the fixmorph image. The instructions to build and execute experiments/ISSTA21/Dockerfile can be found [here](./experiments/ISSTA21).
