@@ -9,9 +9,15 @@ Dockerhub Repo: https://hub.docker.com/repository/docker/rshariffdeen/fixmorph
 
 
 # Getting Started
-## Hardware Requirements
+### Hardware Requirements
 All experiments were conducted using Ubuntu 18.04 operating system on a Dell Power Edge R530 
 Intel(R) Xeon(R) CPU E5-2660 processor and 64GB RAM. 
+
+### Docker Preliminaries
+* Ensure you have `docker` installed.
+  See: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04
+* Ensure you have added yourself to the `docker` group: `sudo usermod -a -G
+  docker <username>`. You will need to log back in to see the permissions take effect.
 
 
 ## Building the environment
