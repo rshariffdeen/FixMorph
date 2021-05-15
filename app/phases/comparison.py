@@ -88,11 +88,17 @@ def save_values():
 
     for path_c in file_list_c:
         path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
-        diff_command = "diff -ENZBbwr " + path_c + " " + path_e + " >> " + definitions.FILE_PORT_DIFF
+        diff_command = "diff -ENZBbwr"
+        if values.DEFAULT_OUTPUT_FORMAT == "unified":
+            diff_command += " -u "
+        diff_command += path_c + " " + path_e + " >> " + definitions.FILE_PORT_DIFF
         execute_command(diff_command)
     for path_c in file_list_c:
         path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
-        diff_command = "diff -ENZBbwr " + path_c + " " + path_d + " >> " + definitions.FILE_TRANSPLANT_DIFF
+        diff_command = "diff -ENZBbwr"
+        if values.DEFAULT_OUTPUT_FORMAT == "unified":
+            diff_command += " -u "
+        diff_command += path_c + " " + path_d + " >> " + definitions.FILE_TRANSPLANT_DIFF
         execute_command(diff_command)
         
     is_identical = True

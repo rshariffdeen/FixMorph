@@ -166,7 +166,10 @@ def show_partial_diff(source_path_a, source_path_b):
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     emitter.highlight("\tTransplanted Code")
     output_file = definitions.FILE_PARTIAL_PATCH
-    diff_command = "diff -ENZBbwr " + source_path_a + " " + source_path_b + " > " + output_file
+    diff_command = "diff -ENZBbwr "
+    if values.DEFAULT_OUTPUT_FORMAT == "unified":
+        diff_command += " -u "
+    diff_command += source_path_a + " " + source_path_b + " > " + output_file
     execute_command(diff_command)
     with open(output_file, 'r', encoding='utf8', errors="ignore") as diff_file:
         diff_line = diff_file.readline().strip()

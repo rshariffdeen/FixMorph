@@ -86,7 +86,10 @@ def save_values():
         file_list_a.add(path_a)
     for path_a in file_list_a:
         path_b = path_a.replace(values.Project_A.path, values.Project_B.path)
-        diff_command = "diff -ENZBbwr " + path_a + " " + path_b + " >> " + definitions.FILE_ORIG_DIFF
+        diff_command = "diff -ENZBbwr "
+        if values.DEFAULT_OUTPUT_FORMAT == "unified":
+            diff_command += " -u "
+        diff_command += path_a + " " + path_b + " >> " + definitions.FILE_ORIG_DIFF
         execute_command(diff_command)    
     save_current_state()
 

@@ -140,6 +140,13 @@ def read_conf(arg_list):
                     emitter.help()
                 else:
                     values.CONF_OPERATION_MODE = mode
+            elif definitions.ARG_OUTPUT_FORMAT in arg:
+                format = arg.replace(definitions.ARG_OUTPUT_FORMAT, '')
+                if format not in definitions.output_format_list:
+                    emitter.normal("Invalid argument: " + arg)
+                    emitter.help()
+                else:
+                    values.CONF_OUTPUT_FORMAT = format
             elif definitions.ARG_BUILD_AND_ANALYSE in arg:
                 values.ANALYSE_N = True
                 for phase in values.PHASE_SETTING:
@@ -197,6 +204,9 @@ def update_phase_configuration(arg_list):
 
     if values.DEFAULT_OPERATION_MODE == 3:
         values.PHASE_SETTING[definitions.PHASE_EVOLUTION] = 0
+
+    if values.CONF_OUTPUT_FORMAT:
+        values.DEFAULT_OUTPUT_FORMAT = values.CONF_OUTPUT_FORMAT
 
     if len(arg_list) > 0:
         for arg in arg_list:
