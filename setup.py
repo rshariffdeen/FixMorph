@@ -9,9 +9,6 @@ from Cython.Build import cythonize
 
 
 EXCLUDE_FILES = [
-    'app/main.py',
-    'app/tools/configuration.py',
-    'app/tools/oracle.py'
 ]
 
 
