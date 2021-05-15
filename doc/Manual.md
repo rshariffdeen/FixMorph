@@ -30,7 +30,8 @@ The tool supports the following runtime configurations:
 		--debug	            | enable debugging information
 		--mode=             | execution mode [0: fixmorph 1: linux-patch-no-context 2: linux-patch-context 3: sydit] (default = 0)
 		--context=          | context level for linux-patch-context mode
-
+ 		--format=           | select format for diff changes [normal, unified] (default=normal)
+ 
 
 ### Side effects ###
 

@@ -187,6 +187,7 @@ def help():
     print("\t" + definitions.ARG_TIMEOUT + "\t| " + "timeout in minutes (default=60)")
     print("\t" + definitions.ARG_OPERATION_MODE + "\t| " + "select which tool/mode to run for backport {0: fixmorph, 1: patch, 2: patch-context, 3: sydit}")
     print("\t" + definitions.ARG_CONTEXT_LEVEL + "\t| " + "set context level for patch-context mode")
+    print("\t" + definitions.ARG_OUTPUT_FORMAT + "\t| " + "select the output format for the diff change {'normal', 'unified'} (default = normal)")
 
     print("Skip Phases\n-----------------------\n")
     print("\t" + definitions.ARG_SKIP_BUILD + "\t| " + "skip build")

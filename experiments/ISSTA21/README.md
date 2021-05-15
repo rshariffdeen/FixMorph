@@ -40,6 +40,7 @@ docker pull rshariffdeen/fixmorph:issta21
 ```
 
 Having the image, you can now start a Docker container. 
+Note: please make sure to use the correct image which has the dependencies installed for Linux kernel (i.e. rshariffdeen/fixmorph:issta21)
 
 [comment]: <> (We recommend linking the container to folders in the filesystem,)
 [comment]: <> (so that it is possible to check the logs and generated outputs also outside of the Docker container. )
