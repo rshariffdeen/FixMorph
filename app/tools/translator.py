@@ -865,8 +865,13 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                 if nodeB2.type == "IfStmt":
                     if adjusted_pos == 0:
                         continue
-                    compound_node = nodeB2.parent
-                    adjusted_pos = compound_node.children.index(nodeB2)
+                    parent_node = nodeB2.parent
+                    if parent_node.type == "IfStmt":
+                        compound_node = parent_node.parent
+                        adjusted_pos = compound_node.children.index(parent_node)
+                    else:
+                        compound_node = nodeB2.parent
+                        adjusted_pos = compound_node.children.index(nodeB2)
                     nodeB2 = compound_node
                 else:
                     continue
