@@ -121,7 +121,10 @@ def show_patch(file_a, file_b, file_c, file_d, index):
     emitter.highlight("\tOriginal Patch")
     original_patch_file_name = definitions.DIRECTORY_OUTPUT + "/" + index + "-original-patch"
     generated_patch_file_name = definitions.DIRECTORY_OUTPUT + "/" + index + "-generated-patch"
-    diff_command = "diff -ENZBbwr " + file_a + " " + file_b + " > " + original_patch_file_name
+    diff_command = "diff -ENZBbwr"
+    if values.DEFAULT_OUTPUT_FORMAT == "unified":
+        diff_command += " -u "
+    diff_command += file_a + " " + file_b + " > " + original_patch_file_name
     execute_command(diff_command)
     with open(original_patch_file_name, 'r', encoding='utf8', errors="ignore") as diff:
         diff_line = diff.readline().strip()
@@ -130,7 +133,10 @@ def show_patch(file_a, file_b, file_c, file_d, index):
             diff_line = diff.readline().strip()
 
     emitter.highlight("\tGenerated Patch")
-    diff_command = "diff -ENZBbwr " + file_c + " " + file_d + " > " + generated_patch_file_name
+    diff_command = "diff -ENZBbwr"
+    if values.DEFAULT_OUTPUT_FORMAT == "unified":
+        diff_command += " -u "
+    diff_command += file_c + " " + file_d + " > " + generated_patch_file_name
     # print(diff_command)
     execute_command(diff_command)
     if os.path.getsize(generated_patch_file_name) == 0:
