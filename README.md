@@ -148,11 +148,10 @@ We welcome contributions to improve this work, see [details](doc/Contributing.md
 Ridwan Shariffdeen, Xiang Gao, Gregory J. Duck, Shin Hwei Tan, Julia Lawall, Abhik Roychoudhury <br>
 International Symposium on Software Testing and Analysis (ISSTA), 2021
 
-# License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-
 ## Acknowledgements ##
 This work was partially supported by the National Satellite of Excellence in Trustworthy Software Systems, funded by National Research Foundation (NRF) Singapore. 
 
+
+# License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
