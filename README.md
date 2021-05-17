@@ -136,6 +136,9 @@ FixMorph should be considered alpha-quality software. Bugs can be reported here:
 * [ISSTA'21 Experiment Replication](experiments/ISSTA21/README.md)  
 * [Manual](doc/Manual.md)
 
+# Contributions 
+We welcome contributions to improve this work, see [details](doc/Contributing.md)
+
 ## Developers ##
 * Ridwan Shariffdeen
 * Gao Xiang
@@ -151,3 +154,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgements ##
 This work was partially supported by the National Satellite of Excellence in Trustworthy Software Systems, funded by National Research Foundation (NRF) Singapore. 
+
+
