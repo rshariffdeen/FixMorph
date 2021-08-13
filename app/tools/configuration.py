@@ -186,7 +186,7 @@ def update_phase_configuration(arg_list):
         values.DEFAULT_OPERATION_MODE = 4
         values.PHASE_SETTING = {
             definitions.PHASE_BUILD: 1,
-            definitions.PHASE_DIFF: 0,
+            definitions.PHASE_DIFF: 1,
             definitions.PHASE_TRAINING: 1,
             definitions.PHASE_DETECTION: 0,
             definitions.PHASE_SLICING: 0,
