@@ -134,6 +134,7 @@ def end(time_duration, is_error=False):
     # output("Evaluation: " + time_duration[Definitions.KEY_DURATION_EVALUATION] + " minutes")
     output("Comparison: " + time_duration[definitions.KEY_DURATION_COMPARISON] + " minutes")
     output("Summarizing: " + time_duration[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
+    output("Training: " + time_duration[definitions.KEY_DURATION_TRAINING] + " minutes")
     if is_error:
         output(values.TOOL_NAME + " exited with an error after " + time_duration[
             definitions.KEY_DURATION_TOTAL] + " minutes")

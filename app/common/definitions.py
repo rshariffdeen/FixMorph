@@ -136,6 +136,7 @@ KEY_DURATION_REVERSE = "reverse"
 KEY_DURATION_EVALUATION = 'evaluation'
 KEY_DURATION_SUMMARIZATION = "summarize-analysis"
 KEY_DURATION_COMPARISON = "comparison-analysis"
+KEY_DURATION_TRAINING = "training"
 
 
 # ---------------- PHASES ---------------------------

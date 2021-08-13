@@ -170,6 +170,7 @@ def end(time_info, is_error=False):
         # statistics("Evaluation: " + time_info[Definitions.KEY_DURATION_EVALUATION] + " minutes")
         statistics("Comparison: " + time_info[definitions.KEY_DURATION_COMPARISON] + " minutes")
         statistics("Summarizing: " + time_info[definitions.KEY_DURATION_SUMMARIZATION] + " minutes")
+        statistics("Training: " + time_info[definitions.KEY_DURATION_TRAINING] + " minutes")
         if is_error:
             error(values.TOOL_NAME + " exited with an error after " + time_info[definitions.KEY_DURATION_TOTAL]
                   + " minutes\n")

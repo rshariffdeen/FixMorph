@@ -8,7 +8,7 @@ import traceback
 import signal
 from app.tools import emitter, logger, configuration
 from app.phases import building, differencing, detection, mapping, extraction, translation, \
-    evolution, weaving, verify, summarizing, slicing, comparison
+    evolution, weaving, verify, summarizing, slicing, comparison, training
 from app.common import definitions, values, utilities
 
 time_info = {
@@ -174,6 +174,11 @@ def run(arg_list):
     comparison.start()
     duration = format((time.time() - time_check) / 60, '.3f')
     time_info[definitions.KEY_DURATION_COMPARISON] = str(duration)
+
+    time_check = time.time()
+    training.start()
+    duration = format((time.time() - time_check) / 60, '.3f')
+    time_info[definitions.KEY_DURATION_TRAINING] = str(duration)
 
 
 def main():
