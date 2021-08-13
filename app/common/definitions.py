@@ -6,7 +6,7 @@ import os
 
 # ------------------- Directories --------------------
 
-DIRECTORY_MAIN = "/".join(os.path.realpath(__file__).split("/")[:-2])
+DIRECTORY_MAIN = "/".join(os.path.realpath(__file__).split("/")[:-3])
 DIRECTORY_LOG_BASE = DIRECTORY_MAIN + "/logs"
 DIRECTORY_LOG = ""
 DIRECTORY_OUTPUT_BASE = DIRECTORY_MAIN + "/output"
