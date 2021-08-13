@@ -15,6 +15,7 @@ IS_BACKPORT = False
 BREAK_WEAVE = False
 IS_FORK = False
 IS_LINUX_KERNEL = False
+IS_TRAINING = False
 SKIP_VEC_GEN = False
 ANALYSE_N = False
 ONLY_RESET = False
@@ -39,7 +40,8 @@ PHASE_SETTING = {
     definitions.PHASE_REVERSE: 1,
     definitions.PHASE_EVALUATE: 1,
     definitions.PHASE_COMPARE: 1,
-    definitions.PHASE_SUMMARIZE: 1
+    definitions.PHASE_SUMMARIZE: 1,
+    definitions.PHASE_TRAINING: 0
 }
 
 STANDARD_FUNCTION_LIST = list()

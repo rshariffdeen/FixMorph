@@ -153,6 +153,7 @@ PHASE_REVERSE = "reverse"
 PHASE_EVALUATE = "eval"
 PHASE_COMPARE = "compare"
 PHASE_SUMMARIZE = "summary"
+PHASE_TRAINING = "training"
 
 
 # ---------------- ARGUMENTS ---------------------------
@@ -162,6 +163,7 @@ ARG_DEBUG = "--debug"
 ARG_HELP = "--help"
 ARG_DEBUG_DATA = "--debug-data"
 ARG_BACKPORT = "--backport"
+ARG_TRAINING = "--training"
 ARG_FORK = "--fork"
 ARG_LINUX_KERNEL = "--linux-kernel"
 ARG_BREAK_WEAVE = "--break-weave"

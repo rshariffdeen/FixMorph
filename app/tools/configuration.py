@@ -1,7 +1,7 @@
 import os
 import signal
 import shutil
-from app.common import definitions, values
+from app.common import definitions, values, utilities
 from app.tools import emitter
 from app.entity import project
 
@@ -123,6 +123,8 @@ def read_conf(arg_list):
                 values.FILE_CONFIGURATION = str(arg).replace(definitions.ARG_CONF_FILE, '')
             elif definitions.ARG_LINUX_KERNEL in arg:
                 values.IS_LINUX_KERNEL = True
+            elif definitions.ARG_TRAINING in arg:
+                values.IS_TRAINING = True
             elif definitions.ARG_BREAK_WEAVE in arg:
                 values.BREAK_WEAVE = True
             elif definitions.ARG_ANALYSE_NEIGHBORS in arg:
@@ -180,9 +182,30 @@ def read_conf(arg_list):
 
 def update_phase_configuration(arg_list):
 
+    if values.IS_TRAINING:
+        values.DEFAULT_OPERATION_MODE = -1
+        values.PHASE_SETTING = {
+            definitions.PHASE_BUILD: 1,
+            definitions.PHASE_DIFF: 1,
+            definitions.PHASE_TRAINING: 1,
+            definitions.PHASE_DETECTION: 0,
+            definitions.PHASE_SLICING: 0,
+            definitions.PHASE_EXTRACTION: 0,
+            definitions.PHASE_MAPPING: 0,
+            definitions.PHASE_TRANSLATION: 0,
+            definitions.PHASE_EVOLUTION: 0,
+            definitions.PHASE_WEAVE: 0,
+            definitions.PHASE_VERIFY: 0,
+            definitions.PHASE_REVERSE: 0,
+            definitions.PHASE_EVALUATE: 0,
+            definitions.PHASE_COMPARE: 0,
+            definitions.PHASE_SUMMARIZE: 0,
+        }
+
     if values.DEFAULT_OPERATION_MODE in [0, 3]:
         for phase_name in values.PHASE_SETTING:
-            values.PHASE_SETTING[phase_name] = 1
+            if phase_name != definitions.PHASE_TRAINING:
+                values.PHASE_SETTING[phase_name] = 1
 
     elif values.DEFAULT_OPERATION_MODE in [1, 2]:
         values.PHASE_SETTING = {
@@ -194,6 +217,7 @@ def update_phase_configuration(arg_list):
             definitions.PHASE_MAPPING: 0,
             definitions.PHASE_TRANSLATION: 0,
             definitions.PHASE_EVOLUTION: 0,
+            definitions.PHASE_TRAINING: 0,
             definitions.PHASE_WEAVE: 1,
             definitions.PHASE_VERIFY: 1,
             definitions.PHASE_REVERSE: 0,
@@ -284,7 +308,8 @@ def update_configuration():
         if definitions.DIRECTORY_TESTS in patch_dir:
             shutil.rmtree(patch_dir)
     if not os.path.isdir(patch_dir):
-        shutil.copytree(values.CONF_PATH_C, values.CONF_PATH_C + "-patch")
+        if not values.IS_TRAINING:
+            shutil.copytree(values.CONF_PATH_C, values.CONF_PATH_C + "-patch")
 
     input_dir = definitions.DIRECTORY_OUTPUT + "/fuzz-input"
     output_dir = definitions.DIRECTORY_OUTPUT + "/fuzz-output"
@@ -299,6 +324,9 @@ def update_configuration():
     values.Project_D = project.Project(values.CONF_PATH_C + "-patch", "Pd")
     if values.CONF_PATH_E:
         values.Project_E = project.Project(values.CONF_PATH_E, "Pe")
+    else:
+        if values.IS_TRAINING:
+            utilities.error_exit("PE is not defined for training")
 
     load_standard_list()
 
