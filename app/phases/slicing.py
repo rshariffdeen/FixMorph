@@ -127,10 +127,9 @@ def safe_exec(function_def, title, *args):
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    emitter.title("Slicing Source Files")
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_SLICING]:
+        emitter.title("Slicing Source Files")
         safe_exec(slice_code, "slice segments", values.file_list_to_patch)
         save_values()
-    else:
-        emitter.special("\n\t-skipping this phase-")
+

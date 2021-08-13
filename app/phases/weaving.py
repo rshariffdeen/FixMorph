@@ -193,10 +193,11 @@ def weave_slices():
 
 
 def start():
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list
-    emitter.title("Applying transformation")
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_WEAVE]:
+        emitter.title("Applying transformation")
         if values.DEFAULT_OPERATION_MODE in [0, 3]:
             safe_exec(transplant_code, "transforming slices")
             safe_exec(weave_slices, "weaving slices")
@@ -214,5 +215,4 @@ def start():
         elif values.DEFAULT_OPERATION_MODE in [1, 2]:
             safe_exec(transform_code, "transforming slices")
         save_values()
-    else:
-        emitter.special("\n\t-skipping this phase-")
+

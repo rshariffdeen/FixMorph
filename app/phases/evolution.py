@@ -153,9 +153,10 @@ def save_values():
 
 
 def start():
-    emitter.title("Evolve transformation")
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_EVOLUTION]:
+        emitter.title("Evolve transformation")
         safe_exec(evolve_code, "evaluate code slices")
         if values.missing_function_list:
             safe_exec(evolve_functions, "evolve function definitions")
@@ -164,5 +165,4 @@ def start():
         if values.missing_macro_list:
             safe_exec(evolve_macros, "evolve macros")
         save_values()
-    else:
-        emitter.special("\n\t-skipping this phase-")
+

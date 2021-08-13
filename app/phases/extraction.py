@@ -3,9 +3,10 @@
 
 
 import time
+import sys
 from app.common import definitions, values, utilities
 from app.common.utilities import error_exit, save_current_state
-from app.tools import generator, collector, emitter, reader, writer
+from app.tools import generator, collector, emitter, reader, writer, logger
 
 generated_script_list = dict()
 
@@ -108,10 +109,11 @@ def save_values():
 
 
 def start():
-    emitter.title("Extract AST Transformation")
+    logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     # Using all previous structures to transplant patch
     load_values()
     if values.PHASE_SETTING[definitions.PHASE_EXTRACTION]:
+        emitter.title("Extract AST Transformation")
         if not values.file_list_to_patch:
             error_exit("no clone file detected to generate AST")
         if values.DEFAULT_OPERATION_MODE in [0, 3]:
@@ -119,6 +121,5 @@ def start():
         elif values.DEFAULT_OPERATION_MODE in [1, 2]:
             safe_exec(generate_diff_for_files, "extraction of diff transformation", values.file_list_to_patch)
         save_values()
-    else:
-        emitter.special("\n\t-skipping this phase-")
+
 

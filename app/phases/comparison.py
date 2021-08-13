@@ -156,11 +156,9 @@ def segment_code(diff_info, project, out_file_path):
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global ported_diff_info, transplanted_diff_info
-    emitter.title("Comparison with Manual Porting")
     load_values()
-
     if values.PHASE_SETTING[definitions.PHASE_COMPARE]:
-
+        emitter.title("Comparison with Manual Porting")
         clear_values(values.Project_C)
         transplanted_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Transplanted Patch",
                                            values.CONF_PATH_C, values.Project_D.path)
@@ -176,6 +174,4 @@ def start():
 
         if not values.ANALYSE_N:
             save_values()
-    else:
-        emitter.special("\n\t-skipping this phase-")
 

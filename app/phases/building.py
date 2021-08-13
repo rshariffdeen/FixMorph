@@ -30,9 +30,8 @@ def safe_exec(function_def, title, *args):
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    emitter.title("Building Projects")
     if values.PHASE_SETTING[definitions.PHASE_BUILD]:
+        emitter.title("Building Projects")
         safe_exec(builder.build_normal, "building binaries")
-    else:
-        emitter.special("\n\t-skipping this phase-")
+
 
