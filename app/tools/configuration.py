@@ -269,9 +269,10 @@ def update_configuration():
     # create log files and other directories
     if values.CONF_TAG_ID:
         values.DEFAULT_TAG_ID = values.CONF_TAG_ID
+    else:
+        values.DEFAULT_TAG_ID = "test"
     # conf_file_name = values.FILE_CONFIGURATION.split("/")[-1]
-    project_name = values.FILE_CONFIGURATION.split("/")[-3]
-    dir_name = project_name + "-" + values.DEFAULT_TAG_ID
+    dir_name = values.DEFAULT_TAG_ID
 
     # if definitions.DIRECTORY_MAIN + "/tests" in os.path.abspath(values.FILE_CONFIGURATION):
     #     values.CONF_VC = "git"
