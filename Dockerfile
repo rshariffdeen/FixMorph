@@ -68,4 +68,5 @@ RUN python3.7 setup.py build_ext --inplace
 # Tidy up the container
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN ln -s /FixMorph/bin/fixmorph /usr/bin/fixmorph
 
