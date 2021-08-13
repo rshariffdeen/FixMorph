@@ -183,7 +183,7 @@ def read_conf(arg_list):
 def update_phase_configuration(arg_list):
 
     if values.IS_TRAINING:
-        values.DEFAULT_OPERATION_MODE = -1
+        values.DEFAULT_OPERATION_MODE = 4
         values.PHASE_SETTING = {
             definitions.PHASE_BUILD: 1,
             definitions.PHASE_DIFF: 1,
