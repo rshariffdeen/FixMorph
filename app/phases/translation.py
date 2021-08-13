@@ -43,7 +43,7 @@ def safe_exec(function_def, title, *args):
 
 def load_values():
     load_state()
-    if values.DEFAULT_OPERATION_MODE not in [1, 2]:
+    if values.DEFAULT_OPERATION_MODE not in [1, 2] and not values.IS_TRAINING:
         if not values.ast_map:
             values.ast_map = reader.read_ast_map(definitions.FILE_AST_MAP_LOCAL)
         if not values.map_namespace_global:

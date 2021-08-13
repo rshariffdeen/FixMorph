@@ -84,6 +84,7 @@ def bootstrap(arg_list):
     configuration.update_phase_configuration(arg_list)
     configuration.print_configuration()
     set_env_value()
+    create_files()
     utilities.clean_files()
 
 
@@ -101,7 +102,6 @@ def create_directories():
 def run(arg_list):
     global time_info, start_time
     create_directories()
-    create_files()
     logger.create()
     start_time = time.time()
 
