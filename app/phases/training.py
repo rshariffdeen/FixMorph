@@ -161,13 +161,12 @@ def start():
     if values.PHASE_SETTING[definitions.PHASE_TRAINING]:
         emitter.title("Training from Evolution History")
         clear_values(values.Project_C)
-        original_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Original Patch",
-                                           values.CONF_PATH_A, values.CONF_PATH_B)
+        emitter.sub_title("analysing source diff of Original Patch")
+        original_diff_info = analyse_source_diff(values.CONF_PATH_A, values.CONF_PATH_B)
         segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
-        ported_diff_info = safe_exec(analyse_source_diff, "analysing source diff of Ported Patch",
-                                     values.CONF_PATH_C, values.CONF_PATH_E)
+        emitter.sub_title("analysing source diff of Ported Patch")
+        ported_diff_info = analyse_source_diff(values.CONF_PATH_C, values.CONF_PATH_E)
         segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
-
         if not values.ANALYSE_N:
             save_values()
 
