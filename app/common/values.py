@@ -74,6 +74,11 @@ DEFAULT_SIMILARITY_FACTOR = 0.4
 DEFAULT_TRANSPLANT_DEPTH = 2
 
 
+# ------------------ Mongo with default ---------------
+MONGODB_HOST = "localhost"
+MONGODB_PORT = 27017
+
+
 # ------------------ Configuration Values ---------------
 CONF_BUG_ID = ""
 CONF_PATH_A = ""

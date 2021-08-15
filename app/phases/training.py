@@ -7,8 +7,9 @@ import sys
 import os
 from app.common.utilities import execute_command, error_exit, save_current_state, clear_values
 from app.common import definitions, values
+from app.tools import db
 from app.tools import identifier, merger
-from app.tools import generator, differ, emitter, writer, logger
+from app.tools import generator, differ, emitter, logger
 
 FILE_EXCLUDED_EXTENSIONS = ""
 FILE_EXCLUDED_EXTENSIONS_A = ""
@@ -21,7 +22,11 @@ FILE_AST_DIFF_ERROR = ""
 
 ported_diff_info = dict()
 original_diff_info = dict()
-transplanted_diff_info = dict()
+# list of (source, func)
+ported_vectors = list()
+original_vectors = list()
+# list of db.MapEntry
+vector_mappings = list() 
 
 
 def analyse_source_diff(path_a, path_b):
@@ -65,64 +70,11 @@ def load_values():
     global FILE_EXCLUDED_EXTENSIONS, FILE_EXCLUDED_EXTENSIONS_A, FILE_EXCLUDED_EXTENSIONS_B
     definitions.FILE_ORIG_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/orig-diff-info"
     definitions.FILE_PORT_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/port-diff-info"
-    definitions.FILE_TRANSPLANT_DIFF_INFO = definitions.DIRECTORY_OUTPUT + "/transplant-diff-info"
     definitions.FILE_ORIG_DIFF = definitions.DIRECTORY_OUTPUT + "/orig-diff"
     definitions.FILE_PORT_DIFF = definitions.DIRECTORY_OUTPUT + "/port-diff"
     definitions.FILE_COMPARISON_RESULT = definitions.DIRECTORY_OUTPUT + "/comparison-result"
-    definitions.FILE_TRANSPLANT_DIFF = definitions.DIRECTORY_OUTPUT + "/transplant-diff"
     definitions.FILE_PORT_N = definitions.DIRECTORY_OUTPUT + "/n-port"
     definitions.FILE_TRANS_N = definitions.DIRECTORY_OUTPUT + "/n-trans"
-
-
-def save_values():
-    global ported_diff_info, transplanted_diff_info
-    writer.write_as_json(ported_diff_info, definitions.FILE_PORT_DIFF_INFO)
-    writer.write_as_json(transplanted_diff_info, definitions.FILE_TRANSPLANT_DIFF_INFO)
-    open(definitions.FILE_PORT_DIFF, 'w').close()
-    open(definitions.FILE_TRANSPLANT_DIFF, 'w').close()
-    
-    file_list_c = set()
-    for path_c in ported_diff_info:
-        path_c = path_c.split(":")[0]
-        file_list_c.add(path_c)
-
-    for path_c in file_list_c:
-        path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
-        diff_command = "diff -ENZBbwr"
-        if values.DEFAULT_OUTPUT_FORMAT == "unified":
-            diff_command += " -u "
-        diff_command += path_c + " " + path_e + " >> " + definitions.FILE_PORT_DIFF
-        execute_command(diff_command)
-    for path_c in file_list_c:
-        path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
-        diff_command = "diff -ENZBbwr"
-        if values.DEFAULT_OUTPUT_FORMAT == "unified":
-            diff_command += " -u "
-        diff_command += path_c + " " + path_d + " >> " + definitions.FILE_TRANSPLANT_DIFF
-        execute_command(diff_command)
-        
-    is_identical = True
-
-    for path_c in file_list_c:
-        temp_diff_file = definitions.DIRECTORY_TMP + "/tmp-ast-diff"
-        path_e = path_c.replace(values.Project_C.path, values.Project_E.path)
-        path_d = path_c.replace(values.Project_C.path, values.Project_D.path)
-        diff_command = "diff -bwZEB " + path_d + " " + path_e + " > " + temp_diff_file
-        execute_command(diff_command)
-        if os.stat(temp_diff_file).st_size != 0:
-            ast_diff_command = "crochet-diff " + path_d + " " + path_e + " > " + temp_diff_file
-            execute_command(ast_diff_command)
-            if os.stat(temp_diff_file).st_size != 0:
-                is_identical = False
-                break
-
-    with open(definitions.FILE_COMPARISON_RESULT, 'w') as result_file:
-        if is_identical:
-            result = "IDENTICAL"
-        else:
-            result = "DIFFERENT"
-        result_file.write(result)
-    save_current_state()
 
 
 def safe_exec(function_def, title, *args):
@@ -153,20 +105,57 @@ def segment_code(diff_info, project, out_file_path):
     identifier.identify_code_segment(diff_info, project, out_file_path)
 
 
+def process_original():
+    global original_diff_info, original_vectors
+    clear_values(values.Project_A)
+    # definitions.FILE_TRAINING_VECTORS = definitions.DIRECTORY_OUTPUT + "/training-vec-orig"
+    emitter.sub_title("analysing source diff of Original Patch")
+    original_diff_info = analyse_source_diff(values.CONF_PATH_A, values.CONF_PATH_B)
+    segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
+    # TODO: include vars as well
+    for source_file, val in values.Project_A.function_list:
+        for function_name, _ in val:
+            original_vectors.append((source_file, function_name))
+    
+
+def process_ported():
+    global ported_diff_info, ported_vectors
+    clear_values(values.Project_C)
+    definitions.FILE_TRAINING_VECTORS = definitions.DIRECTORY_OUTPUT + "/training-vec-ported"
+    emitter.sub_title("analysing source diff of Ported Patch")
+    ported_diff_info = analyse_source_diff(values.CONF_PATH_C, values.CONF_PATH_E)
+    segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
+    # TODO: include vars as well
+    for source_file, val in values.Project_C.function_list:
+        for function_name, _ in val:
+            ported_vectors.append(source_file, function_name)
+
+
+def generate_vector_mappings():
+    global vector_mappings
+    hash_a = values.CONF_COMMIT_A
+    hash_c = values.CONF_COMMIT_C
+    for source_a, func_a in original_vectors:
+        for source_c, func_c in ported_vectors:
+            # TODO: include case where function names are diff, but code similar
+            if func_a == func_c:
+                vector_mappings.append(db.MapEntry(hash_a, source_a, func_a, hash_c, source_c, func_c))
+                break
+
+
+def save_mapping_to_db():
+    db.insert_mapping_entry(vector_mappings)
+
+
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    global ported_diff_info, original_diff_info
     load_values()
 
     if values.PHASE_SETTING[definitions.PHASE_TRAINING]:
         emitter.title("Training from Evolution History")
-        clear_values(values.Project_C)
-        emitter.sub_title("analysing source diff of Original Patch")
-        original_diff_info = analyse_source_diff(values.CONF_PATH_A, values.CONF_PATH_B)
-        segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
-        emitter.sub_title("analysing source diff of Ported Patch")
-        ported_diff_info = analyse_source_diff(values.CONF_PATH_C, values.CONF_PATH_E)
-        segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
+        process_original()
+        process_ported()
+        generate_vector_mappings()
         if not values.ANALYSE_N:
-            save_values()
-
+            save_mapping_to_db()
+            save_current_state()

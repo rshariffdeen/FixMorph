@@ -223,11 +223,12 @@ def build_all():
     else:
         build_project(values.Project_C.path, values.CONF_BUILD_COMMAND_C)
 
-    emitter.normal("\t" + values.Project_D.path)
-    if not values.CONF_BUILD_COMMAND_C:
-        build_project(values.Project_D.path)
-    else:
-        build_project(values.Project_D.path, values.CONF_BUILD_COMMAND_C)
+    if not values.IS_TRAINING:
+        emitter.normal("\t" + values.Project_D.path)
+        if not values.CONF_BUILD_COMMAND_C:
+            build_project(values.Project_D.path)
+        else:
+            build_project(values.Project_D.path, values.CONF_BUILD_COMMAND_C)
 
     if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)
@@ -258,11 +259,12 @@ def config_all(is_llvm=False):
     else:
         config_project(values.Project_C.path, is_llvm, values.CONF_CONFIG_COMMAND_C)
 
-    emitter.normal("\t" + values.Project_D.path)
-    if not values.CONF_CONFIG_COMMAND_C:
-        config_project(values.Project_D.path, is_llvm)
-    else:
-        config_project(values.Project_D.path, is_llvm, values.CONF_CONFIG_COMMAND_C)
+    if not values.IS_TRAINING:
+        emitter.normal("\t" + values.Project_D.path)
+        if not values.CONF_CONFIG_COMMAND_C:
+            config_project(values.Project_D.path, is_llvm)
+        else:
+            config_project(values.Project_D.path, is_llvm, values.CONF_CONFIG_COMMAND_C)
 
     if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)
@@ -448,7 +450,7 @@ def restore_all():
     restore_project(values.Project_B.path)
     emitter.normal("\t" + values.Project_C.path)
     restore_project(values.Project_C.path)
-    if not values.ANALYSE_N:
+    if not values.ANALYSE_N and not values.IS_TRAINING:
         emitter.normal("\t" + values.Project_D.path)
         restore_project(values.Project_D.path, values.CONF_COMMIT_C)
     if values.CONF_PATH_E:

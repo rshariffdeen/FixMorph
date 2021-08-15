@@ -80,6 +80,8 @@ def bootstrap(arg_list):
     if values.FILE_CONFIGURATION:
         configuration.read_conf_file()
     values.CONF_ARG_PASS = 1
+    if values.IS_TRAINING: # read from db instead of file for conf in training mode
+        configuration.read_from_db()
     configuration.update_configuration()
     configuration.update_phase_configuration(arg_list)
     configuration.print_configuration()
@@ -204,4 +206,3 @@ def main():
         emitter.end(time_info, is_error)
         logger.end(time_info, is_error)
         logger.store()
-

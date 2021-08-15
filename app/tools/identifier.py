@@ -1029,4 +1029,3 @@ def identify_definition_segment(diff_info, project):
             emitter.success("\t\t\tAdded: " + header_file)
         for header_file in removed_header_list:
             emitter.success("\t\t\tRemoved: " + header_file)
-

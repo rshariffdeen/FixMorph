@@ -1,6 +1,7 @@
 import os
 import signal
 import shutil
+import git
 from app.common import definitions, values, utilities
 from app.tools import emitter
 from app.entity import project
@@ -99,6 +100,33 @@ def read_conf_file():
                 values.IS_BACKPORT = False
 
 
+def read_from_db():
+    emitter.normal("reading from db to get configuration values")
+    # read from db, to get [id, commit_b, commit_e]
+    # TODO: replace with actual db read
+    id = 2
+    commit_b = "66b19d762378785d1568b5650935205edfeb0503"
+    commit_e = "b4a9422266f2e81b59c1baad11acb4f0c6c581e7"
+
+    values.CONF_TAG_ID = id
+    values.IS_LINUX_KERNEL = True
+    # directory names
+    path_prefix = definitions.DIRECTORY_TRAINING + "/" + id 
+    values.CONF_PATH_A = path_prefix + "/pa"
+    values.CONF_PATH_B = path_prefix + "/pb"
+    values.CONF_PATH_C = path_prefix + "/pc"
+    values.CONF_PATH_E = path_prefix + "/pe"
+    # commit hashes
+    repo = git.Repo(definitions.DIRECTORY_LINUX)
+    values.CONF_COMMIT_A = repo.git.rev_parse(commit_b + "~1")
+    values.CONF_COMMIT_B = commit_b
+    values.CONF_COMMIT_C = repo.git.rev_parse(commit_e + "~1")
+    values.CONF_COMMIT_E = commit_e
+    # config command
+    values.CONF_CONFIG_COMMAND_A = "make allyesconfig"
+    values.CONF_CONFIG_COMMAND_C = "make allyesconfig"
+
+
 def read_conf(arg_list):
     emitter.normal("reading configuration values")
     if len(arg_list) > 0:
@@ -186,7 +214,7 @@ def update_phase_configuration(arg_list):
         values.DEFAULT_OPERATION_MODE = 4
         values.PHASE_SETTING = {
             definitions.PHASE_BUILD: 1,
-            definitions.PHASE_DIFF: 1,
+            definitions.PHASE_DIFF: 0,
             definitions.PHASE_TRAINING: 1,
             definitions.PHASE_DETECTION: 0,
             definitions.PHASE_SLICING: 0,
@@ -345,6 +373,3 @@ def update_configuration():
     definitions.FILE_DIFF_ALL = definitions.DIRECTORY_TMP + "/diff_all"
     definitions.FILE_FIND_RESULT = definitions.DIRECTORY_TMP + "/find_tmp"
     definitions.FILE_TEMP_TRANSFORM = definitions.DIRECTORY_TMP + "/temp-transform"
-
-
-

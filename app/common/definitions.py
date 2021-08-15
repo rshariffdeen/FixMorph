@@ -19,6 +19,8 @@ DIRECTORY_VECTORS_B = DIRECTORY_OUTPUT + "/vectors-b"
 DIRECTORY_VECTORS_C = DIRECTORY_OUTPUT + "/vectors-c"
 DIRECTORY_TOOLS = DIRECTORY_MAIN + "/third-party"
 DIRECTORY_DATA = DIRECTORY_MAIN + "/data"
+DIRECTORY_TRAINING = "/data/training/linux"
+DIRECTORY_LINUX = "/linux-stable"
 
 # ------------------- Files --------------------
 
