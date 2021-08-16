@@ -61,9 +61,8 @@ def save_values():
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global translated_script_list
-    load_values()
     if values.PHASE_SETTING[definitions.PHASE_TRANSLATION]:
+        load_values()
         emitter.title("Translate AST Script")
         safe_exec(translate_scripts, "translation of generated scripts")
         save_values()
-

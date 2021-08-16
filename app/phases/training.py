@@ -149,9 +149,8 @@ def save_mapping_to_db():
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    load_values()
-
     if values.PHASE_SETTING[definitions.PHASE_TRAINING]:
+        load_values()
         emitter.title("Training from Evolution History")
         process_original()
         process_ported()

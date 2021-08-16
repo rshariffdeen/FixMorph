@@ -158,8 +158,8 @@ def weave_slices():
 def reverse():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global modified_source_list
-    load_values()
     if values.PHASE_SETTING[definitions.PHASE_WEAVE]:
+        load_values()
         emitter.title("Applying reverse transformation")
         safe_exec(reverse_transplant_code, "reverse transforming slices")
         # safe_exec(weave_slices, "weaving slices")
@@ -173,4 +173,3 @@ def reverse():
         #     safe_exec(transplant_missing_header, "transplanting header files")
         # safe_exec(Fixer.check, "correcting syntax errors", modified_source_list)
         save_values()
-

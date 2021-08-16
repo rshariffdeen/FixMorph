@@ -89,8 +89,8 @@ def set_values():
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    set_values()
     if values.PHASE_SETTING[definitions.PHASE_VERIFY]:
+        set_values()
         emitter.title("Patch Verification")
         if not values.MODIFIED_SOURCE_LIST:
             error_exit("no modified sources to verify")
@@ -99,4 +99,3 @@ def start():
             safe_exec(verify_exploit, "verifying exploit")
             safe_exec(verify_behavior, "verifying differential behavior")
         safe_exec(commit_changes, "committing changes to git")
-

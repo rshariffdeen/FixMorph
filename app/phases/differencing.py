@@ -116,13 +116,10 @@ def save_values():
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    load_values()
     if values.PHASE_SETTING[definitions.PHASE_DIFF]:
+        load_values()
         emitter.title("Analysing Changes")
         safe_exec(analyse_source_diff, "analysing source diff")
         if values.DEFAULT_OPERATION_MODE in [0, 3]:
             safe_exec(segment_code, "segmentation of code")
         save_values()
-
-
-

@@ -88,8 +88,8 @@ def safe_exec(function_def, title, *args):
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    load_values()
     if values.PHASE_SETTING[definitions.PHASE_DETECTION]:
+        load_values()
         emitter.title("Clone Detection")
         if values.DEFAULT_OPERATION_MODE in [0, 3]:
             if not values.SKIP_VEC_GEN:
@@ -98,4 +98,3 @@ def start():
         else:
             safe_exec(find_file_clones, "finding file clones in target")
         save_values()
-

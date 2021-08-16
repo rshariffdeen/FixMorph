@@ -68,11 +68,10 @@ def save_values():
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    load_values()
     if values.PHASE_SETTING[definitions.PHASE_MAPPING]:
+        load_values()
         emitter.title("Variable Mapping")
         if not values.diff_transformation_info:
             error_exit("no ast to map")
         safe_exec(generate_map, 'derivation of variable/data-structure map')
         save_values()
-

@@ -475,9 +475,8 @@ def segment_code(diff_info, project, out_file_path):
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
     global original_diff_info, transplanted_diff_info
-    load_values()
-
     if values.PHASE_SETTING[definitions.PHASE_SUMMARIZE]:
+        load_values()
         emitter.title("Ported Patch Analysis")
         # classify_porting(Values.PATH_B, Values.Project_D.path)
         clear_values(values.Project_A)
@@ -486,4 +485,3 @@ def start():
         segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)       
 
         save_values()
-
