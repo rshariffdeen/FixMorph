@@ -5,8 +5,7 @@
 import time
 import sys
 import os
-from app.common.utilities import execute_command, error_exit, save_current_state
-from app.common.utilities import clear_values, remove_path_prefix
+from app.common.utilities import execute_command, error_exit, save_current_state, clear_values
 from app.common import definitions, values
 from app.tools import db
 from app.tools import identifier, merger
