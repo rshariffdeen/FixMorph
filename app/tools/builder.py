@@ -492,8 +492,9 @@ def clean_all():
     emitter.normal("\t" + values.Project_C.path)
     clean_project(values.Project_C.path)
 
-    emitter.normal("\t" + values.Project_D.path)
-    clean_project(values.Project_D.path)
+    if not values.IS_TRAINING:
+        emitter.normal("\t" + values.Project_D.path)
+        clean_project(values.Project_D.path)
 
     if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)

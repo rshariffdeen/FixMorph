@@ -104,14 +104,14 @@ def read_from_db():
     emitter.normal("reading from db to get configuration values")
     # read from db, to get [id, commit_b, commit_e]
     # TODO: replace with actual db read
-    id = 2
+    id = "2"
     commit_b = "66b19d762378785d1568b5650935205edfeb0503"
     commit_e = "b4a9422266f2e81b59c1baad11acb4f0c6c581e7"
 
     values.CONF_TAG_ID = id
     values.IS_LINUX_KERNEL = True
     # directory names
-    path_prefix = definitions.DIRECTORY_TRAINING + "/" + id 
+    path_prefix = definitions.DIRECTORY_TRAINING + "/" + id
     values.CONF_PATH_A = path_prefix + "/pa"
     values.CONF_PATH_B = path_prefix + "/pb"
     values.CONF_PATH_C = path_prefix + "/pc"
@@ -125,6 +125,25 @@ def read_from_db():
     # config command
     values.CONF_CONFIG_COMMAND_A = "make allyesconfig"
     values.CONF_CONFIG_COMMAND_C = "make allyesconfig"
+    # build command
+    values.CONF_BUILD_COMMAND_A = "skip"
+    values.CONF_BUILD_COMMAND_C = "skip"
+
+
+def training_setup_each():
+    emitter.normal("setting up source file directories for training")
+    top_path = values.CONF_PATH_A[:-3]
+    individual_paths = [values.CONF_PATH_A, values.CONF_PATH_B, values.CONF_PATH_C, values.CONF_PATH_E]
+    commit_hashes = [values.CONF_COMMIT_A, values.CONF_COMMIT_B, values.CONF_COMMIT_C,values.CONF_COMMIT_E]
+    if not os.path.isdir(top_path):
+        os.makedirs(top_path)
+    for i in range(len(individual_paths)):
+        curr_path = individual_paths[i]
+        if not os.path.isdir(curr_path):
+            shutil.copytree(definitions.DIRECTORY_LINUX, curr_path)
+        repo = git.Repo(curr_path)
+        repo.git.reset("--hard")
+        repo.git.checkout(commit_hashes[i])
 
 
 def read_conf(arg_list):
@@ -350,12 +369,10 @@ def update_configuration():
     values.Project_A = project.Project(values.CONF_PATH_A, "Pa")
     values.Project_B = project.Project(values.CONF_PATH_B, "Pb")
     values.Project_C = project.Project(values.CONF_PATH_C, "Pc")
-    values.Project_D = project.Project(values.CONF_PATH_C + "-patch", "Pd")
+    if not values.IS_TRAINING:
+        values.Project_D = project.Project(values.CONF_PATH_C + "-patch", "Pd")
     if values.CONF_PATH_E:
         values.Project_E = project.Project(values.CONF_PATH_E, "Pe")
-    else:
-        if values.IS_TRAINING:
-            utilities.error_exit("PE is not defined for training")
 
     load_standard_list()
 

@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from app.common import values
 
 # represents an entry to be inserted into mapping collection
-MapEntry = namedtuple('hash_a', 'source_a', 'func_a', 'hash_c', 'source_c', 'func_c')
+MapEntry = namedtuple('MapEntry', ['hash_a', 'source_a', 'func_a', 'hash_c', 'source_c', 'func_c'])
 
 client = MongoClient(values.MONGODB_HOST, values.MONGODB_PORT)
 db = client.testdb

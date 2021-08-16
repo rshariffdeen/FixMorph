@@ -18,7 +18,8 @@ time_info = {
     definitions.KEY_DURATION_MAP_GENERATION: '0', definitions.KEY_DURATION_TRANSLATION: '0',
     definitions.KEY_DURATION_EVOLUTION: '0', definitions.KEY_DURATION_TRANSPLANTATION: '0',
     definitions.KEY_DURATION_VERIFICATION: '0', definitions.KEY_DURATION_COMPARISON: '0',
-    definitions.KEY_DURATION_SUMMARIZATION: '0', definitions.KEY_DURATION_TOTAL: '0'
+    definitions.KEY_DURATION_SUMMARIZATION: '0', definitions.KEY_DURATION_TRAINING: '0',
+    definitions.KEY_DURATION_TOTAL: '0'
              }
 
 start_time = 0
@@ -82,6 +83,7 @@ def bootstrap(arg_list):
     values.CONF_ARG_PASS = 1
     if values.IS_TRAINING: # read from db instead of file for conf in training mode
         configuration.read_from_db()
+        configuration.training_setup_each()
     configuration.update_configuration()
     configuration.update_phase_configuration(arg_list)
     configuration.print_configuration()
