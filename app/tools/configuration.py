@@ -104,6 +104,7 @@ def read_from_db():
     emitter.normal("reading from db to get configuration values")
     # read from db, to get [id, commit_b, commit_e]
     # TODO: replace with actual db read
+    # TODO: prepend id with a string like 'training' to differentiate
     id = "2"
     commit_b = "66b19d762378785d1568b5650935205edfeb0503"
     commit_e = "b4a9422266f2e81b59c1baad11acb4f0c6c581e7"

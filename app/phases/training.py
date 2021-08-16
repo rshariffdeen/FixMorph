@@ -5,7 +5,8 @@
 import time
 import sys
 import os
-from app.common.utilities import execute_command, error_exit, save_current_state, clear_values
+from app.common.utilities import execute_command, error_exit, save_current_state
+from app.common.utilities import clear_values, remove_path_prefix
 from app.common import definitions, values
 from app.tools import db
 from app.tools import identifier, merger
@@ -113,9 +114,10 @@ def process_original():
     original_diff_info = analyse_source_diff(values.CONF_PATH_A, values.CONF_PATH_B)
     segment_code(original_diff_info, values.Project_A, definitions.FILE_ORIG_N)
     # TODO: include vars as well
-    for source_file, val in values.Project_A.function_list:
-        for function_name, _ in val:
-            original_vectors.append((source_file, function_name))
+    for source_file, val in values.Project_A.function_list.items():
+        precise_source = os.path.relpath(source_file, values.CONF_PATH_A)
+        for function_name, _ in val.items():
+            original_vectors.append((precise_source, function_name))
     
 
 def process_ported():
@@ -126,9 +128,10 @@ def process_ported():
     ported_diff_info = analyse_source_diff(values.CONF_PATH_C, values.CONF_PATH_E)
     segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
     # TODO: include vars as well
-    for source_file, val in values.Project_C.function_list:
-        for function_name, _ in val:
-            ported_vectors.append(source_file, function_name)
+    for source_file, val in values.Project_C.function_list.items():
+        precise_source = os.path.relpath(source_file, values.CONF_PATH_C)
+        for function_name, _ in val.items():
+            ported_vectors.append((precise_source, function_name))
 
 
 def generate_vector_mappings():
@@ -144,7 +147,14 @@ def generate_vector_mappings():
 
 
 def save_mapping_to_db():
-    db.insert_mapping_entry(vector_mappings)
+    for map_entry in vector_mappings:
+        # db.insert_mapping_entry(map_entry)
+        print(map_entry.hash_a)
+        print(map_entry.source_a)
+        print(map_entry.func_a)
+        print(map_entry.hash_c)
+        print(map_entry.source_c)
+        print(map_entry.func_c)
 
 
 def start():
@@ -157,4 +167,3 @@ def start():
         generate_vector_mappings()
         if not values.ANALYSE_N:
             save_mapping_to_db()
-            save_current_state()
