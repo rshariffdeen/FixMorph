@@ -1,6 +1,7 @@
 FROM ubuntu:16.04
 MAINTAINER Ridwan Shariffdeen <ridwan@comp.nus.edu.sg>
 
+RUN add-apt-repository -y ppa:git-core/ppa
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     autoconf \
     apt-transport-https \
@@ -69,4 +70,3 @@ RUN python3.7 setup.py build_ext --inplace
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN ln -s /FixMorph/bin/fixmorph /usr/bin/fixmorph
-

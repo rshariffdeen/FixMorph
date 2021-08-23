@@ -123,9 +123,11 @@ def read_from_db():
     values.CONF_COMMIT_B = commit_b
     values.CONF_COMMIT_C = repo.git.rev_parse(commit_e + "~1")
     values.CONF_COMMIT_E = commit_e
-    # versions. Note: this version is the one `contains` the commit.
-    values.CONF_VERSION_A = repo.git.describe("--contains", values.CONF_COMMIT_A).split('~')[0]
-    values.CONF_VERSION_C = repo.git.describe("--contains", values.CONF_COMMIT_C).split('~')[0]
+    # versions. (requires git version >= 2.13.7)
+    ver_A = repo.git.describe("--exclude", "*rc*", "--contains", values.CONF_COMMIT_A).split("~")[0]
+    values.CONF_VERSION_A = (".".join(ver_A.split(".", 2)[:2]))[1:]
+    ver_C = repo.git.describe(values.CONF_COMMIT_C).split('-')[0]
+    values.CONF_VERSION_C = (".".join(ver_C.split(".", 2)[:2]))[1:]
     # config command
     values.CONF_CONFIG_COMMAND_A = "make allyesconfig"
     values.CONF_CONFIG_COMMAND_C = "make allyesconfig"
