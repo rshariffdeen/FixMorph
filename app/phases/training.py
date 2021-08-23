@@ -135,23 +135,26 @@ def process_ported():
 
 def generate_vector_mappings():
     global vector_mappings
-    hash_a = values.CONF_COMMIT_A
-    hash_c = values.CONF_COMMIT_C
+    version_a = values.CONF_VERSION_A
+    version_c = values.CONF_VERSION_C
+
+    # match by function/variable names
     for source_a, func_a in original_vectors:
         for source_c, func_c in ported_vectors:
             # TODO: include case where function names are diff, but code similar
             if func_a == func_c:
-                vector_mappings.append(db.MapEntry(hash_a, source_a, func_a, hash_c, source_c, func_c))
+                vector_mappings.append(
+                    db.MapEntry(version_a, source_a, func_a, version_c, source_c, func_c))
                 break
 
 
 def save_mapping_to_db():
     for map_entry in vector_mappings:
         # db.insert_mapping_entry(map_entry)
-        print(map_entry.hash_a)
+        print(map_entry.version_a)
         print(map_entry.source_a)
         print(map_entry.func_a)
-        print(map_entry.hash_c)
+        print(map_entry.version_c)
         print(map_entry.source_c)
         print(map_entry.func_c)
 

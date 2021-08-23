@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from app.common import values
 
 # represents an entry to be inserted into mapping collection
-MapEntry = namedtuple('MapEntry', ['hash_a', 'source_a', 'func_a', 'hash_c', 'source_c', 'func_c'])
+MapEntry = namedtuple('MapEntry', ['version_a', 'source_a', 'func_a', 'version_c', 'source_c', 'func_c'])
 
 client = MongoClient(values.MONGODB_HOST, values.MONGODB_PORT)
 db = client.testdb
@@ -12,9 +12,9 @@ mapping_collection = db.mapping
 """
 mapping_collection format (of one document):
 {
-    orig_hash: "<some hash string>",
+    orig_version: "<some version string>",
     "orig_file_1": {
-        "target_hash_a": {
+        "target_version_a": {
             target_file: "target_file_1",
             "orig_func_1": {
                 target_func: "target_func_1",
@@ -25,7 +25,7 @@ mapping_collection format (of one document):
                 ...
             }
         }
-        "target_hash_b": {
+        "target_version_b": {
             target_file: "target_file_1"
             ...
         }
@@ -44,12 +44,12 @@ def insert_mapping_entry(entry):
     Insert one mapping into the mapping_collection
     :param entry: an entry to be inserted, of type MapEntry
     """
-    curr_doc = mapping_collection.find_one({ "orig_hash": entry.hash_a })
+    curr_doc = mapping_collection.find_one({ "orig_version": entry.version_a })
     to_insert = dict()
-    if curr_doc is None: # doc with this orig_hash was not inserted before
-        to_insert["orig_hash"] = entry.hash_a
+    if curr_doc is None: # doc with this orig_version was not inserted before
+        to_insert["orig_version"] = entry.version_a
         to_insert[entry.source_a] = {
-            entry.hash_c: {
+            entry.version_c: {
                 "target_file": entry.source_c,
                 entry.func_a: {
                     "target_func": entry.func_c
@@ -57,11 +57,11 @@ def insert_mapping_entry(entry):
             }
         }
         mapping_collection.insert_one(to_insert)
-    else: # doc with this orig_hash already exists
+    else: # doc with this orig_version already exists
         source_dict = curr_doc.get(entry.source_a)
         if source_dict is None: # this file non-existent
             curr_doc[entry.source_a] = {
-                entry.hash_c: {
+                entry.version_c: {
                     "target_file": entry.source_c,
                     entry.func_a: {
                         "target_func": entry.func_c
@@ -69,9 +69,9 @@ def insert_mapping_entry(entry):
                 }
             }
         else:
-            target_dict = source_dict.get(entry.hash_c)
+            target_dict = source_dict.get(entry.version_c)
             if target_dict is None: # this target hash non-existent
-                curr_doc[entry.source_a][entry.hash_c] = {
+                curr_doc[entry.source_a][entry.version_c] = {
                     "target_file": entry.source_c,
                     entry.func_a: {
                         "target_func": entry.func_c
@@ -84,11 +84,11 @@ def insert_mapping_entry(entry):
             else:
                 func_dict = target_dict.get(entry.func_a)
                 if func_dict is None: # this func non-existent
-                    curr_doc[entry.source_a][entry.hash_c][entry.func_a] = {
+                    curr_doc[entry.source_a][entry.version_c][entry.func_a] = {
                         "target_func": entry.func_c
                     }
                 else:
                     # TODO: handle vars here
                     pass
         # curr_doc has been updated, replace it in db
-        mapping_collection.replace_one({ "orig_hash": entry.hash_a }, curr_doc)
+        mapping_collection.replace_one({ "orig_version": entry.version_a }, curr_doc)
