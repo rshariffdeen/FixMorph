@@ -75,7 +75,8 @@ DEFAULT_TRANSPLANT_DEPTH = 2
 
 
 # ------------------ Mongo with default ---------------
-MONGODB_HOST = "localhost"
+# default set for docker-compose
+MONGODB_HOST = "mongodb://mongo"
 MONGODB_PORT = 27017
 
 

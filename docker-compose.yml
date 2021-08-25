@@ -1,0 +1,16 @@
+version: "3"
+services:
+
+  mongo:
+    image: mongo
+    container_name: mongo-fixmorph
+    volumes:
+      - ./mongo-volume:/data/db
+    ports:
+      - "27017:27017"
+  
+  fixmorph:
+    image: rshariffdeen/fixmorph:issta21
+    container_name: my-fixmorph
+    entrypoint: /bin/bash
+    tty: true
