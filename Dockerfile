@@ -1,7 +1,6 @@
 FROM ubuntu:16.04
 MAINTAINER Ridwan Shariffdeen <ridwan@comp.nus.edu.sg>
 
-RUN add-apt-repository -y ppa:git-core/ppa
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     autoconf \
     apt-transport-https \
@@ -11,7 +10,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     cmake \
     curl \
     flex \
-    git \
     google-perftools \
     mercurial \
     minisat \
@@ -24,6 +22,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     unzip \
     wget \
     zlib1g-dev
+
+RUN add-apt-repository -y ppa:git-core/ppa
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git
 
 RUN add-apt-repository -y ppa:deadsnakes/ppa
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
