@@ -10,7 +10,7 @@ def wrap_main():
 
     total_untrained_pairs = db.num_untrained_pairs()
 
-    print("[TRAINING] Training begins. Found {} commit pairs in total."
+    print("\n[TRAINING] Training begins. Found {} commit pairs in total."
         .format(total_untrained_pairs))
 
     current_pair = 1

@@ -160,9 +160,6 @@ def save_mapping_to_db():
 
 
 def clean_up():
-    # remove source directories to avoid using up too much disk space
-    training_tmp_dir = definitions.DIRECTORY_TRAINING + "/training-tmp"
-    shutil.rmtree(training_tmp_dir)
     # mark in db that this pair has been trained
     db.mark_pair_as_trained(values.CONF_COMMIT_B, values.CONF_COMMIT_E)
 
