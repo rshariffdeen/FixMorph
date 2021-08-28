@@ -49,6 +49,13 @@ def insert_training_pair_entry(hash_b, hash_e):
     training_pair_collection.insert_one(to_insert)
 
 
+def create_index_training_pair():
+    """
+    Build compound index on `trained` and `hash_b`.
+    """
+    training_pair_collection.create_index({ "trained": 1, "hash_b": 1 })
+
+
 """
 !!!!!deprecated
 mapping_collection format (of one document):

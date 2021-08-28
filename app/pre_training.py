@@ -11,7 +11,7 @@ REPO_PATH = "/linux-stable"
 
 def clone_repo():
     if not os.path.isdir(REPO_PATH):
-        print("[DRIVER] Cloning remote repository\n")
+        print("[PRE-TRAINING] Cloning remote repository\n")
         git.Repo.clone_from(REPO_URL, REPO_PATH)
 
 
@@ -40,6 +40,7 @@ def main():
     with open(txt_file, "r") as f:
         content = f.readlines()
     
+    print("[PRE-TRAINING] Populating training pairs...\n")
     from_commit = ""
     for line in content:
         if line[0] != ' ': # from commit
@@ -51,6 +52,9 @@ def main():
                     continue
                 store_pair(repo, from_commit, to_commit)
 
+    print("[PRE-TRAINING] Building database indexes...\n")
+    db.create_index_training_pair()
+    print("[PRE-TRAINING] Finished pre-training steps!\n")
 
 if __name__ == "__main__":
     main()
