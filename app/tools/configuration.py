@@ -3,7 +3,7 @@ import signal
 import shutil
 import git
 from app.common import definitions, values, utilities
-from app.tools import emitter
+from app.tools import emitter, db
 from app.entity import project
 
 
@@ -102,12 +102,9 @@ def read_conf_file():
 
 def read_from_db():
     emitter.normal("reading from db to get configuration values")
-    # read from db, to get [id, commit_b, commit_e]
-    # TODO: replace with actual db read
-    # TODO: prepend id with a string like 'training' to differentiate
-    id = "2"
-    commit_b = "66b19d762378785d1568b5650935205edfeb0503"
-    commit_e = "b4a9422266f2e81b59c1baad11acb4f0c6c581e7"
+    
+    commit_b, commit_e = db.get_one_untrained_pair()
+    id = "training-tmp"
 
     values.CONF_TAG_ID = id
     values.IS_LINUX_KERNEL = True
@@ -129,8 +126,10 @@ def read_from_db():
     ver_C = repo.git.describe(values.CONF_COMMIT_C).split('-')[0]
     values.CONF_VERSION_C = (".".join(ver_C.split(".", 2)[:2]))[1:]
     # config command
-    values.CONF_CONFIG_COMMAND_A = "make allyesconfig"
-    values.CONF_CONFIG_COMMAND_C = "make allyesconfig"
+    # values.CONF_CONFIG_COMMAND_A = "make allyesconfig"
+    # values.CONF_CONFIG_COMMAND_C = "make allyesconfig"
+    values.CONF_CONFIG_COMMAND_A = "skip"
+    values.CONF_CONFIG_COMMAND_C = "skip"
     # build command
     values.CONF_BUILD_COMMAND_A = "skip"
     values.CONF_BUILD_COMMAND_C = "skip"
@@ -237,8 +236,9 @@ def update_phase_configuration(arg_list):
 
     if values.IS_TRAINING:
         values.DEFAULT_OPERATION_MODE = 4
+        # For training only func names, don't need to build proj
         values.PHASE_SETTING = {
-            definitions.PHASE_BUILD: 1,
+            definitions.PHASE_BUILD: 0,
             definitions.PHASE_DIFF: 0,
             definitions.PHASE_TRAINING: 1,
             definitions.PHASE_DETECTION: 0,

@@ -1,11 +1,12 @@
+import sys
+import pymongo
 from collections import namedtuple
-from pymongo import MongoClient
 from app.common import values
 
 # represents an entry to be inserted into mapping collection
 MapEntry = namedtuple('MapEntry', ['version_a', 'source_a', 'func_a', 'version_c', 'source_c', 'func_c'])
 
-client = MongoClient(values.MONGODB_HOST, values.MONGODB_PORT)
+client = pymongo.MongoClient(values.MONGODB_HOST, values.MONGODB_PORT)
 db = client.fm
 training_pair_collection = db.training_pair
 mapping_collection = db.mapping
@@ -49,11 +50,45 @@ def insert_training_pair_entry(hash_b, hash_e):
     training_pair_collection.insert_one(to_insert)
 
 
+def num_untrained_pairs():
+    return training_pair_collection.find({ "trained": False}).count()
+
+
+def get_one_untrained_pair():
+    untrained_pair = training_pair_collection.find_one({ "trained": False },
+        sort=[("hash_b", pymongo.ASCENDING)])
+    if untrained_pair:
+        return (untrained_pair["hash_b"], untrained_pair["hash_e"])
+    else:
+        sys.exit("No more untrained pairs. Training done!")
+
+
+def mark_pair_as_trained(hash_b, hash_e):
+    training_pair_collection.update_one({ "hash_b": hash_b, "hash_e": hash_e },
+                                        { "$set": {"trained": True} })
+
+
+def create_index_mapping():
+    """
+    Build compound index on `orig_version`, `target_version`,
+    `orig_file` and `orig_func`
+    """
+    mapping_collection.create_index({ "orig_version": pymongo.ASCENDING, 
+                                      "target_version": pymongo.ASCENDING,
+                                      "orig_file": pymongo.ASCENDING, 
+                                      "orig_func": pymongo.ASCENDING })
+
+
 def create_index_training_pair():
     """
-    Build compound index on `trained` and `hash_b`.
+    Build two compound indexes:
+        (1) `trained` and `hash_b`
+        (2) `hash_b` and `hash_e`
     """
-    training_pair_collection.create_index({ "trained": 1, "hash_b": 1 })
+    training_pair_collection.create_index({ "trained": pymongo.ASCENDING, 
+                                            "hash_b": pymongo.ASCENDING })
+    training_pair_collection.create_index({ "hash_b": pymongo.ASCENDING, 
+                                            "hash_e": pymongo.ASCENDING })
 
 
 """

@@ -1,10 +1,10 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 import time
 import sys
 import os
+import shutil
 from app.common.utilities import execute_command, error_exit, save_current_state, clear_values
 from app.common import definitions, values
 from app.tools import db
@@ -122,7 +122,7 @@ def process_original():
 def process_ported():
     global ported_diff_info, ported_vectors
     clear_values(values.Project_C)
-    definitions.FILE_TRAINING_VECTORS = definitions.DIRECTORY_OUTPUT + "/training-vec-ported"
+    # definitions.FILE_TRAINING_VECTORS = definitions.DIRECTORY_OUTPUT + "/training-vec-ported"
     emitter.sub_title("analysing source diff of Ported Patch")
     ported_diff_info = analyse_source_diff(values.CONF_PATH_C, values.CONF_PATH_E)
     segment_code(ported_diff_info, values.Project_C, definitions.FILE_PORT_N)
@@ -150,13 +150,21 @@ def generate_vector_mappings():
 
 def save_mapping_to_db():
     for map_entry in vector_mappings:
-        # db.insert_mapping_entry(map_entry)
-        print(map_entry.version_a)
-        print(map_entry.source_a)
-        print(map_entry.func_a)
-        print(map_entry.version_c)
-        print(map_entry.source_c)
-        print(map_entry.func_c)
+        db.insert_mapping_entry(map_entry)
+        # print(map_entry.version_a)
+        # print(map_entry.source_a)
+        # print(map_entry.func_a)
+        # print(map_entry.version_c)
+        # print(map_entry.source_c)
+        # print(map_entry.func_c)
+
+
+def clean_up():
+    # remove source directories to avoid using up too much disk space
+    training_tmp_dir = definitions.DIRECTORY_TRAINING + "/training-tmp"
+    shutil.rmtree(training_tmp_dir)
+    # mark in db that this pair has been trained
+    db.mark_pair_as_trained(values.CONF_COMMIT_B, values.CONF_COMMIT_E)
 
 
 def start():
@@ -169,3 +177,4 @@ def start():
         generate_vector_mappings()
         if not values.ANALYSE_N:
             save_mapping_to_db()
+        clean_up()
