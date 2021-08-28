@@ -2,8 +2,8 @@
 
 import os
 import git
-from common import definitions
-from tools import db
+from app.common import definitions
+from app.tools import db
 
 
 REPO_URL = "https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux-stable"

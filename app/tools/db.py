@@ -73,10 +73,10 @@ def create_index_mapping():
     Build compound index on `orig_version`, `target_version`,
     `orig_file` and `orig_func`
     """
-    mapping_collection.create_index({ "orig_version": pymongo.ASCENDING, 
-                                      "target_version": pymongo.ASCENDING,
-                                      "orig_file": pymongo.ASCENDING, 
-                                      "orig_func": pymongo.ASCENDING })
+    mapping_collection.create_index([("orig_version", pymongo.ASCENDING),
+                                     ("target_version", pymongo.ASCENDING),
+                                     ("orig_file", pymongo.ASCENDING), 
+                                     ("orig_func", pymongo.ASCENDING)])
 
 
 def create_index_training_pair():
@@ -85,10 +85,10 @@ def create_index_training_pair():
         (1) `trained` and `hash_b`
         (2) `hash_b` and `hash_e`
     """
-    training_pair_collection.create_index({ "trained": pymongo.ASCENDING, 
-                                            "hash_b": pymongo.ASCENDING })
-    training_pair_collection.create_index({ "hash_b": pymongo.ASCENDING, 
-                                            "hash_e": pymongo.ASCENDING })
+    training_pair_collection.create_index([("trained", pymongo.ASCENDING), 
+                                           ("hash_b", pymongo.ASCENDING)])
+    training_pair_collection.create_index([("hash_b", pymongo.ASCENDING), 
+                                           ("hash_e", pymongo.ASCENDING)])
 
 
 """
