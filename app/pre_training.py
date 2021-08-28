@@ -2,8 +2,17 @@
 
 import os
 import git
-from app.common import definitions
-from app.tools import db
+from common import definitions
+from tools import db
+
+
+REPO_URL = "https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux-stable"
+REPO_PATH = "/linux-stable"
+
+def clone_repo():
+    if not os.path.isdir(REPO_PATH):
+        print("[DRIVER] Cloning remote repository\n")
+        git.Repo.clone_from(REPO_URL, REPO_PATH)
 
 
 def get_changed_files(repo, commit):
@@ -24,8 +33,9 @@ def store_pair(repo, from_commit, to_commit):
 
 
 def main():
+    clone_repo()
     txt_file = os.path.join(definitions.DIRECTORY_MAIN, "c_backported.txt")
-    repo = git.Repo(definitions.DIRECTORY_LINUX)
+    repo = git.Repo(REPO_PATH)
 
     with open(txt_file, "r") as f:
         content = f.readlines()
