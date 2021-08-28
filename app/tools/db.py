@@ -51,7 +51,7 @@ def insert_training_pair_entry(hash_b, hash_e):
 
 
 def num_untrained_pairs():
-    return training_pair_collection.find({ "trained": False}).count_documents()
+    return training_pair_collection.count_documents({ "trained": False })
 
 
 def get_one_untrained_pair():
