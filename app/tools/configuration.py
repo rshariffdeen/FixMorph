@@ -3,7 +3,7 @@ import signal
 import shutil
 import git
 from app.common import definitions, values, utilities
-from app.tools import emitter, db
+from app.tools import generator, differ, emitter, db
 from app.entity import project
 
 
@@ -126,13 +126,11 @@ def read_from_db():
     ver_C = repo.git.describe(values.CONF_COMMIT_C).split('-')[0]
     values.CONF_VERSION_C = (".".join(ver_C.split(".", 2)[:2]))[1:]
     # config command
-    # values.CONF_CONFIG_COMMAND_A = "make allyesconfig"
-    # values.CONF_CONFIG_COMMAND_C = "make allyesconfig"
-    values.CONF_CONFIG_COMMAND_A = "skip"
-    values.CONF_CONFIG_COMMAND_C = "skip"
-    # build command
-    values.CONF_BUILD_COMMAND_A = "skip"
-    values.CONF_BUILD_COMMAND_C = "skip"
+    values.CONF_CONFIG_COMMAND_A = "make allyesconfig"
+    values.CONF_CONFIG_COMMAND_C = "make allyesconfig"
+    # build command - to be completed later
+    values.CONF_BUILD_COMMAND_A = "make "
+    values.CONF_BUILD_COMMAND_C = "make "
 
 
 def training_setup_each():
@@ -149,6 +147,36 @@ def training_setup_each():
         repo = git.Repo(curr_path)
         repo.git.reset("--hard")
         repo.git.checkout(commit_hashes[i])
+
+
+def training_update_build_command():
+    differ.diff_files(definitions.FILE_DIFF_ALL,
+                      definitions.FILE_DIFF_C,
+                      definitions.FILE_DIFF_H,
+                      definitions.FILE_EXCLUDED_EXTENSIONS_A,
+                      definitions.FILE_EXCLUDED_EXTENSIONS_B,
+                      definitions.FILE_EXCLUDED_EXTENSIONS,
+                      values.CONF_PATH_A,
+                      values.CONF_PATH_B)
+    untracked_file_list = generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, values.CONF_PATH_A)
+    diff_c_file_list = differ.diff_c_files(definitions.FILE_DIFF_C, values.CONF_PATH_B, untracked_file_list)
+    for diff_file in diff_c_file_list:
+        o_file = diff_file[0][:-1] + "o "
+        values.CONF_BUILD_COMMAND_A += o_file
+
+    differ.diff_files(definitions.FILE_DIFF_ALL,
+                      definitions.FILE_DIFF_C,
+                      definitions.FILE_DIFF_H,
+                      definitions.FILE_EXCLUDED_EXTENSIONS_A,
+                      definitions.FILE_EXCLUDED_EXTENSIONS_B,
+                      definitions.FILE_EXCLUDED_EXTENSIONS,
+                      values.CONF_PATH_C,
+                      values.CONF_PATH_E)
+    untracked_file_list = generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, values.CONF_PATH_C)
+    diff_c_file_list = differ.diff_c_files(definitions.FILE_DIFF_C, values.CONF_PATH_E, untracked_file_list)
+    for diff_file in diff_c_file_list:
+        o_file = diff_file[0][:-1] + "o "
+        values.CONF_BUILD_COMMAND_C += o_file
 
 
 def read_conf(arg_list):
@@ -236,9 +264,8 @@ def update_phase_configuration(arg_list):
 
     if values.IS_TRAINING:
         values.DEFAULT_OPERATION_MODE = 4
-        # For training only func names, don't need to build proj
         values.PHASE_SETTING = {
-            definitions.PHASE_BUILD: 0,
+            definitions.PHASE_BUILD: 1,
             definitions.PHASE_DIFF: 0,
             definitions.PHASE_TRAINING: 1,
             definitions.PHASE_DETECTION: 0,

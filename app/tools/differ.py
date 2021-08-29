@@ -33,7 +33,7 @@ def diff_files(output_diff_file, output_c_diff, output_h_diff,
         for file_path in file_list:
             if file_path[-1] == 'c':
                 c_file_list.append(file_path)
-            else:
+            elif file_path[-1] == 'h':
                 h_file_list.append(file_path)
 
         with open(output_c_diff, 'w') as c_diff:

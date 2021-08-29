@@ -38,7 +38,9 @@ def insert_mapping_entry(entry):
         "target_func": entry.func_c,
         "var_mapping": {}
     }
-    mapping_collection.insert_one(to_insert)
+    existing_doc = mapping_collection.find_one(to_insert)
+    if existing_doc is None:    
+        mapping_collection.insert_one(to_insert)
 
 
 def insert_training_pair_entry(hash_b, hash_e):

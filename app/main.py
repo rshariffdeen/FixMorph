@@ -86,6 +86,8 @@ def bootstrap(arg_list):
         configuration.training_setup_each()
     configuration.update_configuration()
     configuration.update_phase_configuration(arg_list)
+    if values.IS_TRAINING:
+        configuration.training_update_build_command()
     configuration.print_configuration()
     set_env_value()
     create_files()
