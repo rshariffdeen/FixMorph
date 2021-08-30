@@ -166,12 +166,16 @@ def clean_up():
 
 def start():
     logger.trace(__name__ + ":" + sys._getframe().f_code.co_name, locals())
-    if values.PHASE_SETTING[definitions.PHASE_TRAINING]:
-        load_values()
-        emitter.title("Training from Evolution History")
-        process_original()
-        process_ported()
-        generate_vector_mappings()
-        if not values.ANALYSE_N:
-            save_mapping_to_db()
-        clean_up()
+    try:
+        if values.PHASE_SETTING[definitions.PHASE_TRAINING]:
+            load_values()
+            emitter.title("Training from Evolution History")
+            process_original()
+            process_ported()
+            generate_vector_mappings()
+            if not values.ANALYSE_N:
+                save_mapping_to_db()
+            clean_up()
+    except:
+        # something wrong happened to this pair, mark it
+        db.mark_pair_as_error(values.CONF_COMMIT_B, values.CONF_COMMIT_E)

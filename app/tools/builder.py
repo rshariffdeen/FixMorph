@@ -475,7 +475,7 @@ def soft_restore_all():
 
 def clean_project(project_path):
     clean_command = "cd " + project_path + "; make clean; make distclean"
-    # clean_command += "; rm compile_commands.json"
+    clean_command += "; rm compile_commands.json"
     clean_command += "; rm CMakeCache.txt"
     clean_command += "; rm -rf CMakeFiles"
     execute_command(clean_command)

@@ -161,8 +161,10 @@ def training_update_build_command():
     untracked_file_list = generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, values.CONF_PATH_A)
     diff_c_file_list = differ.diff_c_files(definitions.FILE_DIFF_C, values.CONF_PATH_B, untracked_file_list)
     for diff_file in diff_c_file_list:
-        o_file = diff_file[0][:-1] + "o "
+        o_file = os.path.relpath(diff_file[0], values.CONF_PATH_A)
+        o_file = o_file[:-1] + "o "
         values.CONF_BUILD_COMMAND_A += o_file
+    print("Final build command for A is {}".format(values.CONF_BUILD_COMMAND_A))
 
     differ.diff_files(definitions.FILE_DIFF_ALL,
                       definitions.FILE_DIFF_C,
@@ -175,8 +177,11 @@ def training_update_build_command():
     untracked_file_list = generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, values.CONF_PATH_C)
     diff_c_file_list = differ.diff_c_files(definitions.FILE_DIFF_C, values.CONF_PATH_E, untracked_file_list)
     for diff_file in diff_c_file_list:
-        o_file = diff_file[0][:-1] + "o "
+        o_file = os.path.relpath(diff_file[0], values.CONF_PATH_C)
+        o_file = o_file[:-1] + "o "
         values.CONF_BUILD_COMMAND_C += o_file
+    print("Final build command for C is {}".format(values.CONF_BUILD_COMMAND_C))
+
 
 
 def read_conf(arg_list):

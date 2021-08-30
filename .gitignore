@@ -35,3 +35,13 @@ Tests.py
 ASTdiffTest.py
 empty_file.c
 test
+
+app/*.c
+app/*.so
+test/*.json
+test/*.AST
+test/*.slice
+test/*.vec
+test/*.orig
+test/*.o
+test/*.plist

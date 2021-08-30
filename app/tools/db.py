@@ -69,6 +69,9 @@ def mark_pair_as_trained(hash_b, hash_e):
     training_pair_collection.update_one({ "hash_b": hash_b, "hash_e": hash_e },
                                         { "$set": {"trained": True} })
 
+def mark_pair_as_error(hash_b, hash_e):
+    training_pair_collection.update_one({ "hash_b": hash_b, "hash_e": hash_e },
+                                        { "$set": {"trained": "error" } })
 
 def create_index_mapping():
     """
