@@ -4,13 +4,13 @@ from collections import namedtuple
 from app.common import values
 
 # represents an entry to be inserted into mapping collection
-MapEntry = namedtuple('MapEntry', ['version_a', 'source_a', 'func_a', 'version_c', 'source_c', 'func_c'])
+MapEntry = namedtuple('MapEntry', ['version_a', 'source_a', 'func_a', 'version_c', 'vec_c_list'])
 
 client = pymongo.MongoClient(values.MONGODB_HOST, values.MONGODB_PORT)
 db = client.fm
 training_pair_collection = db.training_pair
-mapping_collection = db.mapping
-
+# mapping_collection = db.mapping
+mapping_collection = db.new_mapping
 
 """
 mapping_collection format (of one document):
@@ -19,8 +19,7 @@ mapping_collection format (of one document):
     target_version: "4.18",
     orig_file: "drivers/spi/spi-dw.c",
     orig_func: "func_dw_spi_add_host",
-    target_file: "drivers/spi/spi-dw.c",
-    target_func: "func_dw_spi_add_host",
+    target_vecs: ["drivers/spi/spi-dw.c:func_dw_spi_add_host"],
     var_mapping: {
         "orig_foo": "target_foo",
         "orig_bar": "target_bar"
@@ -34,13 +33,14 @@ def insert_mapping_entry(entry):
         "target_version": entry.version_c,
         "orig_file": entry.source_a,
         "orig_func": entry.func_a,
-        "target_file": entry.source_c,
-        "target_func": entry.func_c,
+        "target_vecs": entry.vec_c_list,
         "var_mapping": {}
     }
     existing_doc = mapping_collection.find_one(to_insert)
     if existing_doc is None:    
         mapping_collection.insert_one(to_insert)
+        print("Inserting one mapping entry to database:")
+        print(to_insert)
 
 
 def insert_training_pair_entry(hash_b, hash_e):

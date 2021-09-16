@@ -137,26 +137,27 @@ def generate_vector_mappings():
     global vector_mappings
     version_a = values.CONF_VERSION_A
     version_c = values.CONF_VERSION_C
-
     # match by function/variable names
+    # TODO: include variables
+    original_funcs = [ f for _ , f in original_vectors ]
+    unmatched_vectors = list()
+    for source_c, func_c in ported_vectors:
+        if func_c not in original_funcs:
+            unmatched_vectors.append((source_c, func_c))
     for source_a, func_a in original_vectors:
         for source_c, func_c in ported_vectors:
-            # TODO: include case where function names are diff, but code similar
             if func_a == func_c:
+                # found a match, prepare an entry for adding to db
+                vec_c_list = [(source_c, func_c)] 
+                vec_c_list.extend(unmatched_vectors)
                 vector_mappings.append(
-                    db.MapEntry(version_a, source_a, func_a, version_c, source_c, func_c))
+                    db.MapEntry(version_a, source_a, func_a, version_c, vec_c_list))
                 break
 
 
 def save_mapping_to_db():
     for map_entry in vector_mappings:
         db.insert_mapping_entry(map_entry)
-        # print(map_entry.version_a)
-        # print(map_entry.source_a)
-        # print(map_entry.func_a)
-        # print(map_entry.version_c)
-        # print(map_entry.source_c)
-        # print(map_entry.func_c)
 
 
 def clean_up():

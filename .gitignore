@@ -38,10 +38,10 @@ test
 
 app/*.c
 app/*.so
-test/*.json
-test/*.AST
-test/*.slice
-test/*.vec
-test/*.orig
-test/*.o
-test/*.plist
+tests/*.json
+tests/*.AST
+tests/*.slice
+tests/*.vec
+tests/*.orig
+tests/*.o
+tests/*.plist

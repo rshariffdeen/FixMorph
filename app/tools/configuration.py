@@ -146,7 +146,7 @@ def training_setup_each():
             shutil.copytree(definitions.DIRECTORY_LINUX, curr_path)
         repo = git.Repo(curr_path)
         repo.git.reset("--hard")
-        repo.git.checkout(commit_hashes[i])
+        repo.git.checkout(commit_hashes[i], force=True)
 
 
 def training_update_build_command():
@@ -160,6 +160,9 @@ def training_update_build_command():
                       values.CONF_PATH_B)
     untracked_file_list = generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, values.CONF_PATH_A)
     diff_c_file_list = differ.diff_c_files(definitions.FILE_DIFF_C, values.CONF_PATH_B, untracked_file_list)
+    if not diff_c_file_list:
+        db.mark_pair_as_error(values.CONF_COMMIT_B, values.CONF_COMMIT_E)
+        utilities.error_exit("no c files to build.")
     for diff_file in diff_c_file_list:
         o_file = os.path.relpath(diff_file[0], values.CONF_PATH_A)
         o_file = o_file[:-1] + "o "
@@ -176,6 +179,9 @@ def training_update_build_command():
                       values.CONF_PATH_E)
     untracked_file_list = generator.generate_untracked_file_list(definitions.FILE_EXCLUDED_EXTENSIONS, values.CONF_PATH_C)
     diff_c_file_list = differ.diff_c_files(definitions.FILE_DIFF_C, values.CONF_PATH_E, untracked_file_list)
+    if not diff_c_file_list:
+        db.mark_pair_as_error(values.CONF_COMMIT_B, values.CONF_COMMIT_E)
+        utilities.error_exit("no c files to build.")
     for diff_file in diff_c_file_list:
         o_file = os.path.relpath(diff_file[0], values.CONF_PATH_C)
         o_file = o_file[:-1] + "o "
