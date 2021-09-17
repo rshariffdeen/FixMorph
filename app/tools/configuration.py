@@ -98,6 +98,14 @@ def read_conf_file():
                 values.IS_BACKPORT = True
             else:
                 values.IS_BACKPORT = False
+    if values.IS_LINUX_KERNEL:
+        repo = git.Repo(definitions.DIRECTORY_LINUX)
+        # versions. (requires git version >= 2.13.7)
+        ver_A = repo.git.describe("--exclude", "*rc*", "--contains", values.CONF_COMMIT_A).split("~")[0]
+        values.CONF_VERSION_A = (".".join(ver_A.split(".", 2)[:2]))[1:]
+        ver_C = repo.git.describe(values.CONF_COMMIT_C).split('-')[0]
+        values.CONF_VERSION_C = (".".join(ver_C.split(".", 2)[:2]))[1:]
+
 
 
 def read_from_db():

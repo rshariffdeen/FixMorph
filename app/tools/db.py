@@ -19,13 +19,27 @@ mapping_collection format (of one document):
     target_version: "4.18",
     orig_file: "drivers/spi/spi-dw.c",
     orig_func: "func_dw_spi_add_host",
-    target_vecs: ["drivers/spi/spi-dw.c:func_dw_spi_add_host"],
+    target_vecs: [["drivers/spi/spi-dw.c, func_dw_spi_add_host"], [...]],
     var_mapping: {
         "orig_foo": "target_foo",
         "orig_bar": "target_bar"
     }
 }
 """
+
+
+def query_target_vecs(orig_version, target_version, orig_file, target_file):
+    """
+    :returns: list of potential target vectors; None if cannot find.
+    """
+    find_template = {
+        "orig_version": orig_version,
+        "target_version": target_version,
+        "orig_file": orig_file,
+        "target_file": target_file
+    }
+    return mapping_collection.find_one(find_template)
+
 
 def insert_mapping_entry(entry):
     to_insert = {
