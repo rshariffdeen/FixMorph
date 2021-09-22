@@ -58,9 +58,9 @@ related to mongodb operations.
 
 ## Using the trained mapping in FixMorph
 
-Some logic in query db was implemented in `detect_function_clone`. I was trying
-the db querying workflow with the following example (but haven't made it 
-working yet):
+Some logic in query db was implemented in `detect_function_clone`. To try the
+altered workflow (with querying db for mappings first), run the following
+example:
 
 ```
 cd /FixMorph/experiments/ISSTA21
@@ -68,8 +68,8 @@ python3.7 driver.py --data=main-data.json --only-setup --bug-id=20
 cd /FixMorph
 python3.7 FixMorph.py --conf=/data/backport/linux/20/repair.conf
 ```
-This does not seem to work yet, as the function clone part is still generating 
-ast map instead of just querying and return.
+At the function clone detection stage, this example should obtain the desired
+mapping from mongodb and skip the ast map generation.
 
 _Note:_ There was a bug where I forgot to remove the `func_` prefix for function
 names when saving them to db. I am temporarily prepending and removing this
