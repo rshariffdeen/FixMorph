@@ -409,9 +409,11 @@ def detect_function_clones():
         vector_source_a = str(vector_source_a).replace(values.Project_A.path, '')
         vector_name_a = vector_name_a.replace(".vec", "")
         # prepend "func_" temporarily
-        candidate_list = db.query_target_vecs(values.CONF_VERSION_A, values.CONF_VERSION_C,
+        mapping_doc = db.query_target_vecs(values.CONF_VERSION_A, values.CONF_VERSION_C,
                 vector_source_a, "func_" + vector_name_a)
-        if candidate_list: # there are some matching entries in db
+        print(mapping_doc)
+        if mapping_doc: # there are some matching entries in db
+            candidate_list = mapping_doc['target_vecs']
             # TODO: deal with other items in the list
             candidate_vec = candidate_list[0]
             candidate_source_path = candidate_vec[0]

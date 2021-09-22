@@ -28,7 +28,7 @@ mapping_collection format (of one document):
 """
 
 
-def query_target_vecs(orig_version, target_version, orig_file, target_file):
+def query_target_vecs(orig_version, target_version, orig_file, orig_func):
     """
     :returns: list of potential target vectors; None if cannot find.
     """
@@ -36,7 +36,7 @@ def query_target_vecs(orig_version, target_version, orig_file, target_file):
         "orig_version": orig_version,
         "target_version": target_version,
         "orig_file": orig_file,
-        "target_file": target_file
+        "orig_func": orig_func
     }
     return mapping_collection.find_one(find_template)
 
