@@ -404,23 +404,32 @@ def detect_function_clones():
     UNKNOWN = "#UNKNOWN#"
 
     # query db for matches first
-    for vector_path_a in vector_list_a:
+    for vector_path_a, _ in vector_list_a:
         vector_source_a, vector_name_a = vector_path_a.split(".func_")
         vector_source_a = str(vector_source_a).replace(values.Project_A.path, '')
         vector_name_a = vector_name_a.replace(".vec", "")
+        # prepend "func_" temporarily
         candidate_list = db.query_target_vecs(values.CONF_VERSION_A, values.CONF_VERSION_C,
-            vector_source_a, vector_name_a)
+                vector_source_a, "func_" + vector_name_a)
         if candidate_list: # there are some matching entries in db
             # TODO: deal with other items in the list
             candidate_vec = candidate_list[0]
             candidate_source_path = candidate_vec[0]
             candidate_name = candidate_vec[1]
+            # do this temporarily
+            candidate_name = candidate_name.replace("func_", "")
             emitter.normal("\t\tFound a match in DB for " + vector_name_a + " in $Pa/" + vector_source_a + ":")
             emitter.success("\t\t\tFunction: " + candidate_name + " in $Pc/" + str(candidate_source_path))
             emitter.success("\t\t\tSkipping clone detection for this function.")
             candidate_file_path = values.Project_C.path + candidate_source_path + ".func_" + candidate_name + ".vec"
             clone_list.append((vector_path_a, candidate_file_path, None))
             values.VECTOR_MAP[vector_path_a] = candidate_file_path
+    
+    matched_vector_list_a = [ p for (p, _, _) in clone_list ]
+    original_vector_list_a = [ p for (p, _) in vector_list_a ]
+    if set(original_vector_list_a) == set(matched_vector_list_a):
+        emitter.normal("\t\tAll function clones are detected by querying db, returning now.")
+        return clone_list
 
     candidate_list_all = detect_candidate_list(vector_list_a, vector_list_c, factor)
     for vector_path_a in candidate_list_all:
