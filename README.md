@@ -65,7 +65,7 @@ python3.7 FixMorph.py --conf=/path/to/conf/file
 ```
 
 The backported will be generated at ./tests/update/assignment/PC-patch directory. In this example, the original patch from mainline version PA-PB:
-```c
+```diff
 18c18
 < min = rank;
 ---
@@ -80,7 +80,7 @@ The backported will be generated at ./tests/update/assignment/PC-patch directory
 
 The backported patch to target version PC is as follows:
 
-```c
+```diff
 18c18
 < minimum = rank;
 ---
@@ -95,7 +95,7 @@ The backported patch to target version PC is as follows:
 If you prefer changes to display in unified diff format, use the additional flag
 "--format=unified" 
 
-```c
+```diff
 --- /FixMorph/tests/update/assignment/PC/selection-sort.c	
 +++ /FixMorph/tests/update/assignment/PC-patch/selection-sort.c	
 @@ -15,11 +15,11 @@
