@@ -92,8 +92,9 @@ The backported patch to target version PC is as follows:
 >   if (author_list[b].user_id < minimum) {
 > minimum = author_list[b].user_id;
 ```
-If you prefer changes to display in unified diff format, use the additional flag
-"--format=unified" 
+
+
+If you prefer changes to display in unified diff format, use the additional flag "--format=unified".
 
 ```diff
 --- /FixMorph/tests/update/assignment/PC/selection-sort.c	
