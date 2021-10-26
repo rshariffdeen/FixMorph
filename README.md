@@ -98,7 +98,6 @@ If you prefer changes to display in unified diff format, use the additional flag
 ```c
 --- /FixMorph/tests/update/assignment/PC/selection-sort.c	
 +++ /FixMorph/tests/update/assignment/PC-patch/selection-sort.c	
-
 @@ -15,11 +15,11 @@
 while (a < length) {
     author_id = author_list[a].user_id;
