@@ -99,20 +99,20 @@ If you prefer changes to display in unified diff format, use the additional flag
 --- /FixMorph/tests/update/assignment/PC/selection-sort.c	
 +++ /FixMorph/tests/update/assignment/PC-patch/selection-sort.c	
 @@ -15,11 +15,11 @@
-while (a < length) {
+ while (a < length) {
     author_id = author_list[a].user_id;
     rank = author_list[a].rank;
-    -    minimum = rank;
-    +    minimum = author_id;
+-   minimum = rank;
++   minimum = author_id;
     position = a;
     for (b = a + 1; b < length; b++) {
-    -      if (author_list[b].rank < minimum) {
-    -        minimum = author_list[b].rank;
-    +      if (author_list[b].user_id < minimum) {
-    +        minimum = author_list[b].user_id;
+-      if (author_list[b].rank < minimum) {
+-         minimum = author_list[b].rank;
++      if (author_list[b].user_id < minimum) {
++         minimum = author_list[b].user_id;
     position = b;
     }
-}
+ }
 ```
 
 Many such examples are included in the 'tests' directory, simply replace the configuration file path and run the same command as above.
