@@ -65,55 +65,55 @@ python3.7 FixMorph.py --conf=/path/to/conf/file
 ```
 
 The backported will be generated at ./tests/update/assignment/PC-patch directory. In this example, the original patch from mainline version PA-PB:
-```c
-    18c18
-    <     min = rank;
-    ---
-    >     min = book_id;
-    21,22c21,22
-    <       if (list[j].rank < min) {
-    <         min = list[j].rank;
-    ---
-    >       if (list[j].book_id < min) {
-    >         min = list[j].book_id;
+```diff
+18c18
+< min = rank;
+---
+> min = book_id;
+21,22c21,22
+<   if (list[j].rank < min) {
+< min = list[j].rank;
+---
+>   if (list[j].book_id < min) {
+> min = list[j].book_id;
 ```
 
 The backported patch to target version PC is as follows:
 
-```c
-    18c18
-    <     minimum = rank;
-    ---
-    >     minimum = author_id;
-    21,22c21,22
-    <       if (author_list[b].rank < minimum) {
-    <         minimum = author_list[b].rank;
-    ---
-    >       if (author_list[b].user_id < minimum) {
-    >         minimum = author_list[b].user_id;
+```diff
+18c18
+< minimum = rank;
+---
+> minimum = author_id;
+21,22c21,22
+<   if (author_list[b].rank < minimum) {
+< minimum = author_list[b].rank;
+---
+>   if (author_list[b].user_id < minimum) {
+> minimum = author_list[b].user_id;
 ```
-If you prefer changes to display in unified diff format, use the additional flag
-"--format=unified" 
 
-```c
+
+If you prefer changes to display in unified diff format, use the additional flag "--format=unified".
+
+```diff
 --- /FixMorph/tests/update/assignment/PC/selection-sort.c	
 +++ /FixMorph/tests/update/assignment/PC-patch/selection-sort.c	
-
 @@ -15,11 +15,11 @@
-while (a < length) {
+ while (a < length) {
     author_id = author_list[a].user_id;
     rank = author_list[a].rank;
-    -    minimum = rank;
-    +    minimum = author_id;
+-   minimum = rank;
++   minimum = author_id;
     position = a;
     for (b = a + 1; b < length; b++) {
-    -      if (author_list[b].rank < minimum) {
-    -        minimum = author_list[b].rank;
-    +      if (author_list[b].user_id < minimum) {
-    +        minimum = author_list[b].user_id;
+-      if (author_list[b].rank < minimum) {
+-         minimum = author_list[b].rank;
++      if (author_list[b].user_id < minimum) {
++         minimum = author_list[b].user_id;
     position = b;
     }
-}
+ }
 ```
 
 Many such examples are included in the 'tests' directory, simply replace the configuration file path and run the same command as above.
