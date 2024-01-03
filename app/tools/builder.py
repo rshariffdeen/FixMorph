@@ -109,7 +109,7 @@ def apply_flags(build_command):
         c_flags_new = c_flags.replace("'", "") + " " + c_flags_old
         build_command = build_command.replace(c_flags_old, c_flags_new)
     else:
-        new_command = "make CFLAGS=" + c_flags + " "
+        new_command = f"make CC={CC} CFLAGS={c_flags}"
         build_command = build_command.replace("make", new_command)
 
     if "XCXXFLAGS=" in build_command:
@@ -168,7 +168,7 @@ def build_project(project_path, build_command=None, verify=False):
         if build_command == "skip":
             return
         elif values.IS_LINUX_KERNEL:
-            build_command = "bear " + build_command
+            build_command = "bear " + build_command.replace("make", f"make CC={CC}")
         elif "--no-static" in build_command:
             c_flags_Nstatic = C_FLAGS.replace("-static", "")
             build_command = "bear make CFLAGS=" + c_flags_Nstatic + " "
@@ -515,5 +515,5 @@ def identify_version(makefile_path):
             if "PATCHLEVEL = " in l:
                 minor_version = l.split(" = ")[-1].strip().replace("\n", "")
                 break
-    return major_version, minor_version
+    return int(major_version), int(minor_version)
 
