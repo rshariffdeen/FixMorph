@@ -10,6 +10,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     cmake \
     curl \
     flex \
+    gcc \
+    gcc-4.9 \
     git \
     google-perftools \
     mercurial \
