@@ -152,6 +152,11 @@ def apply_flags(build_command):
 
 
 def build_project(project_path, build_command=None, verify=False):
+    if "linux" in str(values.Project_C.path).lower():
+        version_c = identify_version(f"{values.Project_C.path}/Makefile")
+        if version_c[0] < 3 or (version_c[0] == 3 and version_c[1] < 18):
+            CC = "gcc-4.9"
+
     if not verify:
         if os.path.isfile(project_path + "/compile_commands.json"):
             return
@@ -202,7 +207,9 @@ def restore_compile_database(project_path):
         execute_command(restore_database_command)
 
 
+
 def build_all():
+    global CC
     emitter.sub_sub_title("building projects")
 
     emitter.normal("\t" + values.Project_A.path)
@@ -496,3 +503,17 @@ def clean_all():
     if values.CONF_PATH_E:
         emitter.normal("\t" + values.Project_E.path)
         clean_project(values.Project_E.path)
+
+def identify_version(makefile_path):
+    major_version = ""
+    minor_version = ""
+    with open(makefile_path, "r") as mk_file:
+        lines = mk_file.readlines()
+        for l in lines:
+            if "VERSION = " in l:
+                major_version = l.split(" = ")[-1].strip().replace("\n", "")
+            if "PATCHLEVEL = " in l:
+                minor_version = l.split(" = ")[-1].strip().replace("\n", "")
+                break
+    return major_version, minor_version
+
