@@ -751,6 +751,20 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
             if nodeB.parent_id in updated:
                 updated.append(nodeB.id)
                 continue
+            parentB = ASTlists[values.Project_B.name][int(nodeB.parent_id)]
+            if parentB in inserted:
+                index = 0
+                del_id = -1
+                replace_node = None
+                for i in modified_AB:
+                    if i[0] == definitions.INSERT:
+                        if i[1].id == nodeB.parent_id:
+                            del_id = modified_AB.index(i)
+                            replace_node = i[1]
+                            break
+                if del_id > 0:
+                    del modified_AB[del_id]
+                modified_AB.append((definitions.REPLACE, nodeA ,replace_node))
 
             if nodeA.id in replaced:
                 continue
