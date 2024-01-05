@@ -762,7 +762,7 @@ def simplify_patch(instruction_AB, match_BA, ASTlists):
                             del_id = modified_AB.index(i)
                             replace_node = i[1]
                             break
-                if del_id > 0:
+                if del_id >= 0:
                     del modified_AB[del_id]
                     modified_AB.append((definitions.REPLACE, nodeA ,replace_node))
 
