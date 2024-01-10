@@ -40,13 +40,13 @@ def read_conf_file():
             values.CONF_PATH_C = configuration.replace(definitions.CONF_PATH_C, '')
             if "$HOME$" in values.CONF_PATH_C:
                 values.CONF_PATH_C = values.CONF_PATH_C.replace("$HOME$", definitions.DIRECTORY_MAIN)
-            if str(values.CONF_PATH_C)[-1] == "/":
+            if values.CONF_PATH_C[-1] == "/":
                 values.CONF_PATH_C = values.CONF_PATH_C[:-1]
         elif definitions.CONF_PATH_E in configuration:
             values.CONF_PATH_E = configuration.replace(definitions.CONF_PATH_E, '')
             if "$HOME$" in values.CONF_PATH_E:
                 values.CONF_PATH_E = values.CONF_PATH_E.replace("$HOME$", definitions.DIRECTORY_MAIN)
-            if str(values.CONF_PATH_E)[-1] == "/":
+            if values.CONF_PATH_E[-1] == "/":
                 values.CONF_PATH_E = values.CONF_PATH_E[:-1]
 
         elif definitions.CONF_COMMIT_A in configuration:

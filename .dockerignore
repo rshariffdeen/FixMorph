@@ -5,5 +5,7 @@ logs/
 logs-old/
 experiment/
 Dockerfile
+Dockerfile.20.04
 .gitignore
 .idea
+venv/
