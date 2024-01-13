@@ -111,11 +111,22 @@ def debug(message):
 
 
 def store():
-    copyfile(definitions.FILE_MAIN_LOG, definitions.DIRECTORY_LOG + "/log-latest")
-    copyfile(definitions.FILE_COMMAND_LOG, definitions.DIRECTORY_LOG + "/log-command")
-    copyfile(definitions.FILE_ERROR_LOG, definitions.DIRECTORY_LOG + "/log-error")
-    copyfile(definitions.FILE_MAKE_LOG, definitions.DIRECTORY_LOG + "/log-make")
-
+    """
+    Store will copy the log files to the log directory
+    if they exist.
+    """
+    files = [
+        (definitions.FILE_MAIN_LOG, os.path.join(definitions.DIRECTORY_LOG, "/log-latest")),
+        (definitions.FILE_COMMAND_LOG, os.path.join(definitions.DIRECTORY_LOG , "/log-command")),
+        (definitions.FILE_ERROR_LOG, os.path.join(definitions.DIRECTORY_LOG , "/log-error")),
+        (definitions.FILE_MAKE_LOG, os.path.join(definitions.DIRECTORY_LOG , "/log-make")),
+    ]
+    for src, dest in files:
+            # create the log file if it doesn't exist
+            if not os.path.exists(src):
+                with open(src, 'w') as fp:
+                    fp.write("")
+            copyfile(src, dest)
 
 def end(time_duration, is_error=False):
     output("[END] " + values.TOOL_NAME + " ended at " + str(datetime.datetime.now()))

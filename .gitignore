@@ -35,3 +35,7 @@ Tests.py
 ASTdiffTest.py
 empty_file.c
 test
+
+**/*.so
+**/*.c
+venv
