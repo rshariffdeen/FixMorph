@@ -376,13 +376,15 @@ def build_verify():
         # config_project(Values.Project_C.path, False)
 
     if values.CONF_BUILD_COMMAND_C:
-        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
-        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+        if values.CONF_ASAN_FLAG:
+            CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+            C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
         build_project(values.Project_D.path, values.CONF_BUILD_COMMAND_C, verify=True)
         # build_project(Values.Project_C.path, Values.BUILD_COMMAND_C)
     else:
-        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
-        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+        if values.CONF_ASAN_FLAG:
+            CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+            C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
         # build_project(Values.Project_C.path)
         build_project(values.Project_D.path, verify=True)
 
@@ -395,8 +397,9 @@ def build_asan():
     CXX_FLAGS = "'-g -O0 -static'"
     C_FLAGS = "'-g -O0 -static'"
     config_all()
-    CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
-    C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+    if values.CONF_ASAN_FLAG:
+        CXX_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
+        C_FLAGS = "'-g -O0 -static -DNDEBUG -fsanitize=" + values.CONF_ASAN_FLAG + "'"
     build_all()
 
 
