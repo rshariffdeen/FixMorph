@@ -79,7 +79,9 @@ ADD . /opt/fixmorph
 WORKDIR /opt/fixmorph
 RUN python${PYTHON_VERSION} -m pip --disable-pip-version-check --no-cache-dir install -r /opt/fixmorph/requirements.txt
 RUN python${PYTHON_VERSION} setup.py build_ext --inplace
-ENV PATH="${PATH}:/opt/fixmorph/bin"
+ENV PATH="${PATH}:/opt/fixmorph/bin:/opt/llvm/build/bin"
+RUN ln -s /usr/bin/clang-17 /usr/bin/clang
+RUN ln -s /usr/bin/clang++-17 /usr/bin/clang++
 # Tidy up the container
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
