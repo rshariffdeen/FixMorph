@@ -5,6 +5,7 @@ logs/
 logs-old/
 experiment/
 Dockerfile
+Dockerfile.16.04
 Dockerfile.20.04
 .gitignore
 .idea

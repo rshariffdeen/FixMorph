@@ -169,9 +169,9 @@ def evaluate(conf_path, bug_id):
     if os.path.isdir(exp_dir + "/output"):
         shutil.rmtree(exp_dir + "/output")
     
-    DIR_PREFIX = "/FixMorph/logs/linux-"
+    DIR_PREFIX = "/opt/fixmorph/logs/linux-"
     if CONF_DATA_SET == "cve-data.json":
-        DIR_PREFIX = "/FixMorph/logs/linux-cve-"
+        DIR_PREFIX = "/opt/fixmorph/logs/linux-cve-"
     shutil.copytree(DIR_PREFIX + str(bug_id), exp_dir + "/output")
     copy_file(DIR_PREFIX + str(bug_id) + "/log-latest", exp_dir + "/log-latest")
     copy_file(DIR_PREFIX + str(bug_id) + "/log-make", exp_dir + "/log-make")
@@ -343,9 +343,9 @@ def run(arg_list):
 
         if not CONF_ONLY_SETUP:
             ret_code = evaluate(conf_file_path, index)
-            log_file_path = "/FixMorph/logs/linux-" + str(index) + "/log-latest"
+            log_file_path = "/opt/fixmorph/logs/linux-" + str(index) + "/log-latest"
             if CONF_DATA_SET == "cve-data.json":
-                log_file_path = "/FixMorph/logs/linux-cve-" + str(index) + "/log-latest"
+                log_file_path = "/opt/fixmorph/logs/linux-cve-" + str(index) + "/log-latest"
             if CONF_ANALYSIS_MODE:
                 if int(ret_code) != 0:
                     if "--analyse-n" in CONF_TOOL_PARAMS:
@@ -354,9 +354,9 @@ def run(arg_list):
                     CONF_TOOL_PARAMS = "--analyse-n"
             analyse_result(index, log_file_path)
 
-        comparison_result_file = "/FixMorph/output/linux-" + str(index) + "/comparison-result"
+        comparison_result_file = "/opt/fixmorph/output/linux-" + str(index) + "/comparison-result"
         if CONF_DATA_SET == "cve-data.json":
-            comparison_result_file = "/FixMorph/output/linux-cve-" + str(index) + "/comparison-result"
+            comparison_result_file = "/opt/fixmorph/output/linux-cve-" + str(index) + "/comparison-result"
         if os.path.isfile(comparison_result_file):
             with open(comparison_result_file, "r") as result_file:
                 content = result_file.readline()

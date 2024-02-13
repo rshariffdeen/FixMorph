@@ -1,22 +1,30 @@
-FROM ubuntu:20.04
+FROM ubuntu:16.04
 MAINTAINER Ridwan Shariffdeen <ridwan@comp.nus.edu.sg>
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    autoconf \
     apt-transport-https \
+    autoconf \
     autoconf-archive \
     autogen \
-    bear \
     bison \
+    build-essential \
     cmake \
     curl \
     flex \
+    gcc \
+    gcc-4.9 \
     git \
     google-perftools \
+    libffi-dev \
+    libgdbm-dev \
+    libncurses5-dev \
+    libnss3-dev \
+    libreadline-dev \
+    libssl-dev \
     mercurial \
     minisat \
     nano \
-    python \
+    ninja \
     perl \
     pkg-config \
     software-properties-common \
@@ -25,15 +33,19 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     wget \
     zlib1g-dev
 
+WORKDIR /opt
+RUN wget https://www.python.org/ftp/python/3.7.17/Python-3.7.17.tgz && \
+    tar xzf Python-3.7.17.tgz && cd Python-3.7.17 && \
+    ./configure && make install -j32
+
+
 RUN add-apt-repository -y ppa:deadsnakes/ppa
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key| apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main"
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-install-recommends --force-yes \
     clang-9 \
-    python3.7 \
     python3-pip \
-    python3-setuptools \
-    python3.7-distutils 
+    python3-setuptools
 
 RUN mkdir -p /llvm/llvm-10; git clone https://github.com/llvm/llvm-project.git /llvm/llvm-10/source; cd /llvm/llvm-10/source; git checkout llvmorg-10.0.0
 RUN git clone https://github.com/rshariffdeen/clang-tools.git /llvm/llvm-10/source/clang-tools-extra/clang-tools; cd /llvm/llvm-10/source/clang-tools-extra/clang-tools; git checkout llvm-10
@@ -52,20 +64,13 @@ RUN mkdir /bear/build; cd /bear/build; cmake ../source; make -j32; make install
 ## Install PyPy JITC
 RUN add-apt-repository -y ppa:pypy/ppa
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-install-recommends --force-yes \
-    gfortran \
-    pypy3 \
-    pypy3-dev
+    gfortran
 
 RUN python3.7 -m pip install --upgrade pip
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install pylint
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install six
 RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install gitpython
-
-RUN pypy3 -m easy_install cython
-RUN pypy3 -m easy_install setuptools
-#RUN pypy3 -m easy_install six
-RUN pypy3 -m easy_install gitpython
-
+RUN python3.7 -m pip --disable-pip-version-check --no-cache-dir install cython
 
 RUN git clone https://gitlab.com/akihe/radamsa.git /radamsa
 RUN cd /radamsa; git checkout 30770f6e; make; make install
@@ -73,9 +78,8 @@ ADD . /opt/fixmorph
 WORKDIR /opt/fixmorph
 RUN python3.7 setup.py build_ext --inplace
 ENV PATH="${PATH}:/opt/fixmorph/bin"
-
 # Tidy up the container
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && apt-get clean && \
      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENTRYPOINT ["python3.7", "FixMorph.py"]
+

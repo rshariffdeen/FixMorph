@@ -36,7 +36,7 @@ cd /FixMorph
 docker build -t rshariffdeen/fixmorph:16.04 .
 
 # building docker image for Linux experiments
-cd /FixMorph/experiments/ISSTA21
+cd /opt/fixmorph/experiments/ISSTA21
 docker build -t rshariffdeen/fixmorph:issta21 .
 ```
 
@@ -59,10 +59,10 @@ docker run --name FixMorph -it rshariffdeen/fixmorph:issta21 bash
 We will first run a test example to verify that FixMorph is working in the given environment, for this purpose we will use the test-case provided in the directory 'tests/update/assignment'. In this example we provide three C source files and their corresponding Makefiles, in addition we also provide the configuration file for FixMorph.
 
 
-* /FixMorph/tests/update/assignment/repair.conf is the FixMorph configuration file.
-* /FixMorph/tests/update/assignment/PA lists the source files for pre-transform version of the reference version
-* /FixMorph/tests/update/assignment/PB lists the source files for post-transform version of the reference version
-* /FixMorph/tests/update/assignment/PC lists the source files for target version
+* /opt/fixmorph/tests/update/assignment/repair.conf is the FixMorph configuration file.
+* /opt/fixmorph/tests/update/assignment/PA lists the source files for pre-transform version of the reference version
+* /opt/fixmorph/tests/update/assignment/PB lists the source files for post-transform version of the reference version
+* /opt/fixmorph/tests/update/assignment/PC lists the source files for target version
 
 ## Test Run
 You can check if everything is working well by running the above test-case from our test-suite. 
@@ -97,11 +97,11 @@ The output message at the end of the execution should look similar to the follow
 FixMorph was able to successfully generate an updated version of the target program from the transformation learnt from the
 reference program. During this process FixMorph produces several files and we will analyse each below:
 
-* /FixMorph/logs/TAG_ID directory stores all logs, the "TAG_ID" should be specified in the configuration file
+* /opt/fixmorph/logs/TAG_ID directory stores all logs, the "TAG_ID" should be specified in the configuration file
 	* log-latest: this is the main application log which captures each step of the program transformation
 	* log-error: this log captures any errors (if observed), which can be use for debugging purpose
 	* log-make: this log captures the output of the build process of each program
-* /FixMorph/output/TAG_ID directory stores all artefacts generated for the transformation, the "TAG_ID" should be specified in the configuration file
+* /opt/fixmorph/output/TAG_ID directory stores all artefacts generated for the transformation, the "TAG_ID" should be specified in the configuration file
 	* orig-diff: this file captures the transformation in the reference program
 	* transplant-diff: this file captures the transformation applied to the target program
 	* port-diff: this file captures the transformation done in manual (comparison phase will run only if an additional version of target program "Pe" is provided in configuration)
@@ -110,8 +110,8 @@ reference program. During this process FixMorph produces several files and we wi
 
 
 To better explore the final outcome, please check the FixMorph output directory which is in
-/FixMorph/output/<tag_id> (for this example the tag_id defined in the configuration file is 'update-test') i.e. /FixMorph/output/update-test
-Similarly, the logs are also stored in /FixMorph/logs/<tag_id>.
+/opt/fixmorph/output/<tag_id> (for this example the tag_id defined in the configuration file is 'update-test') i.e. /opt/fixmorph/output/update-test
+Similarly, the logs are also stored in /opt/fixmorph/logs/<tag_id>.
 
 For more examples refer [this guide](../../doc/Examples.md).
 
@@ -162,7 +162,7 @@ Lets run one of the experiments (Bug-ID 238) in our data-set using the following
 First, we need to prepare the experiment by setting up the source directories. We use the following command:
 ```bash
 
-cd /FixMorph/experiments/ISSTA21
+cd /opt/fixmorph/experiments/ISSTA21
 python3.7 driver.py --data=main-data.json --only-setup --bug-id=238
 
 ```

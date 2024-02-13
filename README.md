@@ -97,8 +97,8 @@ The backported patch to target version PC is as follows:
 If you prefer changes to display in unified diff format, use the additional flag "--format=unified".
 
 ```diff
---- /FixMorph/tests/update/assignment/PC/selection-sort.c	
-+++ /FixMorph/tests/update/assignment/PC-patch/selection-sort.c	
+--- /opt/fixmorph/tests/update/assignment/PC/selection-sort.c	
++++ /opt/fixmorph/tests/update/assignment/PC-patch/selection-sort.c	
 @@ -15,11 +15,11 @@
  while (a < length) {
     author_id = author_list[a].user_id;
@@ -127,7 +127,7 @@ Many such examples are included in the 'tests' directory, simply replace the con
 ## Bugs ##
 FixMorph should be considered alpha-quality software. Bugs can be reported here:
 
-    https://github.com/rshariffdeen/FixMorph/issues
+    https://github.com/rshariffdeen/opt/fixmorph/issues
 
 ## Documentation ##
 
