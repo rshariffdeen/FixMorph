@@ -68,7 +68,7 @@ We will first run a test example to verify that FixMorph is working in the given
 You can check if everything is working well by running the above test-case from our test-suite. 
 
 ```bash
-python3.7 FixMorph.py --conf=tests/update/assignment/repair.conf
+fixmorph --conf=tests/update/assignment/repair.conf
 ```
 
 This example test-case illustrates a change in a sorting logic. The patch updates the field use of the sorting logic from 'rank' to entity 'id'. We use FixMorph to learn the transformation rule and apply it to another similar but different version.
@@ -149,9 +149,9 @@ python3.7 driver.py --data=[cve-data.json/main-data.json] --bug-id=BUG_ID
 Alternatively, you can run the experiment manually (after setting up)
 
 ```bash
-python3.7 FixMorph.py --conf=/path/to/configuration
-python3.7 FixMorph.py --conf=/data/backport/linux/1/repair.conf
-python3.7 FixMorph.py --conf=/data/backport/linux-cve/1/repair.conf
+fixmorph --conf=/path/to/configuration
+fixmorph --conf=/data/backport/linux/1/repair.conf
+fixmorph --conf=/data/backport/linux-cve/1/repair.conf
 ```
 
 ## Running experiment #238 (Patch Type-3)
@@ -172,10 +172,7 @@ Once the setup is completed, you can verify the setup is located at /data/backpo
 ## Step 2 - Running FixMorph
 Next step is to invoke FixMorph with the experiment configuration, using the following command:
 ```bash
-
-cd /FixMorph
-python3.7 FixMorph.py --conf=/data/backport/linux/238/repair.conf
-
+fixmorph --conf=/data/backport/linux/238/repair.conf
 ```
 The transformation should be completed in ~10 minutes. 
 
@@ -217,9 +214,7 @@ which mode of transformation to use from
 * 3: SYDIT
 
 ```bash
-
-cd /FixMorph
-python3.7 FixMorph.py --conf=/data/backport/linux/238/repair.conf --time=TIME --mode=MODE_NUMBER
+fixmorph --conf=/data/backport/linux/238/repair.conf --time=TIME --mode=MODE_NUMBER
 
 ```
 

@@ -21,10 +21,10 @@ Note: See the [Experiment Guide](experiments/ISSTA21/README.md) to replicate the
 [comment]: <> (TO appear)
 
 ## Dependencies
-* LLVM - 10.0
-* Clang - 10.0
+* LLVM - 17.0.3+
+* Clang - 17.0.3+
 * [Clang Extra Tools](https://github.com/rshariffdeen/clang-tools)
-* Python - 3.7 
+* Python - 3.11+
 * Docker - 20.10.1+
 
 
@@ -61,7 +61,7 @@ config_command_c:skip
 Once a configuration file has been set up as above, the following command will run FixMorph to adapt the patch from the mainline version to the target version.
 
 ```bash
-python3.7 FixMorph.py --conf=/path/to/conf/file
+fixmorph --conf=/path/to/conf/file
 ```
 
 The backported will be generated at ./tests/update/assignment/PC-patch directory. In this example, the original patch from mainline version PA-PB:
@@ -127,7 +127,7 @@ Many such examples are included in the 'tests' directory, simply replace the con
 ## Bugs ##
 FixMorph should be considered alpha-quality software. Bugs can be reported here:
 
-    https://github.com/rshariffdeen/opt/fixmorph/issues
+    https://github.com/rshariffdeen/FixMorph/issues
 
 ## Documentation ##
 

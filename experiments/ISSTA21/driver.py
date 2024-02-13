@@ -33,7 +33,7 @@ ARG_DATA_SET = "--data="
 CONF_DATA_PATH = "/data"
 CONF_TOOL_PATH = "/FixMorph"
 CONF_TOOL_PARAMS = ""
-CONF_TOOL_NAME = "python3.7 FixMorph.py"
+CONF_TOOL_NAME = "fixmorph"
 CONF_DEBUG = False
 CONF_SKIP_SETUP = False
 CONF_ONLY_SETUP = False

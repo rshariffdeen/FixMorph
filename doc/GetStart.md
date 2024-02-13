@@ -91,7 +91,7 @@ a Makefile in each directory such that FixMorph can directly invoke "make"
 ### Running FixMorph
 Now that we have setup everything, we run FixMorph to backport/transplant the patch from Pa-Pb to Pc
 
-    python3.7 FixMorph.py --conf=path/to/conf/file
+    fixmorph --conf=path/to/conf/file
 
 ### Analysing Results
 FixMorph was able to successfully generate an updated version of the target program from the transformation learnt from the

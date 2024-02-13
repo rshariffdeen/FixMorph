@@ -19,13 +19,13 @@ FixMorph requires a configuration file as input which provides values as followi
 
 One a configuration file is specified the tool can be invoked using the following command from the directory of the tool:
 ```
-python3.7 FixMorph.py --conf=/path/to/conf/file
+fixmorph --conf=/path/to/conf/file
 ```
 
 # Runtime Configuration Options
 The tool supports the following runtime configurations:
 
-    Usage: python3.7 FixMorph.py [OPTIONS] --conf=$FILE_PATH
+    Usage: fixmorph [OPTIONS] --conf=$FILE_PATH
 	Options are:
 		--debug	            | enable debugging information
 		--mode=             | execution mode [0: fixmorph 1: linux-patch-no-context 2: linux-patch-context 3: sydit] (default = 0)
