@@ -38,10 +38,10 @@ Building FixMorph is easy with the provided Dockerfile, which has all the build 
 You can use the following command to build fixmorph image:
 
 ```bash
-cd /FixMorph
-docker build -t rshariffdeen/fixmorph:16.04 .
+cd FixMorph
+docker build -t rshariffdeen/fixmorph .
 # start docker
-docker run -it rshariffdeen/fixmorph:16.04 /bin/bash              
+docker run -it rshariffdeen/fixmorph /bin/bash              
 ```
 
 The experiments/ISSTA21/Dockerfile depends on the fixmorph image. The instructions to build and execute experiments/ISSTA21/Dockerfile can be found [here](./experiments/ISSTA21).
