@@ -162,21 +162,21 @@ def build_project(project_path, build_command=None, verify=False):
             return
     dir_command = "cd " + project_path + ";"
     if build_command is None:
-        build_command = "bear make CFLAGS=" + C_FLAGS + " "
+        build_command = "bear -- make CFLAGS=" + C_FLAGS + " "
         build_command += "CXXFLAGS=" + CXX_FLAGS
     else:
         if build_command == "skip":
             return
         elif values.IS_LINUX_KERNEL:
-            build_command = "bear " + build_command.replace("make", f"make CC={CC}")
+            build_command = "bear -- " + build_command.replace("make", f"make CC={CC}")
         elif "--no-static" in build_command:
             c_flags_Nstatic = C_FLAGS.replace("-static", "")
-            build_command = "bear make CFLAGS=" + c_flags_Nstatic + " "
+            build_command = "bear -- make CFLAGS=" + c_flags_Nstatic + " "
             cxx_flags_Nstatic = CXX_FLAGS.replace("-static", "")
             build_command += "CXXFLAGS=" + cxx_flags_Nstatic
         else:
             if not os.path.isfile(project_path + "/compile_commands.json"):
-                build_command = build_command.replace("make", "bear make")
+                build_command = build_command.replace("make", "bear -- make")
             if CC == "wllvm":
                 build_command = remove_fsanitize(build_command)
             if "-j" not in build_command:
@@ -337,7 +337,7 @@ def build_instrumented_code(source_directory):
         build_command += "CXXFLAGS=" + CXX_FLAGS + " > " + definitions.FILE_MAKE_LOG
     else:
         if not os.path.isfile(source_directory + "/compile_commands.json"):
-            custom_build_command = custom_build_command.replace("make", "bear make")
+            custom_build_command = custom_build_command.replace("make", "bear -- make")
         build_command = remove_fsanitize(build_command)
         build_command_with_flags = apply_flags(custom_build_command)
         build_command += build_command_with_flags
