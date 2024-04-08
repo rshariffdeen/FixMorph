@@ -155,3 +155,25 @@ This work was partially supported by the National Satellite of Excellence in Tru
 # License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
+## Citation
+
+If you use Cerberus in your research work, we would highly appreciate it if you
+cited the [following paper](https://rshariffdeen.com/paper/ISSTA21.pdf):
+
+```
+@inproceedings{fixmorph,
+author = {Shariffdeen, Ridwan and Gao, Xiang and Duck, Gregory J. and Tan, Shin Hwei and Lawall, Julia and Roychoudhury, Abhik},
+title = {Automated patch backporting in Linux (experience paper)},
+year = {2021},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3460319.3464821},
+doi = {10.1145/3460319.3464821},
+booktitle = {Proceedings of the 30th ACM SIGSOFT International Symposium on Software Testing and Analysis},
+pages = {633–645},
+numpages = {13},
+keywords = {Linux Kernel, Patch Backporting, Program Transformation},
+location = {Virtual, Denmark},
+series = {ISSTA 2021}
+}
+```
