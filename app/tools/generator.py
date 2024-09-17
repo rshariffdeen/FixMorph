@@ -137,7 +137,7 @@ def iterate_path(source_path, project, file_extension, log_file):
     file_name = source_path.split("/")[-1][:-2]
     source_dir = source_path[:str(source_path).find(file_name)]
     source_dir = source_dir.replace(values.CONF_PATH_A, "")
-    regex = file_name
+    regex = file
     find_files(project.path, file_extension, log_file, regex)
 
     while os.stat(log_file).st_size == 0:
