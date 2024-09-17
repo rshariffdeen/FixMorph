@@ -48,7 +48,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y  --no-in
     llvm-${LLVM_VERSION}-dev \
     llvm-${LLVM_VERSION}-tools
 
-RUN mkdir -p /opt/llvm; git clone https://github.com/llvm/llvm-project.git /opt/llvm/source; cd /opt/llvm/source; git checkout llvmorg-${LLVM_TAG}
+RUN mkdir -p /opt/llvm; git clone https://github.com/llvm/llvm-project.git /opt/llvm/source && cd /opt/llvm/source; git checkout llvmorg-${LLVM_TAG}
 RUN git clone https://github.com/rshariffdeen/clang-tools.git /opt/llvm/source/clang-tools-extra/clang-tools; cd /opt/llvm/source/clang-tools-extra/clang-tools; git checkout llvm-${LLVM_VERSION}
 RUN echo "add_subdirectory(clang-tools)" >> /opt/llvm/source/clang-tools-extra/CMakeLists.txt
 RUN mkdir /opt/llvm/build; cd /opt/llvm/build; cmake -G Ninja /opt/llvm/source/llvm -DCMAKE_BUILD_TYPE=Release -DCMAKE_ENABLE_ASSERTIONS=OFF -DLLVM_ENABLE_WERROR=OFF \
