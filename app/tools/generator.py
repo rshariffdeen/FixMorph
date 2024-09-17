@@ -134,10 +134,15 @@ def find_source_file(diff_file_list, project, log_file, file_extension):
 
 
 def iterate_path(source_path, project, file_extension, log_file):
+    regex = None
     file_name = source_path.split("/")[-1][:-2]
     source_dir = source_path[:str(source_path).find(file_name)]
     source_dir = source_dir.replace(values.CONF_PATH_A, "")
-    regex = file
+    if regex is None:
+        regex = file_name
+    else:
+        regex = regex + "\|" + file_name
+
     find_files(project.path, file_extension, log_file, regex)
 
     while os.stat(log_file).st_size == 0:
