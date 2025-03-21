@@ -36,7 +36,7 @@ cd /FixMorph
 docker build -t rshariffdeen/fixmorph:16.04 .
 
 # building docker image for Linux experiments
-cd /opt/fixmorph/experiments/ISSTA21
+cd /FixMorph/experiments/ISSTA21
 docker build -t rshariffdeen/fixmorph:issta21 .
 ```
 
